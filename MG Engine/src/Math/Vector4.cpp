@@ -1,3 +1,5 @@
+#include "Vector2.h"
+#include "Vector3.h"
 #include "Vector4.h"
 #include "EngineMath.h"
 
@@ -55,6 +57,24 @@ void Vector4::ClampMagnitude(float Min, float Max) {
 	}
 }
 
+Vector4 Vector4::operator+(const Vector4& V) const {
+	return { X + V.X, Y + V.Y, Z + V.Z, W + V.W };
+}
+Vector4 Vector4::operator+(Vector4&& V) const {
+	return { X + V.X, Y + V.Y, Z + V.Z, W + V.W };
+}
+Vector4 Vector4::operator-(const Vector4& V) const {
+	return { X - V.X, Y - V.Y, Z - V.Z, W - V.W };
+}
+Vector4 Vector4::operator-(Vector4&& V) const {
+	return { X - V.X, Y - V.Y, Z - V.Z, W - V.W };
+}
+Vector4 Vector4::operator*(float N) const {
+	return { X * N, Y * N, Z * N, W * N };
+}
+Vector4 Vector4::operator/(float N) const {
+	return { X / N, Y / N, Z / N, W / N };
+}
 bool Vector4::operator==(const Vector4& V) const {
 	return this->X == V.X && this->Y == V.Y && this->Z == V.Z && this->W == V.W;
 }
@@ -66,6 +86,13 @@ bool Vector4::operator!=(const Vector4& V) const {
 }
 bool Vector4::operator!=(Vector4&& V) const {
 	return this->X != V.X || this->Y != V.Y || this->Z != V.Z || this->W == V.W;
+}
+
+Vector4::Vector4(Vector2 V) : X(V.X), Y(V.Y), Z(0), W(0) { }
+Vector4::Vector4(Vector3 V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+
+Vector4 Vector4::Dot(Vector4 X, Vector4 Y) {
+	return { X.X * Y.X, X.Y * Y.Y, X.Z * Y.Z, X.W * Y.W };
 }
 
 std::string Vector4::ToString() const {

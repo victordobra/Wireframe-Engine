@@ -1,6 +1,8 @@
 #pragma once
 #include "Object.h"
-#include <string>
+
+class Vector2;
+class Vector3;
 
 class Vector4 : public Object {
 public:
@@ -17,12 +19,22 @@ public:
 	float SqrMagnitude() const;
 	void ClampMagnitude(float Min, float Max);
 
+	Vector4 operator+(const Vector4& V) const;
+	Vector4 operator+(Vector4&& V) const;
+	Vector4 operator-(const Vector4& V) const;
+	Vector4 operator-(Vector4&& V) const;
+	Vector4 operator*(float N) const;
+	Vector4 operator/(float N) const;
 	bool operator==(const Vector4& V) const;
 	bool operator==(Vector4&& V) const;
 	bool operator!=(const Vector4& V) const;
 	bool operator!=(Vector4&& V) const;
 
+	Vector4(Vector2 V);
+	Vector4(Vector3 V);
+
+	static Vector4 Dot(Vector4 X, Vector4 Y);
+
 	std::string ToString() const override;
 	int GetHashCode() const override;
 };
-

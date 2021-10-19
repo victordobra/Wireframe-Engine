@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Math\Matrix4x4.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\Assets\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Virtual\Asset.cpp" />
@@ -33,8 +34,11 @@
     <ClCompile Include="src\Math\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Math\Matrix4x4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
     <ClInclude Include="src\Assets\Rendering\Mesh.h" />
+    <ClInclude Include="src\Math\Vector3.h" />
+    <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\Virtual\Asset.h" />
     <ClInclude Include="src\Virtual\GameObject.h" />
     <ClInclude Include="src\Virtual\Object.h" />
@@ -45,9 +49,7 @@
     <ClInclude Include="src\OS\OSManager.h" />
     <ClInclude Include="src\OS\OSManagerInternal.h" />
     <ClInclude Include="src\OS\Windows\WindowsWindow.h" />
-    <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector2.h" />
-    <ClInclude Include="src\Math\Vector4.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

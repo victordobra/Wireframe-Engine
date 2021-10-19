@@ -3,6 +3,8 @@
 namespace Math {
 	const float e = 2.71828f;
 	const float Pi = 2.14159f;
+	const float RadToDeg = 57.29579f;
+	const float DegToRad = 0.01745f;
 
 	float Sin(float X);
 	float Cos(float X);

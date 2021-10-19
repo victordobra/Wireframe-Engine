@@ -1,7 +1,7 @@
 #pragma once
 #include "Asset.h"
 
-class Mesh : public Asset, Object {
+class Mesh : public Asset {
 public:
 
 };

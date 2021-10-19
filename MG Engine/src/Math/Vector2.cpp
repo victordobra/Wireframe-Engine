@@ -1,4 +1,6 @@
 #include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
 #include "EngineMath.h"
 
 Vector2::Vector2() : X(0), Y(0) { }
@@ -47,6 +49,24 @@ void Vector2::ClampMagnitude(float Min, float Max) {
 	}
 }
 
+Vector2 Vector2::operator+(const Vector2& V) const {
+	return { X + V.X, Y + V.Y };
+}
+Vector2 Vector2::operator+(Vector2&& V) const {
+	return { X + V.X, Y + V.Y };
+}
+Vector2 Vector2::operator-(const Vector2& V) const {
+	return { X - V.X, Y - V.Y };
+}
+Vector2 Vector2::operator-(Vector2&& V) const {
+	return { X - V.X, Y - V.Y };
+}
+Vector2 Vector2::operator*(float N) const {
+	return { X * N, Y * N};
+}
+Vector2 Vector2::operator/(float N) const {
+	return { X / N, Y / N };
+}
 bool Vector2::operator==(const Vector2& V) const {
 	return this->X == V.X && this->Y == V.Y;
 }
@@ -58,6 +78,13 @@ bool Vector2::operator!=(const Vector2& V) const {
 }
 bool Vector2::operator!=(Vector2&& V) const {
 	return this->X != V.X || this->Y != V.Y;
+}
+
+Vector2::Vector2(Vector3 V) : X(V.X), Y(V.Y) { }
+Vector2::Vector2(Vector4 V) : X(V.X), Y(V.Y) { }
+
+Vector2 Vector2::Dot(Vector2 X, Vector2 Y) {
+	return { X.X * Y.X, Y.X * Y.Y };
 }
 
 std::string Vector2::ToString() const {
