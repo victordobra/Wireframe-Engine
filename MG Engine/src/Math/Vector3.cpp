@@ -1,6 +1,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Quaternion.h"
 #include "EngineMath.h"
 
 Vector3::Vector3() : X(0), Y(0), Z(0) { }
@@ -71,6 +72,21 @@ Vector3 Vector3::operator*(float N) const {
 Vector3 Vector3::operator/(float N) const {
 	return { X / N, Y / N, Z / N };
 }
+
+Vector3& Vector3::operator=(const Vector3& V) {
+	if (this == &V)
+		return *this;
+
+	X = V.X; Y = V.Y; Z = V.Z;
+
+	return *this;
+}
+Vector3& Vector3::operator=(Vector3&& V) noexcept {
+	X = V.X; Y = V.Y; Z = V.Z;
+
+	return *this;
+}
+
 bool Vector3::operator==(const Vector3& V) const {
 	return this->X == V.X && this->Y == V.Y && this->Z == V.Z;
 }
@@ -84,11 +100,24 @@ bool Vector3::operator!=(Vector3&& V) const {
 	return this->X != V.X || this->Y != V.Y || this->Z != V.Z;
 }
 
-Vector3::Vector3(Vector2 V) : X(V.X), Y(V.Y), Z(0) { }
-Vector3::Vector3(Vector4 V) : X(V.X), Y(V.Y), Z(V.Z) { }
+Vector3::Vector3(const Vector2& V) : X(V.X), Y(V.Y), Z(0) { }
+Vector3::Vector3(Vector2&& V) : X(V.X), Y(V.Y), Z(0) { }
+Vector3::Vector3(const Vector4& V) : X(V.X), Y(V.Y), Z(V.Z) { }
+Vector3::Vector3(Vector4&& V) : X(V.X), Y(V.Y), Z(V.Z) { }
+Vector3::Vector3(const Quaternion& Q) : X(Q.X), Y(Q.Y), Z(Q.Z) { }
+Vector3::Vector3(Quaternion&& Q) : X(Q.X), Y(Q.Y), Z(Q.Z) { }
 
-Vector3 Vector3::Dot(Vector3 X, Vector3 Y) {
-	return { X.X * Y.X, X.Y * Y.Y, X.Z * Y.Z};
+float Vector3::Dot(const Vector3& X, const Vector3& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z;
+}
+float Vector3::Dot(Vector3&& X, const Vector3& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z;
+}
+float Vector3::Dot(const Vector3& X, Vector3&& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z;
+}
+float Vector3::Dot(Vector3&& X, Vector3&& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z;
 }
 
 std::string Vector3::ToString() const {

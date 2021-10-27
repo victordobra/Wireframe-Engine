@@ -22,6 +22,9 @@ public:
 	Vector4 operator*(const Vector4& V) const;
 	Vector4 operator*(Vector4&& V) const;
 
+	Matrix4x4& operator=(const Matrix4x4& M);
+	Matrix4x4& operator=(Matrix4x4&& M) noexcept;
+
 	bool operator==(const Matrix4x4& M) const;
 	bool operator==(Matrix4x4&& M) const;
 	bool operator!=(const Matrix4x4& M) const;
@@ -33,5 +36,7 @@ public:
 
 	std::string ToString() const override;
 	int GetHashCode() const override;
+
+	~Matrix4x4() { }
 };
 

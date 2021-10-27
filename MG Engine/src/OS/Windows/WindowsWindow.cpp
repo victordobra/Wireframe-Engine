@@ -52,7 +52,7 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     WCEX.hIconSm = LoadIcon(WCEX.hInstance, IDI_APPLICATION);
 
     if (!RegisterClassEx(&WCEX)) {
-        MessageBoxW(0, L"Call to RegisterClassEx failed!", L"Error", 0);
+        MessageBox(0, "Call to RegisterClassEx failed!", "Error", 0);
 
         return 1;
     }
@@ -79,11 +79,11 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     );
 
     if (!WindowHWND) {
-        MessageBoxW(0, L"Call to CreateWindow failed!", L"Error", 0);
+        MessageBox(0, "Call to CreateWindow failed!", "Error", 0);
 
         return 1;
     }
-
+    
     ShowWindow(WindowHWND, NCmdShow);
     UpdateWindow(WindowHWND);
 
@@ -132,7 +132,7 @@ LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LP
         return DefWindowProc(WindowHWND, Message, WParam, LParam);
         break;
     }
-
+    
     return 0;
 }
 

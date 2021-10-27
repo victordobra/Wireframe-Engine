@@ -49,6 +49,20 @@ Vector4 Matrix4x4::operator*(Vector4&& V) const {
 	return Vector4(V.X * (Matrix[0][0] + Matrix[0][1] + Matrix[0][2] + Matrix[0][3]), V.Y * (Matrix[1][0] + Matrix[1][1] + Matrix[1][2] + Matrix[1][3]), V.X * (Matrix[2][0] + Matrix[2][1] + Matrix[2][2] + Matrix[2][3]), V.W * (Matrix[3][0] + Matrix[3][1] + Matrix[3][2] + Matrix[3][3]));
 }
 
+Matrix4x4& Matrix4x4::operator=(const Matrix4x4& M) {
+	if (this == &M)
+		return *this;
+
+	memcpy(Matrix, M.Matrix, sizeof(float) * 16);
+
+	return *this;
+}
+Matrix4x4& Matrix4x4::operator=(Matrix4x4&& M) noexcept {
+	memcpy(Matrix, M.Matrix, sizeof(float) * 16);
+
+	return *this;
+}
+
 bool Matrix4x4::operator==(const Matrix4x4& M) const {
 	return memcmp(M.Matrix, Matrix, sizeof(float) * 16);
 }
@@ -108,7 +122,7 @@ std::string Matrix4x4::ToString() const {
 		}
 		String += "]";
 		if (y != 3)
-			String != ", ";
+			String += ", ";
 	}
 	String += ")";
 	return String;

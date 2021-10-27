@@ -67,6 +67,21 @@ Vector2 Vector2::operator*(float N) const {
 Vector2 Vector2::operator/(float N) const {
 	return { X / N, Y / N };
 }
+
+Vector2& Vector2::operator=(const Vector2& V) {
+	if (this == &V)
+		return *this;
+
+	X = V.X; Y = V.Y;
+
+	return *this;
+}
+Vector2& Vector2::operator=(Vector2&& V) noexcept {
+	X = V.X; Y = V.Y;
+
+	return *this;
+}
+
 bool Vector2::operator==(const Vector2& V) const {
 	return this->X == V.X && this->Y == V.Y;
 }
@@ -80,11 +95,22 @@ bool Vector2::operator!=(Vector2&& V) const {
 	return this->X != V.X || this->Y != V.Y;
 }
 
-Vector2::Vector2(Vector3 V) : X(V.X), Y(V.Y) { }
-Vector2::Vector2(Vector4 V) : X(V.X), Y(V.Y) { }
+Vector2::Vector2(const Vector3& V) : X(V.X), Y(V.Y) { }
+Vector2::Vector2(Vector3&& V) : X(V.X), Y(V.Y) { }
+Vector2::Vector2(const Vector4& V) : X(V.X), Y(V.Y) { }
+Vector2::Vector2(Vector4&& V) : X(V.X), Y(V.Y) { }
 
-Vector2 Vector2::Dot(Vector2 X, Vector2 Y) {
-	return { X.X * Y.X, Y.X * Y.Y };
+float Vector2::Dot(const Vector2& X, const Vector2& Y) {
+	return X.X * Y.X + Y.X * Y.Y;
+}
+float Vector2::Dot(Vector2&& X, const Vector2& Y) {
+	return X.X * Y.X + Y.X * Y.Y;
+}
+float Vector2::Dot(const Vector2& X, Vector2&& Y) {
+	return X.X * Y.X + Y.X * Y.Y;
+}
+float Vector2::Dot(Vector2&& X, Vector2&& Y) {
+	return X.X * Y.X + Y.X * Y.Y;
 }
 
 std::string Vector2::ToString() const {

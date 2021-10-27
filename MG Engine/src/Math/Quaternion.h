@@ -1,8 +1,9 @@
 #pragma once
 #include "Object.h"
-#include "Vector3.h"
-#include "Vector4.h"
 #include <string>
+
+class Vector3;
+class Vector4;
 
 class Quaternion : public Object {
 public:
@@ -21,17 +22,23 @@ public:
 	float Magnitude() const;
 	float SqrMagnitude() const;
 	
-	bool operator==(const Quaternion& Q) const;
-	bool operator==(Quaternion&& Q) const;
-	bool operator!=(const Quaternion& Q) const;
-	bool operator!=(Quaternion&& Q) const;
 	Quaternion operator*(const Quaternion& Q) const;
 	Quaternion operator*(Quaternion&& Q) const;
 	Quaternion operator/(const Quaternion& Q) const;
 	Quaternion operator/(Quaternion&& Q) const;
 
-	Quaternion(Vector3 V);
-	Quaternion(Vector4 V);
+	Quaternion& operator=(const Quaternion& Q);
+	Quaternion& operator=(Quaternion&& Q) noexcept;
+
+	bool operator==(const Quaternion& Q) const;
+	bool operator==(Quaternion&& Q) const;
+	bool operator!=(const Quaternion& Q) const;
+	bool operator!=(Quaternion&& Q) const;
+
+	explicit Quaternion(const Vector3& V);
+	explicit Quaternion(Vector3&& V);
+	explicit Quaternion(const Vector4& V);
+	explicit Quaternion(Vector4&& V);
 
 	static Quaternion EulerAngles(float X, float Y, float Z);
 	static Quaternion EulerAngles(Vector3 EulerAngles);
@@ -39,5 +46,7 @@ public:
 
 	std::string ToString() const override;
 	int GetHashCode() const override;
+
+	~Quaternion() { }
 };
 

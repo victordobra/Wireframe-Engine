@@ -1,5 +1,7 @@
 #include "Quaternion.h"
 #include "EngineMath.h"
+#include "Vector3.h"
+#include "Vector4.h"
 
 Quaternion::Quaternion() : X(1), Y(0), Z(0), W(0) { }
 Quaternion::Quaternion(const Quaternion& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
@@ -42,18 +44,6 @@ float Quaternion::SqrMagnitude() const {
 	return X * X + Y * Y + Z * Z + W * W;
 }
 
-bool Quaternion::operator==(const Quaternion& Q) const {
-	return this->X == Q.X && this->Y == Q.Y && this->Z == Q.Z && this->W == Q.W;
-}
-bool Quaternion::operator==(Quaternion&& Q) const {
-	return this->X == Q.X && this->Y == Q.Y && this->Z == Q.Z && this->W == Q.W;
-}
-bool Quaternion::operator!=(const Quaternion& Q) const {
-	return this->X != Q.X || this->Y != Q.Y || this->Z != Q.Z || this->W == Q.W;
-}
-bool Quaternion::operator!=(Quaternion&& Q) const {
-	return this->X != Q.X || this->Y != Q.Y || this->Z != Q.Z || this->W == Q.W;
-}
 Quaternion Quaternion::operator*(const Quaternion& Q) const {
 	return { W * Q.W - X * Q.X - Y * Q.Y - Z * Q.Z,
 			 W * Q.X + X * Q.W + Y * Q.Z - Z * Q.Y,
@@ -73,8 +63,37 @@ Quaternion Quaternion::operator/(Quaternion&& Q) const {
 	return operator*(Q.Inverted());
 }
 
-Quaternion::Quaternion(Vector3 V) : X(V.X), Y(V.Y), Z(V.Z), W(0) {}
-Quaternion::Quaternion(Vector4 V) : X(V.X), Y(V.Y), Z(V.Z), W(V.W) {}
+Quaternion& Quaternion::operator=(const Quaternion& Q) {
+	if (this == &Q)
+		return *this;
+
+	X = Q.X; Y = Q.Y; Z = Q.Z; W = Q.W;
+
+	return *this;
+}
+Quaternion& Quaternion::operator=(Quaternion&& Q) noexcept {
+	X = Q.X; Y = Q.Y; Z = Q.Z; W = Q.W;
+
+	return *this;
+}
+
+bool Quaternion::operator==(const Quaternion& Q) const {
+	return this->X == Q.X && this->Y == Q.Y && this->Z == Q.Z && this->W == Q.W;
+}
+bool Quaternion::operator==(Quaternion&& Q) const {
+	return this->X == Q.X && this->Y == Q.Y && this->Z == Q.Z && this->W == Q.W;
+}
+bool Quaternion::operator!=(const Quaternion& Q) const {
+	return this->X != Q.X || this->Y != Q.Y || this->Z != Q.Z || this->W == Q.W;
+}
+bool Quaternion::operator!=(Quaternion&& Q) const {
+	return this->X != Q.X || this->Y != Q.Y || this->Z != Q.Z || this->W == Q.W;
+}
+
+Quaternion::Quaternion(const Vector3& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+Quaternion::Quaternion(Vector3&& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+Quaternion::Quaternion(const Vector4& V) : X(V.X), Y(V.Y), Z(V.Z), W(V.W) { }
+Quaternion::Quaternion(Vector4&& V) : X(V.X), Y(V.Y), Z(V.Z), W(V.W) { }
 
 Quaternion Quaternion::EulerAngles(float X, float Y, float Z) {
 	return AroundAxis(Z, Vector3(0, 0, 1)) * AroundAxis(X, Vector3(1, 0, 0)) * AroundAxis(Y, Vector3(0, 1, 0));

@@ -1,6 +1,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Quaternion.h"
 #include "EngineMath.h"
 
 Vector4::Vector4() : X(0), Y(0), Z(0), W(0) { }
@@ -75,6 +76,21 @@ Vector4 Vector4::operator*(float N) const {
 Vector4 Vector4::operator/(float N) const {
 	return { X / N, Y / N, Z / N, W / N };
 }
+
+Vector4& Vector4::operator=(const Vector4& V) {
+	if (this == &V)
+		return *this;
+
+	X = V.X; Y = V.Y; Z = V.Z; W = V.W;
+
+	return *this;
+}
+Vector4& Vector4::operator=(Vector4&& V) noexcept {
+	X = V.X; Y = V.Y; Z = V.Z; W = V.W;
+
+	return *this;
+}
+
 bool Vector4::operator==(const Vector4& V) const {
 	return this->X == V.X && this->Y == V.Y && this->Z == V.Z && this->W == V.W;
 }
@@ -88,11 +104,24 @@ bool Vector4::operator!=(Vector4&& V) const {
 	return this->X != V.X || this->Y != V.Y || this->Z != V.Z || this->W == V.W;
 }
 
-Vector4::Vector4(Vector2 V) : X(V.X), Y(V.Y), Z(0), W(0) { }
-Vector4::Vector4(Vector3 V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+Vector4::Vector4(const Vector2& V) : X(V.X), Y(V.Y), Z(0), W(0) { }
+Vector4::Vector4(Vector2&& V) : X(V.X), Y(V.Y), Z(0), W(0) { }
+Vector4::Vector4(const Vector3& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+Vector4::Vector4(Vector3&& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
+Vector4::Vector4(const Quaternion& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
+Vector4::Vector4(Quaternion&& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
 
-Vector4 Vector4::Dot(Vector4 X, Vector4 Y) {
-	return { X.X * Y.X, X.Y * Y.Y, X.Z * Y.Z, X.W * Y.W };
+float Vector4::Dot(const Vector4& X, const Vector4& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
+}
+float Vector4::Dot(Vector4&& X, const Vector4& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
+}
+float Vector4::Dot(const Vector4& X, Vector4&& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
+}
+float Vector4::Dot(Vector4&& X, Vector4&& Y) {
+	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
 }
 
 std::string Vector4::ToString() const {
