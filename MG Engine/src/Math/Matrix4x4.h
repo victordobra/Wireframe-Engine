@@ -35,7 +35,7 @@ public:
 	static Matrix4x4 Scaling(Vector3 Scaling);
 
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Matrix4x4() { }
 };

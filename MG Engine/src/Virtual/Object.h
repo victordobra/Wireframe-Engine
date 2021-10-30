@@ -6,7 +6,7 @@
 class Object {
 public:
 	virtual std::string ToString() const;
-	virtual int GetHashCode() const;
+	virtual size_t GetHashCode() const;
 
 	bool operator==(const Object& O) const;
 	bool operator==(Object&& O) const;

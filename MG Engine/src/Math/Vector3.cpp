@@ -123,6 +123,6 @@ float Vector3::Dot(Vector3&& X, Vector3&& Y) {
 std::string Vector3::ToString() const {
 	return "Vector3(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(Z) + ")";
 }
-int Vector3::GetHashCode() const {
+size_t Vector3::GetHashCode() const {
 	return typeid(Vector3).hash_code();
 }

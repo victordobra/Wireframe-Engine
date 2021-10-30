@@ -52,7 +52,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\OS\Windows\WindowsWindow.h">
+    <ClInclude Include="src\OS\Windows\Windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\OS\OSManager.h">

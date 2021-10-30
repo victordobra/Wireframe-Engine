@@ -127,6 +127,6 @@ float Vector4::Dot(Vector4&& X, Vector4&& Y) {
 std::string Vector4::ToString() const {
 	return "Vector4(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(Z) + "," + std::to_string(W) + ")";
 }
-int Vector4::GetHashCode() const {
+size_t Vector4::GetHashCode() const {
 	return typeid(Vector4).hash_code();
 }

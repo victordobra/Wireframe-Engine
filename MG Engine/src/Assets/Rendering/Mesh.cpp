@@ -17,7 +17,7 @@ Mesh::Mesh(const Mesh& M) : Positions(new Vector3[M.PositionC]), PositionC(M.Pos
 	memcpy(Positions, M.Positions, PositionC * sizeof(Vector3));
 	memcpy(UVCoordinates, M.UVCoordinates, UVCoordinateC * sizeof(Vector2));
 	memcpy(Normals, M.Normals, NormalC * sizeof(Vector3));
-	for (unsigned int i = 0; i < FaceC; i++)
+	for (size_t i = 0; i < FaceC; i++)
 		Faces[i] = M.Faces[i];
 }
 Mesh::Mesh(Mesh&& M) noexcept : Positions(M.Positions), PositionC(M.PositionC), 
@@ -35,9 +35,9 @@ Mesh::Mesh(std::string FileLocation) {
 	if (!FileInput)
 		throw std::runtime_error("No file found at the specified location!");
 
-	FileInput.read((char*)(&this->PositionC), sizeof(unsigned int));
-	FileInput.read((char*)(&this->UVCoordinateC), sizeof(unsigned int));
-	FileInput.read((char*)(&this->NormalC), sizeof(unsigned int));
+	FileInput.read((char*)(&this->PositionC), sizeof(size_t));
+	FileInput.read((char*)(&this->UVCoordinateC), sizeof(size_t));
+	FileInput.read((char*)(&this->NormalC), sizeof(size_t));
 
 	this->Positions = new Vector3[this->PositionC];
 	this->UVCoordinates = new Vector2[this->UVCoordinateC];
@@ -47,18 +47,18 @@ Mesh::Mesh(std::string FileLocation) {
 	FileInput.read((char*)this->UVCoordinates, (std::streamsize)this->UVCoordinateC * sizeof(Vector2));
 	FileInput.read((char*)this->Normals, (std::streamsize)this->NormalC * sizeof(Vector3));
 
-	FileInput.read((char*)(&this->FaceC), sizeof(unsigned int));
+	FileInput.read((char*)(&this->FaceC), sizeof(size_t));
 	this->Faces = new Face[this->FaceC];
 
-	for (unsigned int i = 0; i < this->FaceC; i++) {
-		FileInput.read((char*)(&this->Faces[i].VertexCount), sizeof(unsigned int));
+	for (size_t i = 0; i < this->FaceC; i++) {
+		FileInput.read((char*)(&this->Faces[i].VertexCount), sizeof(size_t));
 
-		this->Faces[i].PositionIndices = (unsigned int*)malloc(this->Faces[i].VertexCount * sizeof(unsigned int));
-		this->Faces[i].UVCoordinateIndices = (unsigned int*)malloc(this->Faces[i].VertexCount * sizeof(unsigned int));
+		this->Faces[i].PositionIndices = (size_t*)malloc(this->Faces[i].VertexCount * sizeof(size_t));
+		this->Faces[i].UVCoordinateIndices = (size_t*)malloc(this->Faces[i].VertexCount * sizeof(size_t));
 
-		FileInput.read((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(unsigned int));
-		FileInput.read((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(unsigned int));
-		FileInput.read((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(unsigned int));
+		FileInput.read((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
+		FileInput.read((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
+		FileInput.read((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(size_t));
 	}
 
 	if (!FileInput.good())
@@ -73,22 +73,22 @@ void Mesh::SaveToFile(std::string FileLocation) const {
 	if (!FileOutput)
 		throw std::runtime_error("No file found at the specified location!");
 
-	FileOutput.write((char*)(&this->PositionC), sizeof(unsigned int));
-	FileOutput.write((char*)(&this->UVCoordinateC), sizeof(unsigned int));
-	FileOutput.write((char*)(&this->NormalC), sizeof(unsigned int));
+	FileOutput.write((char*)(&this->PositionC), sizeof(size_t));
+	FileOutput.write((char*)(&this->UVCoordinateC), sizeof(size_t));
+	FileOutput.write((char*)(&this->NormalC), sizeof(size_t));
 
 	FileOutput.write((char*)this->Positions, (std::streamsize)this->PositionC * sizeof(Vector3));
 	FileOutput.write((char*)this->UVCoordinates, (std::streamsize)this->UVCoordinateC * sizeof(Vector2));
 	FileOutput.write((char*)this->Normals, (std::streamsize)this->NormalC * sizeof(Vector3));
 
-	FileOutput.write((char*)(&this->FaceC), sizeof(unsigned int));
+	FileOutput.write((char*)(&this->FaceC), sizeof(size_t));
 
-	for (unsigned int i = 0; i < this->FaceC; i++) {
-		FileOutput.write((char*)(&this->Faces[i].VertexCount), sizeof(unsigned int));
+	for (size_t i = 0; i < this->FaceC; i++) {
+		FileOutput.write((char*)(&this->Faces[i].VertexCount), sizeof(size_t));
 
-		FileOutput.write((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(unsigned int));
-		FileOutput.write((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(unsigned int));
-		FileOutput.write((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(unsigned int));
+		FileOutput.write((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
+		FileOutput.write((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
+		FileOutput.write((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(size_t));
 	}
 
 	if (!FileOutput.good())
@@ -122,7 +122,7 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 					Vector2 V;
 					float* Adress = &V.X;
 
-					for (unsigned int i = 3; i < CLine.length(); i++)
+					for (size_t i = 3; i < CLine.length(); i++)
 						if (CLine[i] == ' ') {
 							*Adress = std::stof(CNumS);
 							Adress++;
@@ -140,7 +140,7 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 					Vector3 V;
 					float* Adress = &V.X;
 
-					for (unsigned int i = 3; i < CLine.length(); i++)
+					for (size_t i = 3; i < CLine.length(); i++)
 						if (CLine[i] == ' ') {
 							*Adress = std::stof(CNumS);
 							Adress++;
@@ -158,7 +158,7 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 					Vector3 V;
 					float* Adress = &V.X;
 
-					for (unsigned int i = 2; i < CLine.length(); i++)
+					for (size_t i = 2; i < CLine.length(); i++)
 						if (CLine[i] == ' ') {
 							*Adress = std::stof(CNumS);
 							Adress++;
@@ -175,31 +175,31 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 			break;
 		case 'f':
 			{
-				std::vector<unsigned int> PositionIndices;
-				std::vector<unsigned int> UVCoordinateIndices;
-				unsigned int NormalIndex = 0;
+				std::vector<size_t> PositionIndices;
+				std::vector<size_t> UVCoordinateIndices;
+				size_t NormalIndex = 0;
 				char ITypeIndex = 0;
 				std::string CNumS;
 
-				for (unsigned int i = 2; i < CLine.length(); i++)
+				for (size_t i = 2; i < CLine.length(); i++)
 					if (CLine[i] == ' ')
 						ITypeIndex = 0;
 					else if (CLine[i] == '/') {
 						if (ITypeIndex == 0)
-							PositionIndices.push_back((unsigned int)std::stoi(CNumS));
+							PositionIndices.push_back((size_t)std::stoi(CNumS));
 						else if (ITypeIndex == 1)
-							UVCoordinateIndices.push_back((unsigned int)std::stoi(CNumS));
+							UVCoordinateIndices.push_back((size_t)std::stoi(CNumS));
 						else
-							NormalIndex = (unsigned int)std::stoi(CNumS);
+							NormalIndex = (size_t)std::stoi(CNumS);
 
 						CNumS = "";
 						ITypeIndex = 0;
 					}
 
-				int VCount = PositionIndices.size();
+				size_t VCount = PositionIndices.size();
 				Face F(VCount);
-				memcpy(F.PositionIndices, PositionIndices.data(), sizeof(unsigned int) * VCount);
-				memcpy(F.UVCoordinateIndices, UVCoordinateIndices.data(), sizeof(unsigned int) * VCount);
+				memcpy(F.PositionIndices, PositionIndices.data(), sizeof(size_t) * VCount);
+				memcpy(F.UVCoordinateIndices, UVCoordinateIndices.data(), sizeof(size_t) * VCount);
 				F.NormalIndex = NormalIndex;
 
 				FacesV.push_back(F);
@@ -225,7 +225,7 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 	memcpy(M.UVCoordinates, PositionsV.data(), M.UVCoordinateC * sizeof(Vector2));
 	memcpy(M.Normals, PositionsV.data(), M.NormalC * sizeof(Vector3));
 
-	for (unsigned int i = 0; i < M.FaceC; i++)
+	for (size_t i = 0; i < M.FaceC; i++)
 		M.Faces[i] = FacesV[i];
 
 	return M;
@@ -254,7 +254,7 @@ Mesh& Mesh::operator=(const Mesh& M) {
 	memcpy(UVCoordinates, M.UVCoordinates, sizeof(Vector2) * UVCoordinateC);
 	memcpy(Normals, M.Normals, sizeof(Vector3) * NormalC);
 
-	for (unsigned int i = 0; i < FaceC; i++)
+	for (size_t i = 0; i < FaceC; i++)
 		Faces[i] = M.Faces[i];
 
 	return *this;
@@ -292,7 +292,7 @@ bool Mesh::operator==(const Mesh& M) const {
 		!memcmp(Normals, M.Normals, sizeof(Vector3) * NormalC))
 		return false;
 
-	for (unsigned int i = 0; i < FaceC; i++)
+	for (size_t i = 0; i < FaceC; i++)
 		if (Faces[i] != M.Faces[i])
 			return false;
 
@@ -307,7 +307,7 @@ bool Mesh::operator==(Mesh&& M) const {
 		!memcmp(Normals, M.Normals, sizeof(Vector3) * NormalC))
 		return false;
 
-	for (unsigned int i = 0; i < FaceC; i++)
+	for (size_t i = 0; i < FaceC; i++)
 		if (Faces[i] != M.Faces[i])
 			return false;
 
@@ -323,7 +323,7 @@ bool Mesh::operator!=(Mesh&& M) const {
 std::string Mesh::ToString() const {
 	return std::string("Mesh(") + std::to_string(FaceC) + " faces)";
 }
-int Mesh::GetHashCode() const {
+size_t Mesh::GetHashCode() const {
 	return typeid(Mesh).hash_code();
 }
 
@@ -343,12 +343,12 @@ Face::Face() : VertexCount(0),
 			   UVCoordinateIndices(nullptr),
 			   NormalIndex(0) { }
 Face::Face(const Face& F) : VertexCount(F.VertexCount), 
-							PositionIndices(new unsigned int[F.VertexCount]),
-							UVCoordinateIndices(new unsigned int[F.VertexCount]), 
+							PositionIndices(new size_t[F.VertexCount]),
+							UVCoordinateIndices(new size_t[F.VertexCount]), 
 							NormalIndex(F.NormalIndex) {
 
-	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(unsigned int));
-	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(unsigned int));
+	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(size_t));
+	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(size_t));
 }
 Face::Face(Face&& F) noexcept : VertexCount(F.VertexCount),
 								PositionIndices(F.PositionIndices),
@@ -358,9 +358,9 @@ Face::Face(Face&& F) noexcept : VertexCount(F.VertexCount),
 	F.PositionIndices = nullptr;
 	F.UVCoordinateIndices = nullptr;
 }
-Face::Face(unsigned int VertexCount) : VertexCount(VertexCount),
-									   PositionIndices(new unsigned int[VertexCount]),
-									   UVCoordinateIndices(new unsigned int[VertexCount]),
+Face::Face(size_t VertexCount) : VertexCount(VertexCount),
+									   PositionIndices(new size_t[VertexCount]),
+									   UVCoordinateIndices(new size_t[VertexCount]),
 									   NormalIndex(0) { }
 
 Face& Face::operator=(const Face& F) {
@@ -371,12 +371,12 @@ Face& Face::operator=(const Face& F) {
 	delete[] UVCoordinateIndices;
 
 	VertexCount = F.VertexCount;
-	PositionIndices = new unsigned int[VertexCount];
-	UVCoordinateIndices = new unsigned int[VertexCount];
+	PositionIndices = new size_t[VertexCount];
+	UVCoordinateIndices = new size_t[VertexCount];
 	NormalIndex = F.NormalIndex;
 
-	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(unsigned int));
-	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(unsigned int));
+	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(size_t));
+	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(size_t));
 
 	return *this;
 }
@@ -399,15 +399,15 @@ bool Face::operator==(const Face& F) const {
 	if (VertexCount != F.VertexCount || NormalIndex != F.NormalIndex)
 		return false;
 
-	return memcmp(PositionIndices, F.PositionIndices, sizeof(unsigned int) * VertexCount) &&
-		   memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(unsigned int) * VertexCount);
+	return memcmp(PositionIndices, F.PositionIndices, sizeof(size_t) * VertexCount) &&
+		   memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(size_t) * VertexCount);
 }
 bool Face::operator==(Face&& F) const {
 	if (VertexCount != F.VertexCount || NormalIndex != F.NormalIndex)
 		return false;
 
-	return memcmp(PositionIndices, F.PositionIndices, sizeof(unsigned int) * VertexCount) &&
-		memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(unsigned int) * VertexCount);
+	return memcmp(PositionIndices, F.PositionIndices, sizeof(size_t) * VertexCount) &&
+		memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(size_t) * VertexCount);
 }
 bool Face::operator!=(const Face& F) const {
 	return !operator==(F);
@@ -419,7 +419,7 @@ bool Face::operator!=(Face&& F) const {
 std::string Face::ToString() const {
 	return std::string("Face(") + std::to_string(VertexCount) + " vertices)";
 }
-int Face::GetHashCode() const {
+size_t Face::GetHashCode() const {
 	return typeid(Face).hash_code();
 }
 

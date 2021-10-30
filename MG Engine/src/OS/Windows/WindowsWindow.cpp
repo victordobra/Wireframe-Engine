@@ -1,11 +1,10 @@
-#include "WindowsWindow.h"
+#include "Windows.h"
 #include "OSManager.h"
 #include "OSManagerInternal.h"
-#include <string>
 #include <windows.h>
 #include <tchar.h>
 #include <string>
-#include <codecvt>
+#include <istream>
 
 #define WindowClassName "DesktopApp"
 
@@ -14,7 +13,12 @@
 static HINSTANCE HInst;
 static HDC WindowHDC;
 static HWND WindowHWND;
-static std::string WinTitle;
+
+#ifdef UNICODE
+wchar_t* WinTitle;
+#else
+char* WinTitle;
+#endif
 
 unsigned int ScreenWidth;
 unsigned int ScreenHeight;
@@ -48,11 +52,11 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     WCEX.hCursor = LoadCursor(0, IDC_ARROW);
     WCEX.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     WCEX.lpszMenuName = 0;
-    WCEX.lpszClassName = WindowClassName;
+    WCEX.lpszClassName = _T(WindowClassName);
     WCEX.hIconSm = LoadIcon(WCEX.hInstance, IDI_APPLICATION);
 
     if (!RegisterClassEx(&WCEX)) {
-        MessageBox(0, "Call to RegisterClassEx failed!", "Error", 0);
+        MessageBox(0, _T("Call to RegisterClassEx failed!"), _T("Error"), 0);
 
         return 1;
     }
@@ -67,8 +71,8 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
 
     WindowHWND = CreateWindowEx(
         0,
-        WindowClassName,
-        "Unnamed Game",
+        _T(WindowClassName),
+        _T("Unnamed Game"),
         WS_POPUP,
         0, 0,
         ScreenWidth, ScreenHeight,
@@ -79,7 +83,7 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     );
 
     if (!WindowHWND) {
-        MessageBox(0, "Call to CreateWindow failed!", "Error", 0);
+        MessageBox(0, _T("Call to CreateWindow failed!"), _T("Error"), 0);
 
         return 1;
     }
@@ -93,14 +97,16 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
         TranslateMessage(&Message);
         DispatchMessage(&Message);
     }
-
+    
     return (int)Message.wParam;
 }
 
-LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LParam) {
+LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam) {
     switch (Message) {
     case WM_CREATE:
-        WinScreenColours = (unsigned long*)VirtualAlloc(0, ScreenWidth * ScreenHeight * 4, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+        WindowHWND = WHWND;
+        
+        WinScreenColours = (unsigned long*)VirtualAlloc(0, (size_t)ScreenWidth * ScreenHeight * 4, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
         WindowHDC = GetDC(WindowHWND);
 
         BmpInfo.bmiHeader.biSize = sizeof(BmpInfo.bmiHeader);
@@ -116,10 +122,10 @@ LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LP
         OSManager::OnUpdate();
         StretchDIBits(WindowHDC, 0, 0, ScreenWidth, ScreenHeight, 0, 0, GameWidth, GameHeight, WinScreenColours, &BmpInfo, DIB_RGB_COLORS, SRCCOPY);
 
-        UpdateWindow(WindowHWND);
+        UpdateWindow(WHWND);
         break;
     case WM_CLOSE:
-        DestroyWindow(WindowHWND);
+        DestroyWindow(WHWND);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -129,7 +135,7 @@ LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LP
     case WM_MOUSEMOVE:
         break;
     default:
-        return DefWindowProc(WindowHWND, Message, WParam, LParam);
+        return DefWindowProc(WHWND, Message, WParam, LParam);
         break;
     }
     
@@ -138,33 +144,62 @@ LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LP
 
 #pragma endregion
 
-#pragma region Refference Functions
+#pragma region External Functions
 
-unsigned long*& WindowsWin::GetScreenColoursRef() {
+unsigned long*& WindowsWindow::GetScreenColoursRef() {
     return WinScreenColours;
 }
-unsigned int& WindowsWin::GetScreenWidthRef() {
+unsigned int& WindowsWindow::GetScreenWidthRef() {
     return ScreenWidth;
 }
-unsigned int& WindowsWin::GetScreenHeightRef() {
+unsigned int& WindowsWindow::GetScreenHeightRef() {
     return ScreenHeight;
 }
-unsigned int& WindowsWin::GetGameWidthRef() {
+unsigned int& WindowsWindow::GetGameWidthRef() {
     return GameWidth;
 }
-unsigned int& WindowsWin::GetGameHeightRef() {
+unsigned int& WindowsWindow::GetGameHeightRef() {
     return GameHeight;
 }
 
-std::string WindowsWin::GetWTitle() {
+char* WindowsWindow::GetWTitle() {
+#ifdef UNICODE
+    const size_t TSize = wcslen(WinTitle) + 1;
+    char* CharWinTitle = new char[TSize];
+    size_t TConvCount;
+
+    wcstombs_s(&TConvCount, CharWinTitle, TSize, WinTitle, TSize);
+
+    if (TConvCount != TSize)
+        throw std::runtime_error("Not enough characters converted!");
+
+    return CharWinTitle;
+#else
     return WinTitle;
+#endif
 }
-void WindowsWin::SetWTitle(const char* NewTitle) {
-    WinTitle = NewTitle;
-    SetWindowText(WindowHWND, NewTitle);
+void WindowsWindow::SetWTitle(const char* NewTitle) {
+#ifdef UNICODE
+    delete[] WinTitle;
+
+    const size_t TSize = strlen(NewTitle) + 1;
+    WinTitle = new wchar_t[TSize];
+    size_t TConvCount;
+
+    mbstowcs_s(&TConvCount, WinTitle, TSize, NewTitle, TSize);
+
+    if (TConvCount != TSize)
+        throw std::runtime_error("Not enough characters converted!");
+
+    SetWindowText(WindowHWND, WinTitle);
+#else
+    WinTitle = (char*)NewTitle;
+
+    SetWindowText(WindowHWND, WinTitle);
+#endif
 }
 
-void WindowsWin::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
+void WindowsWindow::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
     GameWidth = NewWidth;
     GameHeight = NewHeight;
 
@@ -172,7 +207,7 @@ void WindowsWin::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
     BmpInfo.bmiHeader.biHeight = GameHeight;
     
     VirtualFree(WinScreenColours, 0, MEM_RELEASE);
-    WinScreenColours = (unsigned long*)VirtualAlloc(0, GameWidth * GameHeight * 4, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    WinScreenColours = (unsigned long*)VirtualAlloc(0, (size_t)GameWidth * GameHeight * 4, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 }
 
 #pragma endregion

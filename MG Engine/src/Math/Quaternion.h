@@ -45,7 +45,7 @@ public:
 	static Quaternion AroundAxis(float Angle, Vector3 Axis);
 
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Quaternion() { }
 };

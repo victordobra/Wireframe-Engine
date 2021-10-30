@@ -116,6 +116,6 @@ float Vector2::Dot(Vector2&& X, Vector2&& Y) {
 std::string Vector2::ToString() const {
 	return "Vector2(" + std::to_string(X) + ", " + std::to_string(Y) + ")";
 }
-int Vector2::GetHashCode() const {
+size_t Vector2::GetHashCode() const {
 	return typeid(Vector2).hash_code();
 }

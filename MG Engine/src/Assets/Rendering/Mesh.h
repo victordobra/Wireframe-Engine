@@ -7,10 +7,10 @@ class Face;
 
 class Mesh : public Asset {
 public:
-	Vector3* Positions; unsigned int PositionC;
-	Vector2* UVCoordinates; unsigned int UVCoordinateC;
-	Vector3* Normals; unsigned int NormalC;
-	Face* Faces; unsigned int FaceC;
+	Vector3* Positions; size_t PositionC;
+	Vector2* UVCoordinates; size_t UVCoordinateC;
+	Vector3* Normals; size_t NormalC;
+	Face* Faces; size_t FaceC;
 
 	Mesh();
 	Mesh(const Mesh& M);
@@ -29,22 +29,22 @@ public:
 	static Mesh FromObjFile(std::string FileLocation);
 
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Mesh();
 };
 
 class Face : public Object {
 public:
-	unsigned int* PositionIndices;
-	unsigned int* UVCoordinateIndices;
-	unsigned int NormalIndex;
-	unsigned int VertexCount;
+	size_t* PositionIndices;
+	size_t* UVCoordinateIndices;
+	size_t NormalIndex;
+	size_t VertexCount;
 
 	Face();
 	Face(const Face& F);
 	Face(Face&& F) noexcept;
-	Face(unsigned int VertexCount);
+	Face(size_t VertexCount);
 
 	Face& operator=(const Face& F);
 	Face& operator=(Face&& F) noexcept;
@@ -55,7 +55,7 @@ public:
 	bool operator!=(Face&& M) const;
 	
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Face();
 };

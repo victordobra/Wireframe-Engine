@@ -45,7 +45,7 @@ public:
 	static float Dot(Vector2&& X, Vector2&& Y);
 
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Vector2() { }
 };

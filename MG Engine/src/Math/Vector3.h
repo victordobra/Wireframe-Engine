@@ -49,7 +49,7 @@ public:
 	static float Dot(Vector3&& X, Vector3&& Y);
 
 	std::string ToString() const override;
-	int GetHashCode() const override;
+	size_t GetHashCode() const override;
 
 	~Vector3() { }
 };

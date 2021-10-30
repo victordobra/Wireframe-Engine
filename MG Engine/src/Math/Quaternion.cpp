@@ -115,6 +115,6 @@ Quaternion Quaternion::AroundAxis(float Angle, Vector3 Axis) {
 std::string Quaternion::ToString() const {
 	return "Quaternion(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(Z) + "," + std::to_string(W) + ")";
 }
-int Quaternion::GetHashCode() const {
+size_t Quaternion::GetHashCode() const {
 	return typeid(Quaternion).hash_code();
 }

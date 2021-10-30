@@ -1,29 +1,29 @@
 #include "OSManager.h"
 #include "OSManagerInternal.h"
 
-#include "Windows\WindowsWindow.h"
-
 #include "BuildData.h"
 #include "GameLoopManagerInternal.h"
 
 #if BUILD_PLATFORM_WINDOWS
-static unsigned int& ScreenWidth = WindowsWin::GetScreenWidthRef();
-static unsigned int& ScreenHeight = WindowsWin::GetScreenHeightRef();
-static unsigned int& GameWidth = WindowsWin::GetGameWidthRef();
-static unsigned int& GameHeight = WindowsWin::GetGameHeightRef();
-unsigned long*& OSMScreenColours = WindowsWin::GetScreenColoursRef();
+#include "Windows\Windows.h"
+
+static unsigned int& ScreenWidth = WindowsWindow::GetScreenWidthRef();
+static unsigned int& ScreenHeight = WindowsWindow::GetScreenHeightRef();
+static unsigned int& GameWidth = WindowsWindow::GetGameWidthRef();
+static unsigned int& GameHeight = WindowsWindow::GetGameHeightRef();
+unsigned long*& OSMScreenColours = WindowsWindow::GetScreenColoursRef();
 
 unsigned long*& OSManager::GetScreenColoursRef() {
-	return WindowsWin::GetScreenColoursRef();
+	return WindowsWindow::GetScreenColoursRef();
 }
 std::string OSManager::GetTitle() {
-	return WindowsWin::GetWTitle();
+	return WindowsWindow::GetWTitle();
 }
 void OSManager::SetTitle(const char* NewTitle) {
-	WindowsWin::SetWTitle(NewTitle);
+	WindowsWindow::SetWTitle(NewTitle);
 }
 void OSManager::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
-	WindowsWin::SetGameSize(NewWidth, NewHeight);
+	WindowsWindow::SetGameSize(NewWidth, NewHeight);
 }
 #endif
 

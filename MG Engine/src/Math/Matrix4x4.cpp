@@ -127,6 +127,6 @@ std::string Matrix4x4::ToString() const {
 	String += ")";
 	return String;
 }
-int Matrix4x4::GetHashCode() const {
+size_t Matrix4x4::GetHashCode() const {
 	return typeid(Matrix4x4).hash_code();
 }

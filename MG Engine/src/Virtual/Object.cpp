@@ -3,7 +3,7 @@
 std::string Object::ToString() const {
 	return (std::string)typeid(this).name() + "( )";
 }
-int Object::GetHashCode() const {
+size_t Object::GetHashCode() const {
 	return typeid(this).hash_code();
 }
 bool Object::operator==(const Object& O) const {
