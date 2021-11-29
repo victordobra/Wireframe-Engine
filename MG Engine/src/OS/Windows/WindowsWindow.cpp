@@ -1,4 +1,5 @@
 #include "Windows.h"
+#include "WindowsInternal.h"
 #include "OSManager.h"
 #include "OSManagerInternal.h"
 #include <windows.h>
@@ -6,7 +7,7 @@
 #include <string>
 #include <istream>
 
-#define WindowClassName "DesktopApp"
+#define WINDOW_CLASS_NAME _T("Desktop App")
 
 #pragma region Variables
 
@@ -27,20 +28,22 @@ unsigned int GameHeight;
 unsigned long* WinScreenColours = nullptr;
 BITMAPINFO BmpInfo;
 
+static bool KeysPressed[256] = { false };
+
 #pragma endregion
 
-#pragma region Function declarations
+#pragma region Function Declarations
 
 LRESULT CALLBACK WinProc(HWND WindowHWND, UINT Message, WPARAM WParam, LPARAM LParam);
 int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _In_ LPSTR LpCmdLine, _In_ int NCmdShow);
 
 #pragma endregion
 
-#pragma region Main windows functions
+#pragma region Main Windows Functions
 
 int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _In_ LPSTR LpCmdLine, _In_ int NCmdShow) {
     //Create the window WCEX, set all of its data and register it
-    WNDCLASSEX WCEX;
+    WNDCLASSEX WCEX { };
 
     WCEX.cbSize = sizeof(WNDCLASSEX);
     WCEX.style = CS_HREDRAW | CS_VREDRAW;
@@ -52,7 +55,7 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     WCEX.hCursor = LoadCursor(0, IDC_ARROW);
     WCEX.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     WCEX.lpszMenuName = 0;
-    WCEX.lpszClassName = _T(WindowClassName);
+    WCEX.lpszClassName = WINDOW_CLASS_NAME;
     WCEX.hIconSm = LoadIcon(WCEX.hInstance, IDI_APPLICATION);
 
     if (!RegisterClassEx(&WCEX)) {
@@ -71,7 +74,7 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
 
     WindowHWND = CreateWindowEx(
         0,
-        _T(WindowClassName),
+        WINDOW_CLASS_NAME,
         _T("Unnamed Game"),
         WS_POPUP,
         0, 0,
@@ -91,9 +94,13 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     ShowWindow(WindowHWND, NCmdShow);
     UpdateWindow(WindowHWND);
 
-    // Main message loop
+    // Main loop
+    bool GameRunning = true;
     MSG Message;
-    while (GetMessage(&Message, NULL, 0, 0)) {
+    while (PeekMessage(&Message, NULL, 0, 0, PM_REMOVE)) {
+        if (Message.message == WM_QUIT)
+            GameRunning = false;
+
         TranslateMessage(&Message);
         DispatchMessage(&Message);
     }
@@ -119,20 +126,36 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
         OSManager::OnStart();
         break;
     case WM_PAINT:
+        for (size_t i = 0; i < 256; i++) {
+            bool CurrentKeyPressed = GetAsyncKeyState(i) >> 15;
+
+            if (!KeysPressed[i] && CurrentKeyPressed)
+                OSManager::OnButtonDown(i);
+            else if (KeysPressed[i] && !CurrentKeyPressed)
+                OSManager::OnButtonUp(i);
+
+            KeysPressed[i] = CurrentKeyPressed;
+        }
+
         OSManager::OnUpdate();
         StretchDIBits(WindowHDC, 0, 0, ScreenWidth, ScreenHeight, 0, 0, GameWidth, GameHeight, WinScreenColours, &BmpInfo, DIB_RGB_COLORS, SRCCOPY);
 
-        UpdateWindow(WHWND);
+        UpdateWindow(WindowHWND);
+        break;
+    case WM_KEYDOWN:
+        OSManager::OnButtonDown((int)WParam);
+        break;
+    case WM_KEYUP:
+        OSManager::OnButtonUp((int)WParam);
+        break;
+    case WM_MOUSEMOVE:
+        OSManager::SetMousePos(LOWORD(LParam), HIWORD(LParam));
         break;
     case WM_CLOSE:
         DestroyWindow(WHWND);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
-        break;
-    case WM_KEYDOWN:
-        break;
-    case WM_MOUSEMOVE:
         break;
     default:
         return DefWindowProc(WHWND, Message, WParam, LParam);
@@ -144,25 +167,34 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
 
 #pragma endregion
 
+#pragma region Internal Functions
+
+HWND& GetWindowHWND() {
+    return WindowHWND;
+}
+
+#pragma endregion
+
 #pragma region External Functions
 
-unsigned long*& WindowsWindow::GetScreenColoursRef() {
+unsigned long*& Window::GetScreenColoursRef() {
     return WinScreenColours;
 }
-unsigned int& WindowsWindow::GetScreenWidthRef() {
+
+unsigned int& Window::GetScreenWidthRef() {
     return ScreenWidth;
 }
-unsigned int& WindowsWindow::GetScreenHeightRef() {
+unsigned int& Window::GetScreenHeightRef() {
     return ScreenHeight;
 }
-unsigned int& WindowsWindow::GetGameWidthRef() {
+unsigned int& Window::GetGameWidthRef() {
     return GameWidth;
 }
-unsigned int& WindowsWindow::GetGameHeightRef() {
+unsigned int& Window::GetGameHeightRef() {
     return GameHeight;
 }
 
-char* WindowsWindow::GetWTitle() {
+char* Window::GetWTitle() {
 #ifdef UNICODE
     const size_t TSize = wcslen(WinTitle) + 1;
     char* CharWinTitle = new char[TSize];
@@ -178,7 +210,7 @@ char* WindowsWindow::GetWTitle() {
     return WinTitle;
 #endif
 }
-void WindowsWindow::SetWTitle(const char* NewTitle) {
+void Window::SetWTitle(const char* NewTitle) {
 #ifdef UNICODE
     delete[] WinTitle;
 
@@ -199,7 +231,7 @@ void WindowsWindow::SetWTitle(const char* NewTitle) {
 #endif
 }
 
-void WindowsWindow::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
+void Window::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
     GameWidth = NewWidth;
     GameHeight = NewHeight;
 

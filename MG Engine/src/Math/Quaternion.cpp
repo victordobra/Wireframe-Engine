@@ -3,9 +3,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
-Quaternion::Quaternion() : X(1), Y(0), Z(0), W(0) { }
-Quaternion::Quaternion(const Quaternion& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
-Quaternion::Quaternion(Quaternion&& Q) noexcept : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
+Quaternion::Quaternion() : X(0), Y(0), Z(0), W(1) { }
 Quaternion::Quaternion(float X, float Y, float Z, float W) : X(X), Y(Y), Z(Z), W(W) { }
 Quaternion::Quaternion(Vector3 V, float W) : X(V.X), Y(V.Y), Z(V.Z), W(W) { }
 
@@ -45,16 +43,16 @@ float Quaternion::SqrMagnitude() const {
 }
 
 Quaternion Quaternion::operator*(const Quaternion& Q) const {
-	return { W * Q.W - X * Q.X - Y * Q.Y - Z * Q.Z,
-			 W * Q.X + X * Q.W + Y * Q.Z - Z * Q.Y,
+	return { W * Q.X + X * Q.W + Y * Q.Z - Z * Q.Y,
 			 W * Q.Y - X * Q.Z + Y * Q.W + Z * Q.X,
-			 W * Q.Z + X * Q.Y - Y * Q.X + Z * Q.W };
+			 W * Q.Z + X * Q.Y - Y * Q.X + Z * Q.W,
+			 W * Q.W - X * Q.X - Y * Q.Y - Z * Q.Z };
 }
 Quaternion Quaternion::operator*(Quaternion&& Q) const {
-	return { W * Q.W - X * Q.X - Y * Q.Y - Z * Q.Z,
-			 W * Q.X + X * Q.W + Y * Q.Z - Z * Q.Y,
+	return { W * Q.X + X * Q.W + Y * Q.Z - Z * Q.Y,
 			 W * Q.Y - X * Q.Z + Y * Q.W + Z * Q.X,
-			 W * Q.Z + X * Q.Y - Y * Q.X + Z * Q.W };
+			 W * Q.Z + X * Q.Y - Y * Q.X + Z * Q.W,
+			 W * Q.W - X * Q.X - Y * Q.Y - Z * Q.Z };
 }
 Quaternion Quaternion::operator/(const Quaternion& Q) const {
 	return operator*(Q.Inverted());
@@ -63,16 +61,23 @@ Quaternion Quaternion::operator/(Quaternion&& Q) const {
 	return operator*(Q.Inverted());
 }
 
-Quaternion& Quaternion::operator=(const Quaternion& Q) {
-	if (this == &Q)
-		return *this;
-
-	X = Q.X; Y = Q.Y; Z = Q.Z; W = Q.W;
+Quaternion& Quaternion::operator*=(const Quaternion& Q) {
+	*this = operator*(Q);
 
 	return *this;
 }
-Quaternion& Quaternion::operator=(Quaternion&& Q) noexcept {
-	X = Q.X; Y = Q.Y; Z = Q.Z; W = Q.W;
+Quaternion& Quaternion::operator*=(Quaternion&& Q) noexcept {
+	*this = operator*(Q);
+
+	return *this;
+}
+Quaternion& Quaternion::operator/=(const Quaternion& Q) {
+	*this = operator/(Q);
+
+	return *this;
+}
+Quaternion& Quaternion::operator/=(Quaternion&& Q) noexcept {
+	*this = operator/(Q);
 
 	return *this;
 }
@@ -106,9 +111,9 @@ Quaternion Quaternion::AroundAxis(float Angle, Vector3 Axis) {
 	if (SqrMag == 0) 
 		return { };
 	if (SqrMag == 1) 
-		return Quaternion(Axis * Math::Sin(Angle * Math::DegToRad), Angle * Math::Cos(Angle * Math::DegToRad));
+		return Quaternion(Axis * Math::Sin(Angle / 2 * Math::DegToRad), Math::Cos(Angle / 2 * Math::DegToRad));
 
-	return Quaternion(Axis / Math::Sqrt(SqrMag) * Math::Sin(Angle * Math::DegToRad), Angle * Math::Cos(Angle * Math::DegToRad));
+	return Quaternion(Axis / Math::Sqrt(SqrMag) * Math::Sin(Angle / 2 * Math::DegToRad), Math::Cos(Angle / 2 * Math::DegToRad));
 }
 
 

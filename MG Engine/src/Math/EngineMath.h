@@ -2,7 +2,7 @@
 
 namespace Math {
 	const float e = 2.71828f;
-	const float Pi = 2.14159f;
+	const float Pi = 3.14159f;
 	const float RadToDeg = 57.29579f;
 	const float DegToRad = 0.01745f;
 
@@ -16,5 +16,7 @@ namespace Math {
 
 	float Sqrt(float X);
 	float Lerp(float X, float Y, float T);
+	float Lerp(int X, int Y, float T);
 	float Slerp(float X, float Y, float T);
+	float Slerp(int X, int Y, float T);
 }

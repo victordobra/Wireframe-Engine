@@ -10,8 +10,8 @@ public:
 	float X, Y, Z, W;
 
 	Quaternion();
-	Quaternion(const Quaternion& Q);
-	Quaternion(Quaternion&& Q) noexcept;
+	Quaternion(const Quaternion& Q) = default;
+	Quaternion(Quaternion&& Q) noexcept = default;
 	Quaternion(float X, float Y, float Z, float W);
 	Quaternion(Vector3 V, float W);
 
@@ -27,8 +27,12 @@ public:
 	Quaternion operator/(const Quaternion& Q) const;
 	Quaternion operator/(Quaternion&& Q) const;
 
-	Quaternion& operator=(const Quaternion& Q);
-	Quaternion& operator=(Quaternion&& Q) noexcept;
+	Quaternion& operator=(const Quaternion& Q) = default;
+	Quaternion& operator=(Quaternion&& Q) noexcept = default;
+	Quaternion& operator*=(const Quaternion& Q);
+	Quaternion& operator*=(Quaternion&& Q) noexcept;
+	Quaternion& operator/=(const Quaternion& Q);
+	Quaternion& operator/=(Quaternion&& Q) noexcept;
 
 	bool operator==(const Quaternion& Q) const;
 	bool operator==(Quaternion&& Q) const;
@@ -47,6 +51,6 @@ public:
 	std::string ToString() const override;
 	size_t GetHashCode() const override;
 
-	~Quaternion() { }
+	~Quaternion() = default;
 };
 

@@ -10,8 +10,8 @@ public:
 	float X, Y, Z;
 
 	Vector3();
-	Vector3(const Vector3& V);
-	Vector3(Vector3&& V) noexcept;
+	Vector3(const Vector3& V) = default;
+	Vector3(Vector3&& V) noexcept = default;
 	Vector3(float X, float Y);
 	Vector3(float X, float Y, float Z);
 
@@ -25,11 +25,18 @@ public:
 	Vector3 operator+(Vector3&& V) const;
 	Vector3 operator-(const Vector3& V) const;
 	Vector3 operator-(Vector3&& V) const;
+	Vector3 operator-() const;
 	Vector3 operator*(float N) const;
 	Vector3 operator/(float N) const;
 
-	Vector3& operator=(const Vector3& V);
-	Vector3& operator=(Vector3&& V) noexcept;
+	Vector3& operator=(const Vector3& V) = default;
+	Vector3& operator=(Vector3&& V) noexcept = default;
+	Vector3& operator+=(const Vector3& V);
+	Vector3& operator+=(Vector3&& V) noexcept;
+	Vector3& operator-=(const Vector3& V);
+	Vector3& operator-=(Vector3&& V) noexcept;
+	Vector3& operator*=(float X);
+	Vector3& operator/=(float X);
 
 	bool operator==(const Vector3& V) const;
 	bool operator==(Vector3&& V) const;
@@ -47,9 +54,13 @@ public:
 	static float Dot(Vector3&& X, const Vector3& Y);
 	static float Dot(const Vector3& X, Vector3&& Y);
 	static float Dot(Vector3&& X, Vector3&& Y);
+	static Vector3 Lerp(const Vector3& A, const Vector3& B, float T);
+	static Vector3 Lerp(Vector3&& A, const Vector3& B, float T);
+	static Vector3 Lerp(const Vector3& A, Vector3&& B, float T);
+	static Vector3 Lerp(Vector3&& A, Vector3&& B, float T);
 
 	std::string ToString() const override;
 	size_t GetHashCode() const override;
 
-	~Vector3() { }
+	~Vector3() = default;
 };

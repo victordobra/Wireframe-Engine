@@ -1,7 +1,6 @@
 #pragma once
-#include <string>
 
-namespace WindowsWindow {
+namespace Window {
 	unsigned long*& GetScreenColoursRef();
 	unsigned int& GetScreenWidthRef();
 	unsigned int& GetScreenHeightRef();

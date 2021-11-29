@@ -9,11 +9,12 @@ public:
 	float Matrix[4][4];
 
 	Matrix4x4();
-	Matrix4x4(const Matrix4x4& M);
-	Matrix4x4(Matrix4x4&& M) noexcept;
-	Matrix4x4(float* M);
+	Matrix4x4(const Matrix4x4& M) = default;
+	Matrix4x4(Matrix4x4&& M) noexcept = default;
+	Matrix4x4(float M[4][4]);
 
-	float* operator[](int X) const;
+	float& operator()(int X, int Y);
+	float operator()(int X, int Y) const;
 
 	Matrix4x4 operator*(const Matrix4x4& M) const;
 	Matrix4x4 operator*(Matrix4x4&& M) const;
@@ -22,21 +23,26 @@ public:
 	Vector4 operator*(const Vector4& V) const;
 	Vector4 operator*(Vector4&& V) const;
 
-	Matrix4x4& operator=(const Matrix4x4& M);
-	Matrix4x4& operator=(Matrix4x4&& M) noexcept;
+	Matrix4x4& operator=(const Matrix4x4& M) = default;
+	Matrix4x4& operator=(Matrix4x4&& M) noexcept = default;
+	Matrix4x4& operator*=(const Matrix4x4& M);
+	Matrix4x4& operator*=(Matrix4x4&& M) noexcept;
 
 	bool operator==(const Matrix4x4& M) const;
 	bool operator==(Matrix4x4&& M) const;
 	bool operator!=(const Matrix4x4& M) const;
 	bool operator!=(Matrix4x4&& M) const;
 
-	static Matrix4x4 Translation(Vector3 Translation);
-	static Matrix4x4 Rotation(Quaternion Rotation);
-	static Matrix4x4 Scaling(Vector3 Scaling);
+	static Matrix4x4 Translation(const Vector3& Translation);
+	static Matrix4x4 Translation(Vector3&& Translation);
+	static Matrix4x4 Rotation(const Quaternion& Rotation);
+	static Matrix4x4 Rotation(Quaternion&& Rotation);
+	static Matrix4x4 Scaling(const Vector3& Scaling);
+	static Matrix4x4 Scaling(Vector3&& Scaling);
 
 	std::string ToString() const override;
 	size_t GetHashCode() const override;
 
-	~Matrix4x4() { }
+	~Matrix4x4() = default;
 };
 

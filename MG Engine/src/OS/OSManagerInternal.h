@@ -5,4 +5,5 @@ namespace OSManager {
 	void OnUpdate();
 	void OnButtonDown(int KeyCode);
 	void OnButtonUp(int KeyCode);
+	void SetMousePos(int NewX, int NewY);
 }

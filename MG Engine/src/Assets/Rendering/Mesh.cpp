@@ -3,12 +3,6 @@
 #include <sstream>
 #include <vector>
 
-#pragma region Mesh
-
-Mesh::Mesh() : Positions(nullptr), PositionC(0), 
-			   UVCoordinates(nullptr), UVCoordinateC(0), 
-			   Normals(nullptr), NormalC(0),
-			   Faces(nullptr), FaceC(0) { }
 Mesh::Mesh(const Mesh& M) : Positions(new Vector3[M.PositionC]), PositionC(M.PositionC), 
 							UVCoordinates(new Vector2[M.UVCoordinateC]), UVCoordinateC(M.UVCoordinateC), 
 							Normals(new Vector3[M.NormalC]), NormalC(M.NormalC),
@@ -97,7 +91,7 @@ void Mesh::SaveToFile(std::string FileLocation) const {
 	FileOutput.close();
 }
 
-Mesh Mesh::FromObjFile(std::string FileLocation) {
+Mesh* Mesh::FromObjFile(std::string FileLocation) {
 	std::ifstream FileInput(FileLocation);
 
 	if (!FileInput)
@@ -109,124 +103,79 @@ Mesh Mesh::FromObjFile(std::string FileLocation) {
 	std::vector<Face> FacesV;
 
 	std::string CLine;
-	while (std::getline(FileInput, CLine)) {
+	while (!FileInput.eof()) {
+		std::getline(FileInput, CLine);
 		if (CLine[0] == '#')
 			continue;
+
+		std::stringstream SStream(CLine);
 		
-		switch (CLine[0]) {
-		case 'v':
-			switch (CLine[1]) {
-			case 't': 
-				{
-					std::string CNumS;
-					Vector2 V;
-					float* Adress = &V.X;
+		std::string Init;
+		SStream >> Init;
 
-					for (size_t i = 3; i < CLine.length(); i++)
-						if (CLine[i] == ' ') {
-							*Adress = std::stof(CNumS);
-							Adress++;
+		if (Init == "v") {
+			Vector3 V;
+			SStream >> V.X >> V.Y >> V.Z;
+			PositionsV.push_back(V);
+		} else if (Init == "vt") {
+			Vector2 V;
+			SStream >> V.X >> V.Y;
+			UVCoordinatesV.push_back(V);
+		} else if (Init == "vn") {
+			Vector3 V;
+			SStream >> V.X >> V.Y >> V.Z;
+			NormalsV.push_back(V);
+		} else if (Init == "f") {
+			std::vector<size_t> PosIndV;
+			std::vector<size_t> UVCIndV;
+			int NorInd = 0;
 
-							CNumS = "";
-						} else
-							CNumS += CLine[i];
+			while (!SStream.eof()) {
+				std::string TempString;
+				SStream >> TempString;
+				std::stringstream TempStream(TempString);
+				std::string PIndS, UVCIndS, NIndS;
+				std::getline(TempStream, PIndS, '/');
+				std::getline(TempStream, UVCIndS, '/');
+				std::getline(TempStream, NIndS, ' ');
 
-					UVCoordinatesV.push_back(V);
-					break;
-				}	
-			case 'n': 
-				{
-					std::string CNumS;
-					Vector3 V;
-					float* Adress = &V.X;
-
-					for (size_t i = 3; i < CLine.length(); i++)
-						if (CLine[i] == ' ') {
-							*Adress = std::stof(CNumS);
-							Adress++;
-
-							CNumS = "";
-						} else
-							CNumS += CLine[i];
-
-					PositionsV.push_back(V);
-					break;
-				}
-			default: 
-				{
-					std::string CNumS;
-					Vector3 V;
-					float* Adress = &V.X;
-
-					for (size_t i = 2; i < CLine.length(); i++)
-						if (CLine[i] == ' ') {
-							*Adress = std::stof(CNumS);
-							Adress++;
-
-							CNumS = "";
-						} else
-							CNumS += CLine[i];
-
-					NormalsV.push_back(V);
-					break;
-				}
+#ifdef _WIN64
+				PosIndV.push_back(std::stoull(PIndS) - 1);
+				UVCIndV.push_back(std::stoull(UVCIndS) - 1);
+#else
+				PosIndV.push_back(std::stoul(PIndS) - 1);
+				UVCIndV.push_back(std::stoul(UVCIndS) - 1);
+#endif
+				NorInd = std::stoi(NIndS) - 1;
 			}
 
-			break;
-		case 'f':
-			{
-				std::vector<size_t> PositionIndices;
-				std::vector<size_t> UVCoordinateIndices;
-				size_t NormalIndex = 0;
-				char ITypeIndex = 0;
-				std::string CNumS;
+			Face F(PosIndV.size());
+			F.NormalIndex = NorInd;
 
-				for (size_t i = 2; i < CLine.length(); i++)
-					if (CLine[i] == ' ')
-						ITypeIndex = 0;
-					else if (CLine[i] == '/') {
-						if (ITypeIndex == 0)
-							PositionIndices.push_back((size_t)std::stoi(CNumS));
-						else if (ITypeIndex == 1)
-							UVCoordinateIndices.push_back((size_t)std::stoi(CNumS));
-						else
-							NormalIndex = (size_t)std::stoi(CNumS);
+			memcpy(F.PositionIndices, PosIndV.data(), sizeof(size_t) * F.VertexCount);
+			memcpy(F.UVCoordinateIndices, UVCIndV.data(), sizeof(size_t) * F.VertexCount);
 
-						CNumS = "";
-						ITypeIndex = 0;
-					}
-
-				size_t VCount = PositionIndices.size();
-				Face F(VCount);
-				memcpy(F.PositionIndices, PositionIndices.data(), sizeof(size_t) * VCount);
-				memcpy(F.UVCoordinateIndices, UVCoordinateIndices.data(), sizeof(size_t) * VCount);
-				F.NormalIndex = NormalIndex;
-
-				FacesV.push_back(F);
-				break;
-			}
-		default:
-			break;
+			FacesV.push_back(F);
 		}
 	}
 
-	Mesh M;
-	M.PositionC = PositionsV.size();
-	M.UVCoordinateC = UVCoordinatesV.size();
-	M.NormalC = NormalsV.size();
-	M.FaceC = FacesV.size();
+	Mesh* M = new Mesh();
+	M->PositionC = PositionsV.size();
+	M->UVCoordinateC = UVCoordinatesV.size();
+	M->NormalC = NormalsV.size();
+	M->FaceC = FacesV.size();
 
-	M.Positions = new Vector3[M.PositionC];
-	M.UVCoordinates = new Vector2[M.UVCoordinateC];
-	M.Normals = new Vector3[M.NormalC];
-	M.Faces = new Face[M.FaceC];
+	M->Positions = new Vector3[M->PositionC];
+	M->UVCoordinates = new Vector2[M->UVCoordinateC];
+	M->Normals = new Vector3[M->NormalC];
+	M->Faces = new Face[M->FaceC];
 
-	memcpy(M.Positions, PositionsV.data(), M.PositionC * sizeof(Vector3));
-	memcpy(M.UVCoordinates, PositionsV.data(), M.UVCoordinateC * sizeof(Vector2));
-	memcpy(M.Normals, PositionsV.data(), M.NormalC * sizeof(Vector3));
+	memcpy(M->Positions, PositionsV.data(), sizeof(Vector3) * M->PositionC);
+	memcpy(M->UVCoordinates, UVCoordinatesV.data(), sizeof(Vector2) * M->UVCoordinateC);
+	memcpy(M->Normals, NormalsV.data(), sizeof(Vector3) * M->NormalC);
 
-	for (size_t i = 0; i < M.FaceC; i++)
-		M.Faces[i] = FacesV[i];
+	for (size_t i = 0; i < M->FaceC; i++)
+		M->Faces[i] = FacesV[i];
 
 	return M;
 }
@@ -283,43 +232,6 @@ Mesh& Mesh::operator=(Mesh&& M) noexcept {
 	return *this;
 }
 
-bool Mesh::operator==(const Mesh& M) const {
-	if (PositionC != M.PositionC || UVCoordinateC != M.UVCoordinateC || NormalC != M.NormalC || FaceC != M.FaceC)
-		return false;
-
-	if (!memcmp(Positions, M.Positions, sizeof(Vector3) * PositionC) ||
-		!memcmp(UVCoordinates, M.UVCoordinates, sizeof(Vector2) * UVCoordinateC) ||
-		!memcmp(Normals, M.Normals, sizeof(Vector3) * NormalC))
-		return false;
-
-	for (size_t i = 0; i < FaceC; i++)
-		if (Faces[i] != M.Faces[i])
-			return false;
-
-	return true;
-}
-bool Mesh::operator==(Mesh&& M) const {
-	if (PositionC != M.PositionC || UVCoordinateC != M.UVCoordinateC || NormalC != M.NormalC || FaceC != M.FaceC)
-		return false;
-
-	if (!memcmp(Positions, M.Positions, sizeof(Vector3) * PositionC) ||
-		!memcmp(UVCoordinates, M.UVCoordinates, sizeof(Vector2) * UVCoordinateC) ||
-		!memcmp(Normals, M.Normals, sizeof(Vector3) * NormalC))
-		return false;
-
-	for (size_t i = 0; i < FaceC; i++)
-		if (Faces[i] != M.Faces[i])
-			return false;
-
-	return true;
-}
-bool Mesh::operator!=(const Mesh& M) const {
-	return !operator==(M);
-}
-bool Mesh::operator!=(Mesh&& M) const {
-	return !operator==(M);
-}
-
 std::string Mesh::ToString() const {
 	return std::string("Mesh(") + std::to_string(FaceC) + " faces)";
 }
@@ -333,99 +245,3 @@ Mesh::~Mesh() {
 	delete[] Normals;
 	delete[] Faces;
 }
-
-#pragma endregion
-
-#pragma region Face
-
-Face::Face() : VertexCount(0),
-			   PositionIndices(nullptr),
-			   UVCoordinateIndices(nullptr),
-			   NormalIndex(0) { }
-Face::Face(const Face& F) : VertexCount(F.VertexCount), 
-							PositionIndices(new size_t[F.VertexCount]),
-							UVCoordinateIndices(new size_t[F.VertexCount]), 
-							NormalIndex(F.NormalIndex) {
-
-	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(size_t));
-	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(size_t));
-}
-Face::Face(Face&& F) noexcept : VertexCount(F.VertexCount),
-								PositionIndices(F.PositionIndices),
-								UVCoordinateIndices(F.UVCoordinateIndices),
-								NormalIndex(F.NormalIndex) { 
-	
-	F.PositionIndices = nullptr;
-	F.UVCoordinateIndices = nullptr;
-}
-Face::Face(size_t VertexCount) : VertexCount(VertexCount),
-									   PositionIndices(new size_t[VertexCount]),
-									   UVCoordinateIndices(new size_t[VertexCount]),
-									   NormalIndex(0) { }
-
-Face& Face::operator=(const Face& F) {
-	if (this == &F)
-		return *this;
-
-	delete[] PositionIndices;
-	delete[] UVCoordinateIndices;
-
-	VertexCount = F.VertexCount;
-	PositionIndices = new size_t[VertexCount];
-	UVCoordinateIndices = new size_t[VertexCount];
-	NormalIndex = F.NormalIndex;
-
-	memcpy(PositionIndices, F.PositionIndices, VertexCount * sizeof(size_t));
-	memcpy(UVCoordinateIndices, F.UVCoordinateIndices, VertexCount * sizeof(size_t));
-
-	return *this;
-}
-Face& Face::operator=(Face&& F) noexcept {
-	delete[] PositionIndices;
-	delete[] UVCoordinateIndices;
-
-	VertexCount = F.VertexCount;
-	PositionIndices = F.PositionIndices;
-	UVCoordinateIndices = F.UVCoordinateIndices;
-	NormalIndex = F.NormalIndex;
-
-	F.PositionIndices = nullptr;
-	F.UVCoordinateIndices = nullptr;
-
-	return *this;
-}
-
-bool Face::operator==(const Face& F) const {
-	if (VertexCount != F.VertexCount || NormalIndex != F.NormalIndex)
-		return false;
-
-	return memcmp(PositionIndices, F.PositionIndices, sizeof(size_t) * VertexCount) &&
-		   memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(size_t) * VertexCount);
-}
-bool Face::operator==(Face&& F) const {
-	if (VertexCount != F.VertexCount || NormalIndex != F.NormalIndex)
-		return false;
-
-	return memcmp(PositionIndices, F.PositionIndices, sizeof(size_t) * VertexCount) &&
-		memcmp(UVCoordinateIndices, F.UVCoordinateIndices, sizeof(size_t) * VertexCount);
-}
-bool Face::operator!=(const Face& F) const {
-	return !operator==(F);
-}
-bool Face::operator!=(Face&& F) const {
-	return !operator==(F);
-}
-
-std::string Face::ToString() const {
-	return std::string("Face(") + std::to_string(VertexCount) + " vertices)";
-}
-size_t Face::GetHashCode() const {
-	return typeid(Face).hash_code();
-}
-
-Face::~Face() {
-	delete[] PositionIndices;
-	delete[] UVCoordinateIndices;
-}
-
-#pragma endregion

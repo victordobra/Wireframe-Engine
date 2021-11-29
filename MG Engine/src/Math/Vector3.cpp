@@ -5,8 +5,6 @@
 #include "EngineMath.h"
 
 Vector3::Vector3() : X(0), Y(0), Z(0) { }
-Vector3::Vector3(const Vector3& V) : X(V.X), Y(V.Y), Z(V.Z) { }
-Vector3::Vector3(Vector3&& V) noexcept : X(V.X), Y(V.Y), Z(V.Z) { }
 Vector3::Vector3(float X, float Y) : X(X), Y(Y), Z(0) { }
 Vector3::Vector3(float X, float Y, float Z) : X(X), Y(Y), Z(Z) { }
 
@@ -66,6 +64,9 @@ Vector3 Vector3::operator-(const Vector3& V) const {
 Vector3 Vector3::operator-(Vector3&& V) const {
 	return { X - V.X, Y - V.Y, Z - V.Z };
 }
+Vector3 Vector3::operator-() const {
+	return { -X, -Y, -Z };
+}
 Vector3 Vector3::operator*(float N) const {
 	return { X * N, Y * N, Z * N };
 }
@@ -73,17 +74,28 @@ Vector3 Vector3::operator/(float N) const {
 	return { X / N, Y / N, Z / N };
 }
 
-Vector3& Vector3::operator=(const Vector3& V) {
-	if (this == &V)
-		return *this;
-
-	X = V.X; Y = V.Y; Z = V.Z;
-
+Vector3& Vector3::operator+=(const Vector3& V) {
+	X += V.X; Y += V.Y; Z += V.Z;
 	return *this;
 }
-Vector3& Vector3::operator=(Vector3&& V) noexcept {
-	X = V.X; Y = V.Y; Z = V.Z;
-
+Vector3& Vector3::operator+=(Vector3&& V) noexcept {
+	X += V.X; Y += V.Y; Z += V.Z;
+	return *this;
+}
+Vector3& Vector3::operator-=(const Vector3& V) {
+	X -= V.X; Y -= V.Y; Z -= V.Z;
+	return *this;
+}
+Vector3& Vector3::operator-=(Vector3&& V) noexcept {
+	X -= V.X; Y -= V.Y; Z -= V.Z;
+	return *this;
+}
+Vector3& Vector3::operator*=(float X) {
+	X *= X; Y *= X; Z *= X;
+	return *this;
+}
+Vector3& Vector3::operator/=(float X) {
+	X /= X; Y /= X; Z /= X;
 	return *this;
 }
 
@@ -118,6 +130,18 @@ float Vector3::Dot(const Vector3& X, Vector3&& Y) {
 }
 float Vector3::Dot(Vector3&& X, Vector3&& Y) {
 	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z;
+}
+Vector3 Vector3::Lerp(const Vector3& A, const Vector3& B, float T) {
+	return A + (B - A) * T;
+}
+Vector3 Vector3::Lerp(Vector3&& A, const Vector3& B, float T) {
+	return A + (B - A) * T;
+}
+Vector3 Vector3::Lerp(const Vector3& A, Vector3&& B, float T) {
+	return A + (B - A) * T;
+}
+Vector3 Vector3::Lerp(Vector3&& A, Vector3&& B, float T) {
+	return A + (B - A) * T;
 }
 
 std::string Vector3::ToString() const {

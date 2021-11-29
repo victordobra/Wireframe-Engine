@@ -1,7 +1,6 @@
 #pragma once
 
 namespace GameLoopManager {
-	unsigned long*& GetScreenColoursRef();
 	unsigned int GetScreenWidth();
 	unsigned int GetScreenHeight();
 	unsigned int GetGameWidth();
@@ -9,4 +8,9 @@ namespace GameLoopManager {
 	void SetGameWidth(unsigned int NewWidth);
 	void SetGameHeight(unsigned int NewHeight);
 	void SetGameSize(unsigned int NewWidth, unsigned int NewHeight);
+	bool IsKeyDown(int KeyCode);
+	bool IsKeyUp(int KeyCode);
+	bool IsKeyPressed(int KeyCode);
+	bool IsKeyReleased(int KeyCode);
+	float GetDeltaTime();
 }

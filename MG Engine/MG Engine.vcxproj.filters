@@ -26,9 +26,6 @@
     <ClCompile Include="src\Virtual\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Virtual\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Virtual\Asset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +45,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Matrix4x4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Virtual\GameNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Assets\Rendering\Face.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game Nodes\Rendering\RenderingManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -76,9 +88,6 @@
     <ClInclude Include="src\Virtual\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Virtual\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Virtual\Asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -98,6 +107,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Vector4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OS\Windows\WindowsInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Virtual\GameNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game Nodes\Rendering\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game Nodes\Rendering\RenderingManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

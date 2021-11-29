@@ -4,8 +4,6 @@
 #include "EngineMath.h"
 
 Vector2::Vector2() : X(0), Y(0) { }
-Vector2::Vector2(const Vector2& V) : X(V.X), Y(V.Y) { }
-Vector2::Vector2(Vector2&& V) noexcept : X(V.X), Y(V.Y) { }
 Vector2::Vector2(float X, float Y) : X(X), Y(Y) { }
 
 void Vector2::Normalize() {
@@ -61,6 +59,9 @@ Vector2 Vector2::operator-(const Vector2& V) const {
 Vector2 Vector2::operator-(Vector2&& V) const {
 	return { X - V.X, Y - V.Y };
 }
+Vector2 Vector2::operator-() const {
+	return { -X, -Y };
+}
 Vector2 Vector2::operator*(float N) const {
 	return { X * N, Y * N};
 }
@@ -68,17 +69,28 @@ Vector2 Vector2::operator/(float N) const {
 	return { X / N, Y / N };
 }
 
-Vector2& Vector2::operator=(const Vector2& V) {
-	if (this == &V)
-		return *this;
-
-	X = V.X; Y = V.Y;
-
+Vector2& Vector2::operator+=(const Vector2& V) {
+	X += V.X; Y += V.Y;
 	return *this;
 }
-Vector2& Vector2::operator=(Vector2&& V) noexcept {
-	X = V.X; Y = V.Y;
-
+Vector2& Vector2::operator+=(Vector2&& V) noexcept {
+	X += V.X; Y += V.Y;
+	return *this;
+}
+Vector2& Vector2::operator-=(const Vector2& V) {
+	X -= V.X; Y -= V.Y;
+	return *this;
+}
+Vector2& Vector2::operator-=(Vector2&& V) noexcept {
+	X -= V.X; Y -= V.Y;
+	return *this;
+}
+Vector2& Vector2::operator*=(float X) {
+	X *= X; Y *= X;
+	return *this;
+}
+Vector2& Vector2::operator/=(float X) {
+	X /= X; Y /= X;
 	return *this;
 }
 
@@ -111,6 +123,18 @@ float Vector2::Dot(const Vector2& X, Vector2&& Y) {
 }
 float Vector2::Dot(Vector2&& X, Vector2&& Y) {
 	return X.X * Y.X + Y.X * Y.Y;
+}
+Vector2 Vector2::Lerp(const Vector2& A, const Vector2& B, float T) {
+	return A + (B - A) * T;
+}
+Vector2 Vector2::Lerp(Vector2&& A, const Vector2& B, float T) {
+	return A + (B - A) * T;
+}
+Vector2 Vector2::Lerp(const Vector2& A, Vector2&& B, float T) {
+	return A + (B - A) * T;
+}
+Vector2 Vector2::Lerp(Vector2&& A, Vector2&& B, float T) {
+	return A + (B - A) * T;
 }
 
 std::string Vector2::ToString() const {
