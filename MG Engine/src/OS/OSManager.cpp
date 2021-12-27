@@ -1,12 +1,11 @@
 #include "OSManager.h"
 #include "OSManagerInternal.h"
 
-#include "BuildData.h"
 #include "GameLoopManagerInternal.h"
 
 #pragma region OS Specific Includes
 
-#if BUILD_PLATFORM_WINDOWS
+#ifdef _WIN32
 #include "Windows\Windows.h"
 #endif
 
@@ -61,7 +60,7 @@ unsigned int OSManager::GetGameHeight() {
 	return GameHeight;
 }
 
-std::string OSManager::GetTitle() {
+const char* OSManager::GetTitle() {
 	return Window::GetWTitle();
 }
 void OSManager::SetTitle(const char* NewTitle) {

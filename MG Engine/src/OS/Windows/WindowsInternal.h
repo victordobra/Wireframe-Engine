@@ -1,8 +1,7 @@
 #pragma once
 #include <windows.h>
 
-#pragma region Windows Window
-
-HWND& GetWindowHWND();
-
-#pragma endregion
+namespace Window {
+	HWND GetWindowHWND();
+	HINSTANCE GetWindowHInstance();
+}

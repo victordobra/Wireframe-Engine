@@ -3,8 +3,6 @@
 #include "OSManager.h"
 #include "EngineMath.h"
 #include "GameNode.h"
-#include "Camera.h"
-#include "MeshRenderer.h"
 #include <chrono>
 #include <future>
 
@@ -23,10 +21,6 @@ static bool KeysPressedCache[256] = { false };
 static bool KeysPressed[256] = { false };
 static bool KeysReleased[256] = { false };
 
-Vector2 MousePos;
-
-Camera* Cam; 
-MeshRenderer* MeshR;
 
 void GameLoopManager::Start() {
 	ScreenWidth = OSManager::GetScreenWidth();
@@ -34,20 +28,8 @@ void GameLoopManager::Start() {
 	GameWidth = OSManager::GetGameWidth();
 	GameHeight = OSManager::GetGameHeight();
 
-	Cam = new Camera();
-	Cam->NearClippingPlane = 0.1f;
-	Cam->FarClippingPlane = 1000;
-	Cam->FOV = 60;
-	MeshR = new MeshRenderer();
-	Mesh* M = Mesh::FromObjFile("Cube.obj");
-	MeshR->RendererMesh = M;
-	MeshR->Position = { 0, 0, 5 };
-	MeshR->Scale = { 1, 1, 1 };
-	MeshR->Texture = (HBITMAP)LoadImage(NULL, L"Cube.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
 	for (int i = 0; i < GameNode::GameNodeCount; i++)
 		GameNode::GameNodes[i]->GameStart();
-	
 }
 
 void RunGameNodeFrame(size_t Index) {
@@ -63,28 +45,6 @@ void GameLoopManager::Update() {
 	std::chrono::high_resolution_clock Timer{ };
 	auto Start = Timer.now();
 
-	if (KeysDown['W'])
-		Cam->Translate({ 0, 0, 3 * DeltaTime });
-	if (KeysDown['S'])
-		Cam->Translate({ 0, 0, -3 * DeltaTime });
-	if (KeysDown['A'])
-		Cam->Translate({ -3 * DeltaTime, 0, 0 });
-	if (KeysDown['D'])
-		Cam->Translate({ 3 * DeltaTime, 0, 0 });
-	if (KeysDown['E'])
-		Cam->Translate({ 0, 3 * DeltaTime, 0 });
-	if (KeysDown['Q'])
-		Cam->Translate({ 0, -3 * DeltaTime, 0 });
-	if (KeysDown[VK_UP])
-		XRot += 90 * DeltaTime;
-	if (KeysDown[VK_DOWN])
-		XRot -= 90 * DeltaTime;
-	if (KeysDown[VK_LEFT])
-		YRot += 90 * DeltaTime;
-	if (KeysDown[VK_RIGHT])
-		YRot -= 90 * DeltaTime;
-
-	Cam->Rotation = Quaternion::EulerAngles(XRot, YRot, 0);
 	std::future<void>* Futures = new std::future<void>[GameNode::GameNodeCount];
 
 	for (size_t i = 0; i < GameNode::GameNodeCount; i++)

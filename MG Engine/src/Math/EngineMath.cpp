@@ -11,6 +11,6 @@ float Math::Atan2(float X, float Y) { return atan2f(X, Y); }
 
 float Math::Sqrt(float X) { return sqrtf(X); }
 float Math::Lerp(float X, float Y, float T) { return X + (Y - X) * T; }
-float Math::Lerp(int X, int Y, float T) { return X + (int)((Y - X) * T); }
+int Math::Lerp(int X, int Y, float T) { return X + (int)((Y - X) * T); }
 float Math::Slerp(float X, float Y, float T) { return X + (Y - X) / (1 + 1 / powf(Math::e, T)); }
-float Math::Slerp(int X, int Y, float T) { return X + (int)((Y - X) / (1 + 1 / powf(Math::e, T))); }
+int Math::Slerp(int X, int Y, float T) { return X + (int)((Y - X) / (1 + 1 / powf(Math::e, T))); }

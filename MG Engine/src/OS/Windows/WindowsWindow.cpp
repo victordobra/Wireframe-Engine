@@ -1,7 +1,9 @@
 #include "Windows.h"
 #include "WindowsInternal.h"
-#include "OSManager.h"
+
 #include "OSManagerInternal.h"
+#include "RenderingPipelineInternal.h"
+
 #include <windows.h>
 #include <tchar.h>
 #include <string>
@@ -72,6 +74,7 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     GameWidth = ScreenWidth;
     GameHeight = ScreenHeight;
 
+    WinTitle = (wchar_t*)_T("Unnamed Game");
     WindowHWND = CreateWindowEx(
         0,
         WINDOW_CLASS_NAME,
@@ -110,9 +113,10 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
 
 LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam) {
     switch (Message) {
-    case WM_CREATE:
+    case WM_CREATE: 
+    {
         WindowHWND = WHWND;
-        
+
         WinScreenColours = (unsigned long*)VirtualAlloc(0, (size_t)ScreenWidth * ScreenHeight * 4, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
         WindowHDC = GetDC(WindowHWND);
 
@@ -123,10 +127,15 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
         BmpInfo.bmiHeader.biBitCount = 32;
         BmpInfo.bmiHeader.biCompression = BI_RGB;
 
+        RPipeline::PipelineConfigInfo ConfigInfo{};
+        RPipeline::DefaultPipelineConfigInfo(ScreenWidth, ScreenHeight, ConfigInfo);
+        RPipeline::InitPipeline(ConfigInfo);
         OSManager::OnStart();
         break;
-    case WM_PAINT:
-        for (size_t i = 0; i < 256; i++) {
+    }
+    case WM_PAINT: 
+    {
+        for (int i = 0; i < 256; i++) {
             bool CurrentKeyPressed = GetAsyncKeyState(i) >> 15;
 
             if (!KeysPressed[i] && CurrentKeyPressed)
@@ -136,21 +145,16 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
 
             KeysPressed[i] = CurrentKeyPressed;
         }
+        
+        POINT MousePoint;
+        GetCursorPos(&MousePoint);
 
+        OSManager::SetMousePos(MousePoint.x, MousePoint.y);
         OSManager::OnUpdate();
-        StretchDIBits(WindowHDC, 0, 0, ScreenWidth, ScreenHeight, 0, 0, GameWidth, GameHeight, WinScreenColours, &BmpInfo, DIB_RGB_COLORS, SRCCOPY);
 
         UpdateWindow(WindowHWND);
         break;
-    case WM_KEYDOWN:
-        OSManager::OnButtonDown((int)WParam);
-        break;
-    case WM_KEYUP:
-        OSManager::OnButtonUp((int)WParam);
-        break;
-    case WM_MOUSEMOVE:
-        OSManager::SetMousePos(LOWORD(LParam), HIWORD(LParam));
-        break;
+    }
     case WM_CLOSE:
         DestroyWindow(WHWND);
         break;
@@ -169,8 +173,11 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
 
 #pragma region Internal Functions
 
-HWND& GetWindowHWND() {
+HWND Window::GetWindowHWND() {
     return WindowHWND;
+}
+HINSTANCE Window::GetWindowHInstance() {
+    return HInst;
 }
 
 #pragma endregion

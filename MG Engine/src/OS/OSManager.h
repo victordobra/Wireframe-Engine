@@ -9,7 +9,7 @@ namespace OSManager {
 	unsigned int GetGameWidth();
 	unsigned int GetGameHeight();
 
-	std::string GetTitle();
+	const char* GetTitle();
 	void SetTitle(const char* NewTitle);
 
 	void SetGameSize(unsigned int NewWidth, unsigned int NewHeight);

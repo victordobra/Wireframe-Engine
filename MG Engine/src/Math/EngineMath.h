@@ -16,7 +16,7 @@ namespace Math {
 
 	float Sqrt(float X);
 	float Lerp(float X, float Y, float T);
-	float Lerp(int X, int Y, float T);
+	int Lerp(int X, int Y, float T);
 	float Slerp(float X, float Y, float T);
-	float Slerp(int X, int Y, float T);
+	int Slerp(int X, int Y, float T);
 }

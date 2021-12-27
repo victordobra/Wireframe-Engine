@@ -20,9 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Assets\Rendering\Face.cpp" />
-    <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp" />
-    <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
-    <ClCompile Include="src\Game Nodes\Rendering\RenderingManager.cpp" />
+    <ClCompile Include="src\Rendering\RederingPipeline.cpp" />
     <ClCompile Include="src\Virtual\GameNode.cpp" />
     <ClCompile Include="src\Math\Matrix4x4.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
@@ -36,11 +34,40 @@
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Math\Vector2.cpp" />
     <ClCompile Include="src\Math\Vector4.cpp" />
+    <ClCompile Include="src\Vulkan\SwapChain.cpp" />
+    <ClCompile Include="src\Vulkan\VulkanManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h" />
-    <ClInclude Include="src\Game Nodes\Rendering\Camera.h" />
-    <ClInclude Include="src\Game Nodes\Rendering\RenderingManager.h" />
+    <ClInclude Include="include\vulkan\vk_enum_string_helper.h" />
+    <ClInclude Include="include\vulkan\vk_icd.h" />
+    <ClInclude Include="include\vulkan\vk_layer.h" />
+    <ClInclude Include="include\vulkan\vk_platform.h" />
+    <ClInclude Include="include\vulkan\vk_sdk_platform.h" />
+    <ClInclude Include="include\vulkan\vulkan.h" />
+    <ClInclude Include="include\vulkan\vulkan.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_android.h" />
+    <ClInclude Include="include\vulkan\vulkan_beta.h" />
+    <ClInclude Include="include\vulkan\vulkan_core.h" />
+    <ClInclude Include="include\vulkan\vulkan_directfb.h" />
+    <ClInclude Include="include\vulkan\vulkan_enums.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_fuchsia.h" />
+    <ClInclude Include="include\vulkan\vulkan_funcs.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_ggp.h" />
+    <ClInclude Include="include\vulkan\vulkan_handles.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_ios.h" />
+    <ClInclude Include="include\vulkan\vulkan_macos.h" />
+    <ClInclude Include="include\vulkan\vulkan_metal.h" />
+    <ClInclude Include="include\vulkan\vulkan_raii.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_screen.h" />
+    <ClInclude Include="include\vulkan\vulkan_structs.hpp" />
+    <ClInclude Include="include\vulkan\vulkan_vi.h" />
+    <ClInclude Include="include\vulkan\vulkan_wayland.h" />
+    <ClInclude Include="include\vulkan\vulkan_win32.h" />
+    <ClInclude Include="include\vulkan\vulkan_xcb.h" />
+    <ClInclude Include="include\vulkan\vulkan_xlib.h" />
+    <ClInclude Include="include\vulkan\vulkan_xlib_xrandr.h" />
+    <ClInclude Include="src\Rendering\RenderingPipeline.h" />
+    <ClInclude Include="src\Rendering\RenderingPipelineInternal.h" />
     <ClInclude Include="src\Virtual\GameNode.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
@@ -50,7 +77,6 @@
     <ClInclude Include="src\OS\Windows\WindowsInternal.h" />
     <ClInclude Include="src\Virtual\Asset.h" />
     <ClInclude Include="src\Virtual\Object.h" />
-    <ClInclude Include="src\Build\BuildData.h" />
     <ClInclude Include="src\Game Loop\GameLoopManager.h" />
     <ClInclude Include="src\Game Loop\GameLoopManagerInternal.h" />
     <ClInclude Include="src\Math\EngineMath.h" />
@@ -58,6 +84,52 @@
     <ClInclude Include="src\OS\OSManagerInternal.h" />
     <ClInclude Include="src\OS\Windows\Windows.h" />
     <ClInclude Include="src\Math\Vector2.h" />
+    <ClInclude Include="src\Vulkan\SwapChain.h" />
+    <ClInclude Include="src\Vulkan\SwapChainInternal.h" />
+    <ClInclude Include="src\Vulkan\VulkanManager.h" />
+    <ClInclude Include="src\Vulkan\VulkanManagerInternal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\Rendering\TestVertex.vert">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building %(Filename)%(Extension)</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building %(Filename)%(Extension)</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building %(Filename)%(Extension)</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building %(Filename)%(Extension)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\Rendering\TestFragment.frag">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building %(Filename)%(Extension)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building %(Filename)%(Extension)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building %(Filename)%(Extension)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building %(Filename)%(Extension)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -131,12 +203,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Virtual;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Nodes;src\Game Loop;src\Build;src\Assets\Rendering;src\Assets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,13 +221,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Virtual;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Nodes;src\Game Loop;src\Build;src\Assets\Rendering;src\Assets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -162,11 +239,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Virtual;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Nodes;src\Game Loop;src\Build;src\Assets\Rendering;src\Assets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>lib\vulkan\vulkan.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -177,13 +257,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Virtual;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Nodes;src\Game Loop;src\Build;src\Assets\Rendering;src\Assets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>lib\vulkan\vulkan.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
