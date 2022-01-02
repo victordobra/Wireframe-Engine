@@ -3,6 +3,7 @@
 
 #include "OSManagerInternal.h"
 #include "RenderingPipelineInternal.h"
+#include "RenderingPipeline.h"
 
 #include <windows.h>
 #include <tchar.h>
@@ -44,7 +45,6 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
 #pragma region Main Windows Functions
 
 int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _In_ LPSTR LpCmdLine, _In_ int NCmdShow) {
-    //Create the window WCEX, set all of its data and register it
     WNDCLASSEX WCEX { };
 
     WCEX.cbSize = sizeof(WNDCLASSEX);
@@ -68,14 +68,13 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
 
     HInst = HInstance;
 
-    //Create the window
     ScreenWidth = GetSystemMetrics(SM_CXSCREEN);
     ScreenHeight = GetSystemMetrics(SM_CYSCREEN);
     GameWidth = ScreenWidth;
     GameHeight = ScreenHeight;
 
     WinTitle = (wchar_t*)_T("Unnamed Game");
-    WindowHWND = CreateWindowEx(
+    WindowHWND = CreateWindowExW(
         0,
         WINDOW_CLASS_NAME,
         _T("Unnamed Game"),
@@ -97,7 +96,6 @@ int WINAPI WinMain(_In_ HINSTANCE HInstance, _In_opt_ HINSTANCE HPrevInstance, _
     ShowWindow(WindowHWND, NCmdShow);
     UpdateWindow(WindowHWND);
 
-    // Main loop
     bool GameRunning = true;
     MSG Message;
     while (PeekMessage(&Message, NULL, 0, 0, PM_REMOVE)) {
@@ -127,9 +125,7 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
         BmpInfo.bmiHeader.biBitCount = 32;
         BmpInfo.bmiHeader.biCompression = BI_RGB;
 
-        RPipeline::PipelineConfigInfo ConfigInfo{};
-        RPipeline::DefaultPipelineConfigInfo(ScreenWidth, ScreenHeight, ConfigInfo);
-        RPipeline::InitPipeline(ConfigInfo);
+        RPipeline::InitPipeline();
         OSManager::OnStart();
         break;
     }
@@ -151,6 +147,7 @@ LRESULT CALLBACK WinProc(HWND WHWND, UINT Message, WPARAM WParam, LPARAM LParam)
 
         OSManager::SetMousePos(MousePoint.x, MousePoint.y);
         OSManager::OnUpdate();
+        RPipeline::DrawFrame();
 
         UpdateWindow(WindowHWND);
         break;

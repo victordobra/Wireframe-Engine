@@ -3,6 +3,7 @@
 #include "OSManager.h"
 #include "EngineMath.h"
 #include "GameNode.h"
+#include "Vector2.h"
 #include <chrono>
 #include <future>
 
@@ -20,7 +21,7 @@ static bool KeysDown[256] = { false };
 static bool KeysPressedCache[256] = { false };
 static bool KeysPressed[256] = { false };
 static bool KeysReleased[256] = { false };
-
+Vector2 MousePos;
 
 void GameLoopManager::Start() {
 	ScreenWidth = OSManager::GetScreenWidth();

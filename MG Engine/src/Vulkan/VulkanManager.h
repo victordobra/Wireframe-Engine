@@ -1,25 +1,25 @@
 #pragma once
-#include <vulkan/vulkan.hpp>
+#include "VulkanInclude.h"
 
 namespace Vulkan {
 	struct SwapChainSupportDetails {
-		VkSurfaceCapabilitiesKHR Capabilities;
+		VkSurfaceCapabilitiesKHR Capabilities{};
 		std::vector<VkSurfaceFormatKHR> Formats;
 		std::vector<VkPresentModeKHR> PresentModes;
 	};
 
 	struct QueueFamilyIndices {
-		uint32_t GraphicsFamily;
-		uint32_t PresentFamily;
+		unsigned int GraphicsFamily{};
+		unsigned int PresentFamily{};
 		bool GraphicsFamilyHasValue = false;
 		bool PresentFamilyHasValue = false;
 		bool IsComplete() { return GraphicsFamilyHasValue && PresentFamilyHasValue; }
 	};
 
 #ifdef NDEBUG
-	const bool EnableValidationLayers = false;
+	constexpr bool EnableValidationLayers = false;
 #else
-	const bool EnableValidationLayers = false;
+	constexpr bool EnableValidationLayers = true;
 #endif
 
 	VkCommandPool GetCommandPool();

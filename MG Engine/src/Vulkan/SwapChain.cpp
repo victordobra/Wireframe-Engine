@@ -372,7 +372,7 @@ VkResult SwapChain::SubmitCommandBuffers(const VkCommandBuffer* Buffers, size_t*
     PresentInfo.swapchainCount = 1;
     PresentInfo.pSwapchains = SwapChains;
 
-    unsigned int ImageIndex32;
+    unsigned int ImageIndex32{};
     PresentInfo.pImageIndices = &ImageIndex32;
 
     VkResult Result = vkQueuePresentKHR(Vulkan::GetPresentQueue(), &PresentInfo);

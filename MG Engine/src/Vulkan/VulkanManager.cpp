@@ -1,6 +1,7 @@
+#ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
-
 #include "Windows/WindowsInternal.h"
+#endif
 
 #include "VulkanManagerInternal.h"
 #include "VulkanManager.h"
@@ -27,7 +28,16 @@ VkQueue PresentQueue;
 
 const std::vector<const char*> ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 const std::vector<const char*> DeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-const std::vector<const char*> InstanceExtensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME, VK_EXT_DEBUG_REPORT_EXTENSION_NAME };
+
+#ifdef _WIN32
+
+#ifdef NDEBUG
+const std::vector<const char*> InstanceExtensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
+#else
+const std::vector<const char*> InstanceExtensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME, VK_EXT_DEBUG_UTILS_EXTENSION_NAME };
+#endif
+
+#endif
 
 #pragma endregion
 
@@ -66,7 +76,7 @@ VkResult CreateDebugUtilsMessengerEXT(VkInstance Inst, const VkDebugUtilsMesseng
 }
 
 void DestroyDebugUtilsMessengerEXT(VkInstance Inst, VkDebugUtilsMessengerEXT DebugMsger, const VkAllocationCallbacks* Allocator) {
-    auto Func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Inst, "vkCreateDebugUtilsMessengerEXT");
+    auto Func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(Inst, "vkDestroyDebugUtilsMessengerEXT");
     if (Func != nullptr)
         return Func(Inst, DebugMsger, Allocator);
 }
@@ -82,7 +92,6 @@ void Vulkan::InitVulkan() {
     PickPhysicalDevice();
     CreateLogicalDevice();
     CreateCommandPool();
-
 }
 
 void Vulkan::ClearVulkan() {
@@ -117,7 +126,7 @@ void CreateInstance() {
     CreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     CreateInfo.pApplicationInfo = &AppInfo;
 
-    CreateInfo.enabledExtensionCount = InstanceExtensions.size();
+    CreateInfo.enabledExtensionCount = (unsigned int)InstanceExtensions.size();
     CreateInfo.ppEnabledExtensionNames = InstanceExtensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT DebugCreateInfo;
@@ -131,7 +140,7 @@ void CreateInstance() {
         CreateInfo.enabledLayerCount = 0;
         CreateInfo.pNext = nullptr;
     }
-    
+
     if (vkCreateInstance(&CreateInfo, nullptr, &Instance) != VK_SUCCESS)
         throw std::runtime_error("Failed to create instance!");
 }
@@ -148,7 +157,7 @@ void SetupDebugMessenger() {
         throw std::runtime_error("Failed to set up debug messenger!");
 }
 void CreateSurface() {
-#ifdef WIN32
+#ifdef _WIN32
     VkWin32SurfaceCreateInfoKHR CreateInfo = {};
     CreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     CreateInfo.hwnd = Window::GetWindowHWND();
@@ -256,19 +265,17 @@ bool CheckValidationLayerSupport() {
     std::vector<VkLayerProperties> AvailableLayers(LayerCount);
     vkEnumerateInstanceLayerProperties(&LayerCount, AvailableLayers.data());
 
-    for (const char* layerName : ValidationLayers) {
-        bool layerFound = false;
+    for (const char* LayerName : ValidationLayers) {
+        bool LayerFound = false;
 
-        for (const auto& layerProperties : AvailableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
+        for (const auto& LayerProperties : AvailableLayers)
+            if (strcmp(LayerName, LayerProperties.layerName) == 0) {
+                LayerFound = true;
                 break;
             }
-        }
 
-        if (!layerFound) {
+        if (!LayerFound)
             return false;
-        }
     }
 
     return true;
@@ -276,27 +283,26 @@ bool CheckValidationLayerSupport() {
 Vulkan::QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice PDevice) {
     Vulkan::QueueFamilyIndices Indices;
 
-    uint32_t QueueFamilyCount = 0;
+    unsigned int QueueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(PDevice, &QueueFamilyCount, nullptr);
 
     std::vector<VkQueueFamilyProperties> QueueFamilies(QueueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(PDevice, &QueueFamilyCount, QueueFamilies.data());
 
-    int i = 0;
+    size_t i = 0;
     for (const auto& QueueFamily : QueueFamilies) {
         if (QueueFamily.queueCount > 0 && QueueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            Indices.GraphicsFamily = i;
+            Indices.GraphicsFamily = (unsigned int)i;
             Indices.GraphicsFamilyHasValue = true;
         }
         VkBool32 PresentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(PDevice, i, Surface, &PresentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(PDevice, (unsigned int)i, Surface, &PresentSupport);
         if (QueueFamily.queueCount > 0 && PresentSupport) {
-            Indices.PresentFamily = i;
+            Indices.PresentFamily = (unsigned int)i;
             Indices.PresentFamilyHasValue = true;
         }
-        if (Indices.IsComplete()) {
+        if (Indices.IsComplete())
             break;
-        }
 
         i++;
     }
@@ -480,9 +486,8 @@ void Vulkan::CopyBufferToImage(VkBuffer Buffer, VkImage Image, size_t Width, siz
     Vulkan::EndSingleTimeCommands(CommandBuffer);
 }
 void Vulkan::CreateImageWithInfo(const VkImageCreateInfo& ImageInfo, VkMemoryPropertyFlags Properties, VkImage& Image, VkDeviceMemory& ImageMemory) {
-    if (vkCreateImage(Device, &ImageInfo, nullptr, &Image) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create image!");
-    }
+    if (vkCreateImage(Device, &ImageInfo, nullptr, &Image) != VK_SUCCESS)
+        throw std::runtime_error("Failed to create image!");
 
     VkMemoryRequirements MemRequirements;
     vkGetImageMemoryRequirements(Device, Image, &MemRequirements);
