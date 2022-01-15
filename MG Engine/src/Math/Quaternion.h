@@ -1,56 +1,53 @@
 #pragma once
-#include "Object.h"
-#include <string>
+#include "EngineMath.h"
 
-class Vector3;
-class Vector4;
+namespace mge {
+	class Vector3;
+	class Vector4;
 
-class Quaternion : public Object {
-public:
-	float X, Y, Z, W;
+	class Quaternion {
+	public:
+		float x{0}, y{0}, z{0}, w{0};
 
-	Quaternion();
-	Quaternion(const Quaternion& Q) = default;
-	Quaternion(Quaternion&& Q) noexcept = default;
-	Quaternion(float X, float Y, float Z, float W);
-	Quaternion(Vector3 V, float W);
+		inline Quaternion() = default;
+		inline Quaternion(const Quaternion&) = default;
+		inline Quaternion(Quaternion&&) noexcept = default;
+		inline Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
+		inline Quaternion(Vector3 v, float w);
 
-	void Normalize();
-	Quaternion Normalized() const;
-	void Invert();
-	Quaternion Inverted() const;
-	float Magnitude() const;
-	float SqrMagnitude() const;
-	
-	Quaternion operator*(const Quaternion& Q) const;
-	Quaternion operator*(Quaternion&& Q) const;
-	Quaternion operator/(const Quaternion& Q) const;
-	Quaternion operator/(Quaternion&& Q) const;
+		inline void Normalize();
+		inline Quaternion Normalized() const;
+		inline void Invert() { x = -x; y = -y; z = -z; }
+		inline Quaternion Inverted() const { return { -x, -y, -z, w }; }
+		inline float Magnitude() const { return Sqrt(x * x + y * y + z * z + w * w); }
+		inline float SqrMagnitude() const { return x * x + y * y + z * z + w * w; }
 
-	Quaternion& operator=(const Quaternion& Q) = default;
-	Quaternion& operator=(Quaternion&& Q) noexcept = default;
-	Quaternion& operator*=(const Quaternion& Q);
-	Quaternion& operator*=(Quaternion&& Q) noexcept;
-	Quaternion& operator/=(const Quaternion& Q);
-	Quaternion& operator/=(Quaternion&& Q) noexcept;
+		inline Quaternion operator*(const Quaternion& other) const;
+		inline Quaternion operator*(Quaternion&& other) const;
+		inline Quaternion operator/(const Quaternion& other) const { return operator*(other.Inverted()); }
+		inline Quaternion operator/(Quaternion&& other) const { return operator*(other.Inverted()); }
 
-	bool operator==(const Quaternion& Q) const;
-	bool operator==(Quaternion&& Q) const;
-	bool operator!=(const Quaternion& Q) const;
-	bool operator!=(Quaternion&& Q) const;
+		inline Quaternion& operator=(const Quaternion& other) = default;
+		inline Quaternion& operator=(Quaternion&& other) noexcept = default;
+		inline Quaternion& operator*=(const Quaternion& other) { *this = operator*(other); return *this; }
+		inline Quaternion& operator*=(Quaternion&& other) noexcept { *this = operator*(other); return *this; }
+		inline Quaternion& operator/=(const Quaternion& other) { *this = operator/(other); return *this; }
+		inline Quaternion& operator/=(Quaternion&& other) noexcept { *this = operator/(other); return *this; }
 
-	explicit Quaternion(const Vector3& V);
-	explicit Quaternion(Vector3&& V);
-	explicit Quaternion(const Vector4& V);
-	explicit Quaternion(Vector4&& V);
+		inline bool operator==(const Quaternion& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+		inline bool operator==(Quaternion&& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+		inline bool operator!=(const Quaternion& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
+		inline bool operator!=(Quaternion&& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
 
-	static Quaternion EulerAngles(float X, float Y, float Z);
-	static Quaternion EulerAngles(Vector3 EulerAngles);
-	static Quaternion AroundAxis(float Angle, Vector3 Axis);
+		inline explicit Quaternion(const Vector3& other);
+		inline explicit Quaternion(Vector3&& other);
+		inline explicit Quaternion(const Vector4& other);
+		inline explicit Quaternion(Vector4&& other);
 
-	std::string ToString() const override;
-	size_t GetHashCode() const override;
+		static Quaternion EulerAngles(float x, float y, float z);
+		static Quaternion EulerAngles(Vector3 eulerAngles);
+		static Quaternion AroundAxis(float angle, Vector3 axis);
 
-	~Quaternion() = default;
-};
-
+		~Quaternion() = default;
+	};
+}

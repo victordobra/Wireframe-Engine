@@ -1,66 +1,56 @@
 #pragma once
-#include "Object.h"
+#include "EngineMath.h"
 
-class Vector2;
-class Vector4;
-class Quaternion;
+namespace mge {
+	class Vector2;
+	class Vector4;
 
-class Vector3 : public Object {
-public:
-	float X, Y, Z;
+	class Vector3 {
+	public:
+		float x{}, y{}, z{};
 
-	Vector3();
-	Vector3(const Vector3& V) = default;
-	Vector3(Vector3&& V) noexcept = default;
-	Vector3(float X, float Y);
-	Vector3(float X, float Y, float Z);
+		inline Vector3() = default;
+		inline Vector3(const Vector3&) = default;
+		inline Vector3(Vector3&&) noexcept = default;
+		inline Vector3(float x, float y) : x(x), y(y) { }
+		inline Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
 
-	void Normalize();
-	Vector3 Normalized() const;
-	float Magnitude() const;
-	float SqrMagnitude() const;
-	void ClampMagnitude(float Min, float Max);
+		inline void Normalize();
+		inline Vector3 Normalized() const;
+		inline float Magnitude() const { return Sqrt(x * x + y * y + z * z); }
+		inline float SqrMagnitude() const { return x * x + y * y + z * z; }
+		inline void ClampMagnitude(float min, float max);
 
-	Vector3 operator+(const Vector3& V) const;
-	Vector3 operator+(Vector3&& V) const;
-	Vector3 operator-(const Vector3& V) const;
-	Vector3 operator-(Vector3&& V) const;
-	Vector3 operator-() const;
-	Vector3 operator*(float N) const;
-	Vector3 operator/(float N) const;
+		inline Vector3 operator+(const Vector3& other) const { return { x + other.x, y + other.y, z + other.z }; }
+		inline Vector3 operator+(Vector3&& other) const { return { x + other.x, y + other.y, z + other.z }; }
+		inline Vector3 operator-(const Vector3& other) const { return { x - other.x, y - other.y, z - other.z }; }
+		inline Vector3 operator-(Vector3&& other) const { return { x - other.x, y - other.y, z - other.z }; }
+		inline Vector3 operator-() const { return { -x, -y, -z }; }
+		inline Vector3 operator*(float other) const { return { x * other, y * other, z * other }; }
+		inline Vector3 operator/(float other) const { return { x / other, y / other, z / other }; }
 
-	Vector3& operator=(const Vector3& V) = default;
-	Vector3& operator=(Vector3&& V) noexcept = default;
-	Vector3& operator+=(const Vector3& V);
-	Vector3& operator+=(Vector3&& V) noexcept;
-	Vector3& operator-=(const Vector3& V);
-	Vector3& operator-=(Vector3&& V) noexcept;
-	Vector3& operator*=(float X);
-	Vector3& operator/=(float X);
+		inline Vector3& operator=(const Vector3& other) = default;
+		inline Vector3& operator=(Vector3&& other) noexcept = default;
+		inline Vector3& operator+=(const Vector3& other) { x += other.x; y += other.y; z += other.z; }
+		inline Vector3& operator+=(Vector3&& other) noexcept { x += other.x; y += other.y; z += other.z; }
+		inline Vector3& operator-=(const Vector3& other) { x -= other.x; y -= other.y; z -= other.z; }
+		inline Vector3& operator-=(Vector3&& other) noexcept { x -= other.x; y -= other.y; z -= other.z; }
+		inline Vector3& operator*=(float other) { x *= other; y /= other; z *= other; }
+		inline Vector3& operator/=(float other) { x *= other; y /= other; z /= other;}
 
-	bool operator==(const Vector3& V) const;
-	bool operator==(Vector3&& V) const;
-	bool operator!=(const Vector3& V) const;
-	bool operator!=(Vector3&& V) const;
+		inline bool operator==(const Vector3& other) const { return x == other.x && y == other.y && z == other.z; }
+		inline bool operator==(Vector3&& other) const { return x == other.x && y == other.y && z == other.z; }
+		inline bool operator!=(const Vector3& other) const { return x != other.x || y != other.y || z != other.z; }
+		inline bool operator!=(Vector3&& other) const { return x != other.x || y != other.y || z != other.z; }
 
-	Vector3(const Vector2& V);
-	Vector3(Vector2&& V);
-	explicit Vector3(const Vector4& V);
-	explicit Vector3(Vector4&& V);
-	explicit Vector3(const Quaternion& Q);
-	explicit Vector3(Quaternion&& Q);
+		inline Vector3(const Vector2& other);
+		inline Vector3(Vector2&& other);
+		inline explicit Vector3(const Vector4& other);
+		inline explicit Vector3(Vector4&& other);
 
-	static float Dot(const Vector3& X, const Vector3& Y);
-	static float Dot(Vector3&& X, const Vector3& Y);
-	static float Dot(const Vector3& X, Vector3&& Y);
-	static float Dot(Vector3&& X, Vector3&& Y);
-	static Vector3 Lerp(const Vector3& A, const Vector3& B, float T);
-	static Vector3 Lerp(Vector3&& A, const Vector3& B, float T);
-	static Vector3 Lerp(const Vector3& A, Vector3&& B, float T);
-	static Vector3 Lerp(Vector3&& A, Vector3&& B, float T);
+		inline static float Dot(Vector3 a, Vector3 b);
+		inline static Vector3 Lerp(Vector3 a, Vector3 b, float t);
 
-	std::string ToString() const override;
-	size_t GetHashCode() const override;
-
-	~Vector3() = default;
-};
+		~Vector3() = default;
+	};
+}

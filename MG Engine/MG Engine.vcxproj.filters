@@ -23,9 +23,6 @@
     <ClCompile Include="src\Math\EngineMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Virtual\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Virtual\Asset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,15 +50,6 @@
     <ClCompile Include="src\Assets\Rendering\Face.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vulkan\VulkanManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\RederingPipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vulkan\SwapChain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OS\Windows\Windows.h">
@@ -80,9 +68,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\EngineMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Virtual\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Virtual\Asset.h">
@@ -112,30 +97,8 @@
     <ClInclude Include="src\Virtual\GameNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vulkan\VulkanManager.h">
+    <ClInclude Include="src\Utility\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vulkan\VulkanManagerInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\RenderingPipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\RenderingPipelineInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vulkan\SwapChain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vulkan\SwapChainInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vulkan\VulkanInclude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="src\Rendering\TestVertex.vert" />
-    <CustomBuild Include="src\Rendering\TestFragment.frag" />
   </ItemGroup>
 </Project>

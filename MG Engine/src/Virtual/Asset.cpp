@@ -1,26 +1,64 @@
 #include "Asset.h"
 #include <fstream>
+#include <vector>
 
-Asset::Asset(std::string FileLocation) {
-	std::ifstream FileInput(FileLocation, std::ios::binary);
-	if (!FileInput)
-		throw std::runtime_error("No file found at the specified location!");
+namespace mge {
+	Asset::Asset(const char* fileLocation, AssetLoadResult& result) {
+		std::ifstream fileInput(fileLocation, std::ios::binary);
+		if (!fileInput) {
+			result = AssetLoadResult::FILE_NOT_FOUND;
+			return;
+		}
 
-	FileInput.read((char*)this, sizeof(*this));
-	FileInput.close();
+		fileInput.read((char*)this, sizeof(*this));
+		fileInput.close();
 
-	if (!FileInput.good())
-		throw std::runtime_error("Error occured at reading time!");
-}
+		if (!fileInput.good()) {
+			result = AssetLoadResult::OTHER;
+			return;
+		}
 
-void Asset::SaveToFile(std::string FileLocation) const {
-	std::ofstream FileOutput(FileLocation, std::ios::binary);
-	if (!FileOutput)
-		throw std::runtime_error("No file found at the specified location!");
+		result = AssetLoadResult::SUCCESS;
+	}
+	AssetSaveResult Asset::SaveToFile(const char* fileLocation) const {
+		std::ofstream fileOutput(fileLocation);
+		if (!fileOutput)
+			return AssetSaveResult::FILE_NOT_FOUND;
 
-	FileOutput.write((char*)this, sizeof(*this));
-	FileOutput.close();
+		fileOutput.write((char*)this, sizeof(*this));
+		fileOutput.close();
 
-	if (!FileOutput.good())
-		throw std::runtime_error("Error occured at writing time!");
+		if (!fileOutput.good())
+			return AssetSaveResult::OTHER;
+
+		return AssetSaveResult::SUCCESS;
+	}
+
+
+	const char* FromAssetLoadResultToString(AssetLoadResult loadResult) {
+		switch (loadResult) {
+		case AssetLoadResult::SUCCESS:
+			return "SUCCESS";
+		case AssetLoadResult::FILE_CORRUPTED:
+			return "FILE_CORRUPTED";
+		case AssetLoadResult::FILE_NOT_FOUND:
+			return "FILE_NOT_FOUND";
+		case AssetLoadResult::OTHER:
+			return "OTHER";
+		default:
+			return "Unknown error";
+		}
+	}
+	const char* FromAssetSaveResultToString(AssetSaveResult saveResult) {
+		switch (saveResult) {
+		case AssetSaveResult::SUCCESS:
+			return "SUCCESS";
+		case AssetSaveResult::FILE_NOT_FOUND:
+			return "FILE_NOT_FOUND";
+		case AssetSaveResult::OTHER:
+			return "OTHER";
+		default:
+			return "Unknown error";
+		}
+	}
 }

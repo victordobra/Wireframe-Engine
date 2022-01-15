@@ -1,8 +1,9 @@
 #pragma once
-namespace GameLoopManager {
-	void Start();
-	void Update();
-	void OnKeyDown(int KeyCode);
-	void OnKeyUp(int KeyCode);
-	void SetMousePos(int NewX, int NewY);
+
+namespace mge {
+	void GLMStart();
+	void GLMUpdate();
+	void GLMOnKeyDown(int keyCode);
+	void GLMOnKeyUp(int keyCode);
+	void GLMSetMousePos(size_t newX, size_t newY);
 }

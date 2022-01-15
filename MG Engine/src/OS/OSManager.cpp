@@ -11,64 +11,50 @@
 
 #pragma endregion
 
-#pragma region Variables
+namespace mge {
+#ifdef _WIN32
+	static size_t screenWidth = WindowsGetScreenWidth();
+	static size_t screenHeight = WindowsGetScreenHeight();
+	static size_t gameWidth = WindowsGetGameWidth();
+	static size_t gameHeight = WindowsGetGameHeight();
 
-static unsigned int& ScreenWidth = Window::GetScreenWidthRef();
-static unsigned int& ScreenHeight = Window::GetScreenHeightRef();
-static unsigned int& GameWidth = Window::GetGameWidthRef();
-static unsigned int& GameHeight = Window::GetGameHeightRef();
-unsigned long*& OSMScreenColours = Window::GetScreenColoursRef();
+	const char* OSMGetTitle() {
+		return WindowsGetTitle();
+	}
+	void OSMSetTitle(const char* newTitle) {
+		WindowsSetTitle(newTitle);
+	}
+	void OSMSetGameSize(size_t newWidth, size_t newHeight) {
+		WindowsSetGameSize(newWidth, newHeight);
+	}
+#endif
 
-#pragma endregion
+	void OSMOnStart() {
+		GLMStart();
+	}
+	void OSMOnUpdate() {
+		GLMUpdate();
+	}
+	void OSMOnButtonDown(int keyCode) {
+		GLMOnKeyDown(keyCode);
+	}
+	void OSMOnButtonUp(int keyCode) {
+		GLMOnKeyUp(keyCode);
+	}
+	void OSMSetMousePos(size_t newX, size_t newY) {
+		GLMSetMousePos(newX, newY);
+	}
 
-#pragma region Internal functions
-
-void OSManager::OnStart() {
-	GameLoopManager::Start();
+	size_t OSMGetScreenWidth() {
+		return screenWidth;
+	}
+	size_t OSMGetScreenHeight() {
+		return screenHeight;
+	}
+	size_t OSMGetGameWidth() {
+		return gameWidth;
+	}
+	size_t OSMGetGameHeight() {
+		return gameHeight;
+	}
 }
-void OSManager::OnUpdate() {
-	GameLoopManager::Update();
-}
-void OSManager::OnButtonDown(int KeyCode) {
-	GameLoopManager::OnKeyDown(KeyCode);
-}
-void OSManager::OnButtonUp(int KeyCode) {
-	GameLoopManager::OnKeyUp(KeyCode);
-}
-void OSManager::SetMousePos(int MovementX, int MovementY) {
-	GameLoopManager::SetMousePos(MovementX, MovementY);
-}
-
-#pragma endregion
-
-#pragma region External functions
-
-unsigned long*& OSManager::GetScreenColoursRef() {
-	return Window::GetScreenColoursRef();
-}
-
-unsigned int OSManager::GetScreenWidth() {
-	return ScreenWidth;
-}
-unsigned int OSManager::GetScreenHeight() {
-	return ScreenHeight;
-}
-unsigned int OSManager::GetGameWidth() {
-	return GameWidth;
-}
-unsigned int OSManager::GetGameHeight() {
-	return GameHeight;
-}
-
-const char* OSManager::GetTitle() {
-	return Window::GetWTitle();
-}
-void OSManager::SetTitle(const char* NewTitle) {
-	Window::SetWTitle(NewTitle);
-}
-
-void OSManager::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
-	Window::SetGameSize(NewWidth, NewHeight);
-}
-
-#pragma endregion

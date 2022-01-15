@@ -20,13 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Assets\Rendering\Face.cpp" />
-    <ClCompile Include="src\Rendering\RederingPipeline.cpp" />
     <ClCompile Include="src\Virtual\GameNode.cpp" />
     <ClCompile Include="src\Math\Matrix4x4.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\Assets\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Virtual\Asset.cpp" />
-    <ClCompile Include="src\Virtual\Object.cpp" />
     <ClCompile Include="src\Game Loop\GameLoopManager.cpp" />
     <ClCompile Include="src\Math\EngineMath.cpp" />
     <ClCompile Include="src\OS\OSManager.cpp" />
@@ -34,12 +32,8 @@
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Math\Vector2.cpp" />
     <ClCompile Include="src\Math\Vector4.cpp" />
-    <ClCompile Include="src\Vulkan\SwapChain.cpp" />
-    <ClCompile Include="src\Vulkan\VulkanManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Rendering\RenderingPipeline.h" />
-    <ClInclude Include="src\Rendering\RenderingPipelineInternal.h" />
     <ClInclude Include="src\Virtual\GameNode.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
@@ -48,7 +42,6 @@
     <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\OS\Windows\WindowsInternal.h" />
     <ClInclude Include="src\Virtual\Asset.h" />
-    <ClInclude Include="src\Virtual\Object.h" />
     <ClInclude Include="src\Game Loop\GameLoopManager.h" />
     <ClInclude Include="src\Game Loop\GameLoopManagerInternal.h" />
     <ClInclude Include="src\Math\EngineMath.h" />
@@ -56,53 +49,7 @@
     <ClInclude Include="src\OS\OSManagerInternal.h" />
     <ClInclude Include="src\OS\Windows\Windows.h" />
     <ClInclude Include="src\Math\Vector2.h" />
-    <ClInclude Include="src\Vulkan\SwapChain.h" />
-    <ClInclude Include="src\Vulkan\SwapChainInternal.h" />
-    <ClInclude Include="src\Vulkan\VulkanInclude.h" />
-    <ClInclude Include="src\Vulkan\VulkanManager.h" />
-    <ClInclude Include="src\Vulkan\VulkanManagerInternal.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="src\Rendering\TestVertex.vert">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building %(Filename)%(Extension)</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building %(Filename)%(Extension)</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building %(Filename)%(Extension)</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building %(Filename)%(Extension)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="src\Rendering\TestFragment.frag">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslangValidator.exe -V "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building %(Filename)%(Extension)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building %(Filename)%(Extension)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building %(Filename)%(Extension)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building %(Filename)%(Extension)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-    </CustomBuild>
+    <ClInclude Include="src\Utility\vector.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -176,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
     </ClCompile>
@@ -194,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
     </ClCompile>
@@ -212,7 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
     </ClCompile>
@@ -230,7 +177,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
     </ClCompile>

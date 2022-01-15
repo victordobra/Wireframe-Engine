@@ -3,143 +3,50 @@
 #include "Vector4.h"
 #include "EngineMath.h"
 
-Vector2::Vector2() : X(0), Y(0) { }
-Vector2::Vector2(float X, float Y) : X(X), Y(Y) { }
-
-void Vector2::Normalize() {
-	float SqrMag = SqrMagnitude();
-	if (SqrMag == 1 || SqrMag == 0)
-		return;
-	float Mag = Math::Sqrt(SqrMag);
-	this->X /= Mag;
-	this->Y /= Mag;
-}
-Vector2 Vector2::Normalized() const {
-	float SqrMag = SqrMagnitude();
-	if (SqrMag == 1 || SqrMag == 0)
-		return *this;
-	Vector2 V;
-	float Mag = Math::Sqrt(SqrMag);
-	V.X /= Mag;
-	V.Y /= Mag;
-	return V;
-}
-float Vector2::Magnitude() const {
-	return Math::Sqrt(X * X + Y * Y);
-}
-float Vector2::SqrMagnitude() const {
-	return X * X + Y * Y;
-}
-void Vector2::ClampMagnitude(float Min, float Max) {
-	float SqrMag = SqrMagnitude();
-
-	if (SqrMag < Min * Min) {
-		float Mag = Math::Sqrt(SqrMag);
-		float Ratio = Min / Mag;
-		this->X *= Ratio;
-		this->Y *= Ratio;
+namespace mge {
+	void Vector2::Normalize() {
+		float sqrMag = SqrMagnitude();
+		if (sqrMag == 1 || sqrMag == 0)
+			return;
+		float mag = Sqrt(sqrMag);
+		x /= mag;
+		y /= mag;
 	}
-	else if (SqrMag > Max * Max) {
-		float Mag = Math::Sqrt(SqrMag);
-		float Ratio = Max / Mag;
-		this->X *= Ratio;
-		this->Y *= Ratio;
+	Vector2 Vector2::Normalized() const {
+		float sqrMag = SqrMagnitude();
+		if (sqrMag == 1 || sqrMag == 0)
+			return *this;
+		Vector2 vec;
+		float mag = Sqrt(sqrMag);
+		vec.x /= mag;
+		vec.y /= mag;
+		return vec;
 	}
-}
+	void Vector2::ClampMagnitude(float min, float max) {
+		float sqrMag = SqrMagnitude();
 
-Vector2 Vector2::operator+(const Vector2& V) const {
-	return { X + V.X, Y + V.Y };
-}
-Vector2 Vector2::operator+(Vector2&& V) const {
-	return { X + V.X, Y + V.Y };
-}
-Vector2 Vector2::operator-(const Vector2& V) const {
-	return { X - V.X, Y - V.Y };
-}
-Vector2 Vector2::operator-(Vector2&& V) const {
-	return { X - V.X, Y - V.Y };
-}
-Vector2 Vector2::operator-() const {
-	return { -X, -Y };
-}
-Vector2 Vector2::operator*(float N) const {
-	return { X * N, Y * N};
-}
-Vector2 Vector2::operator/(float N) const {
-	return { X / N, Y / N };
-}
+		if (sqrMag < min * min) {
+			float mag = Sqrt(sqrMag);
+			float ratio = min / mag;
+			x *= ratio;
+			y *= ratio;
+		} else if (sqrMag > max * max) {
+			float mag = Sqrt(sqrMag);
+			float ratio = max / mag;
+			x *= ratio;
+			y *= ratio;
+		}
+	}
 
-Vector2& Vector2::operator+=(const Vector2& V) {
-	X += V.X; Y += V.Y;
-	return *this;
-}
-Vector2& Vector2::operator+=(Vector2&& V) noexcept {
-	X += V.X; Y += V.Y;
-	return *this;
-}
-Vector2& Vector2::operator-=(const Vector2& V) {
-	X -= V.X; Y -= V.Y;
-	return *this;
-}
-Vector2& Vector2::operator-=(Vector2&& V) noexcept {
-	X -= V.X; Y -= V.Y;
-	return *this;
-}
-Vector2& Vector2::operator*=(float X) {
-	X *= X; Y *= X;
-	return *this;
-}
-Vector2& Vector2::operator/=(float X) {
-	X /= X; Y /= X;
-	return *this;
-}
-
-bool Vector2::operator==(const Vector2& V) const {
-	return this->X == V.X && this->Y == V.Y;
-}
-bool Vector2::operator==(Vector2&& V) const {
-	return this->X == V.X && this->Y == V.Y;
-}
-bool Vector2::operator!=(const Vector2& V) const {
-	return this->X != V.X || this->Y != V.Y;
-}
-bool Vector2::operator!=(Vector2&& V) const {
-	return this->X != V.X || this->Y != V.Y;
-}
-
-Vector2::Vector2(const Vector3& V) : X(V.X), Y(V.Y) { }
-Vector2::Vector2(Vector3&& V) : X(V.X), Y(V.Y) { }
-Vector2::Vector2(const Vector4& V) : X(V.X), Y(V.Y) { }
-Vector2::Vector2(Vector4&& V) : X(V.X), Y(V.Y) { }
-
-float Vector2::Dot(const Vector2& X, const Vector2& Y) {
-	return X.X * Y.X + Y.X * Y.Y;
-}
-float Vector2::Dot(Vector2&& X, const Vector2& Y) {
-	return X.X * Y.X + Y.X * Y.Y;
-}
-float Vector2::Dot(const Vector2& X, Vector2&& Y) {
-	return X.X * Y.X + Y.X * Y.Y;
-}
-float Vector2::Dot(Vector2&& X, Vector2&& Y) {
-	return X.X * Y.X + Y.X * Y.Y;
-}
-Vector2 Vector2::Lerp(const Vector2& A, const Vector2& B, float T) {
-	return A + (B - A) * T;
-}
-Vector2 Vector2::Lerp(Vector2&& A, const Vector2& B, float T) {
-	return A + (B - A) * T;
-}
-Vector2 Vector2::Lerp(const Vector2& A, Vector2&& B, float T) {
-	return A + (B - A) * T;
-}
-Vector2 Vector2::Lerp(Vector2&& A, Vector2&& B, float T) {
-	return A + (B - A) * T;
-}
-
-std::string Vector2::ToString() const {
-	return "Vector2(" + std::to_string(X) + ", " + std::to_string(Y) + ")";
-}
-size_t Vector2::GetHashCode() const {
-	return typeid(Vector2).hash_code();
+	Vector2::Vector2(const Vector3& other) : x(other.x), y(other.y) { }
+	Vector2::Vector2(Vector3&& other) : x(other.x), y(other.y) { }
+	Vector2::Vector2(const Vector4& other) : x(other.x), y(other.y) { }
+	Vector2::Vector2(Vector4&& other) : x(other.x), y(other.y) { }
+	
+	float Vector2::Dot(Vector2 x, Vector2 y) {
+		return x.x * y.x + y.x * y.y;
+	}
+	Vector2 Vector2::Lerp(Vector2 a, Vector2 b, float t) {
+		return a + (b - a) * t;
+	}
 }

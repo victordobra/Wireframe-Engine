@@ -1,3 +1,4 @@
+#include <string>
 #include "GameNode.h"
 
 GameNode** GameNode::GameNodes = new GameNode*[0];

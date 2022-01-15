@@ -3,57 +3,66 @@
 #include "Vector3.h"
 #include "Vector2.h"
 
-class Face : public Object {
-public:
-	size_t* PositionIndices { nullptr };
-	size_t* UVCoordinateIndices { nullptr };
-	size_t NormalIndex;
-	size_t VertexCount;
+namespace mge {
+	class Face {
+	public:
+		size_t* positionIndices{ nullptr };
+		size_t* uvCoordinateIndices{ nullptr };
+		size_t normalIndex{};
+		size_t vertexCount{};
 
-	Face() = default;
-	Face(const Face& F);
-	Face(Face&& F) noexcept;
-	Face(size_t VertexCount);
+		Face() = default;
+		Face(const Face& other) : vertexCount(other.vertexCount), positionIndices(new size_t[other.vertexCount]), uvCoordinateIndices(new size_t[other.vertexCount]), normalIndex(other.normalIndex) {
+			memcpy(positionIndices, other.positionIndices, vertexCount * sizeof(size_t));
+			memcpy(uvCoordinateIndices, other.uvCoordinateIndices, vertexCount * sizeof(size_t));
+		}
+		Face(Face&& other) noexcept : vertexCount(other.vertexCount), positionIndices(other.positionIndices), uvCoordinateIndices(other.uvCoordinateIndices), normalIndex(other.normalIndex) {
+			other.positionIndices = nullptr;
+			other.uvCoordinateIndices = nullptr;
+		}
+		explicit Face(size_t vertexCount) : vertexCount(vertexCount), positionIndices(new size_t[vertexCount]), uvCoordinateIndices(new size_t[vertexCount]), normalIndex(0) { }
 
-	Face& operator=(const Face& F);
-	Face& operator=(Face&& F) noexcept;
+		Face& operator=(const Face& other);
+		Face& operator=(Face&& other) noexcept;
 
-	bool operator==(const Face& M) const = delete;
-	bool operator==(Face&& M) const = delete;
-	bool operator!=(const Face& M) const = delete;
-	bool operator!=(Face&& M) const = delete;
+		bool operator==(const Face&) const = delete;
+		bool operator==(Face&&) const = delete;
+		bool operator!=(const Face&) const = delete;
+		bool operator!=(Face&&) const = delete;
 
-	std::string ToString() const override;
-	size_t GetHashCode() const override;
+		~Face() {
+			delete[] positionIndices;
+			delete[] uvCoordinateIndices;
+		}
+	};
 
-	~Face();
-};
+	class Mesh : public Asset {
+	public:
+		Vector3* positions{ nullptr }; size_t positionC{};
+		Vector2* uvCoordinates{ nullptr }; size_t uvCoordinateC{};
+		Vector3* normals{ nullptr }; size_t normalC{};
+		Face* faces{ nullptr }; size_t faceC{};
 
-class Mesh : public Asset {
-public:
-	Vector3* Positions { nullptr }; size_t PositionC;
-	Vector2* UVCoordinates { nullptr }; size_t UVCoordinateC;
-	Vector3* Normals { nullptr }; size_t NormalC;
-	Face* Faces { nullptr }; size_t FaceC;
+		Mesh() = default;
+		Mesh(const Mesh& other);
+		Mesh(Mesh&& other) noexcept;
+		Mesh(const char* fileLocation, AssetLoadResult& result);
 
-	Mesh() = default;
-	Mesh(const Mesh& M);
-	Mesh(Mesh&& M) noexcept;
-	Mesh(std::string FileLocation);
+		Mesh& operator=(const Mesh& other);
+		Mesh& operator=(Mesh&& other) noexcept;
 
-	Mesh& operator=(const Mesh& F);
-	Mesh& operator=(Mesh&& F) noexcept;
+		bool operator==(const Mesh&) const = delete;
+		bool operator==(Mesh&&) const = delete;
+		bool operator!=(const Mesh&) const = delete;
+		bool operator!=(Mesh&&) const = delete;
 
-	bool operator==(const Mesh& M) const = delete;
-	bool operator==(Mesh&& M) const = delete;
-	bool operator!=(const Mesh& M) const = delete;
-	bool operator!=(Mesh&& M) const = delete;
+		AssetSaveResult SaveToFile(const char* fileLocation) const override;
 
-	void SaveToFile(std::string FileLocation) const override;
-	static Mesh* FromObjFile(std::string FileLocation);
-
-	std::string ToString() const override;
-	size_t GetHashCode() const override;
-
-	~Mesh();
-};
+		~Mesh() {
+			delete[] positions;
+			delete[] uvCoordinates;
+			delete[] normals;
+			delete[] faces;
+		}
+	};
+}

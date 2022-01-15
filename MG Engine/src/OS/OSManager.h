@@ -1,17 +1,15 @@
 #pragma once
 #include<string>
 
-namespace OSManager {
-	unsigned long*& GetScreenColoursRef();
+namespace mge {
+	size_t OSMGetScreenWidth();
+	size_t OSMGetScreenHeight();
+	size_t OSMGetGameWidth();
+	size_t OSMGetGameHeight();
 
-	unsigned int GetScreenWidth();
-	unsigned int GetScreenHeight();
-	unsigned int GetGameWidth();
-	unsigned int GetGameHeight();
+	const char* OSMGetTitle();
+	void OSMSetTitle(const char* newTitle);
 
-	const char* GetTitle();
-	void SetTitle(const char* NewTitle);
-
-	void SetGameSize(unsigned int NewWidth, unsigned int NewHeight);
+	void OSMSetGameSize(size_t newWidth, size_t newHeight);
 }
 

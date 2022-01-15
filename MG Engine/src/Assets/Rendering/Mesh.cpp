@@ -1,247 +1,211 @@
 #include "Mesh.h"
+#include "vector.h"
 #include <fstream>
 #include <sstream>
 #include <vector>
 
-Mesh::Mesh(const Mesh& M) : Positions(new Vector3[M.PositionC]), PositionC(M.PositionC), 
-							UVCoordinates(new Vector2[M.UVCoordinateC]), UVCoordinateC(M.UVCoordinateC), 
-							Normals(new Vector3[M.NormalC]), NormalC(M.NormalC),
-							Faces(new Face[M.FaceC]), FaceC(M.FaceC) {
-
-	memcpy(Positions, M.Positions, PositionC * sizeof(Vector3));
-	memcpy(UVCoordinates, M.UVCoordinates, UVCoordinateC * sizeof(Vector2));
-	memcpy(Normals, M.Normals, NormalC * sizeof(Vector3));
-	for (size_t i = 0; i < FaceC; i++)
-		Faces[i] = M.Faces[i];
-}
-Mesh::Mesh(Mesh&& M) noexcept : Positions(M.Positions), PositionC(M.PositionC), 
-								UVCoordinates(M.UVCoordinates), UVCoordinateC(M.UVCoordinateC), 
-								Normals(M.Normals), NormalC(M.PositionC),
-								Faces(M.Faces), FaceC(M.FaceC) { 
-
-	M.Positions = nullptr; 
-	M.UVCoordinates = nullptr;
-	M.Normals = nullptr;
-}
-Mesh::Mesh(std::string FileLocation) {
-	std::ifstream FileInput(FileLocation, std::ios::binary);
-
-	if (!FileInput)
-		throw std::runtime_error("No file found at the specified location!");
-
-	FileInput.read((char*)(&this->PositionC), sizeof(size_t));
-	FileInput.read((char*)(&this->UVCoordinateC), sizeof(size_t));
-	FileInput.read((char*)(&this->NormalC), sizeof(size_t));
-
-	this->Positions = new Vector3[this->PositionC];
-	this->UVCoordinates = new Vector2[this->UVCoordinateC];
-	this->Normals = new Vector3[this->NormalC];
-
-	FileInput.read((char*)this->Positions, (std::streamsize)this->PositionC * sizeof(Vector3));
-	FileInput.read((char*)this->UVCoordinates, (std::streamsize)this->UVCoordinateC * sizeof(Vector2));
-	FileInput.read((char*)this->Normals, (std::streamsize)this->NormalC * sizeof(Vector3));
-
-	FileInput.read((char*)(&this->FaceC), sizeof(size_t));
-	this->Faces = new Face[this->FaceC];
-
-	for (size_t i = 0; i < this->FaceC; i++) {
-		FileInput.read((char*)(&this->Faces[i].VertexCount), sizeof(size_t));
-
-		this->Faces[i].PositionIndices = (size_t*)malloc(this->Faces[i].VertexCount * sizeof(size_t));
-		this->Faces[i].UVCoordinateIndices = (size_t*)malloc(this->Faces[i].VertexCount * sizeof(size_t));
-
-		FileInput.read((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
-		FileInput.read((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
-		FileInput.read((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(size_t));
+namespace mge {
+	Mesh::Mesh(const Mesh& other) : positions(new Vector3[other.positionC]), positionC(other.positionC), uvCoordinates(new Vector2[other.uvCoordinateC]), uvCoordinateC(other.uvCoordinateC), normals(new Vector3[other.normalC]), normalC(other.normalC), faces(new Face[other.faceC]), faceC(other.faceC) {
+		memcpy(positions, other.positions, positionC * sizeof(Vector3));
+		memcpy(uvCoordinates, other.uvCoordinates, uvCoordinateC * sizeof(Vector2));
+		memcpy(normals, other.normals, normalC * sizeof(Vector3));
+		for (size_t i = 0; i < faceC; i++)
+			faces[i] = other.faces[i];
 	}
-
-	if (!FileInput.good())
-		throw std::runtime_error("Error occured at reading time!");
-
-	FileInput.close();
-}
-
-void Mesh::SaveToFile(std::string FileLocation) const {
-	std::ofstream FileOutput(FileLocation, std::ios::binary);
-
-	if (!FileOutput)
-		throw std::runtime_error("No file found at the specified location!");
-
-	FileOutput.write((char*)(&this->PositionC), sizeof(size_t));
-	FileOutput.write((char*)(&this->UVCoordinateC), sizeof(size_t));
-	FileOutput.write((char*)(&this->NormalC), sizeof(size_t));
-
-	FileOutput.write((char*)this->Positions, (std::streamsize)this->PositionC * sizeof(Vector3));
-	FileOutput.write((char*)this->UVCoordinates, (std::streamsize)this->UVCoordinateC * sizeof(Vector2));
-	FileOutput.write((char*)this->Normals, (std::streamsize)this->NormalC * sizeof(Vector3));
-
-	FileOutput.write((char*)(&this->FaceC), sizeof(size_t));
-
-	for (size_t i = 0; i < this->FaceC; i++) {
-		FileOutput.write((char*)(&this->Faces[i].VertexCount), sizeof(size_t));
-
-		FileOutput.write((char*)this->Faces[i].PositionIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
-		FileOutput.write((char*)this->Faces[i].UVCoordinateIndices, (std::streamsize)this->Faces[i].VertexCount * sizeof(size_t));
-		FileOutput.write((char*)(&this->Faces[i].NormalIndex), (std::streamsize)sizeof(size_t));
+	Mesh::Mesh(Mesh&& other) noexcept : positions(other.positions), positionC(other.positionC), uvCoordinates(other.uvCoordinates), uvCoordinateC(other.uvCoordinateC), normals(other.normals), normalC(other.positionC), faces(other.faces), faceC(other.faceC) {
+		other.positions = nullptr;
+		other.uvCoordinates = nullptr;
+		other.normals = nullptr;
 	}
+	Mesh::Mesh(const char* fileLocation, AssetLoadResult& result) {
+		std::ifstream fileInput(fileLocation);
 
-	if (!FileOutput.good())
-		throw std::runtime_error("Error occured at writing time!");
+		if (!fileInput) {
+			result = AssetLoadResult::FILE_NOT_FOUND;
+			return;
+		}	
 
-	FileOutput.close();
-}
+		vector<Vector3> positionsV;
+		vector<Vector2> uvCoordinatesV;
+		vector<Vector3> normalsV;
+		vector<Face> facesV;
 
-Mesh* Mesh::FromObjFile(std::string FileLocation) {
-	std::ifstream FileInput(FileLocation);
+		std::string line;
+		while (!fileInput.eof()) {
+			std::getline(fileInput, line);
+			if (line[0] == '#')
+				continue;
 
-	if (!FileInput)
-		throw std::runtime_error("No file found at the specified location!");
+			std::stringstream sStream(line);
 
-	std::vector<Vector3> PositionsV;
-	std::vector<Vector2> UVCoordinatesV;
-	std::vector<Vector3> NormalsV;
-	std::vector<Face> FacesV;
+			std::string init;
+			sStream >> init;
 
-	std::string CLine;
-	while (!FileInput.eof()) {
-		std::getline(FileInput, CLine);
-		if (CLine[0] == '#')
-			continue;
+			if (init == "v") {
+				//The curent line is a vector position
+				Vector3 vec;
+				sStream >> vec.x >> vec.y >> vec.z;
+				positionsV.push_back(vec);
+			} else if (init == "vt") {
+				//The curent line is a vector UV position
+				Vector2 vec;
+				sStream >> vec.x >> vec.y;
+				uvCoordinatesV.push_back(vec);
+			} else if (init == "vn") {
+				//The curent line is a vector normal
+				Vector3 vec;
+				sStream >> vec.x >> vec.y >> vec.z;
+				normalsV.push_back(vec);
+			} else if (init == "f") {
+				//The current line is a face
+				vector<size_t> posIndV;
+				vector<size_t> uvcIndV;
+				size_t norInd = 0;
 
-		std::stringstream SStream(CLine);
-		
-		std::string Init;
-		SStream >> Init;
-
-		if (Init == "v") {
-			Vector3 V;
-			SStream >> V.X >> V.Y >> V.Z;
-			PositionsV.push_back(V);
-		} else if (Init == "vt") {
-			Vector2 V;
-			SStream >> V.X >> V.Y;
-			UVCoordinatesV.push_back(V);
-		} else if (Init == "vn") {
-			Vector3 V;
-			SStream >> V.X >> V.Y >> V.Z;
-			NormalsV.push_back(V);
-		} else if (Init == "f") {
-			std::vector<size_t> PosIndV;
-			std::vector<size_t> UVCIndV;
-			int NorInd = 0;
-
-			while (!SStream.eof()) {
-				std::string TempString;
-				SStream >> TempString;
-				std::stringstream TempStream(TempString);
-				std::string PIndS, UVCIndS, NIndS;
-				std::getline(TempStream, PIndS, '/');
-				std::getline(TempStream, UVCIndS, '/');
-				std::getline(TempStream, NIndS, ' ');
+				while (!sStream.eof()) {
+					//Read every vertex and set its indices
+					std::string vertString;
+					sStream >> vertString;
+					std::stringstream vertStream(vertString);
+					std::string pIndS, uvcIndS, nIndS;
+					std::getline(vertStream, pIndS, '/');
+					std::getline(vertStream, uvcIndS, '/');
+					std::getline(vertStream, nIndS, ' ');
 
 #ifdef _WIN64
-				PosIndV.push_back(std::stoull(PIndS) - 1);
-				UVCIndV.push_back(std::stoull(UVCIndS) - 1);
+					posIndV.push_back(std::stoull(pIndS) - 1);
+					uvcIndV.push_back(std::stoull(uvcIndS) - 1);
+					norInd = std::stoull(nIndS) - 1;
 #else
-				PosIndV.push_back(std::stoul(PIndS) - 1);
-				UVCIndV.push_back(std::stoul(UVCIndS) - 1);
+					posIndV.push_back(std::stoul(pIndS) - 1);
+					uvcIndV.push_back(std::stoul(uvcIndS) - 1);
+					norInd = std::stoul(nIndS) - 1;
 #endif
-				NorInd = std::stoi(NIndS) - 1;
+				}
+
+				//Copy everything over
+				Face face(posIndV.size());
+				face.normalIndex = norInd;
+
+				memcpy(face.positionIndices, posIndV.data(), sizeof(size_t) * face.vertexCount);
+				memcpy(face.uvCoordinateIndices, uvcIndV.data(), sizeof(size_t) * face.vertexCount);
+
+				facesV.push_back(face);
 			}
-
-			Face F(PosIndV.size());
-			F.NormalIndex = NorInd;
-
-			memcpy(F.PositionIndices, PosIndV.data(), sizeof(size_t) * F.VertexCount);
-			memcpy(F.UVCoordinateIndices, UVCIndV.data(), sizeof(size_t) * F.VertexCount);
-
-			FacesV.push_back(F);
 		}
+
+		if (!fileInput.good()) {
+			result = AssetLoadResult::OTHER;
+			return;
+		}
+		fileInput.close();
+
+		//Copy everything from the vectors into the mesh
+		positionC = positionsV.size();
+		uvCoordinateC = uvCoordinatesV.size();
+		normalC = normalsV.size();
+		faceC = facesV.size();
+
+		positions = new Vector3[positionC];
+		uvCoordinates = new Vector2[uvCoordinateC];
+		normals = new Vector3[normalC];
+		faces = new Face[faceC];
+
+		memcpy(positions, positionsV.data(), sizeof(Vector3) * positionC);
+		memcpy(uvCoordinates, uvCoordinatesV.data(), sizeof(Vector2) * uvCoordinateC);
+		memcpy(normals, normalsV.data(), sizeof(Vector3) * normalC);
+
+		for (size_t i = 0; i < faceC; i++)
+			faces[i] = facesV[i];
+
+		result = AssetLoadResult::SUCCESS;
 	}
 
-	Mesh* M = new Mesh();
-	M->PositionC = PositionsV.size();
-	M->UVCoordinateC = UVCoordinatesV.size();
-	M->NormalC = NormalsV.size();
-	M->FaceC = FacesV.size();
+	Mesh& Mesh::operator=(const Mesh& other) {
+		if (this == &other)
+			return *this;
 
-	M->Positions = new Vector3[M->PositionC];
-	M->UVCoordinates = new Vector2[M->UVCoordinateC];
-	M->Normals = new Vector3[M->NormalC];
-	M->Faces = new Face[M->FaceC];
+		//Delete the old vectors
+		delete[] positions;
+		delete[] uvCoordinates;
+		delete[] normals;
+		delete[] faces;
 
-	memcpy(M->Positions, PositionsV.data(), sizeof(Vector3) * M->PositionC);
-	memcpy(M->UVCoordinates, UVCoordinatesV.data(), sizeof(Vector2) * M->UVCoordinateC);
-	memcpy(M->Normals, NormalsV.data(), sizeof(Vector3) * M->NormalC);
+		//Move over the new variables
+		positionC = other.positionC;
+		uvCoordinateC = other.uvCoordinateC;
+		normalC = other.normalC;
+		faceC = other.faceC;
 
-	for (size_t i = 0; i < M->FaceC; i++)
-		M->Faces[i] = FacesV[i];
+		positions = new Vector3[positionC];
+		uvCoordinates = new Vector2[uvCoordinateC];
+		normals = new Vector3[normalC];
+		faces = new Face[faceC];
 
-	return M;
-}
+		//Copy all of the heap allocated vectors
+		memcpy(positions, other.positions, sizeof(Vector3) * positionC);
+		memcpy(uvCoordinates, other.uvCoordinates, sizeof(Vector2) * uvCoordinateC);
+		memcpy(normals, other.normals, sizeof(Vector3) * normalC);
 
-Mesh& Mesh::operator=(const Mesh& M) {
-	if (this == &M)
+		for (size_t i = 0; i < faceC; i++)
+			faces[i] = other.faces[i];
+
 		return *this;
+	}
+	Mesh& Mesh::operator=(Mesh&& other) noexcept {
+		delete[] positions;
+		delete[] uvCoordinates;
+		delete[] normals;
+		delete[] faces;
 
-	delete[] Positions;
-	delete[] UVCoordinates;
-	delete[] Normals;
-	delete[] Faces;
+		positionC = other.positionC;
+		uvCoordinateC = other.uvCoordinateC;
+		normalC = other.normalC;
+		faceC = other.faceC;
 
-	PositionC = M.PositionC;
-	UVCoordinateC = M.UVCoordinateC;
-	NormalC = M.NormalC;
-	FaceC = M.FaceC;
+		positions = other.positions;
+		uvCoordinates = other.uvCoordinates;
+		normals = other.normals;
+		faces = other.faces;
 
-	Positions = new Vector3[PositionC];
-	UVCoordinates = new Vector2[UVCoordinateC];
-	Normals = new Vector3[NormalC];
-	Faces = new Face[FaceC];
+		other.positions = nullptr;
+		other.uvCoordinates = nullptr;
+		other.normals = nullptr;
+		other.faces = nullptr;
 
-	memcpy(Positions, M.Positions, sizeof(Vector3) * PositionC);
-	memcpy(UVCoordinates, M.UVCoordinates, sizeof(Vector2) * UVCoordinateC);
-	memcpy(Normals, M.Normals, sizeof(Vector3) * NormalC);
+		return *this;
+	}
 
-	for (size_t i = 0; i < FaceC; i++)
-		Faces[i] = M.Faces[i];
+	AssetSaveResult Mesh::SaveToFile(const char* fileLocation) const {
+		std::ofstream fileOutput(fileLocation, std::ios::binary);
 
-	return *this;
-}
-Mesh& Mesh::operator=(Mesh&& M) noexcept {
-	delete[] Positions;
-	delete[] UVCoordinates;
-	delete[] Normals;
-	delete[] Faces;
+		if (!fileOutput)
+			return AssetSaveResult::FILE_NOT_FOUND;
 
-	PositionC = M.PositionC;
-	UVCoordinateC = M.UVCoordinateC;
-	NormalC = M.NormalC;
-	FaceC = M.FaceC;
+		fileOutput << "#Saved with MG Engine's epic swag weed edition obj file saver which is very epic swag weed\n";
 
-	Positions = M.Positions;
-	UVCoordinates = M.UVCoordinates;
-	Normals = M.Normals;
-	Faces = M.Faces;
+		//Output every position to the file
+		for (size_t i = 0; i < positionC; i++)
+			fileOutput << "v " << positions[i].x << " " << positions[i].y << positions[i].z << "\n";
+		//Output every UV coordinate to the file
+		for (size_t i = 0; i < uvCoordinateC; i++)
+			fileOutput << "vt " << uvCoordinates[i].x << " " << uvCoordinates[i].y << "\n";
+		//Output every normal to the file
+		for (size_t i = 0; i < normalC; i++)
+			fileOutput << "vn " << normals[i].x << " " << normals[i].y << normals[i].z << "\n";
+		//Output every face to the file
+		for (size_t i = 0; i < faceC; i++) {
+			fileOutput << "f ";
+			for (size_t j = 0; j < faces[i].vertexCount; j++)
+				fileOutput << (faces[i].positionIndices[j] + 1) << "/" << (faces[i].uvCoordinateIndices + 1) << "/" << (faces[i].normalIndex + 1) << " ";
+			fileOutput << "\n";
+		}
 
-	M.Positions = nullptr;
-	M.UVCoordinates = nullptr;
-	M.Normals = nullptr;
-	M.Faces = nullptr;
+		if (!fileOutput.good())
+			return AssetSaveResult::OTHER;
 
-	return *this;
-}
+		fileOutput.close();
 
-std::string Mesh::ToString() const {
-	return std::string("Mesh(") + std::to_string(FaceC) + " faces)";
-}
-size_t Mesh::GetHashCode() const {
-	return typeid(Mesh).hash_code();
-}
-
-Mesh::~Mesh() {
-	delete[] Positions;
-	delete[] UVCoordinates;
-	delete[] Normals;
-	delete[] Faces;
+		return AssetSaveResult::SUCCESS;
+	}
 }

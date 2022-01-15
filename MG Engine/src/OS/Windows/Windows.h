@@ -1,12 +1,11 @@
 #pragma once
 
-namespace Window {
-	unsigned long*& GetScreenColoursRef();
-	unsigned int& GetScreenWidthRef();
-	unsigned int& GetScreenHeightRef();
-	unsigned int& GetGameWidthRef();
-	unsigned int& GetGameHeightRef();
-	void SetGameSize(unsigned int NewWidth, unsigned int NewHeight);
-	char* GetWTitle();
-	void SetWTitle(const char* NewString);
+namespace mge {
+	size_t WindowsGetScreenWidth();
+	size_t WindowsGetScreenHeight();
+	size_t WindowsGetGameWidth();
+	size_t WindowsGetGameHeight();
+	void WindowsSetGameSize(size_t newWidth, size_t newHeight);
+	char* WindowsGetTitle();
+	void WindowsSetTitle(const char* newString);
 }

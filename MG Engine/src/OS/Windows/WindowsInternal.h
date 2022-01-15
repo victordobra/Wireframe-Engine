@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 
-namespace Window {
-	HWND GetWindowHWND();
-	HINSTANCE GetWindowHInstance();
+namespace mge {
+	HWND WindowsGetWindowHWND();
+	HINSTANCE WindowsGetWindowHInstance();
 }

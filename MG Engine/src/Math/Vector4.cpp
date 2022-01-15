@@ -1,156 +1,61 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
-#include "Quaternion.h"
 #include "EngineMath.h"
 
-Vector4::Vector4() : X(0), Y(0), Z(0), W(0) { }
-Vector4::Vector4(float X, float Y, float Z, float W) : X(X), Y(Y), Z(Z), W(W) { }
-
-void Vector4::Normalize() {
-	float SqrMag = SqrMagnitude();
-	if (SqrMag == 1 || SqrMag == 0)
-		return;
-	float Mag = Math::Sqrt(SqrMag);
-	this->X /= Mag;
-	this->Y /= Mag;
-	this->Z /= Mag;
-	this->W /= Mag;
-}
-Vector4 Vector4::Normalized() const {
-	float SqrMag = SqrMagnitude();
-	if (SqrMag == 1 || SqrMag == 0)
-		return *this;
-	Vector4 V;
-	float Mag = Math::Sqrt(SqrMag);
-	V.X /= Mag;
-	V.Y /= Mag;
-	V.Z /= Mag;
-	V.W /= Mag;
-	return V;
-}
-float Vector4::Magnitude() const {
-	return Math::Sqrt(X * X + Y * Y + Z * Z + W * W);
-}
-float Vector4::SqrMagnitude() const {
-	return X * X + Y * Y + Z * Z + W * W;
-}
-void Vector4::ClampMagnitude(float Min, float Max) {
-	float SqrMag = SqrMagnitude();
-
-	if (SqrMag < Min * Min) {
-		float Mag = Math::Sqrt(SqrMag);
-		float Ratio = Min / Mag;
-		this->X *= Ratio;
-		this->Y *= Ratio;
-		this->Z *= Ratio;
-		this->W *= Ratio;
+namespace mge {
+	void Vector4::Normalize() {
+		float sqrMag = SqrMagnitude();
+		if (sqrMag == 1 || sqrMag == 0)
+			return;
+		float mag = Sqrt(sqrMag);
+		x /= mag;
+		y /= mag;
+		z /= mag;
+		w /= mag;
 	}
-	else if (SqrMag > Max * Max) {
-		float Mag = Math::Sqrt(SqrMag);
-		float Ratio = Max / Mag;
-		this->X *= Ratio;
-		this->Y *= Ratio;
-		this->Z *= Ratio;
-		this->W *= Ratio;
+	Vector4 Vector4::Normalized() const {
+		float sqrMag = SqrMagnitude();
+		if (sqrMag == 1 || sqrMag == 0)
+			return *this;
+		Vector4 vec;
+		float mag = Sqrt(sqrMag);
+		vec.x /= mag;
+		vec.y /= mag;
+		vec.z /= mag;
+		vec.w /= mag;
+		return vec;
 	}
-}
+	void Vector4::ClampMagnitude(float min, float max) {
+		float sqrMag = SqrMagnitude();
 
-Vector4 Vector4::operator+(const Vector4& V) const {
-	return { X + V.X, Y + V.Y, Z + V.Z, W + V.W };
-}
-Vector4 Vector4::operator+(Vector4&& V) const {
-	return { X + V.X, Y + V.Y, Z + V.Z, W + V.W };
-}
-Vector4 Vector4::operator-(const Vector4& V) const {
-	return { X - V.X, Y - V.Y, Z - V.Z, W - V.W };
-}
-Vector4 Vector4::operator-(Vector4&& V) const {
-	return { X - V.X, Y - V.Y, Z - V.Z, W - V.W };
-}
-Vector4 Vector4::operator-() const {
-	return { -X, -Y, -Z, -W };
-}
-Vector4 Vector4::operator*(float N) const {
-	return { X * N, Y * N, Z * N, W * N };
-}
-Vector4 Vector4::operator/(float N) const {
-	return { X / N, Y / N, Z / N, W / N };
-}
+		if (sqrMag < min * min) {
+			float mag = Sqrt(sqrMag);
+			float ratio = min / mag;
+			x *= ratio;
+			y *= ratio;
+			z *= ratio;
+			w *= ratio;
+		}
+		else if (sqrMag > max * max) {
+			float mag = Sqrt(sqrMag);
+			float ratio = max / mag;
+			x *= ratio;
+			y *= ratio;
+			z *= ratio;
+			w *= ratio;
+		}
+	}
 
-Vector4& Vector4::operator+=(const Vector4& V) {
-	X += V.X; Y += V.Y; Z += V.Z; W += V.W;
-	return *this;
-}
-Vector4& Vector4::operator+=(Vector4&& V) noexcept {
-	X += V.X; Y += V.Y; Z += V.Z; W += V.W;
-	return *this;
-}
-Vector4& Vector4::operator-=(const Vector4& V) {
-	X -= V.X; Y -= V.Y; Z -= V.Z; W -= V.W;
-	return *this;
-}
-Vector4& Vector4::operator-=(Vector4&& V) noexcept {
-	X -= V.X; Y -= V.Y; Z -= V.Z; W -= V.W;
-	return *this;
-}
-Vector4& Vector4::operator*=(float X) {
-	X *= X; Y *= X; Z *= X; W *= X;
-	return *this;
-}
-Vector4& Vector4::operator/=(float X) {
-	X /= X; Y /= X; Z /= X; W /= X;
-	return *this;
-}
+	Vector4::Vector4(const Vector2& other) : x(other.x), y(other.y), z(0), w(0) { }
+	Vector4::Vector4(Vector2&& other) : x(other.x), y(other.y), z(0), w(0) { }
+	Vector4::Vector4(const Vector3& other) : x(other.x), y(other.y), z(other.z), w(0) { }
+	Vector4::Vector4(Vector3&& other) : x(other.x), y(other.y), z(other.z), w(0) { }
 
-bool Vector4::operator==(const Vector4& V) const {
-	return this->X == V.X && this->Y == V.Y && this->Z == V.Z && this->W == V.W;
-}
-bool Vector4::operator==(Vector4&& V) const {
-	return this->X == V.X && this->Y == V.Y && this->Z == V.Z && this->W == V.W;
-}
-bool Vector4::operator!=(const Vector4& V) const {
-	return this->X != V.X || this->Y != V.Y || this->Z != V.Z || this->W == V.W;
-}
-bool Vector4::operator!=(Vector4&& V) const {
-	return this->X != V.X || this->Y != V.Y || this->Z != V.Z || this->W == V.W;
-}
-
-Vector4::Vector4(const Vector2& V) : X(V.X), Y(V.Y), Z(0), W(0) { }
-Vector4::Vector4(Vector2&& V) : X(V.X), Y(V.Y), Z(0), W(0) { }
-Vector4::Vector4(const Vector3& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
-Vector4::Vector4(Vector3&& V) : X(V.X), Y(V.Y), Z(V.Z), W(0) { }
-Vector4::Vector4(const Quaternion& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
-Vector4::Vector4(Quaternion&& Q) : X(Q.X), Y(Q.Y), Z(Q.Z), W(Q.W) { }
-
-float Vector4::Dot(const Vector4& X, const Vector4& Y) {
-	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
-}
-float Vector4::Dot(Vector4&& X, const Vector4& Y) {
-	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
-}
-float Vector4::Dot(const Vector4& X, Vector4&& Y) {
-	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
-}
-float Vector4::Dot(Vector4&& X, Vector4&& Y) {
-	return X.X * Y.X + X.Y * Y.Y + X.Z * Y.Z + X.W * Y.W;
-}
-Vector4 Vector4::Lerp(const Vector4& A, const Vector4& B, float T) {
-	return A + (B - A) * T;
-}
-Vector4 Vector4::Lerp(Vector4&& A, const Vector4& B, float T) {
-	return A + (B - A) * T;
-}
-Vector4 Vector4::Lerp(const Vector4& A, Vector4&& B, float T) {
-	return A + (B - A) * T;
-}
-Vector4 Vector4::Lerp(Vector4&& A, Vector4&& B, float T) {
-	return A + (B - A) * T;
-}
-
-std::string Vector4::ToString() const {
-	return "Vector4(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(Z) + "," + std::to_string(W) + ")";
-}
-size_t Vector4::GetHashCode() const {
-	return typeid(Vector4).hash_code();
+	float Vector4::Dot(Vector4 x, Vector4 y) {
+		return x.x * y.x + y.x * y.y + x.z * y.z;
+	}
+	Vector4 Vector4::Lerp(Vector4 a, Vector4 b, float t) {
+		return a + (b - a) * t;
+	}
 }

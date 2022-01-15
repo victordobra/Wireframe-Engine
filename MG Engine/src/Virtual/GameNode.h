@@ -1,7 +1,6 @@
 #pragma once
-#include "Object.h"
 
-class GameNode : public Object {
+class GameNode {
 private:
 	size_t GameNodeIndex;
 public:

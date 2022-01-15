@@ -1,48 +1,46 @@
 #pragma once
-#include "Object.h"
+#include <cstring>
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Quaternion.h"
 
-class Matrix4x4 : public Object {
-public:
-	float Matrix[4][4];
+namespace mge {
+	class Matrix4x4 {
+	public:
+		inline Matrix4x4() = default;
+		inline Matrix4x4(const Matrix4x4&) = default;
+		inline Matrix4x4(Matrix4x4&&) noexcept = default;
+		inline Matrix4x4(float mat[4][4]);
 
-	Matrix4x4();
-	Matrix4x4(const Matrix4x4& M) = default;
-	Matrix4x4(Matrix4x4&& M) noexcept = default;
-	Matrix4x4(float M[4][4]);
+		inline float* operator[](size_t i) { return (float*)matrix + 4 * i; }
+		inline const float* operator[](size_t i) const { return (const float*)matrix + 4 * i; }
 
-	float& operator()(int X, int Y);
-	float operator()(int X, int Y) const;
+		inline Matrix4x4 operator*(const Matrix4x4& other) const;
+		inline Matrix4x4 operator*(Matrix4x4&& other) const;
+		inline Vector3 operator*(const Vector3& other) const;
+		inline Vector3 operator*(Vector3&& other) const;
+		inline Vector4 operator*(const Vector4& other) const;
+		inline Vector4 operator*(Vector4&& other) const;
 
-	Matrix4x4 operator*(const Matrix4x4& M) const;
-	Matrix4x4 operator*(Matrix4x4&& M) const;
-	Vector3 operator*(const Vector3& V) const;
-	Vector3 operator*(Vector3&& V) const;
-	Vector4 operator*(const Vector4& V) const;
-	Vector4 operator*(Vector4&& V) const;
+		inline Matrix4x4& operator=(const Matrix4x4&) = default;
+		inline Matrix4x4& operator=(Matrix4x4&&) noexcept = default;
+		inline Matrix4x4& operator*=(const Matrix4x4& other) { *this = operator*(other); return *this; }
+		inline Matrix4x4& operator*=(Matrix4x4&& other) noexcept { *this = operator*(other); return *this; }
 
-	Matrix4x4& operator=(const Matrix4x4& M) = default;
-	Matrix4x4& operator=(Matrix4x4&& M) noexcept = default;
-	Matrix4x4& operator*=(const Matrix4x4& M);
-	Matrix4x4& operator*=(Matrix4x4&& M) noexcept;
+		inline bool operator==(const Matrix4x4& other) const { return memcmp(other.matrix, matrix, sizeof(float) * 16); }
+		inline bool operator==(Matrix4x4&& other) const { return memcmp(other.matrix, matrix, sizeof(float) * 16); }
+		inline bool operator!=(const Matrix4x4& other) const { return !memcmp(other.matrix, matrix, sizeof(float) * 16); }
+		inline bool operator!=(Matrix4x4&& other) const { return !memcmp(other.matrix, matrix, sizeof(float) * 16); }
 
-	bool operator==(const Matrix4x4& M) const;
-	bool operator==(Matrix4x4&& M) const;
-	bool operator!=(const Matrix4x4& M) const;
-	bool operator!=(Matrix4x4&& M) const;
+		static Matrix4x4 Translation(Vector3 translation);
+		static Matrix4x4 Rotation(Quaternion rotation);
+		static Matrix4x4 Scaling(Vector3 scaling);
 
-	static Matrix4x4 Translation(const Vector3& Translation);
-	static Matrix4x4 Translation(Vector3&& Translation);
-	static Matrix4x4 Rotation(const Quaternion& Rotation);
-	static Matrix4x4 Rotation(Quaternion&& Rotation);
-	static Matrix4x4 Scaling(const Vector3& Scaling);
-	static Matrix4x4 Scaling(Vector3&& Scaling);
-
-	std::string ToString() const override;
-	size_t GetHashCode() const override;
-
-	~Matrix4x4() = default;
-};
-
+		inline ~Matrix4x4() = default;
+	private:
+		float matrix[4][4]{ { 1, 0, 0, 0 },
+							{ 0, 1, 0, 0 },
+							{ 0, 0, 1, 0 },
+							{ 0, 0, 0, 1 } };
+	};
+}

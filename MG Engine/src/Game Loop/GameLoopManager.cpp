@@ -9,123 +9,120 @@
 
 #include <windows.h>
 
-unsigned long*& ScreenColours = OSManager::GetScreenColoursRef();
-static unsigned int ScreenWidth;
-static unsigned int ScreenHeight;
-static unsigned int GameWidth;
-static unsigned int GameHeight;
+namespace mge {
+	static size_t screenWidth;
+	static size_t screenHeight;
+	static size_t gameWidth;
+	static size_t gameHeight;
 
-static float DeltaTime = 0;
+	static float deltaTime = 0;
 
-static bool KeysDown[256] = { false };
-static bool KeysPressedCache[256] = { false };
-static bool KeysPressed[256] = { false };
-static bool KeysReleased[256] = { false };
-Vector2 MousePos;
+	static bool keysDown[256] = { false };
+	static bool keysPressedCache[256] = { false };
+	static bool keysPressed[256] = { false };
+	static bool keysReleased[256] = { false };
+	static Vector2 mousePos;
 
-void GameLoopManager::Start() {
-	ScreenWidth = OSManager::GetScreenWidth();
-	ScreenHeight = OSManager::GetScreenHeight();
-	GameWidth = OSManager::GetGameWidth();
-	GameHeight = OSManager::GetGameHeight();
+	void GLMStart() {
+		//Set the screen width and game width variables
+		screenWidth = OSMGetScreenWidth();
+		screenHeight = OSMGetScreenHeight();
+		gameWidth = OSMGetGameWidth();
+		gameHeight = OSMGetGameHeight();
 
-	for (int i = 0; i < GameNode::GameNodeCount; i++)
-		GameNode::GameNodes[i]->GameStart();
-}
+		//Run every game start function
+		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+			GameNode::GameNodes[i]->GameStart();
+	}
 
-void RunGameNodeFrame(size_t Index) {
-	GameNode::GameNodes[Index]->GameFrame();
-}
-void RunGameNodeRender(size_t Index) {
-	GameNode::GameNodes[Index]->GameRender();
-}
+	static void RunGameNodeFrame(size_t index) {
+		GameNode::GameNodes[index]->GameFrame();
+	}
+	static void RunGameNodeRender(size_t index) {
+		GameNode::GameNodes[index]->GameRender();
+	}
 
-float XRot = 0;
-float YRot = 0;
-void GameLoopManager::Update() {
-	std::chrono::high_resolution_clock Timer{ };
-	auto Start = Timer.now();
+	void GLMUpdate() {
+		//Start a timer to calculate delta time
+		std::chrono::high_resolution_clock timer{ };
+		auto start = timer.now();
 
-	std::future<void>* Futures = new std::future<void>[GameNode::GameNodeCount];
+		//Create an array of futures
+		std::future<void>* futures = new std::future<void>[GameNode::GameNodeCount];
 
-	for (size_t i = 0; i < GameNode::GameNodeCount; i++)
-		Futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeFrame, i);
-	for (size_t i = 0; i < GameNode::GameNodeCount; i++)
-		Futures[i].wait();
+		//Assign to each future the async of running every GameFrame function
+		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+			futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeFrame, i);
+		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+			futures[i].wait();
 
-	for (size_t i = 0; i < GameNode::GameNodeCount; i++)
-		Futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeRender, i);
-	for (size_t i = 0; i < GameNode::GameNodeCount; i++)
-		Futures[i].wait();
+		//Do the same for GameRender 
+		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+			futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeRender, i);
+		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+			futures[i].wait();
 
-	delete[] Futures;
+		delete[] futures;
 
-	memset(KeysPressed, 0, sizeof(bool) * 256);
-	memset(KeysReleased, 0, sizeof(bool) * 256);
+		//Reset all of the keys pressed and released
+		memset(keysPressed, 0, sizeof(bool) * 256);
+		memset(keysReleased, 0, sizeof(bool) * 256);
 
-	auto End = Timer.now();
-	DeltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(End - Start).count() / 1000000;
+		//Stop the timer and measure the time
+		auto end = timer.now();
+		deltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000000;
+	}
 
-	using namespace std::chrono_literals;
+	void GLMOnKeyDown(int keyCode) {
+		keysDown[keyCode] = true;
+		keysPressed[keyCode] = true;
+	}
+	void GLMOnKeyUp(int keyCode) {
+		keysDown[keyCode] = false;
+		keysReleased[keyCode] = true;
+	}
+	void GLMSetMousePos(size_t newX, size_t newY) {
+		mousePos = { (float)newX, (float)newY };
+	}
 
-	std::this_thread::sleep_for(1000000us / 60 - DeltaTime * 1000000us);
-	End = Timer.now();
-	DeltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(End - Start).count() / 1000000;
+	size_t GLMGetScreenWidth() {
+		return screenWidth;
+	}
+	size_t GLMGetScreenHeight() {
+		return screenHeight;
+	}
+	size_t GLMGetGameWidth() {
+		return gameWidth;
+	}
+	size_t GLMGetGameHeight() {
+		return gameHeight;
+	}
+	void GLMSetGameWidth(size_t newWidth) {
+		gameWidth = newWidth;
+		OSMSetGameSize(gameWidth, gameHeight);
+	}
+	void GLMSetGameHeight(size_t newHeight) {
+		gameHeight = newHeight;
+		OSMSetGameSize(gameWidth, gameHeight);
+	}
+	void GLMSetGameSize(size_t newWidth, size_t newHeight) {
+		gameWidth = newWidth;
+		gameHeight = newHeight;
+		OSMSetGameSize(gameWidth, gameHeight);
+	}
+	float GLMGetDeltaTime() {
+		return deltaTime;
+	}
+	bool GLMIsKeyDown(int keyCode) {
+		return keysDown[keyCode];
+	}
+	bool GLMIsKeyUp(int keyCode) {
+		return !keysDown[keyCode];
+	}
+	bool GLMIsKeyPressed(int keyCode) {
+		return keysPressed[keyCode];
+	}
+	bool GLMIsKeyReleased(int keyCode) {
+		return keysReleased[keyCode];
+	}
 }
-
-void GameLoopManager::OnKeyDown(int KeyCode) {
-	KeysDown[KeyCode] = true;
-	KeysPressed[KeyCode] = true;
-}
-void GameLoopManager::OnKeyUp(int KeyCode) {
-	KeysDown[KeyCode] = false;
-	KeysReleased[KeyCode] = true;
-}
-void GameLoopManager::SetMousePos(int NewX, int NewY) {
-	MousePos = { (float)NewX, (float)NewY };
-}
-
-#pragma region External Functions
-
-unsigned int GameLoopManager::GetScreenWidth() {
-	return ScreenWidth;
-}
-unsigned int GameLoopManager::GetScreenHeight() {
-	return ScreenHeight;
-}
-unsigned int GameLoopManager::GetGameWidth() {
-	return GameWidth;
-}
-unsigned int GameLoopManager::GetGameHeight() {
-	return GameHeight;
-}
-void GameLoopManager::SetGameWidth(unsigned int NewWidth) {
-	GameWidth = NewWidth;
-	OSManager::SetGameSize(GameWidth, GameHeight);
-}
-void GameLoopManager::SetGameHeight(unsigned int NewHeight) {
-	GameHeight = NewHeight;
-	OSManager::SetGameSize(GameWidth, GameHeight);
-}
-void GameLoopManager::SetGameSize(unsigned int NewWidth, unsigned int NewHeight) {
-	GameWidth = NewWidth;
-	GameHeight = NewHeight;
-	OSManager::SetGameSize(GameWidth, GameHeight);
-}
-float GameLoopManager::GetDeltaTime() {
-	return DeltaTime;
-}
-bool GameLoopManager::IsKeyDown(int KeyCode) {
-	return KeysDown[KeyCode];
-}
-bool GameLoopManager::IsKeyUp(int KeyCode) {
-	return !KeysDown[KeyCode];
-}
-bool GameLoopManager::IsKeyPressed(int KeyCode) {
-	return KeysPressed[KeyCode];
-}
-bool GameLoopManager::IsKeyReleased(int KeyCode) {
-	return KeysReleased[KeyCode];
-}
-
-#pragma endregion

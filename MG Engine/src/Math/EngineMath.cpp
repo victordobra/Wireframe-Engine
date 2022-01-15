@@ -1,16 +1,18 @@
 #include "EngineMath.h"
 #include <math.h>
 
-float Math::Sin(float X) { return sinf(X); }
-float Math::Cos(float X) { return cosf(X); }
-float Math::Tan(float X) { return tanf(X); }
-float Math::Asin(float X) { return asinf(X); }
-float Math::Acos(float X) { return acosf(X); }
-float Math::Atan(float X) { return atanf(X); }
-float Math::Atan2(float X, float Y) { return atan2f(X, Y); }
+namespace mge {
+	float Sin(float x) { return sinf(x); }
+	float Cos(float x) { return cosf(x); }
+	float Tan(float x) { return tanf(x); }
+	float Asin(float x) { return asinf(x); }
+	float Acos(float x) { return acosf(x); }
+	float Atan(float x) { return atanf(x); }
+	float Atan2(float x, float y) { return atan2f(x, y); }
 
-float Math::Sqrt(float X) { return sqrtf(X); }
-float Math::Lerp(float X, float Y, float T) { return X + (Y - X) * T; }
-int Math::Lerp(int X, int Y, float T) { return X + (int)((Y - X) * T); }
-float Math::Slerp(float X, float Y, float T) { return X + (Y - X) / (1 + 1 / powf(Math::e, T)); }
-int Math::Slerp(int X, int Y, float T) { return X + (int)((Y - X) / (1 + 1 / powf(Math::e, T))); }
+	float Sqrt(float x) { return sqrtf(x); }
+	float Lerp(float x, float y, float t) { return x + (y - x) * t; }
+	int Lerp(int x, int y, float t) { return x + (int)((y - x) * t); }
+	float Slerp(float x, float y, float t) { return x + (y - x) / (1 + 1 / powf(e, t)); }
+	int Slerp(int x, int y, float t) { return x + (int)((y - x) / (1 + 1 / powf(e, t))); }
+}
