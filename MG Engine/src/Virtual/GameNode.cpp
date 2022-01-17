@@ -1,57 +1,61 @@
 #include <string>
 #include "GameNode.h"
 
-GameNode** GameNode::GameNodes = new GameNode*[0];
-size_t GameNode::GameNodeCount = 0;
+namespace mge {
+	GameNode** GameNode::gameNodes = new GameNode*[0];
+	size_t GameNode::gameNodeCount = 0;
 
-GameNode::GameNode() {
-	GameNodeIndex = GameNodeCount;
-	GameNodeCount++;
+	GameNode::GameNode() {
+		gameNodeIndex = gameNodeCount;
+		gameNodeCount++;
 
-	GameNode** NewGameNodes = new GameNode*[GameNodeCount];
-	memcpy(NewGameNodes, GameNodes, sizeof(GameNode*) * (GameNodeCount - 1));
+		GameNode** NewGameNodes = new GameNode * [gameNodeCount];
+		memcpy(NewGameNodes, gameNodes, sizeof(GameNode*) * (gameNodeCount - 1));
 
-	NewGameNodes[GameNodeIndex] = this;
+		NewGameNodes[gameNodeIndex] = this;
 
-	delete[] GameNodes;
+		delete[] gameNodes;
 
-	GameNodes = NewGameNodes;
-}
-GameNode::GameNode(const GameNode& GN) {
-	GameNodeIndex = GameNodeCount;
-	GameNodeCount++;
+		gameNodes = NewGameNodes;
+	}
+	GameNode::GameNode(const GameNode& other) {
+		memcpy(this, &other, sizeof(*this));
 
-	GameNode** NewGameNodes = new GameNode*[GameNodeCount];
-	memcpy(NewGameNodes, GameNodes, sizeof(GameNode*) * (GameNodeCount - 1));
+		gameNodeIndex = gameNodeCount;
+		gameNodeCount++;
 
-	NewGameNodes[GameNodeIndex] = this;
+		GameNode** NewGameNodes = new GameNode * [gameNodeCount];
+		memcpy(NewGameNodes, gameNodes, sizeof(GameNode*) * (gameNodeCount - 1));
 
-	delete[] GameNodes;
+		NewGameNodes[gameNodeIndex] = this;
 
-	GameNodes = NewGameNodes;
-}
-GameNode::GameNode(GameNode&& GN) noexcept {
-	GameNodeIndex = GameNodeCount;
-	GameNodeCount++;
+		delete[] gameNodes;
 
-	GameNode** NewGameNodes = new GameNode * [GameNodeCount];
-	memcpy(NewGameNodes, GameNodes, sizeof(GameNode*) * (GameNodeCount - 1));
+		gameNodes = NewGameNodes;
+	}
+	GameNode::GameNode(GameNode&& GN) noexcept {
+		gameNodeIndex = gameNodeCount;
+		gameNodeCount++;
 
-	NewGameNodes[GameNodeIndex] = this;
+		GameNode** NewGameNodes = new GameNode*[gameNodeCount];
+		memcpy(NewGameNodes, gameNodes, sizeof(GameNode*) * (gameNodeCount - 1));
 
-	delete[] GameNodes;
+		NewGameNodes[gameNodeIndex] = this;
 
-	GameNodes = NewGameNodes;
-}
+		delete[] gameNodes;
 
-GameNode::~GameNode() {
-	GameNodeCount--;
+		gameNodes = NewGameNodes;
+	}
 
-	GameNode** NewGameNodes = new GameNode*[GameNodeCount];
-	memcpy(NewGameNodes, GameNodes, GameNodeIndex);
-	memcpy(NewGameNodes + GameNodeIndex, GameNodes + GameNodeIndex + 1, sizeof(GameNode*) * (GameNodeCount - GameNodeIndex));
+	GameNode::~GameNode() {
+		gameNodeCount--;
 
-	delete[] GameNodes;
+		GameNode** NewGameNodes = new GameNode * [gameNodeCount];
+		memcpy(NewGameNodes, gameNodes, gameNodeIndex);
+		memcpy(NewGameNodes + gameNodeIndex, gameNodes + gameNodeIndex + 1, sizeof(GameNode*) * (gameNodeCount - gameNodeIndex));
 
-	GameNodes = NewGameNodes;
+		delete[] gameNodes;
+
+		gameNodes = NewGameNodes;
+	}
 }

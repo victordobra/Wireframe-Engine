@@ -2,6 +2,7 @@
 #include "WindowsInternal.h"
 
 #include "OSManagerInternal.h"
+#include "RenderingPipeline.h"
 
 #include <windows.h>
 #include <tchar.h>
@@ -109,6 +110,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_CREATE: 
+        windowHWND = winHWND;
+
+        mge::InitiatePipeline();
         mge::OSMOnStart();
         break;
     case WM_PAINT: 
@@ -131,9 +135,11 @@ LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lPara
         mge::OSMSetMousePos((size_t)mousePoint.x, (size_t)mousePoint.y);
 
         mge::OSMOnUpdate();
+        mge::DrawFrame();
         break;
     }
     case WM_CLOSE:
+        mge::ClearPipeline();
         DestroyWindow(winHWND);
         break;
     case WM_DESTROY:

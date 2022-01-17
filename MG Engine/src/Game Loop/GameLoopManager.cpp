@@ -31,15 +31,15 @@ namespace mge {
 		gameHeight = OSMGetGameHeight();
 
 		//Run every game start function
-		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
-			GameNode::GameNodes[i]->GameStart();
+		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
+			GameNode::gameNodes[i]->GameStart();
 	}
 
 	static void RunGameNodeFrame(size_t index) {
-		GameNode::GameNodes[index]->GameFrame();
+		GameNode::gameNodes[index]->GameFrame();
 	}
 	static void RunGameNodeRender(size_t index) {
-		GameNode::GameNodes[index]->GameRender();
+		GameNode::gameNodes[index]->GameRender();
 	}
 
 	void GLMUpdate() {
@@ -48,18 +48,18 @@ namespace mge {
 		auto start = timer.now();
 
 		//Create an array of futures
-		std::future<void>* futures = new std::future<void>[GameNode::GameNodeCount];
+		std::future<void>* futures = new std::future<void>[GameNode::gameNodeCount];
 
 		//Assign to each future the async of running every GameFrame function
-		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
 			futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeFrame, i);
-		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
 			futures[i].wait();
 
 		//Do the same for GameRender 
-		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
 			futures[i] = std::async(std::launch::async | std::launch::deferred, RunGameNodeRender, i);
-		for (size_t i = 0; i < GameNode::GameNodeCount; i++)
+		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
 			futures[i].wait();
 
 		delete[] futures;

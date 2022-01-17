@@ -78,8 +78,9 @@ namespace mge {
 		const T& operator[](size_t i) const { return _data[i]; }
 		T& operator[](size_t i) { return _data[i]; }
 
-		size_t size() { return _size; }
+		size_t size() const { return _size; }
 		T* data() { return _data; }
+		const T* data() const { return _data; }
 
 		void push_back(const T& newObject) {
 			//Create a new data array
@@ -127,8 +128,8 @@ namespace mge {
 			_data = newData;
 		}
 
-		iterator<T> begin() { return _data; }
-		iterator<T> end() { return _data + _size; }
+		iterator<T> begin() const { return _data; }
+		iterator<T> end() const { return _data + _size; }
 
 		void erase(iterator<T> left, iterator<T> right) {
 			//Check if every item is in range
@@ -157,6 +158,19 @@ namespace mge {
 			//Delete the old data array and replace it with the new one
 			delete[] _data;
 			_data = newData;
+		}
+		void resize(size_t newSize) {
+			//Create a new data array
+			T* newData = new T[newSize];
+
+			//Copy everything over
+			for (size_t i = 0; i < _size && i < newSize; i++)
+				newData[i] = _data[i];
+
+			//Delete the old data array and replace it with the new one
+			delete[] _data;
+			_data = newData;
+			_size = newSize;
 		}
 
 		~vector() { delete[] _data; }
