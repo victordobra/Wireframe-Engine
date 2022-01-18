@@ -3,26 +3,19 @@
 #include "VulkanDevice.h"
 #include "SwapChain.h"
 #include "OSManager.h"
-#include "vector.h"
+#include "VulkanModel.h"
+
+#include <vector>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 namespace mge {
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
-
-	VkShaderModule vertShaderModule;
-	VkShaderModule fragShaderModule;
-
-	std::vector<VkCommandBuffer> commandBuffers;
-
 	struct PipelineConfigInfo {
 		PipelineConfigInfo() = default;
-		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-		PipelineConfigInfo(PipelineConfigInfo&&) = delete;
 
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
-		PipelineConfigInfo& operator=(PipelineConfigInfo&&) = delete;
 
 		VkViewport viewport;
 		VkRect2D scissor;
@@ -37,6 +30,16 @@ namespace mge {
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
 	};
+
+	VkPipelineLayout pipelineLayout;
+	VkPipeline graphicsPipeline;
+
+	VkShaderModule vertShaderModule;
+	VkShaderModule fragShaderModule;
+
+	std::vector<VkCommandBuffer> commandBuffers;
+
+	std::unique_ptr<VulkanModel> model;
 
 	static std::vector<char> ReadFile(const char* filePath) {
 		std::ifstream file{ filePath, std::ios::binary | std::ios::ate };
@@ -125,7 +128,7 @@ namespace mge {
 		configInfo.depthStencilInfo.back = {};   // Optional
 	}
 
-	static void bind(VkCommandBuffer commandBuffer) {
+	static void Bind(VkCommandBuffer commandBuffer) {
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
@@ -170,12 +173,14 @@ namespace mge {
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].pSpecializationInfo = nullptr;
 
+		auto bindingDescriptions = VulkanModel::Vertex::GetBindingDescriptions();
+		auto attributeDescriptions = VulkanModel::Vertex::GetAttributeDescriptions();
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+		vertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)attributeDescriptions.size();
+		vertexInputInfo.vertexBindingDescriptionCount = (uint32_t)bindingDescriptions.size();
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -198,7 +203,7 @@ namespace mge {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 		if (vkCreateGraphicsPipelines(device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
-			throw std::runtime_error("Failed to create graphics pipelines!");
+			throw std::runtime_error("Failed to create graphics pipeline!");
 	}
 	static void CreateCommandBuffers() {
 		commandBuffers.resize(imageCount());
@@ -211,6 +216,13 @@ namespace mge {
 
 		if (vkAllocateCommandBuffers(device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate command buffers!");
+
+		std::vector<VulkanModel::Vertex> vertices {
+			{{ 0.0f, -0.5f }},
+			{{ 0.5f, 0.5f }},
+			{{ -0.5f, 0.5f }}
+		};
+		model = std::make_unique<VulkanModel>(vertices);
 
 		for (size_t i = 0; i < commandBuffers.size(); i++) {
 			VkCommandBufferBeginInfo beginInfo{};
@@ -236,9 +248,9 @@ namespace mge {
 
 			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			bind(commandBuffers[i]);
-
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			Bind(commandBuffers[i]);
+			model->Bind(commandBuffers[i]);
+			model->Draw(commandBuffers[i]);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
@@ -263,7 +275,7 @@ namespace mge {
 		InitiateSwapChain({ (uint32_t)OSMGetGameWidth(), (uint32_t)OSMGetGameHeight() });
 
 		CreatePipelineLayout();
-		PipelineConfigInfo pipelineConfigInfo{}; 
+		PipelineConfigInfo pipelineConfigInfo{};
 		DefaultPipelineConfigInfo(pipelineConfigInfo, OSMGetGameWidth(), OSMGetGameHeight());
 		pipelineConfigInfo.renderPass = GetRenderPass();
 		pipelineConfigInfo.pipelineLayout = pipelineLayout;
@@ -273,6 +285,7 @@ namespace mge {
 	}
 	void ClearPipeline() {
 		vkDeviceWaitIdle(device());
+		model.release();
 		vkDestroyShaderModule(device(), vertShaderModule, nullptr);
 		vkDestroyShaderModule(device(), fragShaderModule, nullptr);
 		vkDestroyPipeline(device(), graphicsPipeline, nullptr);

@@ -13,11 +13,6 @@
 
 namespace mge {
 #ifdef _WIN32
-	static size_t screenWidth = WindowsGetScreenWidth();
-	static size_t screenHeight = WindowsGetScreenHeight();
-	static size_t gameWidth = WindowsGetGameWidth();
-	static size_t gameHeight = WindowsGetGameHeight();
-
 	const char* OSMGetTitle() {
 		return WindowsGetTitle();
 	}
@@ -46,15 +41,15 @@ namespace mge {
 	}
 
 	size_t OSMGetScreenWidth() {
-		return screenWidth;
+		return WindowsGetScreenWidth();
 	}
 	size_t OSMGetScreenHeight() {
-		return screenHeight;
+		return WindowsGetScreenHeight();
 	}
 	size_t OSMGetGameWidth() {
-		return gameWidth;
+		return WindowsGetGameWidth();
 	}
 	size_t OSMGetGameHeight() {
-		return gameHeight;
+		return WindowsGetGameHeight();
 	}
 }

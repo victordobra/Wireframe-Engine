@@ -59,6 +59,9 @@
     <ClCompile Include="src\Vulkan\SwapChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Rendering\VulkanModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OS\Windows\Windows.h">
@@ -119,6 +122,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Vulkan\SwapChain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rendering\VulkanModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

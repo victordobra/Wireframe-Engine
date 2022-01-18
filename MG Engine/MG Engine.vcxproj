@@ -35,6 +35,7 @@
     <ClCompile Include="src\Math\Vector4.cpp" />
     <ClCompile Include="src\Vulkan\SwapChain.cpp" />
     <ClCompile Include="src\Vulkan\VulkanDevice.cpp" />
+    <ClCompile Include="src\Rendering\VulkanModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Rendering\RenderingPipeline.h" />
@@ -57,6 +58,7 @@
     <ClInclude Include="src\Vulkan\SwapChain.h" />
     <ClInclude Include="src\Vulkan\VulkanDevice.h" />
     <ClInclude Include="src\Vulkan\VulkanInclude.h" />
+    <ClInclude Include="src\Rendering\VulkanModel.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="src\Shaders\FragShader.frag">
