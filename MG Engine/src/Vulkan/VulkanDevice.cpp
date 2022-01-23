@@ -71,7 +71,7 @@ namespace mge {
             func(instance, debugMessenger, pAllocator);
     }
 
-    // class member functions
+    //Class member functions
     void InitiateDevice() {
         CreateInstance();
         SetupDebugMessenger();

@@ -3,9 +3,9 @@
 #include "Vector4.h"
 
 namespace mge {
-	inline Quaternion::Quaternion(Vector3 v, float w) : x(v.x), y(v.y), z(v.z), w(w) { }
+	Quaternion::Quaternion(Vector3 v, float w) : x(v.x), y(v.y), z(v.z), w(w) { }
 
-	inline void Quaternion::Normalize() {
+	void Quaternion::Normalize() {
 		float sqrMag = SqrMagnitude();
 		if (sqrMag == 1 || sqrMag == 0)
 			return;
@@ -15,7 +15,7 @@ namespace mge {
 		z /= mag; 
 		w /= mag;
 	}
-	inline Quaternion Quaternion::Normalized() const {
+	Quaternion Quaternion::Normalized() const {
 		float sqrMag = SqrMagnitude();
 		if (sqrMag == 1 || sqrMag == 0)
 			return *this;
@@ -28,13 +28,13 @@ namespace mge {
 		return q;
 	}
 
-	inline Quaternion Quaternion::operator*(const Quaternion& other) const {
+	Quaternion Quaternion::operator*(const Quaternion& other) const {
 		return { w * other.x + x * other.w + y * other.z - z * other.y,
 				 w * other.y - x * other.z + y * other.w + z * other.x,
 				 w * other.z + x * other.y - y * other.x + z * other.w,
 				 w * other.w - x * other.x - y * other.y - z * other.z };
 	}
-	inline Quaternion Quaternion::operator*(Quaternion&& other) const {
+	Quaternion Quaternion::operator*(Quaternion&& other) const {
 		return { w * other.x + x * other.w + y * other.z - z * other.y,
 				 w * other.y - x * other.z + y * other.w + z * other.x,
 				 w * other.z + x * other.y - y * other.x + z * other.w,

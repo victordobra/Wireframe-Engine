@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
+    <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp" />
     <ClCompile Include="src\Assets\Rendering\Face.cpp" />
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp" />
     <ClCompile Include="src\Virtual\GameNode.cpp" />
@@ -38,6 +40,9 @@
     <ClCompile Include="src\Rendering\VulkanModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game Nodes\Rendering\Camera.h" />
+    <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h" />
+    <ClInclude Include="src\Rendering\PushConstantData.h" />
     <ClInclude Include="src\Rendering\RenderingPipeline.h" />
     <ClInclude Include="src\Virtual\GameNode.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />
@@ -79,6 +84,10 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling shader</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CustomBuild>
     <CustomBuild Include="src\Shaders\VertShader.vert">
       <FileType>Document</FileType>
@@ -94,6 +103,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">

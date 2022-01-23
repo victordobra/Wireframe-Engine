@@ -135,7 +135,6 @@ LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lPara
         mge::OSMSetMousePos((size_t)mousePoint.x, (size_t)mousePoint.y);
 
         mge::OSMOnUpdate();
-        mge::DrawFrame();
         break;
     }
     case WM_CLOSE:

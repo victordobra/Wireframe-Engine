@@ -1,13 +1,15 @@
 #pragma once
 #include "VulkanDevice.h"
 #include "Vector2.h"
+#include "Vector3.h"
 #include <vector>
 
 namespace mge {
 	class VulkanModel {
 	public:
 		struct Vertex {
-			Vector2 position;
+			Vector3 position;
+			Vector3 color;
 
 			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
 			static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();

@@ -25,10 +25,10 @@ namespace mge {
 #endif
 
 	void OSMOnStart() {
-		//GLMStart();
+		GLMStart();
 	}
 	void OSMOnUpdate() {
-		//GLMUpdate();
+		GLMUpdate();
 	}
 	void OSMOnButtonDown(int keyCode) {
 		GLMOnKeyDown(keyCode);

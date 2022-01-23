@@ -1,7 +1,10 @@
 #pragma once
+#include "VulkanInclude.h"
 
 namespace mge {
 	void InitiatePipeline();
 	void ClearPipeline();
-	void DrawFrame();
+	void PipelineBind(VkCommandBuffer commandBuffer);
+
+	VkPipelineLayout GetPipelineLayout();
 }

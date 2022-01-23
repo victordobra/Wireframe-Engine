@@ -7,42 +7,42 @@ namespace mge {
 
 	class Quaternion {
 	public:
-		float x{0}, y{0}, z{0}, w{0};
+		float x{0}, y{0}, z{0}, w{1};
 
-		inline Quaternion() = default;
-		inline Quaternion(const Quaternion&) = default;
-		inline Quaternion(Quaternion&&) noexcept = default;
-		inline Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
-		inline Quaternion(Vector3 v, float w);
+		Quaternion() = default;
+		Quaternion(const Quaternion&) = default;
+		Quaternion(Quaternion&&) noexcept = default;
+		Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
+		Quaternion(Vector3 v, float w);
 
-		inline void Normalize();
-		inline Quaternion Normalized() const;
-		inline void Invert() { x = -x; y = -y; z = -z; }
-		inline Quaternion Inverted() const { return { -x, -y, -z, w }; }
-		inline float Magnitude() const { return Sqrt(x * x + y * y + z * z + w * w); }
-		inline float SqrMagnitude() const { return x * x + y * y + z * z + w * w; }
+		void Normalize();
+		Quaternion Normalized() const;
+		void Invert() { x = -x; y = -y; z = -z; }
+		Quaternion Inverted() const { return { -x, -y, -z, w }; }
+		float Magnitude() const { return Sqrt(x * x + y * y + z * z + w * w); }
+		float SqrMagnitude() const { return x * x + y * y + z * z + w * w; }
 
-		inline Quaternion operator*(const Quaternion& other) const;
-		inline Quaternion operator*(Quaternion&& other) const;
-		inline Quaternion operator/(const Quaternion& other) const { return operator*(other.Inverted()); }
-		inline Quaternion operator/(Quaternion&& other) const { return operator*(other.Inverted()); }
+		Quaternion operator*(const Quaternion& other) const;
+		Quaternion operator*(Quaternion&& other) const;
+		Quaternion operator/(const Quaternion& other) const { return operator*(other.Inverted()); }
+		Quaternion operator/(Quaternion&& other) const { return operator*(other.Inverted()); }
 
-		inline Quaternion& operator=(const Quaternion& other) = default;
-		inline Quaternion& operator=(Quaternion&& other) noexcept = default;
-		inline Quaternion& operator*=(const Quaternion& other) { *this = operator*(other); return *this; }
-		inline Quaternion& operator*=(Quaternion&& other) noexcept { *this = operator*(other); return *this; }
-		inline Quaternion& operator/=(const Quaternion& other) { *this = operator/(other); return *this; }
-		inline Quaternion& operator/=(Quaternion&& other) noexcept { *this = operator/(other); return *this; }
+		Quaternion& operator=(const Quaternion& other) = default;
+		Quaternion& operator=(Quaternion&& other) noexcept = default;
+		Quaternion& operator*=(const Quaternion& other) { *this = operator*(other); return *this; }
+		Quaternion& operator*=(Quaternion&& other) noexcept { *this = operator*(other); return *this; }
+		Quaternion& operator/=(const Quaternion& other) { *this = operator/(other); return *this; }
+		Quaternion& operator/=(Quaternion&& other) noexcept { *this = operator/(other); return *this; }
 
-		inline bool operator==(const Quaternion& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
-		inline bool operator==(Quaternion&& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
-		inline bool operator!=(const Quaternion& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
-		inline bool operator!=(Quaternion&& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
+		bool operator==(const Quaternion& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+		bool operator==(Quaternion&& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+		bool operator!=(const Quaternion& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
+		bool operator!=(Quaternion&& other) const { return x != other.x || y != other.y || z != other.z || w != other.w; }
 
-		inline explicit Quaternion(const Vector3& other);
-		inline explicit Quaternion(Vector3&& other);
-		inline explicit Quaternion(const Vector4& other);
-		inline explicit Quaternion(Vector4&& other);
+		explicit Quaternion(const Vector3& other);
+		explicit Quaternion(Vector3&& other);
+		explicit Quaternion(const Vector4& other);
+		explicit Quaternion(Vector4&& other);
 
 		static Quaternion EulerAngles(float x, float y, float z);
 		static Quaternion EulerAngles(Vector3 eulerAngles);

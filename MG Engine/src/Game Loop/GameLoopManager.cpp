@@ -4,9 +4,11 @@
 #include "EngineMath.h"
 #include "GameNode.h"
 #include "Vector2.h"
+#include "MeshRenderer.h"
+#include "Camera.h"
+
 #include <chrono>
 #include <future>
-
 #include <windows.h>
 
 namespace mge {
@@ -22,13 +24,29 @@ namespace mge {
 	static bool keysPressed[256] = { false };
 	static bool keysReleased[256] = { false };
 	static Vector2 mousePos;
-
+	
+	MeshRenderer* meshRenderer;
+	Camera* camera;
 	void GLMStart() {
 		//Set the screen width and game width variables
 		screenWidth = OSMGetScreenWidth();
 		screenHeight = OSMGetScreenHeight();
 		gameWidth = OSMGetGameWidth();
 		gameHeight = OSMGetGameHeight();
+
+		meshRenderer = new MeshRenderer();
+		meshRenderer->position = { 0.0f, 0.0f, 5.0f };
+		meshRenderer->color = { 0.0f, 0.3f, 1.0f };
+		meshRenderer->scale = { 1.0f, 1.0f, 1.0f };
+		AssetLoadResult result;
+		Mesh* mesh = new Mesh("Assets\\Cube.obj", result);
+		meshRenderer->mesh = mesh;
+		camera = new Camera();
+		camera->clearColor = { 0.01f, 0.01f, 0.01f };
+		camera->clearMode = ClearMode::COLOR;
+		camera->zNear = 0.01f;
+		camera->zFar = 100.0f;
+		camera->fov = 60.0f;
 
 		//Run every game start function
 		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
@@ -42,6 +60,8 @@ namespace mge {
 		GameNode::gameNodes[index]->GameRender();
 	}
 
+	static float yRot = 0.0f;
+
 	void GLMUpdate() {
 		//Start a timer to calculate delta time
 		std::chrono::high_resolution_clock timer{ };
@@ -49,6 +69,17 @@ namespace mge {
 
 		//Create an array of futures
 		std::future<void>* futures = new std::future<void>[GameNode::gameNodeCount];
+
+		yRot += 90.0f * deltaTime;
+		if (yRot > 360.0f)
+			yRot -= 360.0f;
+
+		meshRenderer->rotation = Quaternion::EulerAngles(0, yRot, 0);
+
+		if (keysDown['W'])
+			camera->position.z += deltaTime;
+		else if (keysDown['S'])
+			camera->position.z -= deltaTime;
 
 		//Assign to each future the async of running every GameFrame function
 		for (size_t i = 0; i < GameNode::gameNodeCount; i++)

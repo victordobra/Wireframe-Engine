@@ -4,6 +4,9 @@
 #include "SwapChain.h"
 #include "OSManager.h"
 #include "VulkanModel.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "PushConstantData.h"
 
 #include <vector>
 #include <fstream>
@@ -17,8 +20,6 @@ namespace mge {
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
-		VkViewport viewport;
-		VkRect2D scissor;
 		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
@@ -26,6 +27,8 @@ namespace mge {
 		VkPipelineColorBlendAttachmentState colorBlendAttachment;
 		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+		std::vector<VkDynamicState> dynamicStateEnables;
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -56,33 +59,23 @@ namespace mge {
 		file.close();
 		return buffer;
 	}
-	static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo, size_t width, size_t height) {
+	static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-		configInfo.viewport.x = 0.0f;
-		configInfo.viewport.y = 0.0f;
-		configInfo.viewport.width = static_cast<float>(width);
-		configInfo.viewport.height = static_cast<float>(height);
-		configInfo.viewport.minDepth = 0.0f;
-		configInfo.viewport.maxDepth = 1.0f;
-
-		configInfo.scissor.offset = { 0, 0 };
-		configInfo.scissor.extent = { (uint32_t)width, (uint32_t)height };
-
 		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		configInfo.viewportInfo.viewportCount = 1;
-		configInfo.viewportInfo.pViewports = &configInfo.viewport;
+		configInfo.viewportInfo.pViewports = nullptr;
 		configInfo.viewportInfo.scissorCount = 1;
-		configInfo.viewportInfo.pScissors = &configInfo.scissor;
+		configInfo.viewportInfo.pScissors = nullptr;
 
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
 		configInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		configInfo.rasterizationInfo.lineWidth = 1.0f;
-		configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
+		configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_FRONT_BIT;
 		configInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		configInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;
 		configInfo.rasterizationInfo.depthBiasConstantFactor = 0.0f;  // Optional
@@ -126,10 +119,17 @@ namespace mge {
 		configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
 		configInfo.depthStencilInfo.front = {};  // Optional
 		configInfo.depthStencilInfo.back = {};   // Optional
-	}
 
-	static void Bind(VkCommandBuffer commandBuffer) {
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+		configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+		configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+
+#pragma warning( push )
+#pragma warning( disable: 26812 )
+		configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
+#pragma warning( pop )
+
+		configInfo.dynamicStateInfo.dynamicStateCount = (uint32_t)configInfo.dynamicStateEnables.size();
+		configInfo.dynamicStateInfo.flags = 0;
 	}
 
 	static void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
@@ -143,12 +143,17 @@ namespace mge {
 	}
 
 	static void CreatePipelineLayout() {
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(PushConstantData);
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 0;
 		pipelineLayoutInfo.pSetLayouts = nullptr;
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create pipeline layout!");
 	}
@@ -193,7 +198,7 @@ namespace mge {
 		pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
 		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
-		pipelineInfo.pDynamicState = nullptr;
+		pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;
 
 		pipelineInfo.layout = configInfo.pipelineLayout;
 		pipelineInfo.renderPass = configInfo.renderPass;
@@ -202,72 +207,9 @@ namespace mge {
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
-			throw std::runtime_error("Failed to create graphics pipeline!");
-	}
-	static void CreateCommandBuffers() {
-		commandBuffers.resize(imageCount());
-
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = GetCommandPool();
-		allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
-
-		if (vkAllocateCommandBuffers(device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
-			throw std::runtime_error("Failed to allocate command buffers!");
-
-		std::vector<VulkanModel::Vertex> vertices {
-			{{ 0.0f, -0.5f }},
-			{{ 0.5f, 0.5f }},
-			{{ -0.5f, 0.5f }}
-		};
-		model = std::make_unique<VulkanModel>(vertices);
-
-		for (size_t i = 0; i < commandBuffers.size(); i++) {
-			VkCommandBufferBeginInfo beginInfo{};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-			if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS)
-				throw std::runtime_error("Failed to begin recording command buffer!");
-
-			VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = GetRenderPass();
-			renderPassInfo.framebuffer = GetFrameBuffer(i);
-
-			renderPassInfo.renderArea.offset = { 0, 0 };
-			renderPassInfo.renderArea.extent = GetSwapChainExtent();
-
-			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
-			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
-
-			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-			Bind(commandBuffers[i]);
-			model->Bind(commandBuffers[i]);
-			model->Draw(commandBuffers[i]);
-
-			vkCmdEndRenderPass(commandBuffers[i]);
-			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
-				throw std::runtime_error("Failed to end recording command buffer!");
-		}
-	}
-
-	void DrawFrame() {
-		uint32_t imageIndex;
-		auto result = AcquireNextImage(&imageIndex);
-
-		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-			throw std::runtime_error("Failed to acquire swap chain image!");
-
-		result = SubmitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		auto result = vkCreateGraphicsPipelines(device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 		if (result != VK_SUCCESS)
-			throw std::runtime_error("Failed to submit command buffers!");
+			throw std::runtime_error("Failed to create graphics pipeline!");
 	}
 
 	void InitiatePipeline() {
@@ -276,21 +218,26 @@ namespace mge {
 
 		CreatePipelineLayout();
 		PipelineConfigInfo pipelineConfigInfo{};
-		DefaultPipelineConfigInfo(pipelineConfigInfo, OSMGetGameWidth(), OSMGetGameHeight());
+		DefaultPipelineConfigInfo(pipelineConfigInfo);
 		pipelineConfigInfo.renderPass = GetRenderPass();
 		pipelineConfigInfo.pipelineLayout = pipelineLayout;
 		CreateGraphicsPipeline("Shaders\\VertShader.vert.spv", "Shaders\\FragShader.frag.spv", pipelineConfigInfo);
-
-		CreateCommandBuffers();
 	}
 	void ClearPipeline() {
 		vkDeviceWaitIdle(device());
-		model.release();
 		vkDestroyShaderModule(device(), vertShaderModule, nullptr);
 		vkDestroyShaderModule(device(), fragShaderModule, nullptr);
 		vkDestroyPipeline(device(), graphicsPipeline, nullptr);
 
 		ClearSwapChain();
 		ClearDevice();
+	}
+
+	void PipelineBind(VkCommandBuffer commandBuffer) {
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	}
+
+	VkPipelineLayout GetPipelineLayout() {
+		return pipelineLayout;
 	}
 }

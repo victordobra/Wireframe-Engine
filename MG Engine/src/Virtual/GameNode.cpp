@@ -9,7 +9,7 @@ namespace mge {
 		gameNodeIndex = gameNodeCount;
 		gameNodeCount++;
 
-		GameNode** NewGameNodes = new GameNode * [gameNodeCount];
+		GameNode** NewGameNodes = new GameNode*[gameNodeCount];
 		memcpy(NewGameNodes, gameNodes, sizeof(GameNode*) * (gameNodeCount - 1));
 
 		NewGameNodes[gameNodeIndex] = this;
@@ -50,7 +50,7 @@ namespace mge {
 	GameNode::~GameNode() {
 		gameNodeCount--;
 
-		GameNode** NewGameNodes = new GameNode * [gameNodeCount];
+		GameNode** NewGameNodes = new GameNode*[gameNodeCount];
 		memcpy(NewGameNodes, gameNodes, gameNodeIndex);
 		memcpy(NewGameNodes + gameNodeIndex, gameNodes + gameNodeIndex + 1, sizeof(GameNode*) * (gameNodeCount - gameNodeIndex));
 

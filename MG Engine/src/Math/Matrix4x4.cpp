@@ -2,36 +2,36 @@
 #include <istream>
 
 namespace mge {
-	inline Matrix4x4::Matrix4x4(float mat[4][4]) {
+	Matrix4x4::Matrix4x4(float mat[4][4]) {
 		memcpy(matrix, mat, sizeof(float) * 16);
 	}
 
-	inline Matrix4x4 Matrix4x4::operator*(const Matrix4x4& other) const {
+	Matrix4x4 Matrix4x4::operator*(const Matrix4x4& other) const {
 		Matrix4x4 newMat;
 		for (size_t r = 0; r < 4; r++)
 			for (size_t c = 0; c < 4; c++) {
-				newMat[r][c] = matrix[r][0] * other[0][c] + matrix[r][1] + other[1][c] + matrix[r][2] + other[2][c] + matrix[r][3] + other[3][c];
+				newMat[r][c] = other[r][0] * matrix[0][c] + other[r][1] * matrix[1][c] + other[r][2] * matrix[2][c] + other[r][3] * matrix[3][c];
 			}
 		return newMat;
 	}
-	inline Matrix4x4 Matrix4x4::operator*(Matrix4x4&& other) const {
+	Matrix4x4 Matrix4x4::operator*(Matrix4x4&& other) const {
 		Matrix4x4 newMat;
 		for (size_t r = 0; r < 4; r++)
 			for (size_t c = 0; c < 4; c++) {
-				newMat[r][c] = matrix[r][0] * other[0][c] + matrix[r][1] + other[1][c] + matrix[r][2] + other[2][c] + matrix[r][3] + other[3][c];
+				newMat[r][c] = other[r][0] * matrix[0][c] + other[r][1] * matrix[1][c] + other[r][2] * matrix[2][c] + other[r][3] * matrix[3][c];
 			}
 		return newMat;
 	}
-	inline Vector3 Matrix4x4::operator*(const Vector3& other) const {
+	Vector3 Matrix4x4::operator*(const Vector3& other) const {
 		return Vector3(matrix[0][0] * other.x + matrix[0][1] * other.y + matrix[0][2] * other.z + matrix[0][3], matrix[1][0] * other.x + matrix[1][1] * other.y + matrix[1][2] * other.z + matrix[1][3], matrix[2][0] * other.x + matrix[2][1] * other.y + matrix[2][2] * other.z + matrix[2][3]);
 	}
-	inline Vector3 Matrix4x4::operator*(Vector3&& other) const {
+	Vector3 Matrix4x4::operator*(Vector3&& other) const {
 		return Vector3(matrix[0][0] * other.x + matrix[0][1] * other.y + matrix[0][2] * other.z + matrix[0][3], matrix[1][0] * other.x + matrix[1][1] * other.y + matrix[1][2] * other.z + matrix[1][3], matrix[2][0] * other.x + matrix[2][1] * other.y + matrix[2][2] * other.z + matrix[2][3]);
 	}
-	inline Vector4 Matrix4x4::operator*(const Vector4& other) const {
+	Vector4 Matrix4x4::operator*(const Vector4& other) const {
 		return Vector4(matrix[0][0] * other.x + matrix[0][1] * other.y + matrix[0][2] * other.z + matrix[0][3] * other.w, matrix[1][0] * other.x + matrix[1][1] * other.y + matrix[1][2] * other.z + matrix[1][3] * other.w, matrix[2][0] * other.x + matrix[2][1] * other.y + matrix[2][2] * other.z + matrix[2][3] * other.w, matrix[3][0] * other.x + matrix[3][1] * other.y + matrix[3][2] * other.z + matrix[3][3] * other.w);
 	}
-	inline Vector4 Matrix4x4::operator*(Vector4&& other) const {
+	Vector4 Matrix4x4::operator*(Vector4&& other) const {
 		return Vector4(matrix[0][0] * other.x + matrix[0][1] * other.y + matrix[0][2] * other.z + matrix[0][3] * other.w, matrix[1][0] * other.x + matrix[1][1] * other.y + matrix[1][2] * other.z + matrix[1][3] * other.w, matrix[2][0] * other.x + matrix[2][1] * other.y + matrix[2][2] * other.z + matrix[2][3] * other.w, matrix[3][0] * other.x + matrix[3][1] * other.y + matrix[3][2] * other.z + matrix[3][3] * other.w);
 	}
 

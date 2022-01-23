@@ -25,10 +25,10 @@ namespace mge {
 			return;
 		}	
 
-		vector<Vector3> positionsV;
-		vector<Vector2> uvCoordinatesV;
-		vector<Vector3> normalsV;
-		vector<Face> facesV;
+		std::vector<Vector3> positionsV;
+		std::vector<Vector2> uvCoordinatesV;
+		std::vector<Vector3> normalsV;
+		std::vector<Face> facesV;
 
 		std::string line;
 		while (!fileInput.eof()) {
@@ -58,8 +58,8 @@ namespace mge {
 				normalsV.push_back(vec);
 			} else if (init == "f") {
 				//The current line is a face
-				vector<size_t> posIndV;
-				vector<size_t> uvcIndV;
+				std::vector<size_t> posIndV;
+				std::vector<size_t> uvcIndV;
 				size_t norInd = 0;
 
 				while (!sStream.eof()) {
@@ -94,7 +94,7 @@ namespace mge {
 			}
 		}
 
-		if (!fileInput.good()) {
+		if (fileInput.bad()) {
 			result = AssetLoadResult::OTHER;
 			return;
 		}
