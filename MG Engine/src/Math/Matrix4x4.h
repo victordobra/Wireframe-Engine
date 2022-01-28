@@ -21,12 +21,12 @@ namespace mge {
 		Vector3 operator*(Vector3&& other) const;
 		Vector4 operator*(const Vector4& other) const;
 		Vector4 operator*(Vector4&& other) const;
-
+		
 		Matrix4x4& operator=(const Matrix4x4&) = default;
 		Matrix4x4& operator=(Matrix4x4&&) noexcept = default;
 		Matrix4x4& operator*=(const Matrix4x4& other) { *this = operator*(other); return *this; }
 		Matrix4x4& operator*=(Matrix4x4&& other) noexcept { *this = operator*(other); return *this; }
-
+		
 		bool operator==(const Matrix4x4& other) const { return memcmp(other.matrix, matrix, sizeof(float) * 16); }
 		bool operator==(Matrix4x4&& other) const { return memcmp(other.matrix, matrix, sizeof(float) * 16); }
 		bool operator!=(const Matrix4x4& other) const { return !memcmp(other.matrix, matrix, sizeof(float) * 16); }

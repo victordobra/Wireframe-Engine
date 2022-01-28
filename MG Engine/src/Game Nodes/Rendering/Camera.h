@@ -13,19 +13,19 @@ namespace mge {
 
 	class Camera : public GameNode {
 	public:
-		Vector3 position;
-		Quaternion rotation;
+		Vector3 position{};
+		Quaternion rotation{};
 
-		Vector3 clearColor;
-		ClearMode clearMode;
-		float fov;
-		float zNear;
-		float zFar;
+		Vector3 clearColor{};
+		ClearMode clearMode{};
+		float fov{};
+		float zNear{};
+		float zFar{};
 
 		void GameStart() override { aspectRatio = (float)OSMGetGameWidth() / OSMGetGameHeight(); }
 		void GameRender() override;
 	private:
-		float aspectRatio;
+		float aspectRatio{};
 
 		Matrix4x4 GetCameraMatrix();
 	};

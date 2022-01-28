@@ -9,20 +9,22 @@
 namespace mge {
 	class MeshRenderer : public GameNode {
 	public:
-		Mesh* mesh;
-		Vector3 position;
-		Quaternion rotation;
-		Vector3 scale;
+		Vector3 position{};
+		Quaternion rotation{};
+		Vector3 scale{1.0f, 1.0f, 1.0f};
 
-		Vector3 color;
-
-		void GameFrame() override;
+		Vector3 color{};
 
 		Matrix4x4 GetTransformationMatrix();
 
 		void Bind(VkCommandBuffer commandBuffer);
 		void Draw(VkCommandBuffer commandBuffer);
+
+		Mesh* GetMesh() { return mesh; }
+		void SetMesh(Mesh* newMesh);
 	private:
 		VulkanModel* vkModel{nullptr};
+
+		Mesh* mesh{nullptr};
 	};
 }

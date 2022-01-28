@@ -35,13 +35,20 @@ namespace mge {
 		gameHeight = OSMGetGameHeight();
 
 		meshRenderer = new MeshRenderer();
-		meshRenderer->position = { 0.0f, 0.0f, 5.0f };
-		meshRenderer->color = { 0.0f, 0.3f, 1.0f };
-		meshRenderer->scale = { 1.0f, 1.0f, 1.0f };
-		AssetLoadResult result;
-		Mesh* mesh = new Mesh("Assets\\Cube.obj", result);
-		meshRenderer->mesh = mesh;
+		meshRenderer->color = { 1.0f, 1.0f, 1.0f };
+		meshRenderer->scale = { 10.0f, 10.0f, 10.0f };
+
+		AssetLoadResult result{};
+		Mesh* mesh = new Mesh("Assets\\SmoothVase.obj", result);
+
+		if (result != AssetLoadResult::SUCCESS)
+			throw std::runtime_error("Error occured while reading mesh!");
+
+		meshRenderer->SetMesh(mesh);
+
+
 		camera = new Camera();
+		camera->position = { 0.0f, 2.0f, -4.0f };
 		camera->clearColor = { 0.01f, 0.01f, 0.01f };
 		camera->clearMode = ClearMode::COLOR;
 		camera->zNear = 0.01f;
@@ -60,7 +67,7 @@ namespace mge {
 		GameNode::gameNodes[index]->GameRender();
 	}
 
-	static float yRot = 0.0f;
+	static float rot = 0.0f;
 
 	void GLMUpdate() {
 		//Start a timer to calculate delta time
@@ -70,11 +77,11 @@ namespace mge {
 		//Create an array of futures
 		std::future<void>* futures = new std::future<void>[GameNode::gameNodeCount];
 
-		yRot += 90.0f * deltaTime;
-		if (yRot > 360.0f)
-			yRot -= 360.0f;
+		rot += 90.0f * deltaTime;
+		if (rot > 360.0f)
+			rot -= 360.0f;
 
-		meshRenderer->rotation = Quaternion::EulerAngles(0, yRot, 0);
+		meshRenderer->rotation = Quaternion::EulerAngles(0, rot, 0);
 
 		if (keysDown['W'])
 			camera->position.z += deltaTime;

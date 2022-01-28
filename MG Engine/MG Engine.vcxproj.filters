@@ -47,9 +47,6 @@
     <ClCompile Include="src\Virtual\GameNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Assets\Rendering\Face.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

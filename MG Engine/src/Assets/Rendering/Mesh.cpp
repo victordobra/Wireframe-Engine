@@ -5,17 +5,16 @@
 #include <vector>
 
 namespace mge {
-	Mesh::Mesh(const Mesh& other) : positions(new Vector3[other.positionC]), positionC(other.positionC), uvCoordinates(new Vector2[other.uvCoordinateC]), uvCoordinateC(other.uvCoordinateC), normals(new Vector3[other.normalC]), normalC(other.normalC), faces(new Face[other.faceC]), faceC(other.faceC) {
-		memcpy(positions, other.positions, positionC * sizeof(Vector3));
-		memcpy(uvCoordinates, other.uvCoordinates, uvCoordinateC * sizeof(Vector2));
-		memcpy(normals, other.normals, normalC * sizeof(Vector3));
-		for (size_t i = 0; i < faceC; i++)
-			faces[i] = other.faces[i];
+	Mesh::Mesh(const Mesh& other) : vertexC(other.vertexC), indexC(other.indexC), vertices((Vertex*)malloc(sizeof(Vertex) * other.vertexC)), indices((size_t*)malloc(sizeof(size_t) * other.indexC)) {
+		if (!vertices || !indices)
+			throw std::runtime_error("Failed to allocate memory!");
+
+		memcpy(vertices, other.vertices, sizeof(Vertex) * vertexC);
+		memcpy(indices, other.indices, sizeof(size_t) * indexC);
 	}
-	Mesh::Mesh(Mesh&& other) noexcept : positions(other.positions), positionC(other.positionC), uvCoordinates(other.uvCoordinates), uvCoordinateC(other.uvCoordinateC), normals(other.normals), normalC(other.positionC), faces(other.faces), faceC(other.faceC) {
-		other.positions = nullptr;
-		other.uvCoordinates = nullptr;
-		other.normals = nullptr;
+	Mesh::Mesh(Mesh&& other) noexcept : vertexC(other.vertexC), indexC(other.indexC), vertices(other.vertices), indices(other.indices) {
+		other.vertices = nullptr;
+		other.indices = nullptr;
 	}
 	Mesh::Mesh(const char* fileLocation, AssetLoadResult& result) {
 		std::ifstream fileInput(fileLocation);
@@ -28,7 +27,8 @@ namespace mge {
 		std::vector<Vector3> positionsV;
 		std::vector<Vector2> uvCoordinatesV;
 		std::vector<Vector3> normalsV;
-		std::vector<Face> facesV;
+		std::vector<Vertex> verticesV;
+		std::vector<size_t> indicesV;
 
 		std::string line;
 		while (!fileInput.eof()) {
@@ -58,10 +58,7 @@ namespace mge {
 				normalsV.push_back(vec);
 			} else if (init == "f") {
 				//The current line is a face
-				std::vector<size_t> posIndV;
-				std::vector<size_t> uvcIndV;
-				size_t norInd = 0;
-
+				//Create multiple vertices
 				while (!sStream.eof()) {
 					//Read every vertex and set its indices
 					std::string vertString;
@@ -73,24 +70,31 @@ namespace mge {
 					std::getline(vertStream, nIndS, ' ');
 
 #ifdef _WIN64
-					posIndV.push_back(std::stoull(pIndS) - 1);
-					uvcIndV.push_back(std::stoull(uvcIndS) - 1);
-					norInd = std::stoull(nIndS) - 1;
+					Vector3 position = positionsV[std::stoull(pIndS) - 1];
+					Vector2 uvCoordinate = uvCoordinatesV[std::stoull(uvcIndS) - 1];
+					Vector3 normal = normalsV[std::stoull(nIndS) - 1];
 #else
-					posIndV.push_back(std::stoul(pIndS) - 1);
-					uvcIndV.push_back(std::stoul(uvcIndS) - 1);
-					norInd = std::stoul(nIndS) - 1;
+					Vector3 position = positionsV[std::stoul(pIndS) - 1];
+					Vector2 uvCoordinate = uvCoordinatesV[std::stoul(uvcIndS) - 1];
+					Vector3 normal = normalsV[std::stoul(nIndS) - 1];
 #endif
+					Vertex vertex{position, uvCoordinate, normal};
+
+					bool vertexFound = false;
+					size_t i;
+					for (i = 0; i < verticesV.size(); i++)
+						if (verticesV[i] == vertex) {
+							vertexFound = true;
+							break;
+						}
+
+					if (vertexFound)
+						indicesV.push_back(i);
+					else {
+						indicesV.push_back(verticesV.size());
+						verticesV.push_back(vertex);
+					}
 				}
-
-				//Copy everything over
-				Face face(posIndV.size());
-				face.normalIndex = norInd;
-
-				memcpy(face.positionIndices, posIndV.data(), sizeof(size_t) * face.vertexCount);
-				memcpy(face.uvCoordinateIndices, uvcIndV.data(), sizeof(size_t) * face.vertexCount);
-
-				facesV.push_back(face);
 			}
 		}
 
@@ -100,23 +104,20 @@ namespace mge {
 		}
 		fileInput.close();
 
-		//Copy everything from the vectors into the mesh
-		positionC = positionsV.size();
-		uvCoordinateC = uvCoordinatesV.size();
-		normalC = normalsV.size();
-		faceC = facesV.size();
+		//Copy everything from the vertices
+		vertexC = verticesV.size();
+		indexC = indicesV.size();
 
-		positions = new Vector3[positionC];
-		uvCoordinates = new Vector2[uvCoordinateC];
-		normals = new Vector3[normalC];
-		faces = new Face[faceC];
+		vertices = (Vertex*)malloc(sizeof(Vertex) * vertexC);
+		indices = (size_t*)malloc(sizeof(size_t) * indexC);
 
-		memcpy(positions, positionsV.data(), sizeof(Vector3) * positionC);
-		memcpy(uvCoordinates, uvCoordinatesV.data(), sizeof(Vector2) * uvCoordinateC);
-		memcpy(normals, normalsV.data(), sizeof(Vector3) * normalC);
+		if (!vertices || !indices) {
+			result = AssetLoadResult::OTHER;
+			return;
+		}
 
-		for (size_t i = 0; i < faceC; i++)
-			faces[i] = facesV[i];
+		memcpy(vertices, verticesV.data(), sizeof(Vertex) * vertexC);
+		memcpy(indices, indicesV.data(), sizeof(size_t) * indexC);
 
 		result = AssetLoadResult::SUCCESS;
 	}
@@ -126,52 +127,39 @@ namespace mge {
 			return *this;
 
 		//Delete the old vectors
-		delete[] positions;
-		delete[] uvCoordinates;
-		delete[] normals;
-		delete[] faces;
+		delete[] vertices;
+		delete[] indices;
 
 		//Move over the new variables
-		positionC = other.positionC;
-		uvCoordinateC = other.uvCoordinateC;
-		normalC = other.normalC;
-		faceC = other.faceC;
+		vertexC = other.vertexC;
+		indexC = other.indexC;
 
-		positions = new Vector3[positionC];
-		uvCoordinates = new Vector2[uvCoordinateC];
-		normals = new Vector3[normalC];
-		faces = new Face[faceC];
+		vertices = (Vertex*)malloc(sizeof(Vertex) * vertexC);
+		indices = (size_t*)malloc(sizeof(size_t) * indexC);
+
+		if (!vertices || !indices)
+			throw std::runtime_error("Failed to allocate memory!");
 
 		//Copy all of the heap allocated vectors
-		memcpy(positions, other.positions, sizeof(Vector3) * positionC);
-		memcpy(uvCoordinates, other.uvCoordinates, sizeof(Vector2) * uvCoordinateC);
-		memcpy(normals, other.normals, sizeof(Vector3) * normalC);
-
-		for (size_t i = 0; i < faceC; i++)
-			faces[i] = other.faces[i];
+		memcpy(vertices, other.vertices, sizeof(Vertex) * vertexC);
+		memcpy(indices, other.indices, sizeof(size_t) * indexC);
 
 		return *this;
 	}
 	Mesh& Mesh::operator=(Mesh&& other) noexcept {
-		delete[] positions;
-		delete[] uvCoordinates;
-		delete[] normals;
-		delete[] faces;
+		//Delete the old vectors
+		delete[] vertices;
+		delete[] indices;
 
-		positionC = other.positionC;
-		uvCoordinateC = other.uvCoordinateC;
-		normalC = other.normalC;
-		faceC = other.faceC;
+		//Move over the new variables
+		vertexC = other.vertexC;
+		indexC = other.indexC;
+		vertices = other.vertices;
+		indices = other.indices;
 
-		positions = other.positions;
-		uvCoordinates = other.uvCoordinates;
-		normals = other.normals;
-		faces = other.faces;
-
-		other.positions = nullptr;
-		other.uvCoordinates = nullptr;
-		other.normals = nullptr;
-		other.faces = nullptr;
+		//Reset the rvalue's pointers
+		other.vertices = nullptr;
+		other.indices = nullptr;
 
 		return *this;
 	}
@@ -183,25 +171,9 @@ namespace mge {
 			return AssetSaveResult::FILE_NOT_FOUND;
 
 		fileOutput << "#Saved with MG Engine's epic swag weed edition obj file saver which is very epic swag weed\n";
+		fileOutput << "sheesh bussin moment";
 
-		//Output every position to the file
-		for (size_t i = 0; i < positionC; i++)
-			fileOutput << "v " << positions[i].x << " " << positions[i].y << positions[i].z << "\n";
-		//Output every UV coordinate to the file
-		for (size_t i = 0; i < uvCoordinateC; i++)
-			fileOutput << "vt " << uvCoordinates[i].x << " " << uvCoordinates[i].y << "\n";
-		//Output every normal to the file
-		for (size_t i = 0; i < normalC; i++)
-			fileOutput << "vn " << normals[i].x << " " << normals[i].y << normals[i].z << "\n";
-		//Output every face to the file
-		for (size_t i = 0; i < faceC; i++) {
-			fileOutput << "f ";
-			for (size_t j = 0; j < faces[i].vertexCount; j++)
-				fileOutput << (faces[i].positionIndices[j] + 1) << "/" << (faces[i].uvCoordinateIndices + 1) << "/" << (faces[i].normalIndex + 1) << " ";
-			fileOutput << "\n";
-		}
-
-		if (!fileOutput.good())
+		if (fileOutput.bad())
 			return AssetSaveResult::OTHER;
 
 		fileOutput.close();

@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp" />
-    <ClCompile Include="src\Assets\Rendering\Face.cpp" />
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp" />
     <ClCompile Include="src\Virtual\GameNode.cpp" />
     <ClCompile Include="src\Math\Matrix4x4.cpp" />
@@ -184,6 +183,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -202,6 +202,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,6 +221,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -238,6 +240,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

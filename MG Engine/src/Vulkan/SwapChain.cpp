@@ -60,12 +60,12 @@ namespace mge {
         }
         swapChainImageViews.clear();
 
-        if (swapChain != nullptr) {
+        if (swapChain != (VkSwapchainKHR)nullptr) {
             vkDestroySwapchainKHR(device(), swapChain, nullptr);
-            swapChain = nullptr;
+            swapChain = (VkSwapchainKHR)nullptr;
         }
 
-        for (int i = 0; i < depthImages.size(); i++) {
+        for (size_t i = 0; i < depthImages.size(); i++) {
             vkDestroyImageView(device(), depthImageViews[i], nullptr);
             vkDestroyImage(device(), depthImages[i], nullptr);
             vkFreeMemory(device(), depthImageMemorys[i], nullptr);
@@ -302,7 +302,7 @@ namespace mge {
         depthImageMemorys.resize(imageCount());
         depthImageViews.resize(imageCount());
 
-        for (int i = 0; i < depthImages.size(); i++) {
+        for (size_t i = 0; i < depthImages.size(); i++) {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;

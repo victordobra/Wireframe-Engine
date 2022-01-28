@@ -91,7 +91,8 @@ namespace mge {
 			meshRenderer->Bind(commandBuffer);
 			
 			//Push the transformation matrices
-			PushConstantData push{ meshRenderer->GetTransformationMatrix() * camera, projection };
+			Matrix4x4 meshTransform = meshRenderer->GetTransformationMatrix();
+			PushConstantData push{ meshTransform, camera * projection };
 			vkCmdPushConstants(commandBuffer, GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstantData), &push);
 
 			//Draw the model
