@@ -4,23 +4,32 @@
 #include "SwapChain.h"
 #include "RenderingPipeline.h"
 #include "PushConstantData.h"
+#include "GameLoopManager.h"
+#include "GlobalUbo.h"
+#include "EngineMath.h"
 
 namespace mge {
+	void Camera::GameStart() {
+		aspectRatio = (float)GLMGetGameWidth() / (float)GLMGetGameHeight();
+	}
+
 	void Camera::GameRender() {
 		//Create the camera and projection matrix
-		Matrix4x4 camera = GetCameraMatrix();
-		Matrix4x4 projection;
-		float tanHalf = Tan(fov / 2.0f * degToRad);
+		Matrix4x4 camera = GetInvCameraMatrix();
+		Matrix4x4 projection = Matrix4x4::PerspectiveProjection(fov * DEG_TO_RAD_MULTIPLIER, aspectRatio, zNear, zFar);
 
-		projection[0][0] = 1.0f / (tanHalf * aspectRatio);
-		projection[1][1] = 1.0f / tanHalf;
-		projection[2][2] = zFar / (zFar - zNear);
-		projection[2][3] = -(zFar * zNear) / (zFar - zNear);
-		projection[3][2] = 1.0f;
-		projection[3][3] = 0.0f;
+		std::vector<Buffer*> uboBuffers = GetUniformBuffers();
 
-		Vector4 test{ 0.0f, -0.5f, 1.0f, 1.0f };
-		Vector4 testResult = projection * test;
+		GlobalUbo ubo{};
+		ubo.view = camera.Transposed();
+		ubo.projection = projection.Transposed();
+
+		ubo.lightColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+		ubo.lightPosition = { 3.0f, 3.0f, 3.0f };
+
+		size_t frameIndex = GLMGetFrameIndex() % MAX_FRAMES_IN_FLIGHT;
+		uboBuffers[frameIndex]->WriteToBuffer(&ubo);
+		uboBuffers[frameIndex]->Flush();
 
 		VkCommandBuffer commandBuffer;
 
@@ -38,7 +47,7 @@ namespace mge {
 		allocInfo.commandPool = GetCommandPool();
 		allocInfo.commandBufferCount = 1;
 
-		if (vkAllocateCommandBuffers(device(), &allocInfo, &commandBuffer) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(GetDevice(), &allocInfo, &commandBuffer) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate command buffers!");
 
 		//Begin recording the command buffer
@@ -57,11 +66,17 @@ namespace mge {
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = GetSwapChainExtent();
 
-		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { clearColor.x, clearColor.y, clearColor.z, 1.0f };
-		clearValues[1].depthStencil = { 1.0f, 0 };
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
+		VkClearValue clearValues[2]{};
+		if (clearMode == ClearMode::COLOR) {
+			clearValues[0].color = { clearColor.x, clearColor.y, clearColor.z, 1.0f };
+			clearValues[1].depthStencil = { 1.0f, 0 };
+		} else {
+			clearValues[0].color = { 0.0f, 0.0f, 0.0f, 0.0f };
+			clearValues[1].depthStencil = { 1.0f, 0 };
+		}
+		
+		renderPassInfo.clearValueCount = 2;
+		renderPassInfo.pClearValues = clearValues;
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -69,8 +84,8 @@ namespace mge {
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)OSMGetGameWidth();
-		viewport.height = (float)OSMGetGameHeight();
+		viewport.width = (float)GLMGetGameWidth();
+		viewport.height = (float)GLMGetGameHeight();
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		VkRect2D scissor{ { 0, 0 }, GetSwapChainExtent() };
@@ -89,10 +104,13 @@ namespace mge {
 
 			//Bind the model
 			meshRenderer->Bind(commandBuffer);
+
+			//Bind the descriptor set
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, GetPipelineLayout(), 0, 1, &GetDescriptorSets()[frameIndex], 0, nullptr);
 			
 			//Push the transformation matrices
 			Matrix4x4 meshTransform = meshRenderer->GetTransformationMatrix();
-			PushConstantData push{ meshTransform, camera * projection };
+			PushConstantData push{ Matrix4x4::Rotation(meshRenderer->rotation).Transposed(), meshTransform.Transposed()};
 			vkCmdPushConstants(commandBuffer, GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstantData), &push);
 
 			//Draw the model
@@ -112,14 +130,14 @@ namespace mge {
 			throw std::runtime_error("Failed to submit command buffers!");
 
 		//Clear the command buffers
-		vkDeviceWaitIdle(device());
-		vkFreeCommandBuffers(device(), GetCommandPool(), 1, &commandBuffer);
+		vkDeviceWaitIdle(GetDevice());
+		vkFreeCommandBuffers(GetDevice(), GetCommandPool(), 1, &commandBuffer);
 	}
 
 	Matrix4x4 Camera::GetCameraMatrix() {
-		Matrix4x4 translation = Matrix4x4::Translation(-position);
-		Matrix4x4 rot = Matrix4x4::Rotation(rotation.Inverted());
-		Matrix4x4 product = translation * rot;
-		return product;
+		return Matrix4x4::Rotation(rotation) * Matrix4x4::Translation(position);
+	}
+	Matrix4x4 Camera::GetInvCameraMatrix() {
+		return Matrix4x4::Translation(-position) * Matrix4x4::Rotation(rotation.Inverted());
 	}
 }

@@ -3,6 +3,9 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Mesh.h"
+#include "Buffer.h"
+#include "Defines.h"
+
 #include <vector>
 
 namespace mge {
@@ -51,12 +54,10 @@ namespace mge {
 		void CreateVertexBuffer(const std::vector<Vertex>& vertices);
 		void CreateIndexBuffer(const std::vector<uint32_t>& indices);
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		Buffer* vertexBuffer;
 		uint32_t vertexCount;
 
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		Buffer* indexBuffer;
 		uint32_t indexCount;
 	};
 }

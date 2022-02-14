@@ -19,26 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Vulkan\Buffer.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp" />
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp" />
     <ClCompile Include="src\Virtual\GameNode.cpp" />
-    <ClCompile Include="src\Math\Matrix4x4.cpp" />
-    <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\Assets\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Virtual\Asset.cpp" />
     <ClCompile Include="src\Game Loop\GameLoopManager.cpp" />
-    <ClCompile Include="src\Math\EngineMath.cpp" />
     <ClCompile Include="src\OS\OSManager.cpp" />
     <ClCompile Include="src\OS\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\Math\Vector3.cpp" />
-    <ClCompile Include="src\Math\Vector2.cpp" />
-    <ClCompile Include="src\Math\Vector4.cpp" />
+    <ClCompile Include="src\Vulkan\Descriptors.cpp" />
     <ClCompile Include="src\Vulkan\SwapChain.cpp" />
     <ClCompile Include="src\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="src\Rendering\VulkanModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Build\BuildInfo.h" />
+    <ClInclude Include="src\Math\Defines.h" />
+    <ClInclude Include="src\Rendering\GlobalUbo.h" />
+    <ClInclude Include="src\Vulkan\Buffer.h" />
     <ClInclude Include="src\Game Nodes\Rendering\Camera.h" />
     <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h" />
     <ClInclude Include="src\Rendering\PushConstantData.h" />
@@ -59,6 +59,7 @@
     <ClInclude Include="src\OS\Windows\Windows.h" />
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Utility\vector.h" />
+    <ClInclude Include="src\Vulkan\Descriptors.h" />
     <ClInclude Include="src\Vulkan\SwapChain.h" />
     <ClInclude Include="src\Vulkan\VulkanDevice.h" />
     <ClInclude Include="src\Vulkan\VulkanInclude.h" />
@@ -107,6 +108,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -183,7 +187,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -202,7 +206,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -221,7 +225,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -240,7 +244,7 @@
       <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

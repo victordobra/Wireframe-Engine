@@ -35,25 +35,22 @@ namespace mge {
 		gameHeight = OSMGetGameHeight();
 
 		meshRenderer = new MeshRenderer();
+		meshRenderer->position = { 0.0f, -2.0f, 0.0f };
 		meshRenderer->color = { 1.0f, 1.0f, 1.0f };
-		meshRenderer->scale = { 10.0f, 10.0f, 10.0f };
+		meshRenderer->scale = { 1.0f, 1.0f, 1.0f };
 
 		AssetLoadResult result{};
-		Mesh* mesh = new Mesh("Assets\\SmoothVase.obj", result);
+		Mesh* mesh = new Mesh("Assets\\Teapot.obj", result);
 
 		if (result != AssetLoadResult::SUCCESS)
 			throw std::runtime_error("Error occured while reading mesh!");
 
 		meshRenderer->SetMesh(mesh);
 
-
 		camera = new Camera();
-		camera->position = { 0.0f, 2.0f, -4.0f };
+		camera->position = { 0.0f, 0.0f, 7.0f };
 		camera->clearColor = { 0.01f, 0.01f, 0.01f };
 		camera->clearMode = ClearMode::COLOR;
-		camera->zNear = 0.01f;
-		camera->zFar = 100.0f;
-		camera->fov = 60.0f;
 
 		//Run every game start function
 		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
@@ -67,7 +64,9 @@ namespace mge {
 		GameNode::gameNodes[index]->GameRender();
 	}
 
-	static float rot = 0.0f;
+	static float rot;
+	static size_t frameIndex = 0;
+	static Vector3 eulerRotation{};
 
 	void GLMUpdate() {
 		//Start a timer to calculate delta time
@@ -77,16 +76,43 @@ namespace mge {
 		//Create an array of futures
 		std::future<void>* futures = new std::future<void>[GameNode::gameNodeCount];
 
-		rot += 90.0f * deltaTime;
-		if (rot > 360.0f)
-			rot -= 360.0f;
+		//rot += 90.0f * deltaTime;
+		//if (rot > 180.0f)
+		//	rot -= 360.0f;
 
-		meshRenderer->rotation = Quaternion::EulerAngles(0, rot, 0);
+		meshRenderer->rotation = Quaternion::EulerAngles({ 0.f, 45.f * DEG_TO_RAD_MULTIPLIER, 0.f });
+
+		const float speed = 3.0f;
+		const float rotSpeed = 90.0f;
 
 		if (keysDown['W'])
-			camera->position.z += deltaTime;
-		else if (keysDown['S'])
-			camera->position.z -= deltaTime;
+			camera->Translate({ 0.0f, 0.0f, -speed * deltaTime });
+		if (keysDown['S'])
+			camera->Translate({ 0.0f, 0.0f, speed * deltaTime });
+		if (keysDown['A'])
+			camera->Translate({ -speed * deltaTime, 0.0f, 0.0f });
+		if (keysDown['D'])
+			camera->Translate({ speed * deltaTime, 0.0f, 0.0f });
+		if (keysDown['E'])
+			camera->Translate({ 0.0f, speed * deltaTime, 0.0f });
+		if (keysDown['Q'])
+			camera->Translate({ 0.0f, -speed * deltaTime, 0.0f });
+
+		if (keysDown[VK_UP])
+			eulerRotation.x -= rotSpeed * deltaTime;
+		if (keysDown[VK_DOWN])
+			eulerRotation.x += rotSpeed * deltaTime;
+		if (keysDown[VK_LEFT])
+			eulerRotation.y -= rotSpeed * deltaTime;
+		if (keysDown[VK_RIGHT])
+			eulerRotation.y += rotSpeed * deltaTime;
+
+		if (eulerRotation.x > 360.0f)
+			eulerRotation.x -= 360.0f;
+		if (eulerRotation.y > 360.0f)
+			eulerRotation.y -= 360.0f;
+
+		camera->rotation = Quaternion::EulerAngles(eulerRotation * DEG_TO_RAD_MULTIPLIER);
 
 		//Assign to each future the async of running every GameFrame function
 		for (size_t i = 0; i < GameNode::gameNodeCount; i++)
@@ -108,7 +134,8 @@ namespace mge {
 
 		//Stop the timer and measure the time
 		auto end = timer.now();
-		deltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000000;
+		deltaTime = (float)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000000.f;
+		frameIndex++;
 	}
 
 	void GLMOnKeyDown(int keyCode) {
@@ -148,9 +175,14 @@ namespace mge {
 		gameHeight = newHeight;
 		OSMSetGameSize(gameWidth, gameHeight);
 	}
+	
 	float GLMGetDeltaTime() {
 		return deltaTime;
 	}
+	size_t GLMGetFrameIndex() { 
+		return frameIndex; 
+	}
+
 	bool GLMIsKeyDown(int keyCode) {
 		return keysDown[keyCode];
 	}

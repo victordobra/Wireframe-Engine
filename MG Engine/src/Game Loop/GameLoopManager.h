@@ -17,4 +17,5 @@ namespace mge {
 	bool GLMIsKeyReleased(int keyCode);
 
 	float GLMGetDeltaTime();
+	size_t GLMGetFrameIndex();
 }

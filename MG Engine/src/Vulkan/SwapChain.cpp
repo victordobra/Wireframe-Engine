@@ -1,5 +1,6 @@
 #define NOMINMAX
 #include "SwapChain.h"
+#include "Defines.h"
 
 #include <array>
 #include <cstdlib>
@@ -56,44 +57,44 @@ namespace mge {
 
     void ClearSwapChain() {
         for (auto imageView : swapChainImageViews) {
-            vkDestroyImageView(device(), imageView, nullptr);
+            vkDestroyImageView(GetDevice(), imageView, nullptr);
         }
         swapChainImageViews.clear();
 
         if (swapChain != (VkSwapchainKHR)nullptr) {
-            vkDestroySwapchainKHR(device(), swapChain, nullptr);
+            vkDestroySwapchainKHR(GetDevice(), swapChain, nullptr);
             swapChain = (VkSwapchainKHR)nullptr;
         }
 
         for (size_t i = 0; i < depthImages.size(); i++) {
-            vkDestroyImageView(device(), depthImageViews[i], nullptr);
-            vkDestroyImage(device(), depthImages[i], nullptr);
-            vkFreeMemory(device(), depthImageMemorys[i], nullptr);
+            vkDestroyImageView(GetDevice(), depthImageViews[i], nullptr);
+            vkDestroyImage(GetDevice(), depthImages[i], nullptr);
+            vkFreeMemory(GetDevice(), depthImageMemorys[i], nullptr);
         }
         for (auto framebuffer : swapChainFramebuffers)
-            vkDestroyFramebuffer(device(), framebuffer, nullptr);
+            vkDestroyFramebuffer(GetDevice(), framebuffer, nullptr);
 
-        vkDestroyRenderPass(device(), renderPass, nullptr);
+        vkDestroyRenderPass(GetDevice(), renderPass, nullptr);
 
         //Cleanup synchronization objects
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroySemaphore(device(), renderFinishedSemaphores[i], nullptr);
-            vkDestroySemaphore(device(), imageAvailableSemaphores[i], nullptr);
-            vkDestroyFence(device(), inFlightFences[i], nullptr);
+            vkDestroySemaphore(GetDevice(), renderFinishedSemaphores[i], nullptr);
+            vkDestroySemaphore(GetDevice(), imageAvailableSemaphores[i], nullptr);
+            vkDestroyFence(GetDevice(), inFlightFences[i], nullptr);
         }
     }
 
     VkResult AcquireNextImage(uint32_t* imageIndex) {
-        vkWaitForFences(device(), 1, &inFlightFences[currentFrame], VK_TRUE, ULLONG_MAX);
+        vkWaitForFences(GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, ULLONG_MAX);
 
-        VkResult result = vkAcquireNextImageKHR(device(), swapChain, ULLONG_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, imageIndex);
+        VkResult result = vkAcquireNextImageKHR(GetDevice(), swapChain, ULLONG_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, (::uint32_t*)imageIndex);
 
         return result;
     }
 
     VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex) {
         if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
-            vkWaitForFences(device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
+            vkWaitForFences(GetDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
         }
         imagesInFlight[*imageIndex] = inFlightFences[currentFrame];
 
@@ -113,8 +114,8 @@ namespace mge {
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkResetFences(device(), 1, &inFlightFences[currentFrame]);
-        if (vkQueueSubmit(graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
+        vkResetFences(GetDevice(), 1, &inFlightFences[currentFrame]);
+        if (vkQueueSubmit(GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
             VK_SUCCESS) {
             throw std::runtime_error("Failed to submit draw command buffer!");
         }
@@ -129,9 +130,9 @@ namespace mge {
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = swapChains;
 
-        presentInfo.pImageIndices = imageIndex;
+        presentInfo.pImageIndices = (const ::uint32_t*)imageIndex;
 
-        auto result = vkQueuePresentKHR(presentQueue(), &presentInfo);
+        auto result = vkQueuePresentKHR(GetPresentQueue(), &presentInfo);
 
         currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
@@ -153,7 +154,7 @@ namespace mge {
 
         VkSwapchainCreateInfoKHR createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-        createInfo.surface = surface();
+        createInfo.surface = GetSurface();
 
         createInfo.minImageCount = imageCount;
         createInfo.imageFormat = surfaceFormat.format;
@@ -168,7 +169,7 @@ namespace mge {
         if (indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
-            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+            createInfo.pQueueFamilyIndices = (::uint32_t*)queueFamilyIndices;
         }
         else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -184,13 +185,13 @@ namespace mge {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+        if (vkCreateSwapchainKHR(GetDevice(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
             throw std::runtime_error("failed to create swap chain!");
         }
 
-        vkGetSwapchainImagesKHR(device(), swapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, nullptr);
         swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(device(), swapChain, &imageCount, swapChainImages.data());
+        vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, swapChainImages.data());
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -210,7 +211,7 @@ namespace mge {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(device(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
+            if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
                 VK_SUCCESS) {
                 throw std::runtime_error("failed to create texture image view!");
             }
@@ -270,13 +271,13 @@ namespace mge {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(device(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
+        if (vkCreateRenderPass(GetDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
             throw std::runtime_error("failed to create render pass!");
     }
 
     void CreateFramebuffers() {
-        swapChainFramebuffers.resize(imageCount());
-        for (size_t i = 0; i < imageCount(); i++) {
+        swapChainFramebuffers.resize(GetImageCount());
+        for (size_t i = 0; i < GetImageCount(); i++) {
             std::array<VkImageView, 2> attachments = { swapChainImageViews[i], depthImageViews[i] };
 
             VkExtent2D swapChainExtent = GetSwapChainExtent();
@@ -289,7 +290,7 @@ namespace mge {
             framebufferInfo.height = swapChainExtent.height;
             framebufferInfo.layers = 1;
 
-            if (vkCreateFramebuffer(device(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
+            if (vkCreateFramebuffer(GetDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
                 throw std::runtime_error("failed to create framebuffer!");
         }
     }
@@ -298,9 +299,9 @@ namespace mge {
         VkFormat depthFormat = FindDepthFormat();
         VkExtent2D swapChainExtent = GetSwapChainExtent();
 
-        depthImages.resize(imageCount());
-        depthImageMemorys.resize(imageCount());
-        depthImageViews.resize(imageCount());
+        depthImages.resize(GetImageCount());
+        depthImageMemorys.resize(GetImageCount());
+        depthImageViews.resize(GetImageCount());
 
         for (size_t i = 0; i < depthImages.size(); i++) {
             VkImageCreateInfo imageInfo{};
@@ -332,7 +333,7 @@ namespace mge {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS)
+            if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS)
                 throw std::runtime_error("failed to create texture image view!");
         }
     }
@@ -341,7 +342,7 @@ namespace mge {
         imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-        imagesInFlight.resize(imageCount(), VK_NULL_HANDLE);
+        imagesInFlight.resize(GetImageCount(), VK_NULL_HANDLE);
 
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -351,7 +352,7 @@ namespace mge {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            if (vkCreateSemaphore(device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
+            if (vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
                 throw std::runtime_error("failed to create synchronization objects for a frame!");
         }
     }
@@ -398,11 +399,11 @@ namespace mge {
     VkFramebuffer GetFrameBuffer(int index) { return swapChainFramebuffers[index]; }
     VkRenderPass GetRenderPass() { return renderPass; }
     VkImageView GetImageView(int index) { return swapChainImageViews[index]; }
-    size_t imageCount() { return swapChainImages.size(); }
+    size_t GetImageCount() { return swapChainImages.size(); }
     VkFormat GetSwapChainImageFormat() { return swapChainImageFormat; }
     VkExtent2D GetSwapChainExtent() { return swapChainExtent; }
-    uint32_t width() { return swapChainExtent.width; }
-    uint32_t height() { return swapChainExtent.height; }
+    uint32_t GetWidth() { return swapChainExtent.width; }
+    uint32_t GetHeight() { return swapChainExtent.height; }
 
     float ExtentAspectRatio() {
         return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);

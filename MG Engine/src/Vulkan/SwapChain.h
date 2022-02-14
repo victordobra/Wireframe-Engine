@@ -1,5 +1,6 @@
 #pragma once
 #include "VulkanDevice.h"
+#include "Defines.h"
 
 #include <string>
 #include <vector>
@@ -13,11 +14,11 @@ namespace mge {
     VkFramebuffer GetFrameBuffer(int index);
     VkRenderPass GetRenderPass();
     VkImageView GetImageView(int index);
-    size_t imageCount();
+    size_t GetImageCount();
     VkFormat GetSwapChainImageFormat();
     VkExtent2D GetSwapChainExtent();
-    uint32_t width();
-    uint32_t height();
+    uint32_t GetWidth();
+    uint32_t GetHeight();
 
     float ExtentAspectRatio();
     VkFormat FindDepthFormat();

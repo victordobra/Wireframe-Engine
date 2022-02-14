@@ -17,7 +17,7 @@ namespace mge {
 			vertices[i] = mesh->vertices[i];
 
 		for (size_t i = 0; i < mesh->indexC; i++)
-			indices[i] = mesh->indices[i];
+			indices[i] = (uint32_t)mesh->indices[i];
 
 		std::vector<VulkanModel::Vertex> vertices2 = { VulkanModel::Vertex({1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}), 
 			                                          VulkanModel::Vertex({-1.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}), 
@@ -32,62 +32,45 @@ namespace mge {
 	void VulkanModel::CreateVertexBuffer(const std::vector<Vertex>& vertices) {
 		vertexCount = (uint32_t)vertices.size();
 		VkDeviceSize bufferSize = sizeof(Vertex) * vertexCount;
+		uint32_t vertexSize = sizeof(Vertex);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
+		Buffer stagingBuffer{ vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
 
-		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		stagingBuffer.Map();
+		stagingBuffer.WriteToBuffer((void*)vertices.data());
 
-		void* data;
-		vkMapMemory(device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), (size_t)bufferSize);
-		vkUnmapMemory(device(), stagingBufferMemory);
+		vertexBuffer = new Buffer(vertexSize, vertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-		CreateBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-
-		CopyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-		vkDestroyBuffer(device(), stagingBuffer, nullptr);
-		vkFreeMemory(device(), stagingBufferMemory, nullptr);
+		CopyBuffer(stagingBuffer.GetBuffer(), vertexBuffer->GetBuffer(), bufferSize);
 	}
 	void VulkanModel::CreateIndexBuffer(const std::vector<uint32_t>& indices) {
 		indexCount = (uint32_t)indices.size();
 		VkDeviceSize bufferSize = sizeof(uint32_t) * indexCount;
+		uint32_t indexSize = sizeof(uint32_t);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
+		Buffer stagingBuffer{ indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
 
-		CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		stagingBuffer.Map();
+		stagingBuffer.WriteToBuffer((void*)indices.data());
 
-		void* data;
-		vkMapMemory(device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), (size_t)bufferSize);
-		vkUnmapMemory(device(), stagingBufferMemory);
+		indexBuffer = new Buffer(indexSize, indexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-		CreateBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-
-		CopyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-		vkDestroyBuffer(device(), stagingBuffer, nullptr);
-		vkFreeMemory(device(), stagingBufferMemory, nullptr);
+		CopyBuffer(stagingBuffer.GetBuffer(), indexBuffer->GetBuffer(), bufferSize);
 	}
 
 	void VulkanModel::Draw(VkCommandBuffer commandBuffer) {
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 	void VulkanModel::Bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer };
+		VkBuffer buffers[] = { vertexBuffer->GetBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 	}
 
 	VulkanModel::~VulkanModel() {
-		vkDestroyBuffer(device(), vertexBuffer, nullptr);
-		vkFreeMemory(device(), vertexBufferMemory, nullptr);
-
-		vkDestroyBuffer(device(), indexBuffer, nullptr);
-		vkFreeMemory(device(), indexBufferMemory, nullptr);
+		delete vertexBuffer;
+		delete indexBuffer;
 	}
 
 	std::vector<VkVertexInputBindingDescription> VulkanModel::Vertex::GetBindingDescriptions(){

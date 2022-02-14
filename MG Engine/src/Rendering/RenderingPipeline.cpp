@@ -7,6 +7,8 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "PushConstantData.h"
+#include "Descriptors.h"
+#include "GlobalUbo.h"
 
 #include <vector>
 #include <fstream>
@@ -43,6 +45,11 @@ namespace mge {
 	std::vector<VkCommandBuffer> commandBuffers;
 
 	std::unique_ptr<VulkanModel> model;
+
+	DescriptorPool* globalPool;
+	DescriptorSetLayout* globalSetLayout;
+	std::vector<VkDescriptorSet> globalDescriptorSets(MAX_FRAMES_IN_FLIGHT);
+	std::vector<Buffer*> uboBuffers(MAX_FRAMES_IN_FLIGHT);
 
 	static std::vector<char> ReadFile(const char* filePath) {
 		std::ifstream file{ filePath, std::ios::binary | std::ios::ate };
@@ -136,13 +143,13 @@ namespace mge {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
-		createInfo.pCode = (const uint32_t*)code.data();
+		createInfo.pCode = (const ::uint32_t*)code.data();
 
-		if (vkCreateShaderModule(device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)\
+		if (vkCreateShaderModule(GetDevice(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)\
 			throw std::runtime_error("Failed to create shader module!");
 	}
 
-	static void CreatePipelineLayout() {
+	static void CreatePipelineLayout(VkDescriptorSetLayout descriptorSetLayout) {
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		pushConstantRange.offset = 0;
@@ -150,11 +157,11 @@ namespace mge {
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-		if (vkCreatePipelineLayout(device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create pipeline layout!");
 	}
 	static void CreateGraphicsPipeline(const char* vertPath, const char* fragPath, const PipelineConfigInfo& configInfo) {
@@ -207,7 +214,7 @@ namespace mge {
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		auto result = vkCreateGraphicsPipelines(device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
+		auto result = vkCreateGraphicsPipelines(GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 		if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to create graphics pipeline!");
 	}
@@ -216,7 +223,23 @@ namespace mge {
 		InitiateDevice();
 		InitiateSwapChain({ (uint32_t)OSMGetGameWidth(), (uint32_t)OSMGetGameHeight() });
 
-		CreatePipelineLayout();
+		globalPool = DescriptorPool::Builder().SetMaxSets(MAX_FRAMES_IN_FLIGHT).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, MAX_FRAMES_IN_FLIGHT).Build();
+
+		uboBuffers = std::vector<Buffer*>(MAX_FRAMES_IN_FLIGHT);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			uboBuffers[i] = new Buffer(sizeof(GlobalUbo), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			uboBuffers[i]->Map();
+		}
+
+		globalSetLayout = DescriptorSetLayout::Builder().AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT).Build();
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			auto bufferInfo = uboBuffers[i]->DescriptorInfo();
+			DescriptorWriter(*globalSetLayout, *globalPool).WriteBuffer(0, &bufferInfo).Build(globalDescriptorSets[i]);
+		}
+
+		CreatePipelineLayout(globalSetLayout->GetDescriptorSetLayout());
 		PipelineConfigInfo pipelineConfigInfo{};
 		DefaultPipelineConfigInfo(pipelineConfigInfo);
 		pipelineConfigInfo.renderPass = GetRenderPass();
@@ -224,10 +247,10 @@ namespace mge {
 		CreateGraphicsPipeline("Shaders\\VertShader.vert.spv", "Shaders\\FragShader.frag.spv", pipelineConfigInfo);
 	}
 	void ClearPipeline() {
-		vkDeviceWaitIdle(device());
-		vkDestroyShaderModule(device(), vertShaderModule, nullptr);
-		vkDestroyShaderModule(device(), fragShaderModule, nullptr);
-		vkDestroyPipeline(device(), graphicsPipeline, nullptr);
+		vkDeviceWaitIdle(GetDevice());
+		vkDestroyShaderModule(GetDevice(), vertShaderModule, nullptr);
+		vkDestroyShaderModule(GetDevice(), fragShaderModule, nullptr);
+		vkDestroyPipeline(GetDevice(), graphicsPipeline, nullptr);
 
 		ClearSwapChain();
 		ClearDevice();
@@ -239,5 +262,17 @@ namespace mge {
 
 	VkPipelineLayout GetPipelineLayout() {
 		return pipelineLayout;
+	}
+	DescriptorPool* GetGlobalPool() {
+		return globalPool;
+	}
+	DescriptorSetLayout* GetGlobalSetLayout() {
+		return globalSetLayout;
+	}
+	std::vector<VkDescriptorSet> GetDescriptorSets() {
+		return globalDescriptorSets;
+	}
+	std::vector<Buffer*> GetUniformBuffers() {
+		return uboBuffers;
 	}
 }

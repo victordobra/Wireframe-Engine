@@ -3,7 +3,7 @@
 
 namespace mge {
 	struct PushConstantData {
+		Matrix4x4 meshRot;
 		Matrix4x4 mesh;
-		Matrix4x4 camera;
 	};
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "VulkanInclude.h"
+#include "Defines.h"
 
 #include <string>
 #include <vector>
@@ -30,11 +31,11 @@ namespace mge {
     void ClearDevice();
 
     VkCommandPool GetCommandPool();
-    VkDevice device();
-    VkSurfaceKHR surface();
-    VkQueue graphicsQueue();
-    VkQueue presentQueue();
-    VkPhysicalDeviceProperties properties();
+    VkDevice GetDevice();
+    VkSurfaceKHR GetSurface();
+    VkQueue GetGraphicsQueue();
+    VkQueue GetPresentQueue();
+    VkPhysicalDeviceProperties& GetProperties();
 
     SwapChainSupportDetails GetSwapChainSupport();
     uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);

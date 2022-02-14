@@ -132,13 +132,13 @@ namespace mge {
 
     void PickPhysicalDevice() {
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-        if (deviceCount == 0) {
+        vkEnumeratePhysicalDevices(instance, (::uint32_t*)&deviceCount, nullptr);
+        if (deviceCount == 0)
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
-        }
+
         std::cout << "Device count: " << deviceCount << "\n";
         std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+        vkEnumeratePhysicalDevices(instance, (::uint32_t*)&deviceCount, devices.data());
 
         for (const auto& device : devices)
             if (IsDeviceSuitable(device)) {
@@ -263,10 +263,10 @@ namespace mge {
 
     bool CheckValidationLayerSupport() {
         uint32_t layerCount;
-        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+        vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+        vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, availableLayers.data());
 
         for (const char* layerName : validationLayers) {
             bool layerFound = false;
@@ -286,9 +286,9 @@ namespace mge {
 
     void HasRequiredInstanceExtensions() {
         uint32_t extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+        vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+        vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, extensions.data());
 
         std::cout << "Available extensions:" << std::endl;
         std::unordered_set<std::string> available;
@@ -301,19 +301,19 @@ namespace mge {
         for (const auto& required : requiredExtensions) {
             std::cout << "\t" << required << std::endl;
             if (available.find(required) == available.end())
-                throw std::runtime_error("Missing required glfw extension");
+                throw std::runtime_error("Missing required extension");
         }
     }
 
     bool CheckDeviceExtensionSupport(VkPhysicalDevice device) {
         uint32_t extensionCount;
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, (::uint32_t*)&extensionCount, nullptr);
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
         vkEnumerateDeviceExtensionProperties(
             device,
             nullptr,
-            &extensionCount,
+            (::uint32_t*)&extensionCount,
             availableExtensions.data());
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
@@ -329,10 +329,10 @@ namespace mge {
         QueueFamilyIndices indices;
 
         uint32_t queueFamilyCount = 0;
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, (::uint32_t*)&queueFamilyCount, nullptr);
 
         std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+        vkGetPhysicalDeviceQueueFamilyProperties(device, (::uint32_t*)&queueFamilyCount, queueFamilies.data());
 
         int i = 0;
         for (const auto& queueFamily : queueFamilies) {
@@ -360,22 +360,22 @@ namespace mge {
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
         uint32_t formatCount;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, (::uint32_t*)&formatCount, nullptr);
 
         if (formatCount != 0) {
             details.formats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, (::uint32_t*)&formatCount, details.formats.data());
         }
 
         uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, nullptr);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, (::uint32_t*)&presentModeCount, nullptr);
 
         if (presentModeCount != 0) {
             details.presentModes.resize(presentModeCount);
             vkGetPhysicalDeviceSurfacePresentModesKHR(
                 device,
                 surface_,
-                &presentModeCount,
+                (::uint32_t*)&presentModeCount,
                 details.presentModes.data());
         }
         return details;
@@ -528,9 +528,9 @@ namespace mge {
     QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(physicalDevice); }
 
     VkCommandPool GetCommandPool() { return commandPool; }
-    VkDevice device() { return device_; }
-    VkSurfaceKHR surface() { return surface_; }
-    VkQueue graphicsQueue() { return graphicsQueue_; }
-    VkQueue presentQueue() { return presentQueue_; }
-    VkPhysicalDeviceProperties properties() { return properties_; }
+    VkDevice GetDevice() { return device_; }
+    VkSurfaceKHR GetSurface() { return surface_; }
+    VkQueue GetGraphicsQueue() { return graphicsQueue_; }
+    VkQueue GetPresentQueue() { return presentQueue_; }
+    VkPhysicalDeviceProperties& GetProperties() { return properties_; }
 }
