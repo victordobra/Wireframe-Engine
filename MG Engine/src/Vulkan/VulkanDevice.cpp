@@ -4,7 +4,6 @@
 
 #include "VulkanInclude.h"
 #include "VulkanDevice.h"
-#include "vector.h"
 
 #include <cstring>
 #include <iostream>
@@ -262,7 +261,7 @@ namespace mge {
     }
 
     bool CheckValidationLayerSupport() {
-        uint32_t layerCount;
+        uint32_t layerCount = 0;
         vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
@@ -359,7 +358,7 @@ namespace mge {
         SwapChainSupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
-        uint32_t formatCount;
+        uint32_t formatCount = 0;
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, (::uint32_t*)&formatCount, nullptr);
 
         if (formatCount != 0) {

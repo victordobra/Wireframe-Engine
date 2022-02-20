@@ -1,19 +1,20 @@
 #include "Camera.h"
-#include "MeshRenderer.h"
+#include "ModelRenderer.h"
 #include "VulkanModel.h"
 #include "SwapChain.h"
 #include "RenderingPipeline.h"
 #include "PushConstantData.h"
-#include "GameLoopManager.h"
+#include "GraphicsInfo.h"
+#include "EngineTime.h"
 #include "GlobalUbo.h"
 #include "EngineMath.h"
 
 namespace mge {
-	void Camera::GameStart() {
-		aspectRatio = (float)GLMGetGameWidth() / (float)GLMGetGameHeight();
+	void Camera::Start() {
+		aspectRatio = (float32_t)GetScreenWidth() / (float32_t)GetScreenHeight();
 	}
 
-	void Camera::GameRender() {
+	void Camera::Render() {
 		//Create the camera and projection matrix
 		Matrix4x4 camera = GetInvCameraMatrix();
 		Matrix4x4 projection = Matrix4x4::PerspectiveProjection(fov * DEG_TO_RAD_MULTIPLIER, aspectRatio, zNear, zFar);
@@ -27,7 +28,7 @@ namespace mge {
 		ubo.lightColor = { 1.0f, 0.0f, 0.0f, 1.0f };
 		ubo.lightPosition = { 3.0f, 3.0f, 3.0f };
 
-		size_t frameIndex = GLMGetFrameIndex() % MAX_FRAMES_IN_FLIGHT;
+		size_t frameIndex = GetFrameIndex() % MAX_FRAMES_IN_FLIGHT;
 		uboBuffers[frameIndex]->WriteToBuffer(&ubo);
 		uboBuffers[frameIndex]->Flush();
 
@@ -61,7 +62,7 @@ namespace mge {
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = GetRenderPass();
-		renderPassInfo.framebuffer = GetFrameBuffer((int)imageIndex);
+		renderPassInfo.framebuffer = GetFrameBuffer((sint32_t)imageIndex);
 
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = GetSwapChainExtent();
@@ -84,8 +85,8 @@ namespace mge {
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)GLMGetGameWidth();
-		viewport.height = (float)GLMGetGameHeight();
+		viewport.width = (float32_t)GetScreenWidth();
+		viewport.height = (float32_t)GetScreenHeight();
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		VkRect2D scissor{ { 0, 0 }, GetSwapChainExtent() };
@@ -95,26 +96,27 @@ namespace mge {
 		//Bind the pipeline
 		PipelineBind(commandBuffer);
 
-		for (size_t i = 0; i < GameNode::gameNodeCount; i++) {
-			GameNode* gameNode = GameNode::gameNodes[i];
-			MeshRenderer* meshRenderer = dynamic_cast<MeshRenderer*>(gameNode);
+		std::vector<Node*> nodes = Node::scene->GetChildren();
+		for (size_t i = 0; i < nodes.size(); i++) {
+			Node* node = nodes[i];
+			ModelRenderer* modelRenderer = dynamic_cast<ModelRenderer*>(node);
 			//Check if the current game node is a mesh renderer
-			if (meshRenderer == nullptr)
+			if (modelRenderer == nullptr)
 				continue;
 
 			//Bind the model
-			meshRenderer->Bind(commandBuffer);
+			modelRenderer->Bind(commandBuffer);
 
 			//Bind the descriptor set
 			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, GetPipelineLayout(), 0, 1, &GetDescriptorSets()[frameIndex], 0, nullptr);
 			
 			//Push the transformation matrices
-			Matrix4x4 meshTransform = meshRenderer->GetTransformationMatrix();
-			PushConstantData push{ Matrix4x4::Rotation(meshRenderer->rotation).Transposed(), meshTransform.Transposed()};
+			Matrix4x4 meshTransform = modelRenderer->GetTransformationMatrix();
+			PushConstantData push{ Matrix4x4::Rotation(modelRenderer->rotation).Transposed(), meshTransform.Transposed()};
 			vkCmdPushConstants(commandBuffer, GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstantData), &push);
 
 			//Draw the model
-			meshRenderer->Draw(commandBuffer);
+			modelRenderer->Draw(commandBuffer);
 		}
 
 		//End the render pass

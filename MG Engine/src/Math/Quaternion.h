@@ -1,6 +1,8 @@
 #pragma once
 #include "Defines.h"
 
+#include <cstring>
+
 namespace mge {
 	struct Quaternion {
 		static Quaternion Identity() { return { 0.f, 0.f, 0.f, 1.f }; }

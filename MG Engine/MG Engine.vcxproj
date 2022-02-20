@@ -19,15 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\General\Graphics Info\GraphicsInfo.cpp" />
+    <ClCompile Include="src\General\Input\Input.cpp" />
+    <ClCompile Include="src\General\Time\EngineTime.cpp" />
     <ClCompile Include="src\Vulkan\Buffer.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
-    <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp" />
+    <ClCompile Include="src\Game Nodes\Rendering\ModelRenderer.cpp" />
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp" />
-    <ClCompile Include="src\Virtual\GameNode.cpp" />
-    <ClCompile Include="src\Assets\Rendering\Mesh.cpp" />
+    <ClCompile Include="src\Virtual\Node.cpp" />
+    <ClCompile Include="src\Assets\Rendering\Model.cpp" />
     <ClCompile Include="src\Virtual\Asset.cpp" />
-    <ClCompile Include="src\Game Loop\GameLoopManager.cpp" />
-    <ClCompile Include="src\OS\OSManager.cpp" />
+    <ClCompile Include="src\General\Game Loop\GameLoopManager.cpp" />
     <ClCompile Include="src\OS\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Vulkan\Descriptors.cpp" />
     <ClCompile Include="src\Vulkan\SwapChain.cpp" />
@@ -36,29 +38,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Build\BuildInfo.h" />
-    <ClInclude Include="src\Math\Defines.h" />
+    <ClInclude Include="src\Core\Defines.h" />
+    <ClInclude Include="src\Game Nodes\Testing\CameraController.h" />
+    <ClInclude Include="src\General\Graphics Info\GraphicsInfo.h" />
+    <ClInclude Include="src\General\Input\Input.h" />
+    <ClInclude Include="src\General\Input\InputInternal.h" />
+    <ClInclude Include="src\General\Input\Key.h" />
+    <ClInclude Include="src\General\Time\EngineTime.h" />
+    <ClInclude Include="src\General\Time\EngineTimeInternal.h" />
     <ClInclude Include="src\Rendering\GlobalUbo.h" />
     <ClInclude Include="src\Vulkan\Buffer.h" />
     <ClInclude Include="src\Game Nodes\Rendering\Camera.h" />
-    <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h" />
+    <ClInclude Include="src\Game Nodes\Rendering\ModelRenderer.h" />
     <ClInclude Include="src\Rendering\PushConstantData.h" />
     <ClInclude Include="src\Rendering\RenderingPipeline.h" />
-    <ClInclude Include="src\Virtual\GameNode.h" />
+    <ClInclude Include="src\Virtual\Node.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
-    <ClInclude Include="src\Assets\Rendering\Mesh.h" />
+    <ClInclude Include="src\Assets\Rendering\Model.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\OS\Windows\WindowsInternal.h" />
     <ClInclude Include="src\Virtual\Asset.h" />
-    <ClInclude Include="src\Game Loop\GameLoopManager.h" />
-    <ClInclude Include="src\Game Loop\GameLoopManagerInternal.h" />
+    <ClInclude Include="src\General\Game Loop\GameLoopManager.h" />
     <ClInclude Include="src\Math\EngineMath.h" />
-    <ClInclude Include="src\OS\OSManager.h" />
-    <ClInclude Include="src\OS\OSManagerInternal.h" />
     <ClInclude Include="src\OS\Windows\Windows.h" />
     <ClInclude Include="src\Math\Vector2.h" />
-    <ClInclude Include="src\Utility\vector.h" />
     <ClInclude Include="src\Vulkan\Descriptors.h" />
     <ClInclude Include="src\Vulkan\SwapChain.h" />
     <ClInclude Include="src\Vulkan\VulkanDevice.h" />
@@ -68,19 +73,19 @@
   <ItemGroup>
     <CustomBuild Include="src\Shaders\FragShader.frag">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling shader</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling shader</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling shader</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling shader</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
@@ -91,16 +96,16 @@
     </CustomBuild>
     <CustomBuild Include="src\Shaders\VertShader.vert">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VULKAN_SDK)\Bin\glslc.exe "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(ProjectDir)\glsl\glslc.exe" "%(FullPath)" -o "$(TargetDir)Shaders\%(Filename)%(Extension).spv"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)Shaders\%(Filename)%(Extension).spv</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -184,10 +189,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,10 +208,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -222,10 +227,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -241,10 +246,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Utility;src\Rendering;src\OS;src\Math;src\Game Nodes\Rendering;src\Game Loop;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

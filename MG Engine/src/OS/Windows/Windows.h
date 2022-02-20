@@ -1,11 +1,11 @@
 #pragma once
+#include "Defines.h"
 
 namespace mge {
 	size_t WindowsGetScreenWidth();
 	size_t WindowsGetScreenHeight();
-	size_t WindowsGetGameWidth();
-	size_t WindowsGetGameHeight();
-	void WindowsSetGameSize(size_t newWidth, size_t newHeight);
-	char* WindowsGetTitle();
-	void WindowsSetTitle(const char* newString);
+	bool8_t WindowsIsWindowActive();
+
+	char_t* WindowsGetTitle();
+	void WindowsSetTitle(const char_t* newString);
 }

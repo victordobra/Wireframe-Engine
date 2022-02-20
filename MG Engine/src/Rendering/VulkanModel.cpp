@@ -1,5 +1,5 @@
 #include "VulkanModel.h"
-#include "Mesh.h"
+#include "Model.h"
 
 #include <unordered_map>
 
@@ -9,21 +9,15 @@ namespace mge {
 		CreateIndexBuffer(indices);
 	}
 
-	VulkanModel::VulkanModel(const Mesh* mesh) {
-		std::vector<VulkanModel::Vertex> vertices(mesh->vertexC);
-		std::vector<uint32_t> indices(mesh->indexC);
+	VulkanModel::VulkanModel(const Model* model) {
+		std::vector<VulkanModel::Vertex> vertices(model->vertexC);
+		std::vector<uint32_t> indices(model->indexC);
 
-		for (size_t i = 0; i < mesh->vertexC; i++)
-			vertices[i] = mesh->vertices[i];
+		for (size_t i = 0; i < model->vertexC; i++)
+			vertices[i] = model->vertices[i];
 
-		for (size_t i = 0; i < mesh->indexC; i++)
-			indices[i] = (uint32_t)mesh->indices[i];
-
-		std::vector<VulkanModel::Vertex> vertices2 = { VulkanModel::Vertex({1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}), 
-			                                          VulkanModel::Vertex({-1.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}), 
-			                                          VulkanModel::Vertex({-1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}),
-			                                          VulkanModel::Vertex({1.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}), };
-		std::vector<uint32_t> indices2 = { 0, 1, 2, 0, 3, 1 };
+		for (size_t i = 0; i < model->indexC; i++)
+			indices[i] = (uint32_t)model->indices[i];
 
 		CreateVertexBuffer(vertices);
 		CreateIndexBuffer(indices);
@@ -62,7 +56,7 @@ namespace mge {
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 	void VulkanModel::Bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer->GetBuffer()};
+		VkBuffer buffers[] = { vertexBuffer->GetBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);

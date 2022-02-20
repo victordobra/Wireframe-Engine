@@ -1,19 +1,16 @@
 #include "RenderingPipeline.h"
-#include "VulkanInclude.h"
 #include "VulkanDevice.h"
 #include "SwapChain.h"
-#include "OSManager.h"
 #include "VulkanModel.h"
-#include "Vector2.h"
-#include "Vector3.h"
+
+#include "GraphicsInfo.h"
+#include "EngineMath.h"
 #include "PushConstantData.h"
-#include "Descriptors.h"
 #include "GlobalUbo.h"
 
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include <memory>
 
 namespace mge {
 	struct PipelineConfigInfo {
@@ -21,7 +18,7 @@ namespace mge {
 
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
-
+		
 		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
@@ -51,14 +48,14 @@ namespace mge {
 	std::vector<VkDescriptorSet> globalDescriptorSets(MAX_FRAMES_IN_FLIGHT);
 	std::vector<Buffer*> uboBuffers(MAX_FRAMES_IN_FLIGHT);
 
-	static std::vector<char> ReadFile(const char* filePath) {
+	static std::vector<char_t> ReadFile(const char_t* filePath) {
 		std::ifstream file{ filePath, std::ios::binary | std::ios::ate };
 
 		if (!file.is_open())
 			throw std::runtime_error("Failed to open file!");
 
 		size_t fileSize = static_cast<size_t>(file.tellg());
-		std::vector<char> buffer(fileSize);
+		std::vector<char_t> buffer(fileSize);
 
 		file.seekg(0);
 		file.read(buffer.data(), fileSize);
@@ -139,7 +136,7 @@ namespace mge {
 		configInfo.dynamicStateInfo.flags = 0;
 	}
 
-	static void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
+	static void CreateShaderModule(const std::vector<char_t>& code, VkShaderModule* shaderModule) {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
@@ -161,10 +158,11 @@ namespace mge {
 		pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+
 		if (vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create pipeline layout!");
 	}
-	static void CreateGraphicsPipeline(const char* vertPath, const char* fragPath, const PipelineConfigInfo& configInfo) {
+	static void CreateGraphicsPipeline(const char_t* vertPath, const char_t* fragPath, const PipelineConfigInfo& configInfo) {
 		auto vertCode = ReadFile(vertPath);
 		auto fragCode = ReadFile(fragPath);
 
@@ -221,7 +219,7 @@ namespace mge {
 
 	void InitiatePipeline() {
 		InitiateDevice();
-		InitiateSwapChain({ (uint32_t)OSMGetGameWidth(), (uint32_t)OSMGetGameHeight() });
+		InitiateSwapChain({ (uint32_t)GetScreenWidth(), (uint32_t)GetScreenHeight() });
 
 		globalPool = DescriptorPool::Builder().SetMaxSets(MAX_FRAMES_IN_FLIGHT).AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, MAX_FRAMES_IN_FLIGHT).Build();
 

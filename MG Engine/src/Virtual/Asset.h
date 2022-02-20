@@ -1,31 +1,17 @@
 #pragma once
+#include "Defines.h"
 #include <string>
 
 namespace mge {
-	enum class AssetLoadResult {
-		SUCCESS,
-		FILE_NOT_FOUND,
-		FILE_CORRUPTED,
-		OTHER
-	};
-	enum class AssetSaveResult {
-		SUCCESS,
-		FILE_NOT_FOUND,
-		OTHER
-	};
-
 	class Asset {
 	public:
 		Asset() = default;
 		Asset(const Asset&) = default;
 		Asset(Asset&&) noexcept = default;
-		Asset(const char* fileLocation, AssetLoadResult& result);
+		Asset(const char_t* fileLocation);
 
-		virtual AssetSaveResult SaveToFile(const char* fileLocation) const;
+		virtual void SaveToFile(const char_t* fileLocation) const;
 
 		~Asset() = default;
 	};
-
-	const char* FromAssetLoadResultToString(AssetLoadResult loadResult);
-	const char* FromAssetSaveResultToString(AssetSaveResult saveResult);
 }

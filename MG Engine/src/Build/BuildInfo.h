@@ -2,6 +2,7 @@
 
 // Platform detection
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) 
+//Windows
 #define PLATFORM_WINDOWS 1
 #elif defined(__linux__) || defined(__gnu_linux__)
 // Linux OS

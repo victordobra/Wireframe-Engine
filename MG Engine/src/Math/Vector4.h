@@ -1,6 +1,8 @@
 #pragma once
 #include "Defines.h"
 
+#include <cstring>
+
 namespace mge {
 	struct Vector4 {
 		/// @brief Returns a vector with every element set as 0.

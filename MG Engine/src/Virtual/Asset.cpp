@@ -3,62 +3,26 @@
 #include <vector>
 
 namespace mge {
-	Asset::Asset(const char* fileLocation, AssetLoadResult& result) {
+	Asset::Asset(const char_t* fileLocation) {
 		std::ifstream fileInput(fileLocation, std::ios::binary);
-		if (!fileInput) {
-			result = AssetLoadResult::FILE_NOT_FOUND;
-			return;
-		}
+		if (!fileInput)
+			throw std::runtime_error("File not found!");
 
 		fileInput.read((char*)this, sizeof(*this));
 		fileInput.close();
 
-		if (!fileInput.good()) {
-			result = AssetLoadResult::OTHER;
-			return;
-		}
-
-		result = AssetLoadResult::SUCCESS;
+		if (!fileInput.good())
+			throw std::runtime_error("Error occured while reading file!");
 	}
-	AssetSaveResult Asset::SaveToFile(const char* fileLocation) const {
+	void Asset::SaveToFile(const char_t* fileLocation) const {
 		std::ofstream fileOutput(fileLocation);
 		if (!fileOutput)
-			return AssetSaveResult::FILE_NOT_FOUND;
+			throw std::runtime_error("File not found!");
 
 		fileOutput.write((char*)this, sizeof(*this));
 		fileOutput.close();
 
 		if (!fileOutput.good())
-			return AssetSaveResult::OTHER;
-
-		return AssetSaveResult::SUCCESS;
-	}
-
-
-	const char* FromAssetLoadResultToString(AssetLoadResult loadResult) {
-		switch (loadResult) {
-		case AssetLoadResult::SUCCESS:
-			return "SUCCESS";
-		case AssetLoadResult::FILE_CORRUPTED:
-			return "FILE_CORRUPTED";
-		case AssetLoadResult::FILE_NOT_FOUND:
-			return "FILE_NOT_FOUND";
-		case AssetLoadResult::OTHER:
-			return "OTHER";
-		default:
-			return "Unknown error";
-		}
-	}
-	const char* FromAssetSaveResultToString(AssetSaveResult saveResult) {
-		switch (saveResult) {
-		case AssetSaveResult::SUCCESS:
-			return "SUCCESS";
-		case AssetSaveResult::FILE_NOT_FOUND:
-			return "FILE_NOT_FOUND";
-		case AssetSaveResult::OTHER:
-			return "OTHER";
-		default:
-			return "Unknown error";
-		}
+			throw std::runtime_error("Error occured while writing to file!");
 	}
 }

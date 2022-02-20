@@ -1,9 +1,12 @@
 #pragma once
 #include "Defines.h"
+
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Quaternion.h"
+
+#include <cstring>
 
 namespace mge {
 	struct Matrix4x4 {
@@ -34,10 +37,34 @@ namespace mge {
 		Matrix4x4& operator=(const Matrix4x4&) = default;
 		Matrix4x4& operator=(Matrix4x4&&) noexcept = default;
 
-		bool8_t operator==(const Matrix4x4& other) const { return  memcmp(this, &other, sizeof(Matrix4x4)); }
-		bool8_t operator==(Matrix4x4&& other)      const { return  memcmp(this, &other, sizeof(Matrix4x4)); }
-		bool8_t operator!=(const Matrix4x4& other) const { return !memcmp(this, &other, sizeof(Matrix4x4)); }
-		bool8_t operator!=(Matrix4x4&& other)      const { return !memcmp(this, &other, sizeof(Matrix4x4)); }
+		bool8_t operator==(const Matrix4x4& other) const { 
+			for (uint8_t i = 0; i < 16; i++)
+				if (data[i] != other.data[i])
+					return false; 
+
+			return true; 
+		}
+		bool8_t operator==(Matrix4x4&& other)      const { 
+			for (uint8_t i = 0; i < 16; i++)
+				if (data[i] != other.data[i])
+					return false;
+
+			return true;
+		}
+		bool8_t operator!=(const Matrix4x4& other) const { 
+			for (uint8_t i = 0; i < 16; i++)
+				if (data[i] != other.data[i])
+					return false;
+
+			return true;
+		}
+		bool8_t operator!=(Matrix4x4&& other)      const { 
+			for (uint8_t i = 0; i < 16; i++)
+				if (data[i] != other.data[i])
+					return false;
+
+			return true;
+		}
 
 		Matrix4x4 operator*(const Matrix4x4& other) const {
 			Matrix4x4 outMatrix;

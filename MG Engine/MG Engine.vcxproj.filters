@@ -14,19 +14,16 @@
     <ClCompile Include="src\OS\Windows\WindowsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\OS\OSManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game Loop\GameLoopManager.cpp">
+    <ClCompile Include="src\General\Game Loop\GameLoopManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Virtual\Asset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Assets\Rendering\Mesh.cpp">
+    <ClCompile Include="src\Assets\Rendering\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Virtual\GameNode.cpp">
+    <ClCompile Include="src\Virtual\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp">
@@ -41,7 +38,7 @@
     <ClCompile Include="src\Rendering\VulkanModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game Nodes\Rendering\MeshRenderer.cpp">
+    <ClCompile Include="src\Game Nodes\Rendering\ModelRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp">
@@ -53,21 +50,21 @@
     <ClCompile Include="src\Vulkan\Descriptors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\General\Graphics Info\GraphicsInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\General\Input\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\General\Time\EngineTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OS\Windows\Windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OS\OSManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OS\OSManagerInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game Loop\GameLoopManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game Loop\GameLoopManagerInternal.h">
+    <ClInclude Include="src\General\Game Loop\GameLoopManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\EngineMath.h">
@@ -76,7 +73,7 @@
     <ClInclude Include="src\Virtual\Asset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Assets\Rendering\Mesh.h">
+    <ClInclude Include="src\Assets\Rendering\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Vector2.h">
@@ -97,10 +94,7 @@
     <ClInclude Include="src\OS\Windows\WindowsInternal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Virtual\GameNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utility\vector.h">
+    <ClInclude Include="src\Virtual\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Rendering\RenderingPipeline.h">
@@ -118,7 +112,7 @@
     <ClInclude Include="src\Rendering\VulkanModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game Nodes\Rendering\MeshRenderer.h">
+    <ClInclude Include="src\Game Nodes\Rendering\ModelRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Game Nodes\Rendering\Camera.h">
@@ -136,10 +130,31 @@
     <ClInclude Include="src\Rendering\GlobalUbo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Defines.h">
+    <ClInclude Include="src\Core\Defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Build\BuildInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Graphics Info\GraphicsInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Input\Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Input\InputInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Input\Key.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Time\EngineTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\General\Time\EngineTimeInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game Nodes\Testing\CameraController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

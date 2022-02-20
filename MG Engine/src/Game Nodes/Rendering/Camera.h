@@ -1,5 +1,5 @@
 #pragma once
-#include "GameNode.h"
+#include "Node.h"
 #include "EngineMath.h"
 #include "Buffer.h"
 #include "Descriptors.h"
@@ -11,19 +11,19 @@ namespace mge {
 		COLOR
 	};
 
-	class Camera : public GameNode {
+	class Camera : public Node {
 	public:
 		Vector3 position{};
 		Quaternion rotation{};
 
 		Vector3 clearColor{};
 		ClearMode clearMode{ ClearMode::COLOR };
-		float fov{ 60.0f };
-		float zNear{ 0.01f };
-		float zFar{ 1000.0f };
+		float32_t fov{ 60.0f };
+		float32_t zNear{ 0.01f };
+		float32_t zFar{ 1000.0f };
 
-		void GameStart() override;
-		void GameRender() override;
+		void Start() override;
+		void Render() override;
 
 		void Translate(Vector3 movement) {
 			position += Matrix4x4::Rotation(rotation.Inverted()) * movement;
@@ -35,6 +35,6 @@ namespace mge {
 		Matrix4x4 GetCameraMatrix();
 		Matrix4x4 GetInvCameraMatrix();
 	private:
-		float aspectRatio{ 1.0f };
+		float32_t aspectRatio{ 1.0f };
 	};
 }
