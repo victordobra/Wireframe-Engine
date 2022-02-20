@@ -5,6 +5,7 @@
 
 #include "GameLoopManager.h"
 #include "RenderingPipeline.h"
+#include "DebuggerInternal.h"
 
 #include <windows.h>
 #include <tchar.h>
@@ -33,15 +34,12 @@ HANDLE hThread;
 //Other variables
 static mge::bool8_t windowActive = true;
 
-static DWORD WINAPI CallUpdateGameLoop(LPVOID param) {
-    mge::UpdateGameLoop();
-    return 0;
-}
 LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_CREATE:
         windowHWND = winHWND;
 
+        mge::InitiateDebugger();
         mge::InitiatePipeline();
         mge::StartGameLoop();
         break;
@@ -54,6 +52,7 @@ LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lPara
     case WM_DESTROY:
         mge::EndGameLoop();
         mge::ClearPipeline();
+        mge::ClearDebugger();
         PostQuitMessage(0);
         break;
     case WM_ACTIVATE:

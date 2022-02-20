@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Debug\Debugger.cpp" />
     <ClCompile Include="src\General\Graphics Info\GraphicsInfo.cpp" />
     <ClCompile Include="src\General\Input\Input.cpp" />
     <ClCompile Include="src\General\Time\EngineTime.cpp" />
@@ -39,6 +40,8 @@
   <ItemGroup>
     <ClInclude Include="src\Build\BuildInfo.h" />
     <ClInclude Include="src\Core\Defines.h" />
+    <ClInclude Include="src\Debug\Debugger.h" />
+    <ClInclude Include="src\Debug\DebuggerInternal.h" />
     <ClInclude Include="src\Game Nodes\Testing\CameraController.h" />
     <ClInclude Include="src\General\Graphics Info\GraphicsInfo.h" />
     <ClInclude Include="src\General\Input\Input.h" />
@@ -189,7 +192,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -208,7 +211,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -227,7 +230,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -246,7 +249,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>

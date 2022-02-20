@@ -1,9 +1,12 @@
-#ifdef _WIN32
+#include "BuildInfo.h"
+
+#ifdef PLATFORM_WINDOWS
 #include"Windows/WindowsInternal.h"
 #endif
 
 #include "VulkanInclude.h"
 #include "VulkanDevice.h"
+#include "Debugger.h"
 
 #include <cstring>
 #include <iostream>
@@ -53,7 +56,17 @@ namespace mge {
 
     //Local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+        switch (messageSeverity) {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            OutError((std::string)"Validation layer: " + pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            OutWarning((std::string)"Validation layer: " + pCallbackData->pMessage);
+            break;
+        default:
+            OutMessage((std::string)"Validation layer: " + pCallbackData->pMessage);
+            break;
+        }
 
         return VK_FALSE;
     }
@@ -150,7 +163,7 @@ namespace mge {
         }
 
         vkGetPhysicalDeviceProperties(physicalDevice, &properties_);
-        std::cout << "Physical device: " << properties_.deviceName << "\n";
+        OutMessage((std::string)"Physical device: " + properties_.deviceName);
     }
 
     void CreateLogicalDevice() {
@@ -289,19 +302,13 @@ namespace mge {
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, extensions.data());
 
-        std::cout << "Available extensions:" << std::endl;
         std::unordered_set<std::string> available;
-        for (const auto& extension : extensions) {
-            std::cout << "\t" << extension.extensionName << std::endl;
+        for (const auto& extension : extensions)
             available.insert(extension.extensionName);
-        }
 
-        std::cout << "Required extensions:" << std::endl;
-        for (const auto& required : requiredExtensions) {
-            std::cout << "\t" << required << std::endl;
+        for (const auto& required : requiredExtensions)
             if (available.find(required) == available.end())
                 throw std::runtime_error("Missing required extension");
-        }
     }
 
     bool CheckDeviceExtensionSupport(VkPhysicalDevice device) {

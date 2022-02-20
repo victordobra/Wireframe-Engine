@@ -1,6 +1,7 @@
 #define NOMINMAX
 #include "SwapChain.h"
 #include "Defines.h"
+#include "Debugger.h"
 
 #include <array>
 #include <cstdlib>
@@ -369,14 +370,13 @@ namespace mge {
 
     VkPresentModeKHR ChooseSwapPresentMode(
         const std::vector<VkPresentModeKHR>& availablePresentModes) {
-        for (const auto& availablePresentMode : availablePresentModes) {
+        for (const auto& availablePresentMode : availablePresentModes)
             if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                std::cout << "Present mode: Mailbox" << std::endl;
+                OutMessage("Present mode: Mailbox");
                 return availablePresentMode;
             }
-        }
 
-        std::cout << "Present mode: V-Sync" << std::endl;
+        OutMessage("Present mode: V-Sync");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
