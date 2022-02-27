@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\Rendering\Material.cpp" />
+    <ClCompile Include="src\Assets\Rendering\Shader.cpp" />
     <ClCompile Include="src\Debug\Debugger.cpp" />
     <ClCompile Include="src\General\Graphics Info\GraphicsInfo.cpp" />
     <ClCompile Include="src\General\Input\Input.cpp" />
     <ClCompile Include="src\General\Time\EngineTime.cpp" />
-    <ClCompile Include="src\Vulkan\Buffer.cpp" />
+    <ClCompile Include="src\Vulkan\Classes\Buffer.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\Camera.cpp" />
     <ClCompile Include="src\Game Nodes\Rendering\ModelRenderer.cpp" />
     <ClCompile Include="src\Rendering\RenderingPipeline.cpp" />
@@ -32,16 +34,21 @@
     <ClCompile Include="src\Virtual\Asset.cpp" />
     <ClCompile Include="src\General\Game Loop\GameLoopManager.cpp" />
     <ClCompile Include="src\OS\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\Vulkan\Descriptors.cpp" />
+    <ClCompile Include="src\Vulkan\DescriptorPool.cpp" />
     <ClCompile Include="src\Vulkan\SwapChain.cpp" />
     <ClCompile Include="src\Vulkan\VulkanDevice.cpp" />
     <ClCompile Include="src\Rendering\VulkanModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\Rendering\Material.h" />
+    <ClInclude Include="src\Assets\Rendering\Shader.h" />
     <ClInclude Include="src\Build\BuildInfo.h" />
+    <ClInclude Include="src\Core\ColorTypes.h" />
     <ClInclude Include="src\Core\Defines.h" />
     <ClInclude Include="src\Debug\Debugger.h" />
     <ClInclude Include="src\Debug\DebuggerInternal.h" />
+    <ClInclude Include="src\Game Nodes\Lights\DirectionalLight.h" />
+    <ClInclude Include="src\Game Nodes\Lights\PointLight.h" />
     <ClInclude Include="src\Game Nodes\Testing\CameraController.h" />
     <ClInclude Include="src\General\Graphics Info\GraphicsInfo.h" />
     <ClInclude Include="src\General\Input\Input.h" />
@@ -49,11 +56,10 @@
     <ClInclude Include="src\General\Input\Key.h" />
     <ClInclude Include="src\General\Time\EngineTime.h" />
     <ClInclude Include="src\General\Time\EngineTimeInternal.h" />
-    <ClInclude Include="src\Rendering\GlobalUbo.h" />
-    <ClInclude Include="src\Vulkan\Buffer.h" />
+    <ClInclude Include="src\Rendering\ShaderData.h" />
+    <ClInclude Include="src\Vulkan\Classes\Buffer.h" />
     <ClInclude Include="src\Game Nodes\Rendering\Camera.h" />
     <ClInclude Include="src\Game Nodes\Rendering\ModelRenderer.h" />
-    <ClInclude Include="src\Rendering\PushConstantData.h" />
     <ClInclude Include="src\Rendering\RenderingPipeline.h" />
     <ClInclude Include="src\Virtual\Node.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />
@@ -67,7 +73,7 @@
     <ClInclude Include="src\Math\EngineMath.h" />
     <ClInclude Include="src\OS\Windows\Windows.h" />
     <ClInclude Include="src\Math\Vector2.h" />
-    <ClInclude Include="src\Vulkan\Descriptors.h" />
+    <ClInclude Include="src\Vulkan\DescriptorPool.h" />
     <ClInclude Include="src\Vulkan\SwapChain.h" />
     <ClInclude Include="src\Vulkan\VulkanDevice.h" />
     <ClInclude Include="src\Vulkan\VulkanInclude.h" />
@@ -192,7 +198,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -211,7 +217,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -230,7 +236,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -249,7 +255,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>

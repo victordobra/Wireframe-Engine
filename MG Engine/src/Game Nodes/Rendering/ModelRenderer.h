@@ -1,10 +1,9 @@
 #pragma once
 #include "Node.h"
 #include "Model.h"
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "Matrix4x4.h"
 #include "VulkanModel.h"
+#include "EngineMath.h"
+#include "Material.h"
 
 namespace mge {
 	class ModelRenderer : public Node {
@@ -13,7 +12,7 @@ namespace mge {
 		Quaternion rotation{};
 		Vector3 scale{1.f, 1.f, 1.f};
 
-		Vector3 color{};
+		Material* material;
 
 		Matrix4x4 GetTransformationMatrix();
 
@@ -22,6 +21,11 @@ namespace mge {
 
 		Model* GetModel() { return model; }
 		void SetModel(Model* newModel);
+
+		~ModelRenderer() {
+			if (vkModel != nullptr)
+				delete vkModel;
+		}
 	private:
 		VulkanModel* vkModel{nullptr};
 

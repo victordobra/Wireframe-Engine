@@ -1,9 +1,6 @@
 #pragma once
 #include "Node.h"
 #include "EngineMath.h"
-#include "Buffer.h"
-#include "Descriptors.h"
-#include "SwapChain.h"
 
 namespace mge {
 	enum class ClearMode {
@@ -34,6 +31,8 @@ namespace mge {
 
 		Matrix4x4 GetCameraMatrix();
 		Matrix4x4 GetInvCameraMatrix();
+
+		~Camera() = default;
 	private:
 		float32_t aspectRatio{ 1.0f };
 	};

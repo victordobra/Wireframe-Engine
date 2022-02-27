@@ -12,6 +12,6 @@ namespace mge {
 
 		virtual void SaveToFile(const char_t* fileLocation) const;
 
-		~Asset() = default;
+		virtual ~Asset() = default;
 	};
 }

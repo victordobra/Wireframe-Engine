@@ -16,15 +16,15 @@ namespace mge {
     struct QueueFamilyIndices {
         uint32_t graphicsFamily{};
         uint32_t presentFamily{};
-        bool graphicsFamilyHasValue = false;
-        bool presentFamilyHasValue = false;
-        bool IsComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
+        bool8_t graphicsFamilyHasValue = false;
+        bool8_t presentFamilyHasValue = false;
+        bool8_t IsComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
     };
 
 #ifdef NDEBUG
-    const bool enableValidationLayers = false;
+    const bool8_t enableValidationLayers = false;
 #else
-    const bool enableValidationLayers = true;
+    const bool8_t enableValidationLayers = true;
 #endif
 
     void InitiateDevice();
@@ -48,6 +48,7 @@ namespace mge {
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
     void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+    size_t PadUniformBufferSize(size_t originalSize);
 
     void CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 }

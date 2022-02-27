@@ -1,5 +1,12 @@
 #include "Debugger.h"
 #include "Defines.h"
+#include "BuildInfo.h"
+
+//Platform specific
+#ifdef PLATFORM_WINDOWS
+#include "Windows/WindowsInternal.h"
+#undef ERROR
+#endif
 
 #include <fstream>
 
@@ -8,6 +15,7 @@ namespace mge {
 		MESSAGE,
 		WARNING,
 		ERROR,
+		FATAL_ERROR,
 		NONE
 	};
 
@@ -17,9 +25,6 @@ namespace mge {
 	//Internal functions
 	void InitiateDebugger() {
 		fileOutput.open("log.txt");
-
-		if (!fileOutput)
-			throw std::runtime_error("Failed to initialize file output!");
 	}
 	void ClearDebugger() {
 		fileOutput.close();
@@ -27,24 +32,46 @@ namespace mge {
 
 	//External functions
 	void OutMessage(std::string message) {
-		if (lastMessageType != OutType::MESSAGE)
+		//Add a line break if the previous output type doesn't equal this error type
+		if (lastMessageType != OutType::MESSAGE && lastMessageType != OutType::NONE)
 			fileOutput << '\n';
 
+		//Output the message
 		fileOutput << "MESSAGE: " << message << '\n';
+		//Set the message type
 		lastMessageType = OutType::MESSAGE;
 	}
 	void OutWarning(std::string warning) {
-		if (lastMessageType != OutType::WARNING)
+		//Add a line break if the previous output type doesn't equal this error type
+		if (lastMessageType != OutType::WARNING && lastMessageType != OutType::NONE)
 			fileOutput << '\n';
 
+		//Output the warning
 		fileOutput << "WARNING: " << warning << '\n';
 		lastMessageType = OutType::WARNING;
 	}
 	void OutError(std::string error) {
-		if (lastMessageType != OutType::ERROR)
+		//Add a line break if the previous output type doesn't equal this error type
+		if (lastMessageType != OutType::ERROR && lastMessageType != OutType::NONE)
 			fileOutput << '\n';
 
+		//Output the error
 		fileOutput << "ERROR: " << error << '\n';
 		lastMessageType = OutType::ERROR;
+	}
+	void OutFatalError(std::string error) {
+		//Add a line break if the previous output type doesn't equal this error type
+		if (lastMessageType != OutType::FATAL_ERROR && lastMessageType != OutType::NONE)
+			fileOutput << '\n';
+
+		//Output the error
+		fileOutput << "FATAL ERROR: " << error << '\n';
+		lastMessageType = OutType::FATAL_ERROR;
+
+		//Terminate the program
+#ifdef PLATFORM_WINDOWS
+		DestroyWindow(WindowsGetWindowHWND());
+#endif
+		exit(1);
 	}
 }

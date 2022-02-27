@@ -26,14 +26,14 @@ namespace mge {
         VkDescriptorBufferInfo DescriptorInfoForIndex(int index);
         VkResult InvalidateIndex(int index);
 
-        VkBuffer GetBuffer() const { return buffer; }
-        void* GetMappedMemory() const { return mapped; }
-        uint32_t GetInstanceCount() const { return instanceCount; }
-        VkDeviceSize GetInstanceSize() const { return instanceSize; }
-        VkDeviceSize GetAlignmentSize() const { return instanceSize; }
-        VkBufferUsageFlags GetUsageFlags() const { return usageFlags; }
+        VkBuffer              GetBuffer()              const { return buffer; }
+        void*                 GetMappedMemory()        const { return mapped; }
+        uint32_t              GetInstanceCount()       const { return instanceCount; }
+        VkDeviceSize          GetInstanceSize()        const { return instanceSize; }
+        VkDeviceSize          GetAlignmentSize()       const { return instanceSize; }
+        VkBufferUsageFlags    GetUsageFlags()          const { return usageFlags; }
         VkMemoryPropertyFlags GetMemoryPropertyFlags() const { return memoryPropertyFlags; }
-        VkDeviceSize GetBufferSize() const { return bufferSize; }
+        VkDeviceSize          GetBufferSize()          const { return bufferSize; }
 
         ~Buffer();
     private:

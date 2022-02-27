@@ -9,7 +9,7 @@ namespace mge {
 	public:
 		static Node* scene;
 
-		Node() { Awake(); }
+		Node() = default;
 		Node(const Node&) = delete;
 		Node(Node&&) noexcept = delete;
 
@@ -26,13 +26,11 @@ namespace mge {
 		void SetParent(Node* newParent);
 
 		virtual void Start()  { }
-		virtual void Awake()  { }
 		virtual void Frame()  { }
 		virtual void Render() { }
 		virtual void Tick()   { }
-		virtual void Delete() { }
 
-		~Node();
+		virtual ~Node();
 	private:
 		std::vector<Node*> children;
 

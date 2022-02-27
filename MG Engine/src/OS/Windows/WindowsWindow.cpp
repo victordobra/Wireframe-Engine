@@ -6,6 +6,7 @@
 #include "GameLoopManager.h"
 #include "RenderingPipeline.h"
 #include "DebuggerInternal.h"
+#include "Debugger.h"
 
 #include <windows.h>
 #include <tchar.h>
@@ -57,10 +58,9 @@ LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lPara
         break;
     case WM_ACTIVATE:
         windowActive = wParam != WA_INACTIVE;
-        break;
+        return DefWindowProc(winHWND, message, wParam, lParam);
     default:
         return DefWindowProc(winHWND, message, wParam, lParam);
-        break;
     }
 
     return 0;
@@ -164,7 +164,7 @@ mge::char_t* mge::WindowsGetTitle() {
     wcstombs_s(&tConvCount, charWinTitle, tSize, winTitle, tSize);
 
     if (tConvCount != tSize)
-        throw std::runtime_error("Not enough characters converted!");
+        OutFatalError("Not enough characters converted!");
 
     return charWinTitle;
 #else
@@ -182,7 +182,7 @@ void mge::WindowsSetTitle(const char_t* newTitle) {
     mbstowcs_s(&TConvCount, winTitle, TSize, newTitle, TSize);
 
     if (TConvCount != TSize)
-        throw std::runtime_error("Not enough characters converted!");
+        OutFatalError("Not enough characters converted!");
 
     SetWindowText(windowHWND, winTitle);
 #else

@@ -44,7 +44,7 @@ namespace mge {
     const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
     const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 
 #ifdef NDEBUG
     const std::vector<const char*> requiredExtensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
@@ -107,7 +107,7 @@ namespace mge {
 
     void CreateInstance() {
         if (enableValidationLayers && !CheckValidationLayerSupport()) {
-            throw std::runtime_error("validation layers requested, but not available!");
+            OutFatalError("validation layers requested, but not available!");
         }
 
         VkApplicationInfo appInfo = {};
@@ -137,7 +137,7 @@ namespace mge {
         }
 
         if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-            throw std::runtime_error("failed to create instance!");
+            OutFatalError("failed to create instance!");
 
         HasRequiredInstanceExtensions();
     }
@@ -146,7 +146,7 @@ namespace mge {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, (::uint32_t*)&deviceCount, nullptr);
         if (deviceCount == 0)
-            throw std::runtime_error("failed to find GPUs with Vulkan support!");
+            OutFatalError("failed to find GPUs with Vulkan support!");
 
         std::cout << "Device count: " << deviceCount << "\n";
         std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -159,7 +159,7 @@ namespace mge {
             }
 
         if (physicalDevice == VK_NULL_HANDLE) {
-            throw std::runtime_error("failed to find a suitable GPU!");
+            OutFatalError("failed to find a suitable GPU!");
         }
 
         vkGetPhysicalDeviceProperties(physicalDevice, &properties_);
@@ -203,7 +203,7 @@ namespace mge {
         }
 
         if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create logical device!");
+            OutFatalError("failed to create logical device!");
         }
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
@@ -220,19 +220,19 @@ namespace mge {
             VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
         if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create command pool!");
+            OutFatalError("failed to create command pool!");
         }
     }
 
     void CreateSurface() { 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
         VkWin32SurfaceCreateInfoKHR createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
         createInfo.hwnd = WindowsGetWindowHWND();
         createInfo.hinstance = WindowsGetWindowHInstance();
 
         if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface_) != VK_SUCCESS)
-            throw std::runtime_error("Failed to create surface!");
+            OutFatalError("Failed to create surface!");
 #endif
     }
 
@@ -269,7 +269,7 @@ namespace mge {
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         PopulateDebugMessengerCreateInfo(createInfo);
         if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-            throw std::runtime_error("failed to set up debug messenger!");
+            OutFatalError("failed to set up debug messenger!");
         }
     }
 
@@ -308,7 +308,7 @@ namespace mge {
 
         for (const auto& required : requiredExtensions)
             if (available.find(required) == available.end())
-                throw std::runtime_error("Missing required extension");
+                OutFatalError("Missing required extension");
     }
 
     bool CheckDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -387,8 +387,7 @@ namespace mge {
         return details;
     }
 
-    VkFormat FindSupportedFormat(
-        const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+    VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
         for (VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
@@ -401,7 +400,8 @@ namespace mge {
                 return format;
             }
         }
-        throw std::runtime_error("failed to find supported format!");
+        OutFatalError("failed to find supported format!");
+        return VK_FORMAT_UNDEFINED;
     }
 
     uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
@@ -414,7 +414,8 @@ namespace mge {
             }
         }
 
-        throw std::runtime_error("failed to find suitable memory type!");
+        OutFatalError("failed to find suitable memory type!");
+        return 0;
     }
 
     void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { 
@@ -425,7 +426,7 @@ namespace mge {
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
-            throw std::runtime_error("failed to create vertex buffer!");
+            OutFatalError("failed to create vertex buffer!");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
@@ -437,7 +438,7 @@ namespace mge {
 
         auto result = vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory);
         if (result != VK_SUCCESS)
-            throw std::runtime_error("failed to allocate vertex buffer memory!");
+            OutFatalError("failed to allocate vertex buffer memory!");
 
         vkBindBufferMemory(device_, buffer, bufferMemory, 0);
     }
@@ -506,13 +507,23 @@ namespace mge {
         EndSingleTimeCommands(commandBuffer);
     }
 
+    size_t PadUniformBufferSize(size_t originalSize) {
+        size_t minUboAlignment = properties_.limits.nonCoherentAtomSize;
+        size_t alignedSize = originalSize;
+
+        if (minUboAlignment > 0)
+            alignedSize = (alignedSize + minUboAlignment - 1) & ~(minUboAlignment - 1);
+
+        return alignedSize;
+    }
+
     void CreateImageWithInfo(
         const VkImageCreateInfo& imageInfo,
         VkMemoryPropertyFlags properties,
         VkImage& image,
         VkDeviceMemory& imageMemory) {
         if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create image!");
+            OutFatalError("failed to create image!");
         }
 
         VkMemoryRequirements memRequirements;
@@ -524,10 +535,10 @@ namespace mge {
         allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
-            throw std::runtime_error("failed to allocate image memory!");
+            OutFatalError("failed to allocate image memory!");
 
         if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS)
-            throw std::runtime_error("failed to bind image memory!");
+            OutFatalError("failed to bind image memory!");
     }
 
     SwapChainSupportDetails GetSwapChainSupport() { return QuerySwapChainSupport(physicalDevice); }

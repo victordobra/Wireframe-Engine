@@ -24,5 +24,5 @@ namespace mge {
     VkFormat FindDepthFormat();
 
     VkResult AcquireNextImage(uint32_t* imageIndex);
-    VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
+    VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex, uint32_t bufferCount = 1);
 }

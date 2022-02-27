@@ -1,18 +1,14 @@
 #include "GameLoopManager.h"
 #include "InputInternal.h"
 #include "EngineTimeInternal.h"
-#include "BuildInfo.h"
 #include "Node.h"
-
-//Platform specific
-#ifdef PLATFORM_WINDOWS
-#include "Windows\Windows.h"
-#endif
 
 //Testing
 #include "ModelRenderer.h"
 #include "Camera.h"
 #include "CameraController.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
 
 #include <future>
 
@@ -83,8 +79,14 @@ namespace mge {
 	}
 
 	Camera* camera;
-	ModelRenderer* renderer;
 	CameraController* cameraController;
+	ModelRenderer* renderer1;
+	ModelRenderer* renderer2;
+	DirectionalLight* dirLight1;
+	DirectionalLight* dirLight2;
+
+	float32_t yRot = 0.f;
+
 	//Main functions
 	void StartGameLoop() {
 		StartInput();
@@ -96,10 +98,35 @@ namespace mge {
 		camera->clearMode = ClearMode::COLOR;
 		camera->clearColor = { 0.01f, 0.01f, 0.01f };
 
-		renderer = new ModelRenderer();
-		renderer->SetParent(Node::scene);
-		Model* model = new Model("Assets\\Cube.obj");
-		renderer->SetModel(model);
+		Model* model = new Model("Assets\\Teapot.obj");
+
+		Material* material1 = new Material();
+		material1->color = { 1.f, 1.f, 1.f, 1.f };
+		Material* material2 = new Material();
+		material2->color = { 0.5f, 0.5f, 1.f, 1.f };
+
+		renderer1 = new ModelRenderer();
+		renderer1->position = { 0.f, 0.f, 0.f };
+		renderer1->material = material1;
+		renderer1->SetParent(Node::scene);
+		renderer1->SetModel(model);
+
+		renderer2 = new ModelRenderer();
+		renderer2->position = { 0.f, 0.f, -10.f };
+		renderer2->rotation = Quaternion::AroundAxis({ 0.f, 1.f, 0.f }, 180.f * DEG_TO_RAD_MULTIPLIER);
+		renderer2->material = material2;
+		renderer2->SetParent(Node::scene);
+		renderer2->SetModel(model);
+
+		dirLight1 = new DirectionalLight();
+		dirLight1->SetParent(Node::scene);
+		dirLight1->direction = { 1.f, 0.f, 0.f };
+		dirLight1->color = { 1.f, 1.f, 1.f, 1.f };
+
+		dirLight2 = new DirectionalLight();
+		dirLight2->SetParent(Node::scene);
+		dirLight2->direction = { -1.f, 0.f, 0.f };
+		dirLight2->color = { 1.f, 0.f, 0.f, 1.f };
 		
 		cameraController = new CameraController();
 		cameraController->SetParent(Node::scene);
@@ -111,19 +138,15 @@ namespace mge {
 		//Start the frame
 		StartFrame();
 
-		//Get if the window's active
-#ifdef PLATFORM_WINDOWS
-		bool8_t windowActive = WindowsIsWindowActive();
-#endif 
-		if (!windowActive) {
-			//Wait to reduce processor load and exit the function
-			std::this_thread::sleep_for(std::chrono::duration<sint64_t, std::milli>(100));
-			EndFrame();
-			return;
-		}
-
 		//Update the input
 		UpdateInput();
+
+		yRot += 90.f * GetDeltaTime();
+		if (yRot > 360.f)
+			yRot -= 360.f;
+
+		dirLight1->direction = { Cos(yRot * DEG_TO_RAD_MULTIPLIER), 0.f, -Sin(yRot * DEG_TO_RAD_MULTIPLIER) };
+		dirLight2->direction = { Cos((yRot + 180.f) * DEG_TO_RAD_MULTIPLIER), 0.f, -Sin((yRot + 180.f) * DEG_TO_RAD_MULTIPLIER) };
 
 		//Run the frame and render functions on every object
 		RunFrameEverything(Node::scene);

@@ -93,7 +93,7 @@ namespace mge {
         return result;
     }
 
-    VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex) {
+    VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex, uint32_t bufferCount) {
         if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(GetDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
         }
@@ -108,7 +108,7 @@ namespace mge {
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
 
-        submitInfo.commandBufferCount = 1;
+        submitInfo.commandBufferCount = bufferCount;
         submitInfo.pCommandBuffers = buffers;
 
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
@@ -118,7 +118,7 @@ namespace mge {
         vkResetFences(GetDevice(), 1, &inFlightFences[currentFrame]);
         if (vkQueueSubmit(GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
             VK_SUCCESS) {
-            throw std::runtime_error("Failed to submit draw command buffer!");
+            OutFatalError("Failed to submit draw command buffer!");
         }
 
         VkPresentInfoKHR presentInfo = {};
@@ -187,7 +187,7 @@ namespace mge {
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
         if (vkCreateSwapchainKHR(GetDevice(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create swap chain!");
+            OutFatalError("failed to create swap chain!");
         }
 
         vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, nullptr);
@@ -214,7 +214,7 @@ namespace mge {
 
             if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &swapChainImageViews[i]) !=
                 VK_SUCCESS) {
-                throw std::runtime_error("failed to create texture image view!");
+                OutFatalError("failed to create texture image view!");
             }
         }
     }
@@ -273,7 +273,7 @@ namespace mge {
         renderPassInfo.pDependencies = &dependency;
 
         if (vkCreateRenderPass(GetDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
-            throw std::runtime_error("failed to create render pass!");
+            OutFatalError("failed to create render pass!");
     }
 
     void CreateFramebuffers() {
@@ -292,7 +292,7 @@ namespace mge {
             framebufferInfo.layers = 1;
 
             if (vkCreateFramebuffer(GetDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
-                throw std::runtime_error("failed to create framebuffer!");
+                OutFatalError("failed to create framebuffer!");
         }
     }
 
@@ -335,7 +335,7 @@ namespace mge {
             viewInfo.subresourceRange.layerCount = 1;
 
             if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS)
-                throw std::runtime_error("failed to create texture image view!");
+                OutFatalError("failed to create texture image view!");
         }
     }
 
@@ -354,7 +354,7 @@ namespace mge {
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             if (vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
-                throw std::runtime_error("failed to create synchronization objects for a frame!");
+                OutFatalError("failed to create synchronization objects for a frame!");
         }
     }
 

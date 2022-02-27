@@ -1,16 +1,18 @@
 #include "Model.h"
 
 #include "BuildInfo.h"
+#include "Debugger.h"
 
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
 #include <vector>
 
 namespace mge {
 	Model::Model(const Model& other) : vertexC(other.vertexC), indexC(other.indexC), vertices((Vertex*)malloc(sizeof(Vertex) * other.vertexC)), indices((size_t*)malloc(sizeof(size_t) * other.indexC)) {
-		if (!vertices || !indices)
-			throw std::runtime_error("Failed to allocate memory!");
+		if (!vertices || !indices) {
+			OutFatalError("Failed to allocate memory!");
+			return;
+		}
 
 		memcpy(vertices, other.vertices, sizeof(Vertex) * vertexC);
 		memcpy(indices, other.indices, sizeof(size_t) * indexC);
@@ -23,7 +25,7 @@ namespace mge {
 		std::ifstream fileInput(fileLocation);
 
 		if (!fileInput)
-			throw std::runtime_error("File not found!");
+			OutFatalError("File not found!");
 
 		std::vector<Vector3> positionsV;
 		std::vector<Vector2> uvCoordinatesV;
@@ -81,7 +83,7 @@ namespace mge {
 #endif
 					Vertex vertex{position, uvCoordinate, normal};
 
-					bool vertexFound = false;
+					bool8_t vertexFound = false;
 					size_t i;
 					for (i = 0; i < verticesV.size(); i++)
 						if (verticesV[i] == vertex) {
@@ -100,7 +102,7 @@ namespace mge {
 		}
 
 		if (fileInput.bad())
-			throw std::runtime_error("Error occured while reading file!");
+			OutFatalError("Error occured while reading file!");
 
 		fileInput.close();
 
@@ -111,8 +113,10 @@ namespace mge {
 		vertices = (Vertex*)malloc(sizeof(Vertex) * vertexC);
 		indices = (size_t*)malloc(sizeof(size_t) * indexC);
 
-		if (!vertices || !indices)
-			throw std::runtime_error("Failed to allocate memory!");
+		if (!vertices || !indices) {
+			OutFatalError("Failed to allocate memory!");
+			return;
+		}
 
 		memcpy(vertices, verticesV.data(), sizeof(Vertex) * vertexC);
 		memcpy(indices, indicesV.data(), sizeof(size_t) * indexC);
@@ -133,8 +137,10 @@ namespace mge {
 		vertices = (Vertex*)malloc(sizeof(Vertex) * vertexC);
 		indices = (size_t*)malloc(sizeof(size_t) * indexC);
 
-		if (!vertices || !indices)
-			throw std::runtime_error("Failed to allocate memory!");
+		if (!vertices || !indices) {
+			OutFatalError("Failed to allocate memory!");
+			return *this;
+		}
 
 		//Copy all of the heap allocated vectors
 		memcpy(vertices, other.vertices, sizeof(Vertex) * vertexC);
@@ -164,13 +170,13 @@ namespace mge {
 		std::ofstream fileOutput(fileLocation, std::ios::binary);
 
 		if (!fileOutput)
-			throw std::runtime_error("File not found!");
+			OutFatalError("File not found!");
 
 		fileOutput << "#Saved with MG Engine's epic swag weed edition obj file saver which is very epic swag weed\n";
 		fileOutput << "sheesh bussin moment";
 
 		if (fileOutput.bad())
-			throw std::runtime_error("Error occured while reading file!");
+			OutFatalError("Error occured while reading file!");
 
 		fileOutput.close();
 	}

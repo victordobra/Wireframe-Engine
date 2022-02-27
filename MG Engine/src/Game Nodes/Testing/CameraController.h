@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Input.h"
 #include "EngineTime.h"
+#include "Debugger.h"
 
 namespace mge {
 	class CameraController : public Node {
@@ -22,20 +23,20 @@ namespace mge {
 			}
 
 			//The camera was not found; throw an error
-			throw std::runtime_error("Camera not found!");
+			OutFatalError("Camera not found!");
 		}
 		void Frame() override {
 			//Mode the camera
 			if (IsKeyDown(Key::KEY_W) || IsKeyDown(Key::UP))
 				camera->Translate({ 0.f, 0.f, -speed * GetDeltaTime() });
 			if (IsKeyDown(Key::KEY_S) || IsKeyDown(Key::DOWN))
-				camera->Translate({ 0.f, 0.f, speed * GetDeltaTime() });
+				camera->Translate({ 0.f, 0.f,  speed * GetDeltaTime() });
 			if (IsKeyDown(Key::KEY_A) || IsKeyDown(Key::LEFT))
 				camera->Translate({ -speed * GetDeltaTime(), 0.f, 0.f });
 			if (IsKeyDown(Key::KEY_D) || IsKeyDown(Key::RIGHT))
-				camera->Translate({ speed * GetDeltaTime(), 0.f, 0.f });
+				camera->Translate({  speed * GetDeltaTime(), 0.f, 0.f });
 			if (IsKeyDown(Key::KEY_E))
-				camera->Translate({ 0.f, speed * GetDeltaTime(), 0.f });
+				camera->Translate({ 0.f,  speed * GetDeltaTime(), 0.f });
 			if (IsKeyDown(Key::KEY_Q))
 				camera->Translate({ 0.f, -speed * GetDeltaTime(), 0.f });
 
@@ -43,14 +44,16 @@ namespace mge {
 			xRot = (xRot > 90.f) ? 90.f : ((xRot < -90.f) ? -90.f : xRot);
 			yRot += GetMouseMovement().x * sensitivity;
 
-			camera->rotation = Quaternion::EulerAngles({ xRot, yRot, 0.f });
+			camera->rotation = Quaternion::EulerAngles({ xRot * DEG_TO_RAD_MULTIPLIER, yRot * DEG_TO_RAD_MULTIPLIER, 0.f });
 		}
+
+		~CameraController() = default;
 	private:
 		Camera* camera{nullptr};
 		float32_t xRot{0.f};
 		float32_t yRot{0.f};
 
 		const float32_t speed = 5.f;
-		const float32_t sensitivity = 0.001f;
+		const float32_t sensitivity = 0.1f;
 	};
 }

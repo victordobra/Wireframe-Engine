@@ -5,6 +5,7 @@
 
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
+#include "Windows/Windows.h"
 #endif
 
 namespace mge {
@@ -27,6 +28,10 @@ namespace mge {
 		mousePosition = { (size_t)mousePoint.x, (size_t)mousePoint.y };
 	}
 	void UpdateInput() {
+		//Exit if the window is not active
+		if (!WindowsIsWindowActive())
+			return;
+
 		//Check every key
 		for (size_t i = 0; i < 255; i++) {
 			//Check if the key is pressed

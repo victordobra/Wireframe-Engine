@@ -11,12 +11,13 @@ namespace mge {
 	Node::~Node() {
 		if (parent != nullptr)
 			for (size_t i = 0; i < parent->children.size(); ++i)
-				if (parent->children[i] == this)
+				if (parent->children[i] == this) {
 					parent->children.erase(parent->children.begin() + i);
+					break;
+				}
 
-		for (size_t i = 0; i < children.size(); ++i)
-			delete children[i];
-
-		Delete();
+		std::vector<Node*> prevChildren = children;
+		for (size_t i = 0; i < prevChildren.size(); ++i)
+			delete prevChildren[i];
 	}
 }
