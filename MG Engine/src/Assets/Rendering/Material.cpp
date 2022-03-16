@@ -14,14 +14,6 @@ namespace mge {
 		materialIndex = materials.size();
 		materials.push_back(this);
 	}
-	Material::Material(const Material& other) : color(other.color) {
-		materialIndex = materials.size();
-		materials.push_back(this);
-	}
-	Material::Material(Material&& other) noexcept : color(other.color) {
-		materialIndex = materials.size();
-		materials.push_back(this);
-	}
 	Material::Material(const char_t* fileLocation) {
 		materialIndex = materials.size();
 		materials.push_back(this);
@@ -45,6 +37,12 @@ namespace mge {
 			if (init == "Ka" || init == "Kd") {
 				sStream >> color.r >> color.g >> color.b;
 				color.a = 1.f;
+			} else if (init == "map_Ka" || init == "map_Kd") {
+				if (image == nullptr) {
+					char_t fileLocation[256];
+					sStream.getline(fileLocation, 256);
+					image = new Image(fileLocation);
+				}
 			}
 		}
 
@@ -76,6 +74,7 @@ namespace mge {
 	}
 
 	Material::~Material() {
+		delete image;
 		materials.erase(materials.begin() + materialIndex, materials.begin() + materialIndex + 1);
 		
 		for (size_t i = materialIndex; i < materials.size(); i++)

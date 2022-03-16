@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\General\Image.cpp" />
     <ClCompile Include="src\Assets\Rendering\Material.cpp" />
     <ClCompile Include="src\Assets\Rendering\Shader.cpp" />
     <ClCompile Include="src\Debug\Debugger.cpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="src\Rendering\VulkanModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\General\Image.h" />
     <ClInclude Include="src\Assets\Rendering\Material.h" />
     <ClInclude Include="src\Assets\Rendering\Shader.h" />
     <ClInclude Include="src\Build\BuildInfo.h" />
@@ -102,6 +104,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="src\Shaders\VertShader.vert">
       <FileType>Document</FileType>
@@ -121,6 +127,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</BuildInParallel>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BuildInParallel>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -198,7 +208,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;src\Assets\General;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -206,7 +216,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -217,7 +227,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;src\Assets\General;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -227,7 +237,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib\vulkan\vulkan x86.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -236,7 +246,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;src\Assets\General;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -244,7 +254,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lib\vulkan\vulkan.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib\vulkan\vulkan.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -255,7 +265,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Vulkan\Classes;src\Vulkan;src\Virtual;src\Rendering;src\OS;src\Math;src\General\Time;src\General\Input;src\General\Graphics Info;src\General\Game Loop;src\Game Nodes\Testing;src\Game Nodes\Rendering;src\Game Nodes\Lights;src\Debug;src\Core;src\Build;src\Assets\Rendering;src\Assets\General;include</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -265,7 +275,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lib\vulkan\vulkan.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib\vulkan\vulkan.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

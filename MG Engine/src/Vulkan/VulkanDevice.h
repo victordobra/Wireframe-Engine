@@ -6,7 +6,6 @@
 #include <vector>
 
 namespace mge {
-
     struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR capabilities{};
         std::vector<VkSurfaceFormatKHR> formats{};

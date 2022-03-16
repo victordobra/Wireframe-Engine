@@ -10,6 +10,9 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include <gdiplus.h>
+
+#pragma comment (lib, "Gdiplus.lib")
 
 #define WINDOW_CLASS_NAME _T("Desktop App")
 
@@ -29,22 +32,24 @@ static mge::char_t* winTitle;
 static mge::size_t screenWidth;
 static mge::size_t screenHeight;
 
-//Thread variables
-HANDLE hThread;
-
 //Other variables
 static mge::bool8_t windowActive = true;
+static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+static ULONG_PTR gdiplusToken;
 
 LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_CREATE:
         windowHWND = winHWND;
 
+        Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
         mge::InitiateDebugger();
         mge::InitiatePipeline();
         mge::StartGameLoop();
         break;
     case WM_PAINT:
+        windowActive = GetActiveWindow() == windowHWND;
         mge::UpdateGameLoop();
         break;
     case WM_CLOSE:
@@ -54,11 +59,11 @@ LRESULT CALLBACK WinProc(HWND winHWND, UINT message, WPARAM wParam, LPARAM lPara
         mge::EndGameLoop();
         mge::ClearPipeline();
         mge::ClearDebugger();
+
+        Gdiplus::GdiplusShutdown(gdiplusToken);
+        
         PostQuitMessage(0);
         break;
-    case WM_ACTIVATE:
-        windowActive = wParam != WA_INACTIVE;
-        return DefWindowProc(winHWND, message, wParam, lParam);
     default:
         return DefWindowProc(winHWND, message, wParam, lParam);
     }
@@ -125,7 +130,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     
     ShowWindow(windowHWND, nCmdShow);
     UpdateWindow(windowHWND);
-
+    
     //Main message loop
     MSG message;
     while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE)) {
@@ -175,13 +180,13 @@ void mge::WindowsSetTitle(const char_t* newTitle) {
 #ifdef UNICODE
     delete[] winTitle;
 
-    const mge::size_t TSize = strlen(newTitle) + 1;
-    winTitle = new mge::charw_t[TSize];
-    mge::size_t TConvCount;
+    const mge::size_t tSize = strlen(newTitle) + 1;
+    winTitle = new mge::charw_t[tSize];
+    mge::size_t tConvCount;
 
-    mbstowcs_s(&TConvCount, winTitle, TSize, newTitle, TSize);
+    mbstowcs_s(&tConvCount, winTitle, tSize, newTitle, tSize);
 
-    if (TConvCount != TSize)
+    if (tConvCount != tSize)
         OutFatalError("Not enough characters converted!");
 
     SetWindowText(windowHWND, winTitle);

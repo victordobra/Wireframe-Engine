@@ -29,11 +29,14 @@ namespace mge {
 			rotation *= Quaternion::EulerAngles(eulerRotation * DEG_TO_RAD_MULTIPLIER);
 		}
 
-		Matrix4x4 GetCameraMatrix();
-		Matrix4x4 GetInvCameraMatrix();
+		Matrix4x4 GetCameraMatrix() const;
+		Matrix4x4 GetInvCameraMatrix() const;
 
 		~Camera() = default;
 	private:
 		float32_t aspectRatio{ 1.0f };
+
+		template<class T>
+		void GetNodesOfType(std::vector<T*>& nodeVector, Node* parent = Node::scene) const;
 	};
 }

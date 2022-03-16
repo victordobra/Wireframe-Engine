@@ -161,7 +161,7 @@ namespace mge {
         if (physicalDevice == VK_NULL_HANDLE) {
             OutFatalError("failed to find a suitable GPU!");
         }
-
+        
         vkGetPhysicalDeviceProperties(physicalDevice, &properties_);
         OutMessage((std::string)"Physical device: " + properties_.deviceName);
     }
@@ -517,14 +517,9 @@ namespace mge {
         return alignedSize;
     }
 
-    void CreateImageWithInfo(
-        const VkImageCreateInfo& imageInfo,
-        VkMemoryPropertyFlags properties,
-        VkImage& image,
-        VkDeviceMemory& imageMemory) {
-        if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-            OutFatalError("failed to create image!");
-        }
+    void CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
+        if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS)
+            OutFatalError("Failed to create image!");
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device_, image, &memRequirements);
@@ -535,10 +530,10 @@ namespace mge {
         allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
-            OutFatalError("failed to allocate image memory!");
+            OutFatalError("Failed to allocate image memory!");
 
         if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS)
-            OutFatalError("failed to bind image memory!");
+            OutFatalError("Failed to bind image memory!");
     }
 
     SwapChainSupportDetails GetSwapChainSupport() { return QuerySwapChainSupport(physicalDevice); }

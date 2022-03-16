@@ -9,4 +9,5 @@ namespace mge {
 	void PipelineBind(VkCommandBuffer commandBuffer);
 
 	VkPipelineLayout GetPipelineLayout();
+	VkSampler GetSampler();
 }

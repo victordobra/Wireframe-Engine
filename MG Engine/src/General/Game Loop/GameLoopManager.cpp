@@ -9,6 +9,7 @@
 #include "CameraController.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "Image.h"
 
 #include <future>
 
@@ -85,6 +86,10 @@ namespace mge {
 	DirectionalLight* dirLight1;
 	DirectionalLight* dirLight2;
 
+	Material* material1;
+	Material* material2;
+	Model* model;
+
 	float32_t yRot = 0.f;
 
 	//Main functions
@@ -98,12 +103,14 @@ namespace mge {
 		camera->clearMode = ClearMode::COLOR;
 		camera->clearColor = { 0.01f, 0.01f, 0.01f };
 
-		Model* model = new Model("Assets\\Teapot.obj");
+		model = new Model("Assets\\Quad.obj");
 
-		Material* material1 = new Material();
+		material1 = new Material();
 		material1->color = { 1.f, 1.f, 1.f, 1.f };
-		Material* material2 = new Material();
-		material2->color = { 0.5f, 0.5f, 1.f, 1.f };
+		material1->image = new Image("Assets\\dingdongdirt.png");
+		material2 = new Material();
+		material2->color = { 1.f, 1.f, 1.f, 1.f };
+		material2->image = new Image("Assets\\lucky steve.png");
 
 		renderer1 = new ModelRenderer();
 		renderer1->position = { 0.f, 0.f, 0.f };
@@ -120,7 +127,7 @@ namespace mge {
 
 		dirLight1 = new DirectionalLight();
 		dirLight1->SetParent(Node::scene);
-		dirLight1->direction = { 1.f, 0.f, 0.f };
+		dirLight1->direction = { 0.f, -1.f, 0.f };
 		dirLight1->color = { 1.f, 1.f, 1.f, 1.f };
 
 		dirLight2 = new DirectionalLight();
@@ -145,7 +152,7 @@ namespace mge {
 		if (yRot > 360.f)
 			yRot -= 360.f;
 
-		dirLight1->direction = { Cos(yRot * DEG_TO_RAD_MULTIPLIER), 0.f, -Sin(yRot * DEG_TO_RAD_MULTIPLIER) };
+		//dirLight1->direction = { Cos(yRot * DEG_TO_RAD_MULTIPLIER), 0.f, -Sin(yRot * DEG_TO_RAD_MULTIPLIER) };
 		dirLight2->direction = { Cos((yRot + 180.f) * DEG_TO_RAD_MULTIPLIER), 0.f, -Sin((yRot + 180.f) * DEG_TO_RAD_MULTIPLIER) };
 
 		//Run the frame and render functions on every object
@@ -158,5 +165,9 @@ namespace mge {
 	void EndGameLoop() {
 		//Delete the scene object; this will cause a chain reaction
 		delete Node::scene;
+
+		delete model;
+		delete material1;
+		delete material2;
 	}
 }

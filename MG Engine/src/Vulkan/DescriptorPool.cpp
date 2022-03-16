@@ -1,6 +1,7 @@
 #include "DescriptorPool.h"
 #include "VulkanDevice.h"
 #include "SwapChain.h"
+#include "RenderingPipeline.h"
 #include "ShaderData.h"
 #include "Debugger.h"
 
@@ -14,7 +15,7 @@ namespace mge {
 	//Constants
 #pragma warning( push )
 #pragma warning( disable : 26812 )
-	const std::vector<VkDescriptorPoolSize> poolSizes = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 2 * MAX_FRAMES_IN_FLIGHT }, { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, MAX_FRAMES_IN_FLIGHT } };
+	const std::vector<VkDescriptorPoolSize> poolSizes = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 2 * MAX_FRAMES_IN_FLIGHT }, { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, MAX_FRAMES_IN_FLIGHT }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, MAX_FRAMES_IN_FLIGHT } }; 
 	const uint32_t maxSets = 2 * MAX_FRAMES_IN_FLIGHT;
 	const VkDescriptorPoolCreateFlags poolFlags = 0;
 #pragma warning( pop )
@@ -25,6 +26,7 @@ namespace mge {
 	Buffer* cameraBuffers[MAX_FRAMES_IN_FLIGHT]{};
 	Buffer* lightingBuffers[MAX_FRAMES_IN_FLIGHT]{};
 	Buffer* materialBuffers[MAX_FRAMES_IN_FLIGHT]{};
+	Image* diffuseImages[MAX_FRAMES_IN_FLIGHT]{};
 
 	DescriptorSetLayout globalLayout;
 	DescriptorSetLayout localLayout;
@@ -48,6 +50,8 @@ namespace mge {
 		//Creating the buffers
 		size_t materialBufferSize = PadUniformBufferSize(sizeof(MaterialUbo));
 
+		VkCommandBuffer imageCommandBuffer = BeginSingleTimeCommands();
+
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 			cameraBuffers[i] = new Buffer(sizeof(CameraUbo), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 			lightingBuffers[i] = new Buffer(sizeof(LightingUbo), 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
@@ -56,11 +60,16 @@ namespace mge {
 			cameraBuffers[i]->Map();
 			lightingBuffers[i]->Map();
 			materialBuffers[i]->Map();
+
+			diffuseImages[i] = new Image(targetImageSize * maxMaterialCount, targetImageSize);
+			diffuseImages[i]->TransitionImageLayout(imageCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		}
+
+		EndSingleTimeCommands(imageCommandBuffer);
 
 		//Creating the descriptor set layouts
 		globalLayout.setLayoutBindings = { { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT, nullptr }, { 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr } };
-		localLayout.setLayoutBindings = { { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr } };
+		localLayout.setLayoutBindings = { { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr }, { 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr } };
 
 		//Global layout
 		VkDescriptorSetLayoutCreateInfo globalSetLayoutInfo{};
@@ -95,19 +104,21 @@ namespace mge {
 			OutFatalError("Failed to allocate descriptor sets!");
 
 		//Write the buffers
-		const uint32_t writesCount = 3 * (uint32_t)MAX_FRAMES_IN_FLIGHT;
+		const uint32_t writesCount = 4 * (uint32_t)MAX_FRAMES_IN_FLIGHT;
+
 		VkWriteDescriptorSet writes[writesCount]{};
-		VkDescriptorBufferInfo infos[writesCount]{};
+		VkDescriptorBufferInfo bufferInfos[3 * (uint32_t)MAX_FRAMES_IN_FLIGHT]{};
+		VkDescriptorImageInfo  imageInfos[MAX_FRAMES_IN_FLIGHT]{};
 
 		size_t index = 0;
 		//Camera buffers
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			infos[index] = cameraBuffers[i]->DescriptorInfo();
+			bufferInfos[index] = cameraBuffers[i]->DescriptorInfo();
 
 			writes[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			writes[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			writes[index].dstBinding = 0;
-			writes[index].pBufferInfo = infos + index;
+			writes[index].pBufferInfo = bufferInfos + index;
 			writes[index].descriptorCount = 1;
 			writes[index].dstSet = descriptorSets[i];
 			index++;
@@ -115,12 +126,12 @@ namespace mge {
 
 		//Lighting buffers
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			infos[index] = lightingBuffers[i]->DescriptorInfo();
+			bufferInfos[index] = lightingBuffers[i]->DescriptorInfo();
 
 			writes[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			writes[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			writes[index].dstBinding = 1;
-			writes[index].pBufferInfo = infos + index;
+			writes[index].pBufferInfo = bufferInfos + index;
 			writes[index].descriptorCount = 1;
 			writes[index].dstSet = descriptorSets[i];
 			index++;
@@ -128,14 +139,30 @@ namespace mge {
 
 		//Material buffers
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			infos[index] = materialBuffers[i]->DescriptorInfo(materialBufferSize);
+			bufferInfos[index] = materialBuffers[i]->DescriptorInfo(materialBufferSize);
 
 			writes[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			writes[index].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 			writes[index].dstBinding = 0;
-			writes[index].pBufferInfo = infos + index;
+			writes[index].pBufferInfo = bufferInfos + index;
 			writes[index].descriptorCount = 1;
 			writes[index].dstSet = descriptorSets[i + MAX_FRAMES_IN_FLIGHT];
+			index++;
+		}
+		
+		//Diffuse images
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			imageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfos[i].imageView = diffuseImages[i]->GetImageView();
+			imageInfos[i].sampler = GetSampler();
+
+			writes[index].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writes[index].dstSet = descriptorSets[i + MAX_FRAMES_IN_FLIGHT];
+			writes[index].dstBinding = 1;
+			writes[index].dstArrayElement = 0;
+			writes[index].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writes[index].descriptorCount = 1;
+			writes[index].pImageInfo = imageInfos + i;
 			index++;
 		}
 
@@ -151,6 +178,7 @@ namespace mge {
 			delete cameraBuffers[i];
 			delete lightingBuffers[i];
 			delete materialBuffers[i];
+			delete diffuseImages[i];
 		}
 	}
 
@@ -162,6 +190,9 @@ namespace mge {
 	}
 	Buffer** GetMaterialBuffers() {
 		return materialBuffers;
+	}
+	Image** GetDiffuseImages() {
+		return diffuseImages;
 	}
 
 	std::vector<VkDescriptorSetLayout> GetDescriptorLayouts() {

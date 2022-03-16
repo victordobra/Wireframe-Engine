@@ -30,6 +30,7 @@ namespace mge {
 
 		//Set all buffer values
 		size_t frameIndex = GetFrameIndex() % MAX_FRAMES_IN_FLIGHT;
+
 		Buffer* cameraBuffer = GetCameraBuffers()[frameIndex];
 		Buffer* lightingBuffer = GetLightingBuffers()[frameIndex];
 		Buffer* materialBuffer = GetMaterialBuffers()[frameIndex];
@@ -45,23 +46,29 @@ namespace mge {
 		//Write to the lighting buffer
 		LightingUbo lightingUbo;
 
-		std::vector<Node*> nodes = Node::scene->GetChildren();
-		for (size_t i = 0; i < nodes.size(); i++) {
-			Node* node = nodes[i];
-			DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(node);
-			PointLight* pointLight = dynamic_cast<PointLight*>(node);
+		std::vector<DirectionalLight*> dirLights;
+		std::vector<PointLight*> pointLights;
 
-			if (dirLight != nullptr) {
-				lightingUbo.directionalLightDirections[lightingUbo.directionalLightCount] = { dirLight->direction.x, dirLight->direction.y, dirLight->direction.z, 1.f };
-				lightingUbo.directionalLightColors[lightingUbo.directionalLightCount] = dirLight->color;
+		GetNodesOfType(dirLights);
+		GetNodesOfType(pointLights);
 
-				lightingUbo.directionalLightCount++;
-			} else if (pointLight != nullptr) {
-				lightingUbo.pointLightPositions[lightingUbo.pointLightCount] = { pointLight->position.x, pointLight->position.y, pointLight->position.z, 1.f };
-				lightingUbo.pointLightColors[lightingUbo.pointLightCount] = pointLight->color;
+		if (dirLights.size() > MAX_LIGHT_COUNT)
+			OutFatalError("Too many directional lights have been created. To increase the maximum amount of lights allowed, modify MAX_LIGHT_COUNT in Rendering\\ShaderData.h");
+		if (pointLights.size() > MAX_LIGHT_COUNT)
+			OutFatalError("Too many point lights have been created. To increase the maximum amount of lights allowed, modify MAX_LIGHT_COUNT in Rendering\\ShaderData.h");
 
-				lightingUbo.pointLightCount++;
-			}
+		lightingUbo.ambientLightColor = { 1.f, 1.f, 1.f, .1f };
+
+		lightingUbo.directionalLightCount = (uint32_t)dirLights.size();
+		lightingUbo.pointLightCount = (uint32_t)pointLights.size();
+
+		for (size_t i = 0; i < dirLights.size(); i++) {
+			lightingUbo.directionalLightColors[i] = dirLights[i]->color;
+			lightingUbo.directionalLightDirections[i] = { dirLights[i]->direction.x, dirLights[i]->direction.y, dirLights[i]->direction.z, 1.f };
+		}
+		for (size_t i = 0; i < pointLights.size(); i++) {
+			lightingUbo.pointLightColors[i] = pointLights[i]->color;
+			lightingUbo.pointLightPositions[i] = { pointLights[i]->position.x, pointLights[i]->position.y, pointLights[i]->position.z, 1.f };
 		}
 
 		lightingBuffer->WriteToBuffer(&lightingUbo);
@@ -127,39 +134,63 @@ namespace mge {
 		viewport.height = (float32_t)GetScreenHeight();
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
+
 		VkRect2D scissor{ { 0, 0 }, GetSwapChainExtent() };
+
 		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-		//Bind the pipeline
-		PipelineBind(commandBuffer);
+		//Copy all of the material data
+		VkCommandBuffer imageCommandBuffer = BeginSingleTimeCommands();
 
-		for (size_t i = 0; i < nodes.size(); i++) {
-			Node* node = nodes[i];
-			ModelRenderer* modelRenderer = dynamic_cast<ModelRenderer*>(node);
-			//Check if the current game node is a mesh renderer
-			if (modelRenderer == nullptr)
-				continue;
+		Image* diffuseImage = GetDiffuseImages()[frameIndex];
+		diffuseImage->TransitionImageLayout(imageCommandBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+		VkImageSubresourceLayers subresourceLayers;
+		subresourceLayers.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		subresourceLayers.mipLevel = 0;
+		subresourceLayers.baseArrayLayer = 0;
+		subresourceLayers.layerCount = 1;
+
+		for (size_t i = 0; i < Material::materials.size(); i++) {
+			Material::materials[i]->WriteMaterialData(frameIndex);
+
+			VkImageCopy imageCopyInfo;
+			imageCopyInfo.srcSubresource = subresourceLayers;
+			imageCopyInfo.dstSubresource = subresourceLayers;
+			imageCopyInfo.extent = { targetImageSize, targetImageSize, 1 };
+			imageCopyInfo.srcOffset = { 0, 0, 0 };
+			imageCopyInfo.dstOffset = { (sint32_t)(targetImageSize * i), 0, 0 };
+
+			vkCmdCopyImage(imageCommandBuffer, Material::materials[i]->image->GetImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, diffuseImage->GetImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyInfo);
+		}
+
+		diffuseImage->TransitionImageLayout(imageCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		EndSingleTimeCommands(imageCommandBuffer);
+
+		std::vector<ModelRenderer*> renderers;
+		GetNodesOfType(renderers);
+
+		for (size_t i = 0; i < renderers.size(); i++) {
+			ModelRenderer* modelRenderer = renderers[i];
+
+			//Bind the pipeline
+			PipelineBind(commandBuffer);
 
 			//Bind the model renderer
 			modelRenderer->Bind(commandBuffer);
 
 			//Bind the descriptor sets
-			modelRenderer->material->WriteMaterialData(frameIndex);
-
 			VkDescriptorSet descriptorSets[2] = { GetDescriptorSets()[frameIndex], GetDescriptorSets()[frameIndex + MAX_FRAMES_IN_FLIGHT] };
 			uint32_t dynamicOffsets[1] = { (uint32_t)modelRenderer->material->materialIndex * materialBufferSize };
-
+			
 			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, GetPipelineLayout(), 0, 2, descriptorSets, 1, dynamicOffsets);
 
 			//Push the transformation matrices
 			Matrix4x4 meshPosition = Matrix4x4::Translation(modelRenderer->position);
 			Matrix4x4 meshRotation = Matrix4x4::Rotation(modelRenderer->rotation);
 			Matrix4x4 meshScale = Matrix4x4::Scaling(modelRenderer->scale);
-			Matrix4x4 meshTransform = modelRenderer->GetTransformationMatrix();
-
-			Vector3 test;
-			test = meshTransform * test;
+			Matrix4x4 meshTransform = meshScale * meshRotation * meshPosition;
 			
 			meshRotation.Transpose();
 			meshTransform.Transpose();
@@ -173,7 +204,7 @@ namespace mge {
 			//Draw the model
 			modelRenderer->Draw(commandBuffer);
 		}
-		
+
 		//End the render pass
 		vkCmdEndRenderPass(commandBuffer);
 
@@ -191,10 +222,24 @@ namespace mge {
 		vkFreeCommandBuffers(GetDevice(), GetCommandPool(), 1, &commandBuffer);
 	}
 
-	Matrix4x4 Camera::GetCameraMatrix() {
+	Matrix4x4 Camera::GetCameraMatrix() const {
 		return Matrix4x4::Rotation(rotation) * Matrix4x4::Translation(position);
 	}
-	Matrix4x4 Camera::GetInvCameraMatrix() {
+	Matrix4x4 Camera::GetInvCameraMatrix() const {
 		return Matrix4x4::Translation(-position) * Matrix4x4::Rotation(rotation.Inverted());
+	}
+
+	template<class T>
+	void Camera::GetNodesOfType(std::vector<T*>& nodeVector, Node* parent) const {
+		const std::vector<Node*>& children = parent->GetChildren();
+
+		for (size_t i = 0; i < children.size(); i++) {
+			T* newChild = dynamic_cast<T*>(children[i]);
+
+			if (newChild != nullptr)
+				nodeVector.push_back(newChild);
+
+			GetNodesOfType(nodeVector, children[i]);
+		}
 	}
 }

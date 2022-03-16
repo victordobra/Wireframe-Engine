@@ -22,6 +22,8 @@ namespace mge {
 	};
 	struct MaterialUbo {
 		Color4 objectColor;
+
+		uint32_t materialIndex{0};
 	};
 
 	struct PushConstantData {
