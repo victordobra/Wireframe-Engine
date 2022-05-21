@@ -1,0 +1,62 @@
+[
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\Rendering\\Pipeline.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\Rendering\\Pipeline.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\Rendering\\Shader.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\Rendering\\Shader.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Base\\Asset.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Base\\Asset.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Base/Asset.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Base\\Node.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Base\\Node.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Base/Node.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Math\\MathHashes.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Math\\MathHashes.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Math/MathHashes.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Systems\\GameLoop.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Systems\\GameLoop.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Systems/GameLoop.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Systems\\Input.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Systems\\Input.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Systems/Input.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Systems\\Time.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Systems\\Time.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Systems/Time.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\TestNode.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\TestNode.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/TestNode.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Vulkan\\Device.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Vulkan\\Device.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Vulkan/Device.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Vulkan\\SwapChain.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Vulkan\\SwapChain.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Vulkan/SwapChain.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Window\\Windows\\MainWindow.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Window\\Windows\\MainWindow.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Window/Windows/MainWindow.cpp"
+}
+]

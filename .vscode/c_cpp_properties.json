@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "CMake",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "intelliSenseMode": "gcc-arm64",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/external/Core/include",
+                "${workspaceFolder}/external/Vulkan/include"
+            ]
+        }
+    ],
+    "version": 4
+}
