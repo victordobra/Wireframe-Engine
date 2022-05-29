@@ -310,7 +310,8 @@ namespace mge {
             node* currentNode = buckets[index];
 
             while(currentNode != nullptr) {
-                count++;
+                if(key == currentNode->key)
+                    ++count;
                 currentNode = currentNode->next;
             }
 

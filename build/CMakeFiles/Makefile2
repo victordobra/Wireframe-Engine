@@ -838,12 +838,12 @@ CMakeFiles/ContinuousSubmit.dir/clean:
 CMakeFiles/MG-Engine.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13 "Built target MG-Engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 "Built target MG-Engine"
 .PHONY : CMakeFiles/MG-Engine.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MG-Engine.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\Main\Programming\VS\MG-Engine\build\CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\Main\Programming\VS\MG-Engine\build\CMakeFiles 17
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/MG-Engine.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\Main\Programming\VS\MG-Engine\build\CMakeFiles 0
 .PHONY : CMakeFiles/MG-Engine.dir/rule
@@ -864,7 +864,7 @@ CMakeFiles/MG-Engine.dir/clean:
 CMakeFiles/SHADERS.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SHADERS.dir\build.make CMakeFiles/SHADERS.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SHADERS.dir\build.make CMakeFiles/SHADERS.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=14,15 "Built target SHADERS"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=18,19 "Built target SHADERS"
 .PHONY : CMakeFiles/SHADERS.dir/all
 
 # Build rule for subdir invocation for target.

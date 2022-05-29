@@ -37,7 +37,16 @@ namespace mge {
                 assets.insert(filePath, newAsset);
                 assetLocations.insert(newAsset, filePath);
             }
-            return dynamic_cast<T*>(assets[filePath]);
+            return assets[filePath];
+        }
+        template<class T>
+        static void SaveAssetToFile(const string& filePath, T* asset) {
+            Asset* assetP = dynamic_cast<Asset*>(asset);
+            if(!assetP)
+                console::OutFatalError("Failed to convert the asset type!", 1);
+            asset->SaveToFile(filePath);
+            assets.insert(filePath, assetP);
+            assetLocations.insert(assetP, filePath);
         }
         template<class T>
         static string GetAssetLocation(const T* originalAsset) {
@@ -65,8 +74,6 @@ namespace mge {
 
         virtual ~Asset() = default;
     private:
-        static Asset*& LoadAssetPrivate(const string& filePath, bool8_t& initialize);
-
         static unordered_map<string, Asset*> assets;
         static unordered_map<Asset*, string> assetLocations;
     };

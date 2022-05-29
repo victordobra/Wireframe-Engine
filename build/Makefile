@@ -535,6 +535,30 @@ SHADERS/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SHADERS.dir\build.make CMakeFiles/SHADERS.dir/build
 .PHONY : SHADERS/fast
 
+src/Assets/General/Model.obj: src/Assets/General/Model.cpp.obj
+.PHONY : src/Assets/General/Model.obj
+
+# target to build an object file
+src/Assets/General/Model.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj
+.PHONY : src/Assets/General/Model.cpp.obj
+
+src/Assets/General/Model.i: src/Assets/General/Model.cpp.i
+.PHONY : src/Assets/General/Model.i
+
+# target to preprocess a source file
+src/Assets/General/Model.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.i
+.PHONY : src/Assets/General/Model.cpp.i
+
+src/Assets/General/Model.s: src/Assets/General/Model.cpp.s
+.PHONY : src/Assets/General/Model.s
+
+# target to generate assembly for a file
+src/Assets/General/Model.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.s
+.PHONY : src/Assets/General/Model.cpp.s
+
 src/Assets/Rendering/Pipeline.obj: src/Assets/Rendering/Pipeline.cpp.obj
 .PHONY : src/Assets/Rendering/Pipeline.obj
 
@@ -655,6 +679,78 @@ src/Math/MathHashes.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.s
 .PHONY : src/Math/MathHashes.cpp.s
 
+src/Nodes/General/Body.obj: src/Nodes/General/Body.cpp.obj
+.PHONY : src/Nodes/General/Body.obj
+
+# target to build an object file
+src/Nodes/General/Body.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj
+.PHONY : src/Nodes/General/Body.cpp.obj
+
+src/Nodes/General/Body.i: src/Nodes/General/Body.cpp.i
+.PHONY : src/Nodes/General/Body.i
+
+# target to preprocess a source file
+src/Nodes/General/Body.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.i
+.PHONY : src/Nodes/General/Body.cpp.i
+
+src/Nodes/General/Body.s: src/Nodes/General/Body.cpp.s
+.PHONY : src/Nodes/General/Body.s
+
+# target to generate assembly for a file
+src/Nodes/General/Body.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.s
+.PHONY : src/Nodes/General/Body.cpp.s
+
+src/Nodes/Rendering/Camera.obj: src/Nodes/Rendering/Camera.cpp.obj
+.PHONY : src/Nodes/Rendering/Camera.obj
+
+# target to build an object file
+src/Nodes/Rendering/Camera.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj
+.PHONY : src/Nodes/Rendering/Camera.cpp.obj
+
+src/Nodes/Rendering/Camera.i: src/Nodes/Rendering/Camera.cpp.i
+.PHONY : src/Nodes/Rendering/Camera.i
+
+# target to preprocess a source file
+src/Nodes/Rendering/Camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.i
+.PHONY : src/Nodes/Rendering/Camera.cpp.i
+
+src/Nodes/Rendering/Camera.s: src/Nodes/Rendering/Camera.cpp.s
+.PHONY : src/Nodes/Rendering/Camera.s
+
+# target to generate assembly for a file
+src/Nodes/Rendering/Camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.s
+.PHONY : src/Nodes/Rendering/Camera.cpp.s
+
+src/Nodes/Rendering/Renderer.obj: src/Nodes/Rendering/Renderer.cpp.obj
+.PHONY : src/Nodes/Rendering/Renderer.obj
+
+# target to build an object file
+src/Nodes/Rendering/Renderer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj
+.PHONY : src/Nodes/Rendering/Renderer.cpp.obj
+
+src/Nodes/Rendering/Renderer.i: src/Nodes/Rendering/Renderer.cpp.i
+.PHONY : src/Nodes/Rendering/Renderer.i
+
+# target to preprocess a source file
+src/Nodes/Rendering/Renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.i
+.PHONY : src/Nodes/Rendering/Renderer.cpp.i
+
+src/Nodes/Rendering/Renderer.s: src/Nodes/Rendering/Renderer.cpp.s
+.PHONY : src/Nodes/Rendering/Renderer.s
+
+# target to generate assembly for a file
+src/Nodes/Rendering/Renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.s
+.PHONY : src/Nodes/Rendering/Renderer.cpp.s
+
 src/Systems/GameLoop.obj: src/Systems/GameLoop.cpp.obj
 .PHONY : src/Systems/GameLoop.obj
 
@@ -727,29 +823,29 @@ src/Systems/Time.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.s
 .PHONY : src/Systems/Time.cpp.s
 
-src/TestNode.obj: src/TestNode.cpp.obj
-.PHONY : src/TestNode.obj
+src/Vulkan/Buffer.obj: src/Vulkan/Buffer.cpp.obj
+.PHONY : src/Vulkan/Buffer.obj
 
 # target to build an object file
-src/TestNode.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj
-.PHONY : src/TestNode.cpp.obj
+src/Vulkan/Buffer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj
+.PHONY : src/Vulkan/Buffer.cpp.obj
 
-src/TestNode.i: src/TestNode.cpp.i
-.PHONY : src/TestNode.i
+src/Vulkan/Buffer.i: src/Vulkan/Buffer.cpp.i
+.PHONY : src/Vulkan/Buffer.i
 
 # target to preprocess a source file
-src/TestNode.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/TestNode.cpp.i
-.PHONY : src/TestNode.cpp.i
+src/Vulkan/Buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.i
+.PHONY : src/Vulkan/Buffer.cpp.i
 
-src/TestNode.s: src/TestNode.cpp.s
-.PHONY : src/TestNode.s
+src/Vulkan/Buffer.s: src/Vulkan/Buffer.cpp.s
+.PHONY : src/Vulkan/Buffer.s
 
 # target to generate assembly for a file
-src/TestNode.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/TestNode.cpp.s
-.PHONY : src/TestNode.cpp.s
+src/Vulkan/Buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.s
+.PHONY : src/Vulkan/Buffer.cpp.s
 
 src/Vulkan/Device.obj: src/Vulkan/Device.cpp.obj
 .PHONY : src/Vulkan/Device.obj
@@ -864,6 +960,9 @@ help:
 	@echo ... NightlyUpdate
 	@echo ... SHADERS
 	@echo ... MG-Engine
+	@echo ... src/Assets/General/Model.obj
+	@echo ... src/Assets/General/Model.i
+	@echo ... src/Assets/General/Model.s
 	@echo ... src/Assets/Rendering/Pipeline.obj
 	@echo ... src/Assets/Rendering/Pipeline.i
 	@echo ... src/Assets/Rendering/Pipeline.s
@@ -879,6 +978,15 @@ help:
 	@echo ... src/Math/MathHashes.obj
 	@echo ... src/Math/MathHashes.i
 	@echo ... src/Math/MathHashes.s
+	@echo ... src/Nodes/General/Body.obj
+	@echo ... src/Nodes/General/Body.i
+	@echo ... src/Nodes/General/Body.s
+	@echo ... src/Nodes/Rendering/Camera.obj
+	@echo ... src/Nodes/Rendering/Camera.i
+	@echo ... src/Nodes/Rendering/Camera.s
+	@echo ... src/Nodes/Rendering/Renderer.obj
+	@echo ... src/Nodes/Rendering/Renderer.i
+	@echo ... src/Nodes/Rendering/Renderer.s
 	@echo ... src/Systems/GameLoop.obj
 	@echo ... src/Systems/GameLoop.i
 	@echo ... src/Systems/GameLoop.s
@@ -888,9 +996,9 @@ help:
 	@echo ... src/Systems/Time.obj
 	@echo ... src/Systems/Time.i
 	@echo ... src/Systems/Time.s
-	@echo ... src/TestNode.obj
-	@echo ... src/TestNode.i
-	@echo ... src/TestNode.s
+	@echo ... src/Vulkan/Buffer.obj
+	@echo ... src/Vulkan/Buffer.i
+	@echo ... src/Vulkan/Buffer.s
 	@echo ... src/Vulkan/Device.obj
 	@echo ... src/Vulkan/Device.i
 	@echo ... src/Vulkan/Device.s

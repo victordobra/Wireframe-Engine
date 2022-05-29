@@ -36,6 +36,13 @@ namespace mge {
         /// @brief Returns the children of the object.
         vector<Node*> GetChildren() const;
 
+        // Runs at the start of the game
+        virtual void Start() { }
+        // Runs at every frame of the game
+        virtual void Update() { }
+        // Runs during every render of the game
+        virtual void Render() { }
+
         virtual ~Node();
     private:
         void LoadFromStream(FileInput& stream);

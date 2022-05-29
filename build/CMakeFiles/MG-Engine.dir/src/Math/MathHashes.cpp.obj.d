@@ -86,6 +86,7 @@ CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj: \
  D:\Main\Programming\VS\MG-Engine\src\Math\Vector3.hpp \
  D:\Main\Programming\VS\MG-Engine\src\Math\Vector4.hpp \
  D:\Main\Programming\VS\MG-Engine\src\Math\Quaternion.hpp \
+ D:\Main\Programming\VS\MG-Engine\src\Math\Colors.hpp \
  C:/msys64/mingw64/include/time.h C:/msys64/mingw64/include/sys/timeb.h \
  C:/msys64/mingw64/include/sec_api/sys/timeb_s.h \
  C:/msys64/mingw64/include/_timeval.h \

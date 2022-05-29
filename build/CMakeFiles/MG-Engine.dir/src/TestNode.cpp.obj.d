@@ -102,4 +102,5 @@ CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj: \
  C:/msys64/mingw64/include/c++/11.2.0/tr1/riemann_zeta.tcc \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector3.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector4.hpp \
- D:/Main/Programming/VS/MG-Engine/src/Math/Quaternion.hpp
+ D:/Main/Programming/VS/MG-Engine/src/Math/Quaternion.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Math/Colors.hpp

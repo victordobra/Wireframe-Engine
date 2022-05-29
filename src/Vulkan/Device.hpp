@@ -45,7 +45,7 @@ namespace mge {
     /// @brief Returns the Vulkan present queue.
     VkQueue GetPresentQueue();
     /// @brief Returns the properties of the Vulkan physical device.
-    VkPhysicalDeviceProperties& GetDeviceProperties();
+    const VkPhysicalDeviceProperties& GetDeviceProperties();
 
     /// @brief Returns details about swap chain support.
     SwapChainSupportDetails GetSwapChainSupport();

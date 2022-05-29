@@ -1,0 +1,16 @@
+[WARNING] Validation layer: Layer name GalaxyOverlayVkLayer does not conform to naming standard (Policy #LLP_LAYER_3)
+[WARNING] Validation layer: Layer name GalaxyOverlayVkLayer_VERBOSE does not conform to naming standard (Policy #LLP_LAYER_3)
+[WARNING] Validation layer: Layer name GalaxyOverlayVkLayer_DEBUG does not conform to naming standard (Policy #LLP_LAYER_3)
+
+[ERROR] Validation layer: loader_scanned_icd_add: Driver C:\Windows\System32\DriverStore\FileRepository\u0376255.inf_amd64_b67dbc7531b4ea7c\B376137\.\amdvlk64.dll says it supports interface version 6 but still exports core entrypoints (Policy #LDP_DRIVER_6)
+
+[MESSAGE] Vulkan device count: 1
+[MESSAGE] Physical Vulkan device: Radeon RX 570 Series
+
+[WARNING] Validation layer: vkGetPhysicalDeviceProperties2KHR: Emulation found unrecognized structure type in pProperties->pNext - this struct will be ignored
+[WARNING] Validation layer: vkGetPhysicalDeviceProperties2KHR: Emulation found unrecognized structure type in pProperties->pNext - this struct will be ignored
+[WARNING] Validation layer: vkGetPhysicalDeviceProperties2KHR: Emulation found unrecognized structure type in pProperties->pNext - this struct will be ignored
+[WARNING] Validation layer: vkGetPhysicalDeviceProperties2KHR: Emulation found unrecognized structure type in pProperties->pNext - this struct will be ignored
+[WARNING] Validation layer: vkGetPhysicalDeviceProperties2KHR: Emulation found unrecognized structure type in pProperties->pNext - this struct will be ignored
+
+[MESSAGE] Present mode: V-Sync

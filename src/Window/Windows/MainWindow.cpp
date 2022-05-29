@@ -25,13 +25,17 @@
 #include "MainWindow.hpp"
 #include "Vulkan/Device.hpp"
 #include "Vulkan/SwapChain.hpp"
-#include "Assets/Rendering/Pipeline.hpp"
+#include "Systems/GameLoop.hpp"
+#include "Base/Node.hpp"
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
 
 #include "Core.hpp"
 #include "Math/EngineMath.hpp"
-#include "TestNode.hpp"
+#include "Assets/Rendering/Pipeline.hpp"
+#include "Assets/General/Model.hpp"
 
 // Const variables
 const mge::char_t* className = "Application";
@@ -127,13 +131,11 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         mge::CreateVulkanDevice();
         mge::CreateSwapChain({ (mge::uint32_t)screenWidth, (mge::uint32_t)screenHeight });
 
-        vertShader = dynamic_cast<mge::Shader*>(mge::Asset::LoadAssetFromFile<mge::Shader>("assets/shaders/VertShader.shader"));
-        fragShader = dynamic_cast<mge::Shader*>(mge::Asset::LoadAssetFromFile<mge::Shader>("assets/shaders/FragShader.shader"));
+        vertShader = new mge::Shader("assets/shaders/VertShader.vert.spv");
+        fragShader = new mge::Shader("assets/shaders/FragShader.frag.spv");
         
-        vertShader->SaveToFile("assets/shaders/VertShader.shader");
-        fragShader->SaveToFile("assets/shaders/FragShader.shader");
-        
-        //pipeline = dynamic_cast<mge::Pipeline*>(mge::Asset::LoadAssetFromFile<mge::Pipeline>("assets/MainPipeline.pipeline"));
+        mge::Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
+        mge::Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
 
         mge::Pipeline::PipelineInfo pipelineInfo;
         mge::Pipeline::PopulatePipelineInfo(pipelineInfo);
@@ -141,9 +143,15 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
 
         pipeline = new mge::Pipeline(pipelineInfo);
         pipeline->SaveToFile("assets/MainPipeline.pipeline");
+
+        mge::Model* model = (mge::Model*)mge::Asset::LoadAssetFromFile<mge::Model>("assets/models/Cube.model");
+        mge::Asset::SaveAssetToFile("assets/models/Cube.model", model);
+
+        mge::StartGameLoop();
     }
         return 0;
     case WM_PAINT: 
+        mge::UpdateGameLoop();
         pipeline->DrawFrame();
         return 0;
     case WM_CLOSE:

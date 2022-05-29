@@ -1,6 +1,11 @@
 [
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\General\\Model.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\General\\Model.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/General/Model.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\Rendering\\Pipeline.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\Rendering\\Pipeline.cpp",
   "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.cpp"
 },
@@ -26,6 +31,21 @@
 },
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Nodes\\General\\Body.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Nodes\\General\\Body.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Nodes/General/Body.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Nodes\\Rendering\\Camera.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Nodes\\Rendering\\Camera.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Nodes/Rendering/Camera.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Nodes\\Rendering\\Renderer.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Nodes\\Rendering\\Renderer.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Nodes/Rendering/Renderer.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Systems\\GameLoop.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Systems\\GameLoop.cpp",
   "file": "D:/Main/Programming/VS/MG-Engine/src/Systems/GameLoop.cpp"
 },
@@ -41,8 +61,8 @@
 },
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\TestNode.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\TestNode.cpp",
-  "file": "D:/Main/Programming/VS/MG-Engine/src/TestNode.cpp"
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Vulkan\\Buffer.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Vulkan\\Buffer.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Vulkan/Buffer.cpp"
 },
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",

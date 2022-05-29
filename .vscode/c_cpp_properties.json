@@ -8,7 +8,8 @@
             "includePath": [
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/external/Core/include",
-                "${workspaceFolder}/external/Vulkan/include"
+                "${workspaceFolder}/external/Vulkan/include",
+                "${workspaceFolder}/src"
             ]
         }
     ],

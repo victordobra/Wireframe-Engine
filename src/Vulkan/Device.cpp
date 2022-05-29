@@ -369,7 +369,7 @@ namespace mge {
     VkQueue GetPresentQueue() {
         return presentQueue;
     }
-    VkPhysicalDeviceProperties& GetDeviceProperties() {
+    const VkPhysicalDeviceProperties& GetDeviceProperties() {
         return deviceProperties;
     }
 

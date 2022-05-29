@@ -394,13 +394,11 @@ CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: \
  D:/Main/Programming/VS/MG-Engine/external/Vulkan/include/vulkan_structs.hpp \
  D:/Main/Programming/VS/MG-Engine/external/Vulkan/include/vulkan_funcs.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Vulkan/SwapChain.hpp \
- D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Systems/GameLoop.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Base/Node.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Base/Asset.hpp \
  C:/msys64/mingw64/include/unistd.h C:/msys64/mingw64/include/io.h \
  C:/msys64/mingw64/include/getopt.h \
- D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.hpp \
- C:/msys64/mingw64/include/tchar.h \
- C:/msys64/mingw64/include/sec_api/tchar_s.h \
  D:/Main/Programming/VS/MG-Engine/src/Math/EngineMath.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Matrix4x4.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector2.hpp \
@@ -424,5 +422,10 @@ CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector3.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector4.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Quaternion.hpp \
- D:/Main/Programming/VS/MG-Engine/src/TestNode.hpp \
- D:/Main/Programming/VS/MG-Engine/src/Base/Node.hpp
+ D:/Main/Programming/VS/MG-Engine/src/Math/Colors.hpp \
+ C:/msys64/mingw64/include/tchar.h \
+ C:/msys64/mingw64/include/sec_api/tchar_s.h \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/General/Model.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Vulkan/Buffer.hpp

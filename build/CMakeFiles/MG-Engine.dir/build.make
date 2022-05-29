@@ -68,11 +68,26 @@ include CMakeFiles/MG-Engine.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/MG-Engine.dir/flags.make
 
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj: ../src/Assets/General/Model.cpp
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Assets\General\Model.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Assets\General\Model.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Assets\General\Model.cpp
+
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\Assets\General\Model.cpp > CMakeFiles\MG-Engine.dir\src\Assets\General\Model.cpp.i
+
+CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Assets\General\Model.cpp -o CMakeFiles\MG-Engine.dir\src\Assets\General\Model.cpp.s
+
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj: ../src/Assets/Rendering/Pipeline.cpp
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Assets\Rendering\Pipeline.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Assets\Rendering\Pipeline.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Assets\Rendering\Pipeline.cpp
 
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.i: cmake_force
@@ -87,7 +102,7 @@ CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj: CMakeFiles/MG-Engi
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj: ../src/Assets/Rendering/Shader.cpp
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Assets\Rendering\Shader.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Assets\Rendering\Shader.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Assets\Rendering\Shader.cpp
 
 CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.i: cmake_force
@@ -102,7 +117,7 @@ CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj: CMakeFiles/MG-Engine.dir/flags.
 CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj: ../src/Base/Asset.cpp
 CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Base\Asset.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Base\Asset.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Base\Asset.cpp
 
 CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.i: cmake_force
@@ -117,7 +132,7 @@ CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj: CMakeFiles/MG-Engine.dir/flags.m
 CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj: ../src/Base/Node.cpp
 CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Base\Node.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Base\Node.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Base\Node.cpp
 
 CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.i: cmake_force
@@ -132,7 +147,7 @@ CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj: CMakeFiles/MG-Engine.dir/f
 CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj: ../src/Math/MathHashes.cpp
 CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Math\MathHashes.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Math\MathHashes.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Math\MathHashes.cpp
 
 CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.i: cmake_force
@@ -143,11 +158,56 @@ CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.s"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Math\MathHashes.cpp -o CMakeFiles\MG-Engine.dir\src\Math\MathHashes.cpp.s
 
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj: ../src/Nodes/General/Body.cpp
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Nodes\General\Body.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Nodes\General\Body.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Nodes\General\Body.cpp
+
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\Nodes\General\Body.cpp > CMakeFiles\MG-Engine.dir\src\Nodes\General\Body.cpp.i
+
+CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Nodes\General\Body.cpp -o CMakeFiles\MG-Engine.dir\src\Nodes\General\Body.cpp.s
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj: ../src/Nodes/Rendering/Camera.cpp
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Camera.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Camera.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Camera.cpp
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Camera.cpp > CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Camera.cpp.i
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Camera.cpp -o CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Camera.cpp.s
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj: ../src/Nodes/Rendering/Renderer.cpp
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Renderer.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Renderer.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Renderer.cpp
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Renderer.cpp > CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Renderer.cpp.i
+
+CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Renderer.cpp -o CMakeFiles\MG-Engine.dir\src\Nodes\Rendering\Renderer.cpp.s
+
 CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
 CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj: ../src/Systems/GameLoop.cpp
 CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Systems\GameLoop.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Systems\GameLoop.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Systems\GameLoop.cpp
 
 CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.i: cmake_force
@@ -162,7 +222,7 @@ CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj: CMakeFiles/MG-Engine.dir/fla
 CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj: ../src/Systems/Input.cpp
 CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Systems\Input.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Systems\Input.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Systems\Input.cpp
 
 CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.i: cmake_force
@@ -177,7 +237,7 @@ CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj: CMakeFiles/MG-Engine.dir/flag
 CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj: ../src/Systems/Time.cpp
 CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Systems\Time.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Systems\Time.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Systems\Time.cpp
 
 CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.i: cmake_force
@@ -188,26 +248,26 @@ CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.s"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Systems\Time.cpp -o CMakeFiles\MG-Engine.dir\src\Systems\Time.cpp.s
 
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj: ../src/TestNode.cpp
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj"
-	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\TestNode.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\TestNode.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\TestNode.cpp
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj: ../src/Vulkan/Buffer.cpp
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Vulkan\Buffer.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Vulkan\Buffer.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Vulkan\Buffer.cpp
 
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/TestNode.cpp.i"
-	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\TestNode.cpp > CMakeFiles\MG-Engine.dir\src\TestNode.cpp.i
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Main\Programming\VS\MG-Engine\src\Vulkan\Buffer.cpp > CMakeFiles\MG-Engine.dir\src\Vulkan\Buffer.cpp.i
 
-CMakeFiles/MG-Engine.dir/src/TestNode.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/TestNode.cpp.s"
-	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\TestNode.cpp -o CMakeFiles\MG-Engine.dir\src\TestNode.cpp.s
+CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Main\Programming\VS\MG-Engine\src\Vulkan\Buffer.cpp -o CMakeFiles\MG-Engine.dir\src\Vulkan\Buffer.cpp.s
 
 CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj: CMakeFiles/MG-Engine.dir/flags.make
 CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj: ../src/Vulkan/Device.cpp
 CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Vulkan\Device.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Vulkan\Device.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Vulkan\Device.cpp
 
 CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.i: cmake_force
@@ -222,7 +282,7 @@ CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj: CMakeFiles/MG-Engine.dir/
 CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj: ../src/Vulkan/SwapChain.cpp
 CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Vulkan\SwapChain.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Vulkan\SwapChain.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Vulkan\SwapChain.cpp
 
 CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.i: cmake_force
@@ -237,7 +297,7 @@ CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: CMakeFiles/MG-En
 CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: CMakeFiles/MG-Engine.dir/includes_CXX.rsp
 CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: ../src/Window/Windows/MainWindow.cpp
 CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: CMakeFiles/MG-Engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj -MF CMakeFiles\MG-Engine.dir\src\Window\Windows\MainWindow.cpp.obj.d -o CMakeFiles\MG-Engine.dir\src\Window\Windows\MainWindow.cpp.obj -c D:\Main\Programming\VS\MG-Engine\src\Window\Windows\MainWindow.cpp
 
 CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.i: cmake_force
@@ -250,15 +310,19 @@ CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.s: cmake_force
 
 # Object files for target MG-Engine
 MG__Engine_OBJECTS = \
+"CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj" \
+"CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj" \
+"CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj" \
+"CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj" \
-"CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj" \
+"CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj" \
 "CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj"
@@ -266,15 +330,19 @@ MG__Engine_OBJECTS = \
 # External object files for target MG-Engine
 MG__Engine_EXTERNAL_OBJECTS =
 
+MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Base/Asset.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Base/Node.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj
+MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj
+MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj
+MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Systems/GameLoop.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Systems/Input.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Systems/Time.cpp.obj
-MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/TestNode.cpp.obj
+MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Vulkan/Buffer.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Vulkan/Device.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Vulkan/SwapChain.cpp.obj
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj
@@ -282,7 +350,7 @@ MG-Engine.exe: CMakeFiles/MG-Engine.dir/build.make
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/linklibs.rsp
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/objects1.rsp
 MG-Engine.exe: CMakeFiles/MG-Engine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable MG-Engine.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\Main\Programming\VS\MG-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable MG-Engine.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\MG-Engine.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
