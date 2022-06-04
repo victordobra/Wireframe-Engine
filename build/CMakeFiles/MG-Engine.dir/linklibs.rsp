@@ -1,1 +1,0 @@
-  -LD:/Main/Programming/VS/MG-Engine/external/Core/lib  -LD:/Main/Programming/VS/MG-Engine/external/Vulkan/lib  -lMG-Engine-Core-x64 -lvulkan-x64 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
