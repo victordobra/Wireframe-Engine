@@ -17,6 +17,9 @@ namespace mge {
         /// @brief A struct that holds information about the pipeline. Used to initialize the pipeline.
         struct PipelineInfo {
             vector<ShaderStage> shaderStages;
+            vector<VkPushConstantRange> pushConstantRanges;
+            vector<VkVertexInputBindingDescription> vertexBindings;
+            vector<VkVertexInputAttributeDescription> vertexAttributes;
             VkPipelineViewportStateCreateInfo viewportInfo;
             VkPipelineVertexInputStateCreateInfo vertexInputInfo;
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
@@ -51,12 +54,10 @@ namespace mge {
         /// @brief Returns the pipeline info.
         PipelineInfo GetPipelineInfo() const { return pipelineInfo; }
 
-        void DrawFrame();
-
         ~Pipeline();
     private:
-        void CreatePipelineLayout(const PipelineInfo& info);
-        void CreatePipeline(const PipelineInfo& info);
+        void CreatePipelineLayout();
+        void CreatePipeline();
 
         PipelineInfo pipelineInfo{};
         VkPipelineLayout pipelineLayout{};

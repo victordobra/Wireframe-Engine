@@ -105,6 +105,8 @@ CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj: \
  D:/Main/Programming/VS/MG-Engine/src/Math/Quaternion.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Colors.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Nodes/General/Body.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Material.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Vulkan/VulkanInclude.hpp \
  D:/Main/Programming/VS/MG-Engine/external/Vulkan/include/vulkan.hpp \
  C:/msys64/mingw64/include/c++/11.2.0/algorithm \

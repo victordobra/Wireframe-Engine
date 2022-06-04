@@ -71,8 +71,18 @@ namespace mge {
         input.Get((char_t*)spirvPath.c_str(), stringLength * sizeof(char_t));
         spirvPath[stringLength] = 0;
 
+        // Read the pipeline location
+        string pipelinePath;
+        input.Get((char_t*)&stringLength, sizeof(uint64_t));
+        pipelinePath.resize((size_t)stringLength);
+
+        input.Get((char_t*)pipelinePath.c_str(), stringLength * sizeof(char_t));
+        pipelinePath[stringLength] = 0;
+
         // Create the shader module
         LoadFromBinary(spirvPath);
+
+        input.Close();
     }
     void Shader::SaveToFile(const string& filePath) {
         FileOutput output{filePath, StreamType::BINARY};
@@ -102,6 +112,12 @@ namespace mge {
         uint64_t stringLength = (uint64_t)spirvPath.length();
         output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
         output.WriteBuffer((char_t*)spirvPath.c_str(), stringLength * sizeof(char_t));
+
+        // Write the pipeline location
+        string str = "";
+        stringLength = (uint64_t)str.length();
+        output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
+        output.WriteBuffer((char_t*)str.c_str(), stringLength * sizeof(char_t));
 
         output.Close();
     }

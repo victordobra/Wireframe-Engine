@@ -6,6 +6,11 @@
 },
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\Rendering\\Material.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\Rendering\\Material.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Material.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Assets\\Rendering\\Pipeline.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Assets\\Rendering\\Pipeline.cpp",
   "file": "D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.cpp"
 },
@@ -33,6 +38,11 @@
   "directory": "D:/Main/Programming/VS/MG-Engine/build",
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Nodes\\General\\Body.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Nodes\\General\\Body.cpp",
   "file": "D:/Main/Programming/VS/MG-Engine/src/Nodes/General/Body.cpp"
+},
+{
+  "directory": "D:/Main/Programming/VS/MG-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/MG-Engine.dir/includes_CXX.rsp -g -o CMakeFiles\\MG-Engine.dir\\src\\Nodes\\Renderers\\ModelRenderer.cpp.obj -c D:\\Main\\Programming\\VS\\MG-Engine\\src\\Nodes\\Renderers\\ModelRenderer.cpp",
+  "file": "D:/Main/Programming/VS/MG-Engine/src/Nodes/Renderers/ModelRenderer.cpp"
 },
 {
   "directory": "D:/Main/Programming/VS/MG-Engine/build",

@@ -17,9 +17,9 @@ namespace mge {
         // Create the vector of vertex attributes
         vector<VkVertexInputAttributeDescription> vertexAttributes(3);
 
-        vertexAttributes[0] = {0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)};
-		vertexAttributes[1] = {2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)  };
-		vertexAttributes[2] = {3, 0, VK_FORMAT_R32G32_SFLOAT,    offsetof(Vertex, uvCoord) };
+        vertexAttributes[0] = { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) };
+		vertexAttributes[1] = { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)   };
+		vertexAttributes[2] = { 2, 0, VK_FORMAT_R32G32_SFLOAT,    offsetof(Vertex, uvCoord)  };
 
         return vertexAttributes;
     }
@@ -40,10 +40,11 @@ namespace mge {
 		uint32_t vertexSize = sizeof(Vertex);
 
         // Create the staging buffer and write to it
-		Buffer stagingBuffer{ vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+		Buffer stagingBuffer{ vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT };
 
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer((void*)vertices.data());
+        stagingBuffer.Flush();
 
         // Create the index buffer and copy it from the staging buffer
 		vertexBuffer = new Buffer(vertexSize, vertexCount, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -57,10 +58,11 @@ namespace mge {
 		uint32_t indexSize = sizeof(uint32_t);
 
         // Create the staging buffer and write to it
-		Buffer stagingBuffer{ indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+		Buffer stagingBuffer{ indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT };
 
 		stagingBuffer.Map();
 		stagingBuffer.WriteToBuffer((void*)indices.data());
+        stagingBuffer.Flush();
 
         // Create the index buffer and copy it from the staging buffer
 		indexBuffer = new Buffer(indexSize, indexCount, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -173,7 +175,7 @@ namespace mge {
     }
 
     void Model::LoadFromFile(const string& fileLocation) {
-        FileInput input(fileLocation);
+        FileInput input(fileLocation, StreamType::BINARY);
 
         vector<Vertex> vertices;
         vector<uint32_t> indices;
@@ -195,7 +197,7 @@ namespace mge {
         input.Close();
     }
     void Model::SaveToFile  (const string& fileLocation) {
-        FileOutput output(fileLocation);
+        FileOutput output(fileLocation, StreamType::BINARY);
 
         // Create a vertex staging buffer
         VkDeviceSize vertexBufferSize = sizeof(Vertex) * vertexCount;

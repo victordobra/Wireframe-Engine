@@ -559,6 +559,30 @@ src/Assets/General/Model.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.s
 .PHONY : src/Assets/General/Model.cpp.s
 
+src/Assets/Rendering/Material.obj: src/Assets/Rendering/Material.cpp.obj
+.PHONY : src/Assets/Rendering/Material.obj
+
+# target to build an object file
+src/Assets/Rendering/Material.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Material.cpp.obj
+.PHONY : src/Assets/Rendering/Material.cpp.obj
+
+src/Assets/Rendering/Material.i: src/Assets/Rendering/Material.cpp.i
+.PHONY : src/Assets/Rendering/Material.i
+
+# target to preprocess a source file
+src/Assets/Rendering/Material.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Material.cpp.i
+.PHONY : src/Assets/Rendering/Material.cpp.i
+
+src/Assets/Rendering/Material.s: src/Assets/Rendering/Material.cpp.s
+.PHONY : src/Assets/Rendering/Material.s
+
+# target to generate assembly for a file
+src/Assets/Rendering/Material.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Material.cpp.s
+.PHONY : src/Assets/Rendering/Material.cpp.s
+
 src/Assets/Rendering/Pipeline.obj: src/Assets/Rendering/Pipeline.cpp.obj
 .PHONY : src/Assets/Rendering/Pipeline.obj
 
@@ -702,6 +726,30 @@ src/Nodes/General/Body.s: src/Nodes/General/Body.cpp.s
 src/Nodes/General/Body.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.s
 .PHONY : src/Nodes/General/Body.cpp.s
+
+src/Nodes/Renderers/ModelRenderer.obj: src/Nodes/Renderers/ModelRenderer.cpp.obj
+.PHONY : src/Nodes/Renderers/ModelRenderer.obj
+
+# target to build an object file
+src/Nodes/Renderers/ModelRenderer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Renderers/ModelRenderer.cpp.obj
+.PHONY : src/Nodes/Renderers/ModelRenderer.cpp.obj
+
+src/Nodes/Renderers/ModelRenderer.i: src/Nodes/Renderers/ModelRenderer.cpp.i
+.PHONY : src/Nodes/Renderers/ModelRenderer.i
+
+# target to preprocess a source file
+src/Nodes/Renderers/ModelRenderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Renderers/ModelRenderer.cpp.i
+.PHONY : src/Nodes/Renderers/ModelRenderer.cpp.i
+
+src/Nodes/Renderers/ModelRenderer.s: src/Nodes/Renderers/ModelRenderer.cpp.s
+.PHONY : src/Nodes/Renderers/ModelRenderer.s
+
+# target to generate assembly for a file
+src/Nodes/Renderers/ModelRenderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\MG-Engine.dir\build.make CMakeFiles/MG-Engine.dir/src/Nodes/Renderers/ModelRenderer.cpp.s
+.PHONY : src/Nodes/Renderers/ModelRenderer.cpp.s
 
 src/Nodes/Rendering/Camera.obj: src/Nodes/Rendering/Camera.cpp.obj
 .PHONY : src/Nodes/Rendering/Camera.obj
@@ -963,6 +1011,9 @@ help:
 	@echo ... src/Assets/General/Model.obj
 	@echo ... src/Assets/General/Model.i
 	@echo ... src/Assets/General/Model.s
+	@echo ... src/Assets/Rendering/Material.obj
+	@echo ... src/Assets/Rendering/Material.i
+	@echo ... src/Assets/Rendering/Material.s
 	@echo ... src/Assets/Rendering/Pipeline.obj
 	@echo ... src/Assets/Rendering/Pipeline.i
 	@echo ... src/Assets/Rendering/Pipeline.s
@@ -981,6 +1032,9 @@ help:
 	@echo ... src/Nodes/General/Body.obj
 	@echo ... src/Nodes/General/Body.i
 	@echo ... src/Nodes/General/Body.s
+	@echo ... src/Nodes/Renderers/ModelRenderer.obj
+	@echo ... src/Nodes/Renderers/ModelRenderer.i
+	@echo ... src/Nodes/Renderers/ModelRenderer.s
 	@echo ... src/Nodes/Rendering/Camera.obj
 	@echo ... src/Nodes/Rendering/Camera.i
 	@echo ... src/Nodes/Rendering/Camera.s

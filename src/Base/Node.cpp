@@ -13,7 +13,7 @@ namespace mge {
 
     void Node::LoadFromFile(const string& fileLocation) {
         // Open a file stream, load the object from the file and then close the stream
-        FileInput input(fileLocation);
+        FileInput input(fileLocation, StreamType::BINARY);
 
         LoadFromStream(input);
 
@@ -21,7 +21,7 @@ namespace mge {
     }
     void Node::SaveToFile(const string& fileLocation) {
         // Open a file stream, save the object to the file and then close the stream
-        FileOutput output(fileLocation);
+        FileOutput output(fileLocation, StreamType::BINARY);
 
         SaveToStream(output);
 

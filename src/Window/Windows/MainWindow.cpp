@@ -36,6 +36,7 @@
 #include "Math/EngineMath.hpp"
 #include "Assets/Rendering/Pipeline.hpp"
 #include "Assets/General/Model.hpp"
+#include "Nodes/Rendering/Camera.hpp"
 
 // Const variables
 const mge::char_t* className = "Application";
@@ -45,9 +46,6 @@ const mge::char_t* appName = "MG Engine";
 HWND hWnd;
 HINSTANCE hInstance;
 mge::size_t screenWidth, screenHeight;
-mge::Shader* vertShader;
-mge::Shader* fragShader;
-mge::Pipeline* pipeline;
 
 // WndProc predeclaration
 LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
@@ -131,32 +129,15 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         mge::CreateVulkanDevice();
         mge::CreateSwapChain({ (mge::uint32_t)screenWidth, (mge::uint32_t)screenHeight });
 
-        vertShader = new mge::Shader("assets/shaders/VertShader.vert.spv");
-        fragShader = new mge::Shader("assets/shaders/FragShader.frag.spv");
-        
-        mge::Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
-        mge::Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
-
-        mge::Pipeline::PipelineInfo pipelineInfo;
-        mge::Pipeline::PopulatePipelineInfo(pipelineInfo);
-        pipelineInfo.shaderStages = { { vertShader, VK_SHADER_STAGE_VERTEX_BIT }, { fragShader, VK_SHADER_STAGE_FRAGMENT_BIT } };
-
-        pipeline = new mge::Pipeline(pipelineInfo);
-        pipeline->SaveToFile("assets/MainPipeline.pipeline");
-
-        mge::Model* model = (mge::Model*)mge::Asset::LoadAssetFromFile<mge::Model>("assets/models/Cube.model");
-        mge::Asset::SaveAssetToFile("assets/models/Cube.model", model);
-
         mge::StartGameLoop();
     }
         return 0;
     case WM_PAINT: 
         mge::UpdateGameLoop();
-        pipeline->DrawFrame();
         return 0;
     case WM_CLOSE:
         mge::Asset::DeleteAssets();
-        delete pipeline;
+        delete mge::Node::scene;
         mge::DeleteSwapChain();
         mge::DeleteVulkanDevice();
         mge::console::CloseLogFile();

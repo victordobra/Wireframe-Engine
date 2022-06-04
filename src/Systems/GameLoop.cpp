@@ -1,8 +1,23 @@
 #include "GameLoop.hpp"
 #include "Base/Node.hpp"
+#include "Input.hpp"
+#include "Time.hpp"
 #include <pthread.h>
 
+// Testing includes
+#include "Assets/Rendering/Pipeline.hpp"
+#include "Assets/Rendering/Shader.hpp"
+#include "Assets/Rendering/Material.hpp"
+#include "Nodes/Rendering/Camera.hpp"
+#include "Nodes/Renderers/ModelRenderer.hpp"
+
 namespace mge {
+    // Testing variables
+    Shader* vertShader;
+    Shader* fragShader;
+    Pipeline* pipeline;
+    Material* material;
+
     // Internal helper functions
     static void AddChildrenToVector(vector<Node*>& vec, Node* node) {
         for(auto child : node->GetChildren()) {
@@ -55,6 +70,48 @@ namespace mge {
 
     // External functions
     void StartGameLoop() {
+        // Create assets and objects for testing
+        vertShader = new Shader("assets/shaders/VertShader.vert.spv");
+        fragShader = new Shader("assets/shaders/FragShader.frag.spv");
+        
+        Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
+        Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
+
+        Pipeline::PipelineInfo pipelineInfo;
+        Pipeline::PopulatePipelineInfo(pipelineInfo);
+
+        pipelineInfo.pushConstantRanges.resize(1);
+        pipelineInfo.pushConstantRanges[0].offset = 0;
+        pipelineInfo.pushConstantRanges[0].size = sizeof(ModelRenderer::PushConstant);
+        pipelineInfo.pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        pipelineInfo.vertexBindings = Model::Vertex::GetBindingDescriptions();
+        pipelineInfo.vertexAttributes = Model::Vertex::GetAttributeDescriptions();
+
+        pipelineInfo.shaderStages = { { vertShader, VK_SHADER_STAGE_VERTEX_BIT }, { fragShader, VK_SHADER_STAGE_FRAGMENT_BIT } };
+
+        pipeline = new Pipeline(pipelineInfo);
+        Asset::SaveAssetToFile("assets/MainPipeline.pipeline", pipeline);
+
+        Model* model = new Model("assets/models/Cube.obj");
+        Asset::SaveAssetToFile("assets/models/Cube.model", model);
+
+        Material* material = new Material(fragShader);
+        Asset::SaveAssetToFile("assets/materials/Default.mat", material);
+
+        Camera* camera = new Camera();
+        camera->fov = 60.f;
+        camera->SetParent(Node::scene);
+
+        Body* body = new Body();
+        body->position = { 0.f, 0.f, -5.f };
+        body->SetParent(Node::scene);
+        
+        ModelRenderer* modelRenderer = new ModelRenderer();
+        modelRenderer->model = model;
+        modelRenderer->material = material;
+        modelRenderer->SetParent(body);
+
         // Find all nodes reccursively
         vector<Node*> nodes;
 
@@ -64,7 +121,7 @@ namespace mge {
         vector<pthread_t> threads(nodes.size());
 
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunStartOnNode, &nodes[i]);
+            int result = pthread_create(&threads[i], NULL, RunStartOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -83,6 +140,10 @@ namespace mge {
         }
     }
     void UpdateGameLoop() {
+        // Start the delta time timer and update the input
+        UpdateInputValues();
+        StartUpdateTimer();
+
         // Find all nodes reccursively
         vector<Node*> nodes;
 
@@ -92,7 +153,7 @@ namespace mge {
         vector<pthread_t> threads(nodes.size());
 
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunUpdateOnNode, &nodes[i]);
+            int result = pthread_create(&threads[i], NULL, RunUpdateOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -112,7 +173,7 @@ namespace mge {
 
         // Recreate the threads for the render functions
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunRenderOnNode, &nodes[i]);
+            int result = pthread_create(&threads[i], NULL, RunRenderOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -129,5 +190,8 @@ namespace mge {
                 console::OutFatalError((string)"Failed to join thread! Error code: " + resultString, 1);
             }
         }
+
+        // Stop the delta time timer
+        StopUpdateTimer();
     }
 }

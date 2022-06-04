@@ -64,7 +64,7 @@ namespace mge {
         memoryRange.offset = offset;
         memoryRange.pNext = nullptr;
 
-        return vkFlushMappedMemoryRanges(GetDevice(), 0, &memoryRange);
+        return vkFlushMappedMemoryRanges(GetDevice(), 1, &memoryRange);
     }
     VkResult Buffer::FlushIndex(size_t index) {
         return Flush(alignmentSize, index * alignmentSize);

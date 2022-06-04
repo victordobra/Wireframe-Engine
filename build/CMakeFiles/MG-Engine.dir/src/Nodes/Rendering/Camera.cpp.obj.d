@@ -420,4 +420,10 @@ CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj: \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector3.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Vector4.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Math/Quaternion.hpp \
- D:/Main/Programming/VS/MG-Engine/src/Math/Colors.hpp
+ D:/Main/Programming/VS/MG-Engine/src/Math/Colors.hpp \
+ D:\Main\Programming\VS\MG-Engine\src\Nodes\Rendering\Renderer.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Nodes/General/Body.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Material.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Vulkan/Device.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Vulkan/SwapChain.hpp

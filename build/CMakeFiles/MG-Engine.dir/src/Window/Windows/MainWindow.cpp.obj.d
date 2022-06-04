@@ -428,4 +428,8 @@ CMakeFiles/MG-Engine.dir/src/Window/Windows/MainWindow.cpp.obj: \
  D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Pipeline.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Shader.hpp \
  D:/Main/Programming/VS/MG-Engine/src/Assets/General/Model.hpp \
- D:/Main/Programming/VS/MG-Engine/src/Vulkan/Buffer.hpp
+ D:/Main/Programming/VS/MG-Engine/src/Vulkan/Buffer.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Nodes/Rendering/Camera.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Nodes/Rendering/Renderer.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Nodes/General/Body.hpp \
+ D:/Main/Programming/VS/MG-Engine/src/Assets/Rendering/Material.hpp

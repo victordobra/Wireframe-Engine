@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj"
   "CMakeFiles/MG-Engine.dir/src/Assets/General/Model.cpp.obj.d"
+  "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Material.cpp.obj"
+  "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Material.cpp.obj.d"
   "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj"
   "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Pipeline.cpp.obj.d"
   "CMakeFiles/MG-Engine.dir/src/Assets/Rendering/Shader.cpp.obj"
@@ -13,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/MG-Engine.dir/src/Math/MathHashes.cpp.obj.d"
   "CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj"
   "CMakeFiles/MG-Engine.dir/src/Nodes/General/Body.cpp.obj.d"
+  "CMakeFiles/MG-Engine.dir/src/Nodes/Renderers/ModelRenderer.cpp.obj"
+  "CMakeFiles/MG-Engine.dir/src/Nodes/Renderers/ModelRenderer.cpp.obj.d"
   "CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj"
   "CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Camera.cpp.obj.d"
   "CMakeFiles/MG-Engine.dir/src/Nodes/Rendering/Renderer.cpp.obj"

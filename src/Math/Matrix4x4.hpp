@@ -18,6 +18,7 @@ namespace mge {
 			    	            0.f, 1.f, 0.f, 0.f,
 			    	            0.f, 0.f, 1.f, 0.f,
 			    	            0.f, 0.f, 0.f, 1.f };
+			float32_t mat[4][4];
 
 			struct {
 				float32_t m00, m01, m02, m03;
@@ -31,8 +32,8 @@ namespace mge {
 		Matrix4x4(const Matrix4x4&) = default;
 		Matrix4x4(Matrix4x4&&) noexcept = default;
 
-		float32_t& operator()(uint8_t c, uint8_t r)       { return data[r + 4 * c]; }
-		float32_t  operator()(uint8_t c, uint8_t r) const { return data[r + 4 * c]; }
+		float32_t& operator()(uint8_t c, uint8_t r)       { return mat[r][c]; }
+		float32_t  operator()(uint8_t c, uint8_t r) const { return mat[r][c]; }
 
 		Matrix4x4& operator=(const Matrix4x4&) = default;
 		Matrix4x4& operator=(Matrix4x4&&) noexcept = default;
@@ -368,15 +369,15 @@ namespace mge {
 		/// @param nearPlane The near clipping plane distance.
 		/// @param farPlane The far clipping plane distance.
 		static Matrix4x4 PerspectiveProjection(float32_t fov, float32_t aspectRatio, float32_t nearPlane, float32_t farPlane) {
-			float32_t halftanfFov = tanf(fov * 0.5f);
+			float32_t halfTanfFov = tanf(fov * 0.5f);
 
 			Matrix4x4 outMatrix;
 
-			outMatrix.data[0] = 1.f / (aspectRatio * halftanfFov);
-			outMatrix.data[5] = 1.f / halftanfFov;
-			outMatrix.data[10] = -(farPlane + nearPlane) / (farPlane - nearPlane);
+			outMatrix.data[0] = 1.f / (aspectRatio * halfTanfFov);
+			outMatrix.data[5] = 1.f / halfTanfFov;
+			outMatrix.data[10] = -farPlane / (farPlane - nearPlane);
 			outMatrix.data[11] = -1.f;
-			outMatrix.data[14] = -(2.f * nearPlane * farPlane) / (farPlane - nearPlane);
+			outMatrix.data[14] = -(nearPlane * farPlane) / (farPlane - nearPlane);
 			outMatrix.data[15] = 0.f;
 			return outMatrix;
 		}
