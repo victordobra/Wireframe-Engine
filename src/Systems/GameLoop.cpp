@@ -10,6 +10,7 @@
 #include "Assets/Rendering/Material.hpp"
 #include "Nodes/Rendering/Camera.hpp"
 #include "Nodes/Renderers/ModelRenderer.hpp"
+#include "Nodes/Controllers/CameraController.hpp"
 
 namespace mge {
     // Testing variables
@@ -40,7 +41,7 @@ namespace mge {
         node->Render();
         return 0;
     }
-    static string ThreadCreateErrorCoreToString(int result) {
+    static string ThreadCreateErrorCoreToString(sint32_t result) {
         switch (result) {
         case EAGAIN:
             return "EAGAIN";
@@ -55,7 +56,7 @@ namespace mge {
             break;
         }
     }
-    static string ThreadJoinErrorCoreToString(int result) {
+    static string ThreadJoinErrorCoreToString(sint32_t result) {
         switch (result) {
         case ESRCH:
             return "ESRCH";
@@ -103,6 +104,10 @@ namespace mge {
         camera->fov = 60.f;
         camera->SetParent(Node::scene);
 
+        CameraController* controller = new CameraController();
+        controller->center = { 0.f, 0.f, -5.f };
+        controller->SetParent(camera);
+
         Body* body = new Body();
         body->position = { 0.f, 0.f, -5.f };
         body->SetParent(Node::scene);
@@ -121,7 +126,7 @@ namespace mge {
         vector<pthread_t> threads(nodes.size());
 
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunStartOnNode, nodes[i]);
+            sint32_t result = pthread_create(&threads[i], NULL, RunStartOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -153,7 +158,7 @@ namespace mge {
         vector<pthread_t> threads(nodes.size());
 
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunUpdateOnNode, nodes[i]);
+            sint32_t result = pthread_create(&threads[i], NULL, RunUpdateOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -163,7 +168,7 @@ namespace mge {
 
         // Join every thread
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_join(threads[i], NULL);
+            sint32_t result = pthread_join(threads[i], NULL);
 
             if(result) {
                 string resultString = ThreadJoinErrorCoreToString(result);
@@ -173,7 +178,7 @@ namespace mge {
 
         // Recreate the threads for the render functions
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_create(&threads[i], NULL, RunRenderOnNode, nodes[i]);
+            sint32_t result = pthread_create(&threads[i], NULL, RunRenderOnNode, nodes[i]);
 
             if(result) {
                 string resultString = ThreadCreateErrorCoreToString(result);
@@ -183,7 +188,7 @@ namespace mge {
 
         // Join every thread again
         for(size_t i = 0; i < threads.size(); ++i) {
-            int result = pthread_join(threads[i], NULL);
+            sint32_t result = pthread_join(threads[i], NULL);
 
             if(result) {
                 string resultString = ThreadJoinErrorCoreToString(result);
