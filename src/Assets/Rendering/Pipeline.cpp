@@ -1,15 +1,85 @@
 #include "Pipeline.hpp"
 #include "Vulkan/Device.hpp"
-#include "Vulkan/SwapChain.hpp"
 
 namespace mge {
 	// Internal helper functions
+	void Pipeline::CreateDescriptorPool() {
+		if(pipelineInfo.globalBufferSize) {
+			// The descriptor pool info isn't set, create it
+			size_t materialCount = 0;
+
+			for(const auto& shaderStage : pipelineInfo.shaderStages)
+				materialCount += (size_t)(shaderStage.shader->materials.end() - shaderStage.shader->materials.begin());
+			
+			// Set descriptor pool sizes
+			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(1);
+
+			VkDescriptorPoolSize uniformBufferSize;
+			uniformBufferSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			uniformBufferSize.descriptorCount = materialCount * MAX_FRAMES_IN_FLIGHT /*<- Material buffers*/ + MAX_FRAMES_IN_FLIGHT /*<- Global buffer*/;
+
+			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes[0] = uniformBufferSize;
+			
+			// Set descriptor set layout bindings
+			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(materialCount /*<- Material buffers*/ + 1 /*<- Global buffer*/);
+
+			VkDescriptorSetLayoutBinding materialBinding;
+			materialBinding.binding = 0;
+			materialBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			materialBinding.descriptorCount = 1;
+			materialBinding.pImmutableSamplers = nullptr;
+			materialBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+			VkDescriptorSetLayoutBinding globalBinding;
+			globalBinding.binding = 0;
+			globalBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			globalBinding.descriptorCount = 1;
+			globalBinding.pImmutableSamplers = nullptr;
+			globalBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+
+			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[0].bindings = { globalBinding };
+			
+			for(size_t i = 1; i < pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size(); ++i)
+				pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings = { materialBinding };
+		}
+
+		descriptorPool = new DescriptorPool(pipelineInfo.descriptorPoolInfo);
+		pipelineInfo.descriptorPoolInfo = descriptorPool->GetInfo();
+
+		if(pipelineInfo.globalBufferSize)
+			for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
+				// Create the buffer
+				globalBuffers[i] = new Buffer(pipelineInfo.globalBufferSize, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+
+				// Get the descriptor info
+				VkDescriptorBufferInfo bufferInfo = globalBuffers[i]->GetDescriptorInfo();
+
+				// Set information about the write
+				VkWriteDescriptorSet write{};
+
+				write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				write.dstBinding = 0;
+				write.pBufferInfo = &bufferInfo;
+				write.descriptorCount = 1;
+				write.dstSet = descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(0, i)];
+
+				vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
+			}
+	}
 	void Pipeline::CreatePipelineLayout() {
+		// Add every descriptor set layout in a vector
+		vector<VkDescriptorSetLayout> layouts(pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size());
+		for(size_t i = 0; i < layouts.size(); ++i) {
+			VkDescriptorSetLayout layout = pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].layout;
+			layouts[i] = pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].layout;
+		}
+
 		// Pipeline layout info
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.setLayoutCount = (uint32_t)layouts.size();
+		pipelineLayoutInfo.pSetLayouts = layouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = (uint32_t)pipelineInfo.pushConstantRanges.size();
 		pipelineLayoutInfo.pPushConstantRanges = pipelineInfo.pushConstantRanges.data();
 		pipelineLayoutInfo.flags = 0;
@@ -74,8 +144,7 @@ namespace mge {
     Pipeline::Pipeline(const PipelineInfo& info) {
 		pipelineInfo = info;
 
-		CreatePipelineLayout();
-		CreatePipeline();
+		Create();
     }
 
 	void Pipeline::LoadFromFile(const string& filePath) {
@@ -138,9 +207,8 @@ namespace mge {
 		pipelineInfo.colorBlendInfo.pAttachments = &pipelineInfo.colorBlendAttachment;
 		pipelineInfo.dynamicStateInfo.pDynamicStates = pipelineInfo.dynamicStateEnables;
 
-		// Create the pipeline layout and the pipeline
-		CreatePipelineLayout();
-		CreatePipeline();
+		// Create the pipeline
+		Create();
 	}
 	void Pipeline::SaveToFile(const string& filePath) {
 		FileOutput output(filePath, StreamType::BINARY);
@@ -162,6 +230,15 @@ namespace mge {
 		uint64_t pushConstantRangeCount = (uint64_t)pipelineInfo.pushConstantRanges.size();
 		output.WriteBuffer((char_t*)&pushConstantRangeCount, sizeof(uint64_t));
 		output.WriteBuffer((char_t*)pipelineInfo.pushConstantRanges.data(), pushConstantRangeCount * sizeof(VkPushConstantRange));
+
+		// Save the descriptor set layouts
+		uint64_t descriptorSetLayoutCount = (uint64_t)pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size();
+		output.WriteBuffer((char_t*)&descriptorSetLayoutCount, sizeof(uint64_t));
+
+		for(const auto& descriptorSetLayout : pipelineInfo.descriptorPoolInfo.descriptorSetLayouts) {
+			uint64_t descriptorBindingCount = (uint64_t)descriptorSetLayout.bindings.size();
+			output.WriteBuffer((char_t*)&descriptorBindingCount, sizeof(uint64_t));
+		}
 
 		// Save the vertex bindings
 		uint64_t vertexBindingCount = (uint64_t)pipelineInfo.vertexBindings.size();
@@ -291,6 +368,15 @@ namespace mge {
     Pipeline::~Pipeline() {
         vkDeviceWaitIdle(GetDevice());
 
+		// Delete the global buffers, if they exist
+		if(pipelineInfo.globalBufferSize)
+			for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+				delete globalBuffers[i];
+		
+		// Delete the descriptor pool
+		delete descriptorPool;
+
+		// Delete the pipeline
         vkDestroyPipeline(GetDevice(), graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(GetDevice(), pipelineLayout, nullptr);
     }

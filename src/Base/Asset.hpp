@@ -59,13 +59,13 @@ namespace mge {
         }
         static void DeleteAssets() {
             using node = unordered_map<string, Asset*>::node;
-            node** bucket = assets.data();
+            node* buckets = assets.begin();
             size_t bucketCount = assets.bucket_count();
 
             for(size_t i = 0; i < bucketCount; ++i) {
-                node* currentNode = *(bucket++);
-
-                while(currentNode != nullptr) {
+                node* currentNode = buckets + i;
+                
+                while(currentNode->next) {
                     delete currentNode->value;
                     currentNode = currentNode->next;
                 }

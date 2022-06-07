@@ -27,6 +27,8 @@ namespace mge {
     size_t GetSwapChainWidth();
     /// @brief Returns the height of the swap chain.
     size_t GetSwapChainHeight();
+    /// @brief Returns the current frame index % MAX_FRAMES_IN_FLIGHT
+    uint32_t GetCurrentFrame();
 
     /// @brief Returns the aspect ratio of the swap chain's extent.
     float32_t ExtentAspectRatio();

@@ -2,6 +2,9 @@
 
 #include "Base/Asset.hpp"
 #include "Vulkan/VulkanInclude.hpp"
+#include "Vulkan/DescriptorPool.hpp"
+#include "Vulkan/SwapChain.hpp"
+#include "Vulkan/Buffer.hpp"
 #include "Shader.hpp"
 #include "Core.hpp"
 
@@ -18,8 +21,13 @@ namespace mge {
         struct PipelineInfo {
             vector<ShaderStage> shaderStages;
             vector<VkPushConstantRange> pushConstantRanges;
+
+            DescriptorPool::DescriptorPoolInfo descriptorPoolInfo;
+            VkDeviceSize globalBufferSize = 0;
+
             vector<VkVertexInputBindingDescription> vertexBindings;
             vector<VkVertexInputAttributeDescription> vertexAttributes;
+
             VkPipelineViewportStateCreateInfo viewportInfo;
             VkPipelineVertexInputStateCreateInfo vertexInputInfo;
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
@@ -53,14 +61,34 @@ namespace mge {
         VkPipelineLayout GetPipelineLayout() const { return pipelineLayout; }
         /// @brief Returns the pipeline info.
         PipelineInfo GetPipelineInfo() const { return pipelineInfo; }
+        /// @brief Returns the pipeline's descriptor pool.
+        DescriptorPool* GetDescriptorPool() const { return descriptorPool; }
+        /// @brief Returns the descriptor pool's current global buffer.
+        Buffer* GetGlobalBuffer() const { 
+            return globalBuffers[GetCurrentFrame()]; 
+        }
+        /// @brief Returns the descriptor pool's global buffers as an array of size MAX_FRAMES_IN_FLIGHT
+        Buffer** GetGlobalBuffers() const {
+            return (Buffer**)globalBuffers;
+        }
 
         ~Pipeline();
     private:
+        void Create() {
+            CreateDescriptorPool();
+            CreatePipelineLayout();
+            CreatePipeline();
+        }
+
+        void CreateDescriptorPool();
         void CreatePipelineLayout();
         void CreatePipeline();
 
         PipelineInfo pipelineInfo{};
         VkPipelineLayout pipelineLayout{};
 	    VkPipeline graphicsPipeline{};
+
+        DescriptorPool* descriptorPool;
+        Buffer* globalBuffers[MAX_FRAMES_IN_FLIGHT];
     };
 }

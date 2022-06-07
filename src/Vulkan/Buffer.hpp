@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Device.hpp"
 
 namespace mge {
@@ -22,6 +24,8 @@ namespace mge {
         VkResult FlushIndex(size_t index);
         VkResult Invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkResult InvalidateIndex(size_t index);
+
+        VkDescriptorBufferInfo GetDescriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
         VkBuffer              GetBuffer()              const { return buffer; }
         void*                 GetMappedMemory()        const { return mapped; }

@@ -14,6 +14,7 @@ namespace mge {
 
         // Load the shader
         shader = (Shader*)Asset::LoadAssetFromFile<Shader>(shaderLocation);
+        shader->materials.insert_or_assign(this);
 
         // Load the data from the file
         uint64_t size64;

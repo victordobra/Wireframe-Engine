@@ -83,6 +83,16 @@ namespace mge {
         return Invalidate(alignmentSize, index * alignmentSize);
     }
 
+    VkDescriptorBufferInfo Buffer::GetDescriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
+        VkDescriptorBufferInfo info;
+
+        info.buffer = buffer;
+        info.offset = 0;
+        info.range = bufferSize;
+
+        return info;
+    }
+
     Buffer::~Buffer() {
         Unmap();
         vkDestroyBuffer(GetDevice(), buffer, nullptr);

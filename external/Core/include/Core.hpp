@@ -8,6 +8,7 @@
 #include "IO.hpp"
 #include "map.hpp"
 #include "pair.hpp"
+#include "set.hpp"
 #include "string.hpp"
 #include "unordered_map.hpp"
 #include "unordered_set.hpp"

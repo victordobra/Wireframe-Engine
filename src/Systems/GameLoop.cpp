@@ -74,9 +74,16 @@ namespace mge {
         // Create assets and objects for testing
         vertShader = new Shader("assets/shaders/VertShader.vert.spv");
         fragShader = new Shader("assets/shaders/FragShader.frag.spv");
-        
+
         Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
         Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
+        
+        Material* material = (Material*)Asset::LoadAssetFromFile<Material>("assets/materials/Default.mat");
+
+        Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
+        Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
+
+        Asset::SaveAssetToFile("assets/materials/Default.mat", material);
 
         Pipeline::PipelineInfo pipelineInfo;
         Pipeline::PopulatePipelineInfo(pipelineInfo);
@@ -86,6 +93,8 @@ namespace mge {
         pipelineInfo.pushConstantRanges[0].size = sizeof(ModelRenderer::PushConstant);
         pipelineInfo.pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+        pipelineInfo.globalBufferSize = 256;
+
         pipelineInfo.vertexBindings = Model::Vertex::GetBindingDescriptions();
         pipelineInfo.vertexAttributes = Model::Vertex::GetAttributeDescriptions();
 
@@ -94,11 +103,8 @@ namespace mge {
         pipeline = new Pipeline(pipelineInfo);
         Asset::SaveAssetToFile("assets/MainPipeline.pipeline", pipeline);
 
-        Model* model = new Model("assets/models/Cube.obj");
-        Asset::SaveAssetToFile("assets/models/Cube.model", model);
-
-        Material* material = new Material(fragShader);
-        Asset::SaveAssetToFile("assets/materials/Default.mat", material);
+        Model* model = new Model("assets/models/Torus.obj");
+        Asset::SaveAssetToFile("assets/models/Torus.model", model);
 
         Camera* camera = new Camera();
         camera->fov = 60.f;

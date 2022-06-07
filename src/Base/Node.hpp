@@ -128,7 +128,7 @@ mge::Node* Create ## type ## Node() { /* Creates the specified node type */ \
 } \
 namespace { \
     void* Create ## type ## Info(void* pParams) { /* Adds the required information to its hash map */ \
-        while(!mge::Node::nodeTypes.bucket_count()) \
+        while(!mge::Node::nodeTypes.bucket_count() || !mge::Asset::assetTypes.bucket_count()) \
             sleep(0.05); \
         mge::NodeInfo info; \
         info.hashCode = typeid(type).hash_code(); \

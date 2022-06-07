@@ -9,6 +9,7 @@ namespace mge {
         Material(const Material&) = delete;
         Material(Material&&) noexcept = delete;
         Material(Shader* shader) : shader(shader) { 
+            shader->materials.insert_or_assign(this);
             if(shader->properties.begin() != shader->properties.end()) {
                 const auto* lastProp = shader->properties.end() - 1;
                 size_t size = lastProp->val2.offset + lastProp->val2.size;

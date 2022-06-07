@@ -67,6 +67,7 @@ namespace mge {
         VkShaderModule shaderModule;
 
         map<string, ShaderProperty> properties;
+        set<Material*> materials;
         Pipeline* pipeline;
 
         friend Pipeline;

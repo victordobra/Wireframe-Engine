@@ -1,5 +1,7 @@
 #include "Shader.hpp"
 #include "Vulkan/Device.hpp"
+#include "Pipeline.hpp"
+#include "Material.hpp"
 
 namespace mge {
     // Internal helper functions
@@ -39,6 +41,7 @@ namespace mge {
         uint64_t propertyCount{};
         input.Get((char_t*)&propertyCount, sizeof(uint64_t));
 
+        // Read every property
         for(size_t i = 0; i < propertyCount; i++) {
             ShaderProperty property;
 
@@ -79,6 +82,25 @@ namespace mge {
         input.Get((char_t*)pipelinePath.c_str(), stringLength * sizeof(char_t));
         pipelinePath[stringLength] = 0;
 
+        // Read the locations of every material
+        uint64_t materialCount{};
+        input.Get((char_t*)&materialCount, materialCount);
+
+        for(uint64_t i = 0; i < materialCount; ++i) {
+            // Read the location of the material
+            string materialLocation;
+            uint64_t stringLength{};
+
+            input.Get((char_t*)&stringLength, sizeof(uint64_t));
+            materialLocation.resize((size_t)stringLength);
+
+            input.Get((char_t*)materialLocation.c_str(), stringLength * sizeof(char_t));
+            materialLocation[stringLength] = 0;
+
+            // Load the material from the file
+            materials.insert((Material*)Asset::LoadAssetFromFile<Material>(materialLocation));
+        }
+
         // Create the shader module
         LoadFromBinary(spirvPath);
 
@@ -94,15 +116,16 @@ namespace mge {
         uint64_t propertyCount = (uint64_t)(properties.end() - properties.begin());
         output.WriteBuffer((char_t*)&propertyCount, sizeof(uint64_t));
         
-        for(pair<string, ShaderProperty>* pointer = properties.begin(); pointer < properties.end(); pointer++) {
+        // Write every property
+        for(const auto& property : properties) {
             // Write the string
-            uint64_t stringLength = (uint64_t)pointer->val2.name.length();
+            uint64_t stringLength = (uint64_t)property.val2.name.length();
             output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
-            output.WriteBuffer((char_t*)pointer->val2.name.c_str(), stringLength * sizeof(char_t));
+            output.WriteBuffer((char_t*)property.val2.name.c_str(), stringLength * sizeof(char_t));
 
             // Write the other properties
-            uint64_t size64 = (uint64_t)pointer->val2.size;
-            uint64_t offset64 = (uint64_t)pointer->val2.offset;
+            uint64_t size64 = (uint64_t)property.val2.size;
+            uint64_t offset64 = (uint64_t)property.val2.offset;
 
             output.WriteBuffer((char_t*)&size64, sizeof(uint64_t));
             output.WriteBuffer((char_t*)&offset64, sizeof(uint64_t));
@@ -118,6 +141,19 @@ namespace mge {
         stringLength = (uint64_t)str.length();
         output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
         output.WriteBuffer((char_t*)str.c_str(), stringLength * sizeof(char_t));
+
+        // Write the locations of every material
+        uint64_t materialCount = (uint64_t)(materials.end() - materials.begin());
+        output.WriteBuffer((char_t*)&materialCount, sizeof(uint64_t));
+
+        for(auto material : materials) {
+            string materialLocation = Asset::GetAssetLocation(material);
+
+            // Write the material's path
+            uint64_t stringLength = (uint64_t)materialLocation.length();
+            output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
+            output.WriteBuffer((char_t*)materialLocation.c_str(), stringLength * sizeof(char_t));
+        }
 
         output.Close();
     }

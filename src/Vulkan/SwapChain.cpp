@@ -327,6 +327,9 @@ namespace mge {
     size_t GetSwapChainHeight() {
         return swapChainExtent.height;
     }
+    uint32_t GetCurrentFrame() {
+        return currentFrame;
+    }
 
     float32_t ExtentAspectRatio() {
         return (float32_t)swapChainExtent.width / (float32_t)swapChainExtent.height;
@@ -382,7 +385,9 @@ namespace mge {
 
         VkResult result = vkQueuePresentKHR(GetPresentQueue(), &presentInfo);
 
-        currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+        ++currentFrame;
+        if(currentFrame == MAX_FRAMES_IN_FLIGHT)
+            currentFrame = 0;
 
         return result;
     }
