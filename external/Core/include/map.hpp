@@ -17,54 +17,49 @@ namespace mge {
         map& operator=(map&&) noexcept = default;
 
         Value& operator[](const Key& key) {
-            //Binary search for it
-            size_t begin = 0, end = pairs.size();
-            
-            while(begin != end) {
-                size_t mid = (begin + end) >> 1;
+            // Binary search for it
+            size_t pos = 0, step = 1;
 
-                if(pairs[mid].val1 > key) {
-                    end = mid;
-                } else {
-                    begin = mid;
-                }
+            while(step < pairs.size())
+                step <<= 1;
+            
+            while(step) {
+                if(pos + step < pairs.size() && pairs[pos + step].val1 <= key)
+                    pos += step;
+                step >>= 1;
             }
 
-            if(pairs.size() && pairs[begin].val1 == key)
-                return pairs[begin].val2;
+            if(pairs.size() && pairs[pos].val1 == key)
+                return pairs[pos].val2;
             
             //There is no element with the specified key, create it
             pair_type pair;
             pair.val1 = key;
 
-            pairs.insert(pairs.begin() + begin, pair);
+            pairs.insert(pairs.begin() + pos, pair);
 
-            return pairs[begin];
+            return pairs[pos].val2;
         }
         Value& operator[](Key&& key) {
-            //Binary search for it
-            size_t begin = 0, end = pairs.size();
+            // Binary search for it
+            size_t pos = 0, step = 1 << 31;
             
-            while(begin != end) {
-                size_t mid = (begin + end) >> 1;
-
-                if(pairs[mid].val1 > key) {
-                    end = mid;
-                } else {
-                    begin = mid;
-                }
+            while(step) {
+                if(pos + step < pairs.size() && pairs[pos + step].val1 <= key)
+                    pos += step;
+                step >>= 1;
             }
 
-            if(pairs.size() && pairs[begin].val1 == key)
-                return pairs[begin].val2;
+            if(pairs.size() && pairs[pos].val1 == key)
+                return pairs[pos].val2;
             
             //There is no element with the specified key, create it
             pair_type pair;
             pair.val1 = key;
 
-            pairs.insert(pairs.begin() + begin, pair);
+            pairs.insert(pairs.begin() + pos, pair);
 
-            return pairs[begin];
+            return pairs[pos];
         }
         const Value& operator[](const Key& key) const {
             //Binary search for it

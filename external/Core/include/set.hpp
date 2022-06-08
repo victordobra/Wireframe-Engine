@@ -22,10 +22,13 @@ namespace mge {
             while(begin != end) {
                 size_t mid = (begin + end) >> 1;
 
-                if(values[mid].val1 > value) {
+                if(values[mid] == value) {
                     end = mid;
-                } else {
                     begin = mid;
+                } else if(values[mid] > value) {
+                    end = mid - 1;
+                } else {
+                    begin = mid + 1;
                 }
             }
 
@@ -44,10 +47,13 @@ namespace mge {
             while(begin != end) {
                 size_t mid = (begin + end) >> 1;
 
-                if(values[mid].val1 > value) {
+                if(values[mid] == value) {
                     end = mid;
-                } else {
                     begin = mid;
+                } else if(values[mid] > value) {
+                    end = mid - 1;
+                } else {
+                    begin = mid + 1;
                 }
             }
 

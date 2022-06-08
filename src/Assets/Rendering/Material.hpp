@@ -1,6 +1,8 @@
 #pragma once
 #include "Base/Asset.hpp"
 #include "Shader.hpp"
+#include "Vulkan/Buffer.hpp"
+#include "Vulkan/SwapChain.hpp"
 
 namespace mge {
     class Material : public Asset {
@@ -8,27 +10,23 @@ namespace mge {
         Material() = default;
         Material(const Material&) = delete;
         Material(Material&&) noexcept = delete;
-        Material(Shader* shader) : shader(shader) { 
-            shader->materials.insert_or_assign(this);
-            if(shader->properties.begin() != shader->properties.end()) {
-                const auto* lastProp = shader->properties.end() - 1;
-                size_t size = lastProp->val2.offset + lastProp->val2.size;
-                data.resize(size);
-            }
-        }
+        Material(Shader* shader);
 
         Material& operator=(const Material&) = delete;
         Material& operator=(Material&&) noexcept = delete;
 
+        void Map() {
+            // Map the first buffer and only modify it
+            buffers[0]->Map();
+        }
         template<class T>
         T GetPropertyValue(const string& propertyName) {
             Shader::ShaderProperty property = shader->properties[propertyName];
             
             assert((property.size == sizeof(T)) && "Invalid property size!");
 
-            char_t* ptr = data.data() + property.offset;
             T val;
-            memcpy(&val, ptr, property.size);
+            buffers[0]->ReadFromBuffer(&val, sizeof(T), property.offset);
             return val;
         }
         template<class T>
@@ -37,19 +35,36 @@ namespace mge {
             
             assert((property.size == sizeof(T)) && "Invalid property size!");
 
-            char_t* ptr = data.data() + property.offset;
-            memcpy(ptr, &newValue, property.size);
+            buffers[0]->WriteToBuffer((void*)&newValue, sizeof(T), property.offset);
+        }
+        void Unmap() {
+            // Unmap the first buffer
+            buffers[0]->Unmap();
+
+            // Copy the first buffer to every buffer
+            VkBuffer firstBuffer = buffers[0]->GetBuffer();
+            VkDeviceSize bufferSize = buffers[0]->GetBufferSize();
+
+            for(size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; ++i)
+                CopyBuffer(firstBuffer, buffers[i]->GetBuffer(), bufferSize);
         }
 
-        Shader* GetShader() const { return shader; }
-        vector<char_t> GetData() const { return data; }
+        Shader* GetShader() const { 
+            return shader; 
+        }
+        Buffer* GetBuffer() const {
+            return buffers[GetCurrentFrame()];
+        }
+        Buffer** GetBuffers() const {
+            return (Buffer**)buffers;
+        }
 
         void LoadFromFile(const string& fileLocation) override;
         void SaveToFile(const string& fileLocation) override;
 
-        ~Material() = default;
+        ~Material();
     private:
         Shader* shader;
-        vector<char_t> data;
+        Buffer* buffers[MAX_FRAMES_IN_FLIGHT];
     };
 }

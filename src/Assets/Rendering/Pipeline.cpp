@@ -1,4 +1,5 @@
 #include "Pipeline.hpp"
+#include "Material.hpp"
 #include "Vulkan/Device.hpp"
 
 namespace mge {
@@ -46,7 +47,8 @@ namespace mge {
 		descriptorPool = new DescriptorPool(pipelineInfo.descriptorPoolInfo);
 		pipelineInfo.descriptorPoolInfo = descriptorPool->GetInfo();
 
-		if(pipelineInfo.globalBufferSize)
+		if(pipelineInfo.globalBufferSize) {
+			// Create and write the global buffers
 			for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
 				// Create the buffer
 				globalBuffers[i] = new Buffer(pipelineInfo.globalBufferSize, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
@@ -66,6 +68,34 @@ namespace mge {
 
 				vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
 			}
+
+			// Write the material buffers
+			size_t descriptorIndex = MAX_FRAMES_IN_FLIGHT;
+			vector<Material*> materials;
+
+			for(auto& shaderStage : pipelineInfo.shaderStages)
+				for(auto* material : shaderStage.shader->materials){
+					materials.push_back(material);
+				}
+
+			for(size_t i = 0; i < materials.size(); ++i)
+				for(size_t j = 0; j < MAX_FRAMES_IN_FLIGHT; ++j) {
+					// Get the descriptor info
+					VkDescriptorBufferInfo bufferInfo = materials[i]->GetBuffers()[j]->GetDescriptorInfo();
+
+					// Set information about the write
+					VkWriteDescriptorSet write{};
+
+					write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+					write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+					write.dstBinding = 0;
+					write.pBufferInfo = &bufferInfo;
+					write.descriptorCount = 1;
+					write.dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex++];
+
+					vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
+				}
+		}
 	}
 	void Pipeline::CreatePipelineLayout() {
 		// Add every descriptor set layout in a vector

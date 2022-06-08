@@ -75,10 +75,17 @@ namespace mge {
         vertShader = new Shader("assets/shaders/VertShader.vert.spv");
         fragShader = new Shader("assets/shaders/FragShader.frag.spv");
 
+        fragShader->AddProperty<Vector4>("color");
+
         Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
         Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
         
         Material* material = (Material*)Asset::LoadAssetFromFile<Material>("assets/materials/Default.mat");
+
+        material->Map();
+        Vector4 color = { 1.f, 0.f, 0.f, 0.f };
+        material->SetPropertyValue("color", color);
+        material->Unmap();
 
         Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
         Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);

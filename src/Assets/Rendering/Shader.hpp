@@ -32,7 +32,7 @@ namespace mge {
         vector<ShaderProperty> GetProperties() const {
             vector<ShaderProperty> propertyVec((size_t)(properties.end() - properties.begin()));
             size_t ind = 0;
-            for(auto property : properties)
+            for(const auto& property : properties)
                 propertyVec[ind++] = property.val2;
             return propertyVec;
         }
@@ -58,6 +58,8 @@ namespace mge {
         VkShaderModule GetModule() const { return shaderModule; }
         /// @brief Returns the shader's parent pipeline
         Pipeline* GetPipeline() const { return pipeline; }
+        /// @brief Returns a vector of every material that has this shader.
+        set<Material*> GetMaterials() const { return materials; }
 
         ~Shader();
     private:

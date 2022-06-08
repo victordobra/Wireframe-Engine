@@ -27,6 +27,15 @@ namespace mge {
         // Push the constants
         vkCmdPushConstants(commandBuffer, pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstant), &pushConstant);
 
+        // Bind the descriptor sets
+        DescriptorPool* descriptorPool = pipeline->GetDescriptorPool();
+        set<Material*> materials = material->GetShader()->GetMaterials();
+
+        size_t materialIndex = (size_t)(&(materials[material]) - materials.begin()) + 1;
+        VkDescriptorSet descriptorSets[2] = { descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(0)], descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(materialIndex)] };
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipelineLayout(), 0, 2, descriptorSets, 0, nullptr);
+
         // Bind the vertex and index buffers
         VkBuffer buffers[] = { model->GetVertexBuffer()->GetBuffer() };
         VkDeviceSize offsets[] = { 0 };
