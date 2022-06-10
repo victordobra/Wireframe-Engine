@@ -100,7 +100,7 @@ namespace mge {
         pipelineInfo.pushConstantRanges[0].size = sizeof(ModelRenderer::PushConstant);
         pipelineInfo.pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-        pipelineInfo.globalBufferSize = 256;
+        pipelineInfo.globalBufferSize = sizeof(LightingUbo);
 
         pipelineInfo.vertexBindings = Model::Vertex::GetBindingDescriptions();
         pipelineInfo.vertexAttributes = Model::Vertex::GetAttributeDescriptions();
@@ -129,6 +129,12 @@ namespace mge {
         modelRenderer->model = model;
         modelRenderer->material = material;
         modelRenderer->SetParent(body);
+
+        Light* light = new Light();
+        light->type = Light::LIGHT_TYPE_DIRECTIONAL;
+        light->direction = Vector3(1.f, 1.f, -1.f).Normalized();
+        light->color = { 1.f, 1.f, 1.f, 1.f };
+        light->SetParent(Node::scene);
 
         // Find all nodes reccursively
         vector<Node*> nodes;

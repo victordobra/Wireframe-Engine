@@ -36,6 +36,11 @@ namespace mge {
 		Vector4(float32_t x) : x(x), y(x), z(x), w(x) { }
 		Vector4(float32_t x, float32_t y, float32_t z, float32_t w) : x(x), y(y), z(z), w(w) { }
 
+		Vector4(const Vector2& other) : x(other.x), y(other.y), z(0), w(0) { }
+		Vector4(Vector2&& other)      : x(other.x), y(other.y), z(0), w(0) { }
+		Vector4(const Vector3& other) : x(other.x), y(other.y), z(other.z), w(0) { }
+		Vector4(Vector3&& other)      : x(other.x), y(other.y), z(other.z), w(0) { }
+
 		Vector4& operator=(const Vector4&) = default;
 		Vector4& operator=(Vector4&&) noexcept = default;
 

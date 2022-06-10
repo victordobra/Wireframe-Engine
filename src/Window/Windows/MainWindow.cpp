@@ -136,8 +136,8 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         mge::UpdateGameLoop();
         return 0;
     case WM_CLOSE:
-        mge::Asset::DeleteAssets();
         delete mge::Node::scene;
+        mge::Asset::DeleteAssets();
         mge::DeleteSwapChain();
         mge::DeleteVulkanDevice();
         mge::console::CloseLogFile();

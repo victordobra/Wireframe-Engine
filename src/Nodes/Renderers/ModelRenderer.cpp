@@ -19,20 +19,38 @@ namespace mge {
         Matrix4x4 cameraPerspective = Matrix4x4::PerspectiveProjection(camera->fov * RAD_TO_DEG_MULTIPLIER, ExtentAspectRatio(), camera->nearPlane, camera->farPlane);
 
         pushConstant.modelRotation = modelRotation;
-        pushConstant.transformMatrix = modelScaling * modelRotation * modelPosition * cameraPosition * cameraRotation * cameraPerspective;
+        pushConstant.modelTransform = modelScaling * modelRotation * modelPosition;
 
         pushConstant.modelRotation.Transpose();
-        pushConstant.transformMatrix.Transpose();
+        pushConstant.modelTransform.Transpose();
 
         // Push the constants
         vkCmdPushConstants(commandBuffer, pipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstant), &pushConstant);
 
+        // Copy to the lighting buffer
+        LightingUbo lightingUbo{};
+
+        lightingUbo.cameraTransform = cameraPosition * cameraRotation * cameraPerspective;
+        lightingUbo.cameraTransform.Transpose();
+        lightingUbo.ambientLightColor = Light::ambientLightColor;
+
+        for(const auto* light : Light::GetLights())
+            light->AppendToLightingUbo(lightingUbo);
+        
+        Buffer* globalBuffer = pipeline->GetGlobalBuffer();
+        globalBuffer->Map();
+        globalBuffer->WriteToBuffer(&lightingUbo);
+        globalBuffer->Flush();
+        globalBuffer->Unmap();
+
         // Bind the descriptor sets
         DescriptorPool* descriptorPool = pipeline->GetDescriptorPool();
         set<Material*> materials = material->GetShader()->GetMaterials();
-
         size_t materialIndex = (size_t)(&(materials[material]) - materials.begin()) + 1;
-        VkDescriptorSet descriptorSets[2] = { descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(0)], descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(materialIndex)] };
+
+        VkDescriptorSet lightingDescriptorSet = descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(0)];
+        VkDescriptorSet materialDescriptorSet = descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(materialIndex)];
+        VkDescriptorSet descriptorSets[2] = { lightingDescriptorSet, materialDescriptorSet };
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipelineLayout(), 0, 2, descriptorSets, 0, nullptr);
 

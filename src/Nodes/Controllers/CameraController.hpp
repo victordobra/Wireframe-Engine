@@ -12,12 +12,12 @@ namespace mge {
         Vector3 center;
         float32_t sensitivity{.1f};
 
-        void Start() override {
+        inline void Start() override {
             camera = dynamic_cast<Camera*>(GetParent());
 
             assert(camera && "A camera controller's parent must be a camera!");
         }
-        void Update() override {
+        inline void Update() override {
             if(KeyDown(KEY_LBUTTON)) {
                 MouseMovement movement = GetMouseMovement();
 

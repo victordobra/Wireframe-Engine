@@ -2,6 +2,11 @@
 
 #include "Core.hpp"
 
+// KEY_EXECUTE define safeguard
+#ifdef KEY_EXECUTE
+#undef KEY_EXECUTE
+#endif
+
 namespace mge {
     typedef enum : uint8_t {
         KEY_LBUTTON = 0x01,

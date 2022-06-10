@@ -4,12 +4,13 @@
 #include "Nodes/Rendering/Renderer.hpp"
 #include "Math/EngineMath.hpp"
 #include "Nodes/Rendering/Camera.hpp"
+#include "Nodes/Lighting/Light.hpp"
 
 namespace mge {
     class ModelRenderer : public Renderer {
     public:
         struct PushConstant {
-            Matrix4x4 transformMatrix;
+            Matrix4x4 modelTransform;
             Matrix4x4 modelRotation;
         };
 
