@@ -8,6 +8,7 @@
 #include "Assets/Rendering/Pipeline.hpp"
 #include "Assets/Rendering/Shader.hpp"
 #include "Assets/Rendering/Material.hpp"
+#include "Assets/General/Image.hpp"
 #include "Nodes/Rendering/Camera.hpp"
 #include "Nodes/Renderers/ModelRenderer.hpp"
 #include "Nodes/Controllers/CameraController.hpp"
@@ -135,6 +136,9 @@ namespace mge {
         light->direction = Vector3(1.f, 1.f, -1.f).Normalized();
         light->color = { 1.f, 1.f, 1.f, 1.f };
         light->SetParent(Node::scene);
+
+        Image* testImage = (Image*)Asset::LoadAssetFromFile<Image>("assets/images/ding.png");
+        Asset::SaveAssetToFile("assets/images/ding.png", testImage);
 
         // Find all nodes reccursively
         vector<Node*> nodes;

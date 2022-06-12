@@ -27,14 +27,30 @@ namespace mge {
 
         VkDescriptorBufferInfo GetDescriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-        VkBuffer              GetBuffer()              const { return buffer; }
-        void*                 GetMappedMemory()        const { return mapped; }
-        uint32_t              GetInstanceCount()       const { return instanceCount; }
-        VkDeviceSize          GetInstanceSize()        const { return instanceSize; }
-        VkDeviceSize          GetAlignmentSize()       const { return instanceSize; }
-        VkBufferUsageFlags    GetUsageFlags()          const { return usageFlags; }
-        VkMemoryPropertyFlags GetMemoryPropertyFlags() const { return memoryPropertyFlags; }
-        VkDeviceSize          GetBufferSize()          const { return bufferSize; }
+        VkBuffer              GetBuffer()              const { 
+            return buffer; 
+        }
+        void*                 GetMappedMemory()        const { 
+            return mapped; 
+        }
+        uint32_t              GetInstanceCount()       const { 
+            return instanceCount; 
+        }
+        VkDeviceSize          GetInstanceSize()        const { 
+            return instanceSize; 
+        }
+        VkDeviceSize          GetAlignmentSize()       const { 
+            return instanceSize; 
+        }
+        VkBufferUsageFlags    GetUsageFlags()          const { 
+            return usageFlags; 
+        }
+        VkMemoryPropertyFlags GetMemoryPropertyFlags() const { 
+            return memoryPropertyFlags; 
+        }
+        VkDeviceSize          GetBufferSize()          const { 
+            return bufferSize; 
+        }
 
         ~Buffer();
     private:

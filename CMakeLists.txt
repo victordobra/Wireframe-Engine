@@ -34,7 +34,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 message(STATUS "Executable created successfully.")
 
 # Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
 message(STATUS "Include directories added.")
 
 # Add the link directories and link the libraries
