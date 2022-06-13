@@ -14,7 +14,7 @@ namespace mge {
         // Set some values
         this->width = width;
         this->height = height;
-        format = format;
+        this->format = format;
         imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         
         // Create the image create info
@@ -22,20 +22,46 @@ namespace mge {
         
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         createInfo.imageType = VK_IMAGE_TYPE_2D;
-        createInfo.extent.width = (uint32_t)width;
-        createInfo.extent.height = (uint32_t)height;
-        createInfo.extent.depth = 1;
-        createInfo.mipLevels = 1;
-        createInfo.arrayLayers = 1;
         createInfo.format = format;
         createInfo.tiling = tiling;
         createInfo.initialLayout = imageLayout;
         createInfo.usage = usageFlags;
-        createInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
+        createInfo.extent.width = (uint32_t)width;
+        createInfo.extent.height = (uint32_t)height;
+        createInfo.extent.depth = 1;
+
+        createInfo.mipLevels = 1;
+        createInfo.arrayLayers = 1;
+
+        createInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        createInfo.flags = 0;
+
+        // Create the image
         CreateImage(createInfo, memoryPropertyFlags, image, imageMemory);
     }
+    void Image::CreateImageView() {
+        // Create the image create info
+        VkImageViewCreateInfo createInfo{};
+
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = image;
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = format;
+
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+
+        // Create the image view
+        auto result = vkCreateImageView(GetDevice(), &createInfo, nullptr, &imageView);
+        if(result != VK_SUCCESS)
+            console::OutFatalError("Failed to create image view!", 1);
+    }
+
     void Image::SetStageAndAccess(VkImageLayout layout, VkAccessFlags& accessMask, VkPipelineStageFlags& stage) const {
         // Check for every supported layout
         switch(layout) {
@@ -64,6 +90,7 @@ namespace mge {
     // External functions
     Image::Image(size_t width, size_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags) {
         CreateImageAndMemory(width, height, format, tiling, usageFlags, memoryPropertyFlags);
+        CreateImageView();
     }
 
     void Image::TransitionImageLayout(VkImageLayout newLayout, VkCommandBuffer commandBuffer) {
@@ -119,7 +146,8 @@ namespace mge {
         height = (size_t)height32;
 
         // Create the vulkan image
-        CreateImageAndMemory(width, height, VK_FORMAT_R8G8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        CreateImageAndMemory(width, height, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        CreateImageView();
         TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
         // Create a staging buffer to copy from
@@ -160,7 +188,7 @@ namespace mge {
         // Map the buffer and save its contents as an image
         stagingBuffer.Map();
 
-        sint32_t result = stbi_write_png(fileLocation.c_str(), (sint32_t)width, (sint32_t)height, 1, stagingBuffer.GetMappedMemory(), width * sizeof(Color8));
+        sint32_t result = stbi_write_png(fileLocation.c_str(), (sint32_t)width, (sint32_t)height, sizeof(Color8), stagingBuffer.GetMappedMemory(), width * sizeof(Color8));
 
         if(!result)
             console::OutFatalError((string)"Failed to save image! Reason: " + stbi_failure_reason(), 1);
@@ -172,6 +200,7 @@ namespace mge {
     }
 
     Image::~Image() {
+        vkDestroyImageView(GetDevice(), imageView, nullptr);
         vkDestroyImage(GetDevice(), image, nullptr);
         vkFreeMemory(GetDevice(), imageMemory, nullptr);
     }

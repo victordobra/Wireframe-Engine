@@ -25,18 +25,13 @@
 #include "MainWindow.hpp"
 #include "Vulkan/Device.hpp"
 #include "Vulkan/SwapChain.hpp"
+#include "Vulkan/Sampler.hpp"
 #include "Systems/GameLoop.hpp"
 #include "Base/Node.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
-
-#include "Core.hpp"
-#include "Math/EngineMath.hpp"
-#include "Assets/Rendering/Pipeline.hpp"
-#include "Assets/General/Model.hpp"
-#include "Nodes/Rendering/Camera.hpp"
 
 // Const variables
 const mge::char_t* className = "Application";
@@ -138,6 +133,7 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
     case WM_CLOSE:
         delete mge::Node::scene;
         mge::Asset::DeleteAssets();
+        mge::DeleteSampler();
         mge::DeleteSwapChain();
         mge::DeleteVulkanDevice();
         mge::console::CloseLogFile();

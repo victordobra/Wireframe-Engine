@@ -40,12 +40,16 @@ namespace mge {
         ~Image();
     private:
         void CreateImageAndMemory(size_t width, size_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags);
+        void CreateImageView();
 
         void SetStageAndAccess(VkImageLayout layout, VkAccessFlags& accessMask, VkPipelineStageFlags& stage) const;
 
         size_t width, height;
+
         VkImage image;
         VkDeviceMemory imageMemory;
+        VkImageView imageView;
+
         VkFormat format;
         VkImageLayout imageLayout;
     };
