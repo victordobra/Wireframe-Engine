@@ -59,10 +59,10 @@ namespace mge {
         void Bind(VkCommandBuffer commandBuffer) const;
         void Draw(VkCommandBuffer commandBuffer) const;
 
+        ~Model();
+    protected:
         void LoadFromFile(const string& fileLocation) override;
         void SaveToFile  (const string& fileLocation) override;
-
-        ~Model();
     private:   
         void CreateVertexBuffer(const vector<Vertex>& vertices);
         void CreateIndexBuffer (const vector<uint32_t>& indices);

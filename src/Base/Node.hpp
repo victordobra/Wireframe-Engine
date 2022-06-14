@@ -25,9 +25,6 @@ namespace mge {
         Node& operator=(const Node&) = delete;
         Node& operator=(Node&&) noexcept = delete;
 
-        void LoadFromFile(const string& fileLocation) override;
-        void SaveToFile(const string& fileLocation) override;
-
         /// @brief Returns the parent of the node.
         Node* GetParent() const;
         /// @brief Sets the parent of the node to a new value.
@@ -44,9 +41,12 @@ namespace mge {
         virtual void Render() { }
 
         virtual ~Node();
+    protected:
+        void LoadFromFile(const string& fileLocation) override;
+        void SaveToFile  (const string& fileLocation) override;
     private:
-        void LoadFromStream(FileInput& stream);
-        void SaveToStream(FileOutput& stream);
+        void LoadFromStream(FileInput&  stream);
+        void SaveToStream  (FileOutput& stream);
 
         Node* parent{nullptr};
         vector<Node*> children{};
@@ -102,7 +102,7 @@ namespace mge {
                     prop.type = PROPERTY_TYPE_QUAT;
                 else if(hashCode == typeid(Matrix4x4).hash_code())
                     prop.type = PROPERTY_TYPE_MAT4X4;
-                else if(Asset::assetTypes.count(hashCode)) {
+                else if(Asset::GetAssetType(hashCode)) {
                     prop.type = PROPERTY_TYPE_ASSET_PTR;
                     prop.size = hashCode;
                 } else 
@@ -128,7 +128,7 @@ mge::Node* Create ## type ## Node() { /* Creates the specified node type */ \
 } \
 namespace { \
     void* Create ## type ## Info(void* pParams) { /* Adds the required information to its hash map */ \
-        while(!mge::Node::nodeTypes.bucket_count() || !mge::Asset::assetTypes.bucket_count()) \
+        while(!mge::Node::nodeTypes.bucket_count() || !mge::Node::nodeTypes.begin()) \
             sleep(0.05); \
         mge::NodeInfo info; \
         info.hashCode = typeid(type).hash_code(); \

@@ -26,7 +26,7 @@ namespace mge {
         shaderLocation[len64] = 0;
 
         // Load the shader
-        shader = (Shader*)Asset::LoadAssetFromFile<Shader>(shaderLocation);
+        shader = Asset::GetOrCreateAssetWithLocation<Shader>(shaderLocation);
         shader->materials.insert_or_assign(this);
 
         // Load the material's data
@@ -52,7 +52,7 @@ namespace mge {
         FileOutput output(fileLocation, StreamType::BINARY);
 
         // Save the shader's location to the file
-        auto shaderLocation = Asset::GetAssetLocation(shader);
+        auto shaderLocation = shader->location;
         uint64_t len64 = shaderLocation.length();
         output.WriteBuffer((char_t*)&len64, sizeof(uint64_t));
         output.WriteBuffer((char_t*)shaderLocation.c_str(), len64 * sizeof(char_t));

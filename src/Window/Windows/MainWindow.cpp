@@ -117,13 +117,12 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
     case WM_CREATE: 
     {
         hWnd = hWindow;
-
-        mge::Asset::JoinThreads();
         mge::Node::JoinThreads();
-
         mge::CreateVulkanDevice();
         mge::CreateSwapChain({ (mge::uint32_t)screenWidth, (mge::uint32_t)screenHeight });
+        mge::CreateSampler();
 
+        mge::Asset::LoadAllAssets();
         mge::StartGameLoop();
     }
         return 0;
@@ -132,10 +131,12 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         return 0;
     case WM_CLOSE:
         delete mge::Node::scene;
-        mge::Asset::DeleteAssets();
+        mge::Asset::DeleteAllAssets();
+
         mge::DeleteSampler();
         mge::DeleteSwapChain();
         mge::DeleteVulkanDevice();
+        
         mge::console::CloseLogFile();
         DestroyWindow(hWindow);
         return 0;

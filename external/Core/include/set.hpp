@@ -16,85 +16,92 @@ namespace mge {
         set& operator=(set&&) noexcept = default;
 
         Value& operator[](const Value& value) {
-            //Binary search for it
-            size_t begin = 0, end = values.size();
-            
-            while(begin != end) {
-                size_t mid = (begin + end) >> 1;
-
-                if(values[mid] == value) {
-                    end = mid;
-                    begin = mid;
-                } else if(values[mid] > value) {
-                    end = mid - 1;
-                } else {
-                    begin = mid + 1;
-                }
+            // If the set is empty, add the element right away
+            if(!values.size()) {
+                values.insert(values.begin(), value);
+                return values[0];
             }
 
-            if(values.size() && values[begin] == value)
-                return values[begin];
+            //Binary search for it
+            size_t step = 1;
+            while(step < values.size())
+                step <<= 1;
+            step >>= 1;
+
+            size_t pos = 0;
+            while(step) {
+                if(pos + step < values.size() && values[pos + step] <= value)
+                    pos += step;
+                step >>= 1;
+            }
+
+            if(values.size() && values[pos] == value)
+                return values[pos];
             
             //There is no element with the specified key, create it
-            values.insert(values.begin() + begin, value);
+            ++pos;
+            values.insert(values.begin() + pos, value);
 
-            return values[begin];
+            return values[pos];
         }
         Value& operator[](Value&& value) {
-            //Binary search for it
-            size_t begin = 0, end = values.size();
-            
-            while(begin != end) {
-                size_t mid = (begin + end) >> 1;
-
-                if(values[mid] == value) {
-                    end = mid;
-                    begin = mid;
-                } else if(values[mid] > value) {
-                    end = mid - 1;
-                } else {
-                    begin = mid + 1;
-                }
+            // If the set is empty, add the element right away
+            if(!values.size()) {
+                values.insert(values.begin(), value);
+                return values[0];
             }
 
-            if(values.size() && values[begin] == value)
-                return values[begin];
+            //Binary search for it
+            size_t step = 1;
+            while(step < values.size())
+                step <<= 1;
+            step >>= 1;
+
+            size_t pos = 0;
+            while(step) {
+                if(pos + step < values.size() && values[pos + step] <= value)
+                    pos += step;
+                step >>= 1;
+            }
+
+            if(values.size() && values[pos] == value)
+                return values[pos];
             
             //There is no element with the specified key, create it
-            values.insert(values.begin() + begin, value);
+            ++pos;
+            values.insert(values.begin() + pos, value);
 
-            return values[begin];
+            return values[pos];
         }
 
         Value& insert(const value_type& value) {
-            size_t begin = 0, end = 0;
-            if(values.size()) {
-                //Binary search for it
-                end = values.size() - 1;
-                
-                while(begin != end) {
-                    size_t mid = (begin + end) >> 1;
-
-                    if(values[mid] == value) {
-                        end = mid;
-                        begin = mid;
-                    } else if(values[mid] > value) {
-                        end = mid - 1;
-                    } else {
-                        begin = mid + 1;
-                    }
-                }
-
-                if(values[begin] == value) {
-                    values[begin] = value;
-                    return values[begin];
-                }
+            // If the set is empty, add the element right away
+            if(!values.size()) {
+                values.insert(values.begin(), value);
+                return values[0];
             }
             
-            //There is no element with the specified key, create it
-            values.insert(values.begin() + begin, value);
+            //Binary search for it
+            size_t step = 1;
+            while(step < values.size())
+                step <<= 1;
+            step >>= 1;
 
-            return values[begin];
+            size_t pos = 0;
+            while(step) {
+                if(pos + step < values.size() && values[pos + step] <= value)
+                    pos += step;
+                step >>= 1;
+            }
+
+            if(values.size() && values[pos] == value)
+                return values[pos];
+            
+            //There is no element with the specified key, create it
+            ++pos;
+            values.insert(values.begin() + pos, value);
+
+            return values[pos];
         }
         Value& insert_or_assign(const value_type& value) {
             return insert(value);

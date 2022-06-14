@@ -73,25 +73,28 @@ namespace mge {
     // External functions
     void StartGameLoop() {
         // Create assets and objects for testing
-        vertShader = new Shader("assets/shaders/VertShader.vert.spv");
-        fragShader = new Shader("assets/shaders/FragShader.frag.spv");
+        Image* image = Asset::GetOrCreateAssetWithLocation<Image>("images/ding.png");
+        image->Save("images/ding.png");
+
+        vertShader = new Shader("shaders/VertShader.vert.spv");
+        fragShader = new Shader("shaders/FragShader.frag.spv");
 
         fragShader->AddProperty<Vector4>("color");
 
-        Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
-        Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
+        vertShader->Save("shaders/VertShader.shader");
+        fragShader->Save("shaders/FragShader.shader");
         
-        Material* material = (Material*)Asset::LoadAssetFromFile<Material>("assets/materials/Default.mat");
+        Material* material = new Material(fragShader);
 
         material->Map();
         Vector4 color = { 1.f, 0.f, 0.f, 0.f };
         material->SetPropertyValue("color", color);
         material->Unmap();
 
-        Asset::SaveAssetToFile("assets/shaders/VertShader.shader", vertShader);
-        Asset::SaveAssetToFile("assets/shaders/FragShader.shader", fragShader);
+        vertShader->Save("shaders/VertShader.shader");
+        fragShader->Save("shaders/FragShader.shader");
 
-        Asset::SaveAssetToFile("assets/materials/Default.mat", material);
+        material->Save("materials/Default.mat");
 
         Pipeline::PipelineInfo pipelineInfo;
         Pipeline::PopulatePipelineInfo(pipelineInfo);
@@ -109,10 +112,10 @@ namespace mge {
         pipelineInfo.shaderStages = { { vertShader, VK_SHADER_STAGE_VERTEX_BIT }, { fragShader, VK_SHADER_STAGE_FRAGMENT_BIT } };
 
         pipeline = new Pipeline(pipelineInfo);
-        Asset::SaveAssetToFile("assets/MainPipeline.pipeline", pipeline);
+        pipeline->Save("MainPipeline.pipeline");
 
-        Model* model = new Model("assets/models/Torus.obj");
-        Asset::SaveAssetToFile("assets/models/Torus.model", model);
+        Model* model = new Model("models/Torus.obj");
+        model->Save("models/Torus.model");
 
         Camera* camera = new Camera();
         camera->fov = 60.f;
@@ -136,9 +139,6 @@ namespace mge {
         light->direction = Vector3(1.f, 1.f, -1.f).Normalized();
         light->color = { 1.f, 1.f, 1.f, 1.f };
         light->SetParent(Node::scene);
-
-        Image* testImage = (Image*)Asset::LoadAssetFromFile<Image>("assets/images/ding.png");
-        Asset::SaveAssetToFile("assets/images/ding.png", testImage);
 
         // Find all nodes reccursively
         vector<Node*> nodes;

@@ -6,7 +6,7 @@
 namespace mge {
     // Internal helper functions
     void Shader::LoadFromBinary(const string& spirvPath) {
-        FileInput input{spirvPath, StreamType::BINARY | StreamType::AT_THE_END};
+        FileInput input{(string)ASSET_PATH + spirvPath, StreamType::BINARY | StreamType::AT_THE_END};
 
         size_t size = input.Tell();
         input.Seek(0);
@@ -98,7 +98,7 @@ namespace mge {
             materialLocation[stringLength] = 0;
 
             // Load the material from the file
-            materials.insert((Material*)Asset::LoadAssetFromFile<Material>(materialLocation));
+            materials.insert(Asset::GetOrCreateAssetWithLocation<Material>(materialLocation));
         }
 
         // Create the shader module
@@ -147,7 +147,7 @@ namespace mge {
         output.WriteBuffer((char_t*)&materialCount, sizeof(uint64_t));
 
         for(auto material : materials) {
-            string materialLocation = Asset::GetAssetLocation(material);
+            string materialLocation = material->location;
 
             // Write the material's path
             uint64_t stringLength = (uint64_t)materialLocation.length();

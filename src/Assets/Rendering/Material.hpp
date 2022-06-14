@@ -59,10 +59,10 @@ namespace mge {
             return (Buffer**)buffers;
         }
 
-        void LoadFromFile(const string& fileLocation) override;
-        void SaveToFile(const string& fileLocation) override;
-
         ~Material();
+    protected:
+        void LoadFromFile(const string& fileLocation) override;
+        void SaveToFile  (const string& fileLocation) override;
     private:
         Shader* shader;
         Buffer* buffers[MAX_FRAMES_IN_FLIGHT];

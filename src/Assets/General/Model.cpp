@@ -73,7 +73,7 @@ namespace mge {
     // External functions
     Model::Model(const string& fileLocation) {
         // Open the file stream
-        FileInput input(fileLocation, StreamType::AT_THE_END);
+        FileInput input((string)ASSET_PATH + fileLocation, StreamType::AT_THE_END);
         size_t fileLength = input.Tell();
         input.Seek(0);
 

@@ -204,4 +204,6 @@ namespace mge {
         vkDestroyImage(GetDevice(), image, nullptr);
         vkFreeMemory(GetDevice(), imageMemory, nullptr);
     }
+
+    MGE_ASSET(Image)
 }

@@ -196,7 +196,7 @@ namespace mge {
 			input.Get((char_t*)location.c_str(), stringLength * sizeof(char_t));
 			location[stringLength] = 0;
 
-			pipelineInfo.shaderStages[i].shader = dynamic_cast<Shader*>(Asset::LoadAssetFromFile<Shader>(location));
+			pipelineInfo.shaderStages[i].shader = Asset::GetOrCreateAssetWithLocation<Shader>(location);
 			input.Get((char_t*)&pipelineInfo.shaderStages[i].shaderStage, sizeof(VkShaderStageFlagBits));
 		}
 
@@ -248,7 +248,7 @@ namespace mge {
 		output.WriteBuffer((char_t*)&shaderStageCount, sizeof(uint64_t));
 
 		for(size_t i = 0; i < shaderStageCount; i++) {
-			const string& str = Asset::GetAssetLocation(pipelineInfo.shaderStages[i].shader);
+			auto str = pipelineInfo.shaderStages[i].shader->location;
 			uint64_t stringLength = (uint64_t)str.length();
 
 			output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));

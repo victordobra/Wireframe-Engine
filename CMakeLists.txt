@@ -30,7 +30,7 @@ endif()
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 message(STATUS "Executable created successfully.")
 
 # Add the include directories
@@ -59,7 +59,7 @@ endif()
 # Compile shaders
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(GLSL_NAME ${GLSL} NAME)
-    set(SPIRV "${PROJECT_SOURCE_DIR}/build/assets/shaders/${GLSL_NAME}.spv")
+    set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${GLSL_NAME}.spv")
     add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -o ${SPIRV} DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)

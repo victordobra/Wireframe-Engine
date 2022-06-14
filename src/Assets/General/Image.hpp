@@ -34,10 +34,10 @@ namespace mge {
             return imageLayout;
         }
 
+        ~Image();
+    protected:
         void LoadFromFile(const string& fileLocation) override;
         void SaveToFile  (const string& fileLocation) override;
-
-        ~Image();
     private:
         void CreateImageAndMemory(size_t width, size_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags);
         void CreateImageView();

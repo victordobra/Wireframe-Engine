@@ -136,7 +136,9 @@ namespace mge {
             str[length] = 0;
 
             Asset*& ptr = *(Asset**)address;
-            ptr = Asset::assetTypes[prop.size].create(str);
+            ptr = Asset::GetAssetType(prop.size)->create();
+            ptr->Load(str);
+
 
             break;
         }
@@ -163,7 +165,7 @@ namespace mge {
         case NodeInfo::Property::PROPERTY_TYPE_ASSET_PTR:
         {
             Asset* ptr = *(Asset**)address;
-            string str = Asset::GetAssetLocation(ptr);
+            auto str = ptr->location;
 
             uint64_t length = str.length();
             output.WriteBuffer((char_t*)&length, sizeof(uint64_t));
