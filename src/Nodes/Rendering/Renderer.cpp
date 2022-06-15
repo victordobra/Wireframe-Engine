@@ -8,6 +8,6 @@ namespace mge {
     }
 
     MGE_NODE(Renderer)
-    MGE_ADD_PROPERTY(Renderer, Material*, material, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(material, PUBLIC)
     MGE_END_NODE(Renderer)
 }

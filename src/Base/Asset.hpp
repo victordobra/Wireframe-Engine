@@ -42,7 +42,7 @@ namespace mge {
 
         string name;
         string location;
-        AssetType* type;
+        AssetType* assetType;
 
         Asset();
         Asset(const Asset&) = delete;
@@ -94,7 +94,7 @@ namespace mge {
             return asset;
         }
 
-        ~Asset();
+        virtual ~Asset();
     protected:
         virtual void LoadFromFile(const string& fileLocation);
         virtual void SaveToFile  (const string& fileLocation);
@@ -105,7 +105,7 @@ namespace mge {
 
 #define MGE_ASSET(type) \
 namespace { \
-    /* Function that creates an seet of the specified type and returns it. */ \
+    /* Function that creates an asset of the specified type and returns it. */ \
     mge::Asset* Create ## type ## Asset() { \
         mge::Asset* asset = dynamic_cast<mge::Asset*>(new type()); \
         if(!asset) \

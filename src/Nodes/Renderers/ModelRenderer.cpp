@@ -66,7 +66,7 @@ namespace mge {
     }
 
     MGE_NODE(ModelRenderer)
-    MGE_ADD_PROPERTY(ModelRenderer, Model*, model, PUBLIC)
-    MGE_ADD_PROPERTY(ModelRenderer, Material*, material, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(model, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(material, PUBLIC)
     MGE_END_NODE(ModelRenderer)
 }

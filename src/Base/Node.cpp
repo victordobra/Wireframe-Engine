@@ -2,13 +2,15 @@
 #include "Math/EngineMath.hpp"
 
 namespace mge {
-    Node* Node::scene = new Node();
-    unordered_map<size_t, NodeInfo> Node::nodeTypes = {};
-    vector<pthread_t> Node::nodeThreads = {};
+    // Variables
+    Node* Node::scene = nullptr;
+    constinit NodeType Node::nodeTypes[MAX_NODE_TYPE_COUNT];
+    constinit size_t Node::nodeTypeCount = 0;
 
-    void Node::JoinThreads() {
-        for(size_t i = 0; i < nodeThreads.size(); i++)
-            pthread_join(nodeThreads[i], 0);
+    // Member functions
+    Node::Node() {
+        size_t hashCode = typeid(*this).hash_code();
+        nodeType = GetNodeType(hashCode);
     }
 
     void Node::LoadFromFile(const string& fileLocation) {
@@ -29,12 +31,9 @@ namespace mge {
     }
 
     void Node::LoadFromStream(FileInput& stream) {
-        // Get information about the object
-        const NodeInfo& nodeInfo = nodeTypes[typeid(*this).hash_code()];
-
         // Load every single property
-        for(const auto& property : nodeInfo.properties)
-            NodeInfo::Property::LoadProperty(this, property, stream);
+        for(const auto& property : nodeType->properties)
+            NodeType::Property::LoadProperty(this, property, stream);
 
         // Load the number of children
         uint64_t childCount;
@@ -51,12 +50,9 @@ namespace mge {
         }
     }
     void Node::SaveToStream(FileOutput& stream) {
-        // Get information about the object
-        const NodeInfo& nodeInfo = nodeTypes[typeid(*this).hash_code()];
-
         // Save every single property
-        for(const auto& property : nodeInfo.properties)
-            NodeInfo::Property::SaveProperty(this, property, stream);
+        for(const auto& property : nodeType->properties)
+            NodeType::Property::SaveProperty(this, property, stream);
 
         // Save the number of children
         uint64_t childCount = children.size();
@@ -101,17 +97,18 @@ namespace mge {
                 }
         
         // Delete all of its children
-        for(size_t i = 0; i < children.size(); i++)
+        size_t childCount = children.size();
+        for(size_t i = 0; i < childCount; i++)
             delete children[0];
     }
 
     // Load and save property functions
-    void NodeInfo::Property::LoadProperty(Node* node, NodeInfo::Property prop, FileInput& input) {
+    void NodeType::Property::LoadProperty(Node* node, NodeType::Property prop, FileInput& input) {
         char_t* address = (char_t*)node;
         address += prop.offset;
 
         switch (prop.type) {
-        case NodeInfo::Property::PROPERTY_TYPE_STRING:
+        case NodeType::Property::PROPERTY_TYPE_STRING:
         {
             string& str = *(string*)address;
 
@@ -124,7 +121,7 @@ namespace mge {
             
             break;
         }
-        case NodeInfo::Property::PROPERTY_TYPE_ASSET_PTR:
+        case NodeType::Property::PROPERTY_TYPE_ASSET_PTR:
         {
             string str{};
 
@@ -147,12 +144,12 @@ namespace mge {
             break;
         }
     }
-    void NodeInfo::Property::SaveProperty(Node* node, NodeInfo::Property prop, FileOutput& output) {
+    void NodeType::Property::SaveProperty(Node* node, NodeType::Property prop, FileOutput& output) {
         char_t* address = (char_t*)node;
         address += prop.offset;
 
         switch (prop.type) {
-        case NodeInfo::Property::PROPERTY_TYPE_STRING:
+        case NodeType::Property::PROPERTY_TYPE_STRING:
         {
             string& str = *(string*)address;
 
@@ -162,7 +159,7 @@ namespace mge {
 
             break;
         }
-        case NodeInfo::Property::PROPERTY_TYPE_ASSET_PTR:
+        case NodeType::Property::PROPERTY_TYPE_ASSET_PTR:
         {
             Asset* ptr = *(Asset**)address;
             auto str = ptr->location;
@@ -177,6 +174,32 @@ namespace mge {
             output.WriteBuffer(address, prop.size);
             break;
         }
+    }
+
+    void Node::SortNodeTypes() { 
+        // Sort the list of nodes by using the set class
+        set<NodeType> typeSet;
+        
+        for(size_t i = 0; i < nodeTypeCount; ++i)
+            typeSet.insert(nodeTypes[i]);
+        
+        size_t ind = 0;
+        for(const auto& type : typeSet)
+            nodeTypes[ind++] = type;
+    }
+    NodeType* Node::GetNodeType(size_t hashCode) { 
+        // Binary search for it
+        size_t pos = 0, step = MAX_NODE_TYPE_COUNT >> 1;
+
+        while(step) {
+            if(pos + step < nodeTypeCount && nodeTypes[pos + step].hashCode <= hashCode)
+                pos += step;
+            step >>= 1;
+        }
+
+        if(nodeTypes[pos].hashCode == hashCode)
+            return nodeTypes + pos;
+        return nullptr;
     }
 
     MGE_ASSET(Node)

@@ -8,51 +8,9 @@
 #include <pthread.h>
 
 namespace mge {
-    struct NodeInfo;
+    class Node;
 
-    class Node : public Asset {
-    public:
-        static Node* scene;
-        static unordered_map<size_t, NodeInfo> nodeTypes;
-        static vector<pthread_t> nodeThreads;
-
-        static void JoinThreads();
-
-        Node() = default;
-        Node(const Node&) = delete;
-        Node(Node&&) = delete;
-
-        Node& operator=(const Node&) = delete;
-        Node& operator=(Node&&) noexcept = delete;
-
-        /// @brief Returns the parent of the node.
-        Node* GetParent() const;
-        /// @brief Sets the parent of the node to a new value.
-        /// @param newParent The new parent.
-        void SetParent(Node* newParent);
-        /// @brief Returns the children of the object.
-        vector<Node*> GetChildren() const;
-
-        // Runs at the start of the game
-        virtual void Start() { }
-        // Runs at every frame of the game
-        virtual void Update() { }
-        // Runs during every render of the game
-        virtual void Render() { }
-
-        virtual ~Node();
-    protected:
-        void LoadFromFile(const string& fileLocation) override;
-        void SaveToFile  (const string& fileLocation) override;
-    private:
-        void LoadFromStream(FileInput&  stream);
-        void SaveToStream  (FileOutput& stream);
-
-        Node* parent{nullptr};
-        vector<Node*> children{};
-    };
-    
-    struct NodeInfo {
+    struct NodeType {
         struct Property {
             enum PropertyType : uint32_t {
                 PROPERTY_TYPE_OTHER,
@@ -114,44 +72,113 @@ namespace mge {
             static void SaveProperty(Node* node, Property prop, FileOutput& output);
         };
 
-        size_t hashCode = 0;
-        string name = "";
-        vector<Property> properties = {};
-        Node*(*create)() = 0;
+        string name{};
+        size_t hashCode{};
+        vector<Property> properties{};
+        Node*(*create)();
+
+        bool8_t operator==(const NodeType& other) const {
+            return hashCode == other.hashCode;
+        }
+        bool8_t operator< (const NodeType& other) const {
+            return hashCode < other.hashCode;
+        }
+        bool8_t operator> (const NodeType& other) const {
+            return hashCode > other.hashCode;
+        }
+        bool8_t operator<=(const NodeType& other) const {
+            return hashCode <= other.hashCode;
+        }
+        bool8_t operator>=(const NodeType& other) const {
+            return hashCode >= other.hashCode;
+        }
+    };
+
+    class Node : public Asset {
+    public:
+        static const size_t MAX_NODE_TYPE_COUNT = 1024;
+
+        static Node* scene;
+        static NodeType nodeTypes[MAX_NODE_TYPE_COUNT];
+        static size_t nodeTypeCount;
+
+        string name;
+        NodeType* nodeType;
+
+        Node();
+        Node(const Node&) = delete;
+        Node(Node&&) = delete;
+
+        Node& operator=(const Node&) = delete;
+        Node& operator=(Node&&) noexcept = delete;
+
+        /// @brief Returns the parent of the node.
+        Node* GetParent() const;
+        /// @brief Sets the parent of the node to a new value.
+        /// @param newParent The new parent.
+        void SetParent(Node* newParent);
+        /// @brief Returns the children of the object.
+        vector<Node*> GetChildren() const;
+
+        /// @brief Runs at the start of the game.
+        virtual void Start() { }
+        /// @brief Runs at every frame of the game.
+        virtual void Update() { }
+        /// @brief Runs during every render of the game.
+        virtual void Render() { }
+
+        /// @brief Sorts all of the node types. Used at the start of the application.
+        static void SortNodeTypes();
+        /// @brief Returns the node type with the specified hash code.
+        /// @param hashCode The node type's hash code.
+        /// @return A pointer to the specific node type, or a nullptr if it doesn't exist.
+        static NodeType* GetNodeType(size_t hashCode);
+
+        virtual ~Node();
+    protected:
+        void LoadFromFile(const string& fileLocation) override;
+        void SaveToFile  (const string& fileLocation) override;
+    private:
+        void LoadFromStream(FileInput&  stream);
+        void SaveToStream  (FileOutput& stream);
+
+        Node* parent{nullptr};
+        vector<Node*> children{};
     };
 }
 
 // Macros
-#define MGE_NODE(type) \
-mge::Node* Create ## type ## Node() { /* Creates the specified node type */ \
-    return new type(); \
-} \
+#define MGE_NODE(type)  \
 namespace { \
-    void* Create ## type ## Info(void* pParams) { /* Adds the required information to its hash map */ \
-        while(!mge::Node::nodeTypes.bucket_count() || !mge::Node::nodeTypes.begin()) \
-            sleep(0.05); \
-        mge::NodeInfo info; \
-        info.hashCode = typeid(type).hash_code(); \
-        info.name = # type; \
-        info.create = Create ## type ## Node; \
-        type* p = nullptr;
+    typedef type T; \
+    /* Function that creates a node of the specified type and returns it. */ \
+    mge::Node* Create ## type ## Node() { \
+        mge::Node* node = dynamic_cast<mge::Node*>(new type()); \
+        if(!node) \
+            mge::console::OutFatalError("Failed to convert object to node type!", 1); \
+        return node; \
+    } \
+ \
+    struct type ## NodeTypeInitializer { \
+        type ## NodeTypeInitializer() { \
+            mge::NodeType nodeType; \
+ \
+            nodeType.name = #type; \
+            nodeType.hashCode = typeid(type).hash_code(); \
+            nodeType.create = Create ## type ## Node; \
+ \
+            type* ptr = nullptr;
 
-#define MGE_ADD_PROPERTY(type, propType, name, accessInfo) \
-        mge::NodeInfo::Property prop ## name = mge::NodeInfo::Property::GetPropertyInfo<propType>(); /* Creates a property with the given info */ \
-        prop ## name.offset = (mge::size_t)&p->name; \
-        prop ## name.access = mge::NodeInfo::Property::PROPERTY_ACCESS_ ## accessInfo; \
-        info.properties.push_back(prop ## name);
+#define MGE_ADD_NODE_PROPERTY(propName, accessInfo) \
+            mge::NodeType::Property propName ## Property = mge::NodeType::Property::GetPropertyInfo<decltype(ptr->propName)>(); \
+            propName ## Property.offset = (uint64_t)&(ptr->propName); \
+            propName ## Property.access = mge::NodeType::Property::PROPERTY_ACCESS_ ## accessInfo; \
+            nodeType.properties.push_back(propName ## Property);
 
 #define MGE_END_NODE(type) \
-        mge::Node::nodeTypes[info.hashCode] = info; \
-        return 0; \
-    } \
-    struct type ## Creator { \
-        type ## Creator() { /* Runs the create function on a separate thread */ \
-            pthread_t thread; \
-            pthread_create(&thread, NULL, Create ## type ## Info, NULL); \
-            mge::Node::nodeThreads.push_back(thread); \
+            mge::Node::nodeTypes[mge::Node::nodeTypeCount++] = nodeType; \
         } \
     }; \
-    type ## Creator creator ## type; \
+ \
+    type ## NodeTypeInitializer type ## NodeTypeInit; \
 }

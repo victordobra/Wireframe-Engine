@@ -99,9 +99,9 @@ namespace mge {
 	}
 
     MGE_NODE(Camera)
-    MGE_ADD_PROPERTY(Camera, Vector3, position, PUBLIC)
-    MGE_ADD_PROPERTY(Camera, Quaternion, rotation, PUBLIC)
-    MGE_ADD_PROPERTY(Camera, float32_t, fov, PUBLIC)
-    MGE_ADD_PROPERTY(Camera, Color8, clearColor, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(position, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(rotation, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(fov, PUBLIC)
+    MGE_ADD_NODE_PROPERTY(clearColor, PUBLIC)
     MGE_END_NODE(Camera)
 }
