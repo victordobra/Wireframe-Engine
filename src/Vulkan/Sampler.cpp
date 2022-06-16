@@ -6,7 +6,7 @@ namespace mge {
 
     void CreateSampler() {
         // Create the sampler create info
-        VkSamplerCreateInfo createInfo;
+        VkSamplerCreateInfo createInfo{};
 
         createInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
         createInfo.magFilter = VK_FILTER_LINEAR;
@@ -32,7 +32,7 @@ namespace mge {
 
         auto result = vkCreateSampler(GetDevice(), &createInfo, nullptr, &sampler);
         if(result != VK_SUCCESS)
-            console::OutFatalError("Failed to create sampler!", 1);
+            console::OutFatalError((string)"Failed to create image sampler! Error code: " + VkResultToString(result), 1);
     }
     void DeleteSampler() {
         // Wait for the device to idle and destroy the sampler afterwards

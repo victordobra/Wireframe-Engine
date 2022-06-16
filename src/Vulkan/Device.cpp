@@ -29,7 +29,7 @@ namespace mge {
 
     // Debug callbacks
     static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-        switch (messageSeverity) {
+        switch(messageSeverity) {
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
             console::OutErrorFunction((string)"Validation layer: " + pCallbackData->pMessage);
             break;
@@ -45,7 +45,7 @@ namespace mge {
     }
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-        if (func != nullptr)
+        if(func != nullptr)
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
         else
             return VK_ERROR_EXTENSION_NOT_PRESENT;
@@ -71,7 +71,7 @@ namespace mge {
         bool8_t extensionsSupported = CheckDeviceExtensionSupport(physicalDevice);
 
         bool8_t swapChainAdequate = false;
-        if (extensionsSupported) {
+        if(extensionsSupported) {
             SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(physicalDevice);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
@@ -83,17 +83,21 @@ namespace mge {
     }
     static bool8_t CheckValidationLayerSupport() {
         uint32_t layerCount = 0;
-        vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, nullptr);
+        auto result = vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, nullptr);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate instance layer properties! Error code: " + VkResultToString(result), 1);
 
         vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, availableLayers.data());
+        result = vkEnumerateInstanceLayerProperties((::uint32_t*)&layerCount, availableLayers.data());
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate instance layer properties! Error code: " + VkResultToString(result), 1);
 
-        for (size_t i = 0; i < validationLayers.size(); i++) {
+        for(size_t i = 0; i < validationLayers.size(); i++) {
             const char_t* layerName = validationLayers[i];
             bool8_t layerFound = false;
 
-            for (size_t j = 0; j < availableLayers.size(); j++)
-                if (strcmp(validationLayers[i], availableLayers[j].layerName) == 0) {
+            for(size_t j = 0; j < availableLayers.size(); j++)
+                if(strcmp(validationLayers[i], availableLayers[j].layerName) == 0) {
                     layerFound = true;
                     break;
                 }
@@ -113,21 +117,24 @@ namespace mge {
         vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, (::uint32_t*)&queueFamilyCount, queueFamilies.data());
 
-        for (size_t i = 0; i < queueFamilies.size(); i++) {
+        for(size_t i = 0; i < queueFamilies.size(); i++) {
             const VkQueueFamilyProperties& queueFamily = queueFamilies[i];
 
-            if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
                 indices.graphicsFamily = i;
                 indices.graphicsFamilyHasValue = true;
             }
 
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
-            if (queueFamily.queueCount > 0 && presentSupport) {
+            auto result = vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
+            if(result != VK_SUCCESS)
+                mge::console::OutFatalError((string)"Failed to get physical device surface support! Error code: " + VkResultToString(result), 1);
+
+            if(queueFamily.queueCount > 0 && presentSupport) {
                 indices.presentFamily = i;
                 indices.presentFamilyHasValue = true;
             }
-            if (indices.IsComplete())
+            if(indices.IsComplete())
                 break;
         }
 
@@ -143,59 +150,78 @@ namespace mge {
     }
     static void HasRequiredInstanceExtensions() {
         uint32_t extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, nullptr);
+        auto result = vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, nullptr);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate instance extension properties! Error code: " + VkResultToString(result), 1);
+
         vector<VkExtensionProperties> extensions(extensionCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, extensions.data());
+        result = vkEnumerateInstanceExtensionProperties(nullptr, (::uint32_t*)&extensionCount, extensions.data());
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate instance extension properties! Error code: " + VkResultToString(result), 1);
 
         unordered_set<string> available;
-        for (const auto& extension : extensions)
+        for(const auto& extension : extensions)
             available.insert(extension.extensionName);
 
-        for (const auto& required : requiredExtensions)
+        for(const auto& required : requiredExtensions)
             if (!available.count(required))
-                console::OutFatalError("Missing required extension", 1);
+                console::OutFatalError("Failed to find a required extension!", 1);
     }
     static bool CheckDeviceExtensionSupport(VkPhysicalDevice physicalDevice) {
         uint32_t extensionCount;
-        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, (::uint32_t*)&extensionCount, nullptr);
+        auto result = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, (::uint32_t*)&extensionCount, nullptr);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate device extension properties! Error code: " + VkResultToString(result), 1);
 
         vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, (::uint32_t*)&extensionCount, availableExtensions.data());
+        result = vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, (::uint32_t*)&extensionCount, availableExtensions.data());
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to enumerate device extension properties! Error code: " + VkResultToString(result), 1);
 
         unordered_set<string> requiredExtensions;
 
         for(size_t i = 0; i < deviceExtensions.size(); i++)
             requiredExtensions.insert(deviceExtensions[i]);
 
-        for (const auto& extension : availableExtensions)
+        for(const auto& extension : availableExtensions)
             requiredExtensions.remove(extension.extensionName);
 
         return requiredExtensions.count() == 0;
     }
     static SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device) {
         SwapChainSupportDetails details;
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+        auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to get physical device surface capabilities! Error code: " + VkResultToString(result), 1);
 
         uint32_t formatCount = 0;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, (::uint32_t*)&formatCount, nullptr);
+        result = vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, (::uint32_t*)&formatCount, nullptr);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to get physical device surface capabilities! Error code: " + VkResultToString(result), 1);
 
-        if (formatCount) {
+        if(formatCount) {
             details.formats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, (::uint32_t*)&formatCount, details.formats.data());
+            result = vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, (::uint32_t*)&formatCount, details.formats.data());
+            if(result != VK_SUCCESS)
+                mge::console::OutFatalError((string)"Failed to get physical device surface formats! Error code: " + VkResultToString(result), 1);
         }
 
         uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, (::uint32_t*)&presentModeCount, nullptr);
+        result = vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, (::uint32_t*)&presentModeCount, nullptr);
+        if(result != VK_SUCCESS)
+            mge::console::OutFatalError((string)"Failed to get physical device surface present modes! Error code: " + VkResultToString(result), 1);
 
-        if (presentModeCount) {
+        if(presentModeCount) {
             details.presentModes.resize(presentModeCount);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, (::uint32_t*)&presentModeCount, details.presentModes.data());
+            result = vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, (::uint32_t*)&presentModeCount, details.presentModes.data());
+            if(result != VK_SUCCESS)
+                mge::console::OutFatalError((string)"Failed to get physical device surface present modes! Error code: " + VkResultToString(result), 1);
         }
         return details;
     }
 
     static void CreateInstance() {
-        if (enableValidationLayers && !CheckValidationLayerSupport())
+        if(enableValidationLayers && !CheckValidationLayerSupport())
             console::OutFatalError("validation layers requested, but not available!", 1);
 
         VkApplicationInfo appInfo = {};
@@ -213,7 +239,7 @@ namespace mge {
         createInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-        if (enableValidationLayers) {
+        if(enableValidationLayers) {
             createInfo.enabledLayerCount = (uint32_t)validationLayers.size();
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
@@ -224,19 +250,22 @@ namespace mge {
             createInfo.pNext = nullptr;
         }
 
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-            console::OutFatalError("Failed to create Vulkan instance!", 1);
+        auto result = vkCreateInstance(&createInfo, nullptr, &instance);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create Vulkan instance! Error code: " + VkResultToString(result), 1);
 
         HasRequiredInstanceExtensions();
     }
     static void SetupDebugMessenger() {
-        if (!enableValidationLayers) 
+        if(!enableValidationLayers) 
             return;
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         PopulateDebugMessengerCreateInfo(createInfo);
-        if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS)
-            console::OutFatalError("Failed to set up debug messenger!", 1);
+        
+        auto result = CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to set up debug messenger! Error code: " + VkResultToString(result), 1);
     }
     static void CreateSurface() {
 #ifdef PLATFORM_WINDOWS
@@ -245,8 +274,9 @@ namespace mge {
         createInfo.hwnd = GetHandle();
         createInfo.hinstance = GetWindowsInstance();
 
-        if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface) != VK_SUCCESS)
-            console::OutFatalError("Failed to create surface!", 1);
+        auto result = vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create surface! Error code: " + VkResultToString(result), 1);
 #endif
     }
     static void PickPhysicalDevice() {
@@ -260,14 +290,14 @@ namespace mge {
         vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, (::uint32_t*)&deviceCount, devices.data());
 
-        for (size_t i = 0; i < deviceCount; i++)
-            if (IsDeviceSuitable(devices[i])) {
+        for(size_t i = 0; i < deviceCount; i++)
+            if(IsDeviceSuitable(devices[i])) {
                 physicalDevice = devices[i];
                 break;
             }
 
-        if (physicalDevice == VK_NULL_HANDLE)
-            console::OutFatalError("failed to find a suitable GPU!", 1);
+        if(physicalDevice == VK_NULL_HANDLE)
+            console::OutFatalError("Failed to find a suitable GPU!", 1);
         
         vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
         console::OutMessageFunction((string)"Physical Vulkan device: " + deviceProperties.deviceName);
@@ -282,7 +312,7 @@ namespace mge {
             uniqueQueueFamilies.push_back(indices.presentFamily);
 
         float32_t queuePriority = 1.0f;
-        for (uint32_t queueFamily : uniqueQueueFamilies) {
+        for(uint32_t queueFamily : uniqueQueueFamilies) {
             VkDeviceQueueCreateInfo queueCreateInfo = {};
             queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -304,14 +334,15 @@ namespace mge {
         createInfo.enabledExtensionCount = (uint32_t)deviceExtensions.size();
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-        if (enableValidationLayers) {
+        if(enableValidationLayers) {
             createInfo.enabledLayerCount = (uint32_t)validationLayers.size();
             createInfo.ppEnabledLayerNames = validationLayers.data();
         } else
             createInfo.enabledLayerCount = 0;
 
-        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)
-            console::OutFatalError("Failed to create logical device!", 1);
+        auto result = vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create logical device! Error code: " + VkResultToString(result), 1);
 
         vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
         vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
@@ -324,8 +355,9 @@ namespace mge {
         poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
-            console::OutFatalError("Failed to create command pool!", 1);
+        auto result = vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create command pool! Error code: " + VkResultToString(result), 1);
     }
 
     // External functions
@@ -383,8 +415,9 @@ namespace mge {
     uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-        for (size_t i = 0; i < memProperties.memoryTypeCount; i++)
-            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+
+        for(size_t i = 0; i < memProperties.memoryTypeCount; i++)
+            if((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
                 return i;
             }
 
@@ -392,15 +425,13 @@ namespace mge {
         return 0;
     }
     VkFormat FindSupportedFormat(const vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-        for (size_t i = 0; i < candidates.size(); i++) {
+        for(size_t i = 0; i < candidates.size(); i++) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, candidates[i], &props);
 
-            if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+            if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
                 return candidates[i];
-            }
-            else if (
-                tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+            } else if(tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
                 return candidates[i];
             }
         }
@@ -415,8 +446,9 @@ namespace mge {
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
-            console::OutFatalError("Failed to create buffer!", 1);
+        auto result = vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create buffer! Error code: " + VkResultToString(result), 1);
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -426,15 +458,18 @@ namespace mge {
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
-        VkResult result = vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
-        if (result != VK_SUCCESS)
-            console::OutFatalError("Failed to allocate buffer memory!", 1);
+        result = vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to allocate buffer memory! Error code: " + VkResultToString(result), 1);
 
-        vkBindBufferMemory(device, buffer, bufferMemory, 0);
+        result = vkBindBufferMemory(device, buffer, bufferMemory, 0);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to bind buffer memory! Error code: " + VkResultToString(result), 1);
     }
     void CreateImage(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
-        if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS)
-            console::OutFatalError("Failed to create image!", 1);
+        auto result = vkCreateImage(device, &imageInfo, nullptr, &image);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create image! Error code: " + VkResultToString(result), 1);
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device, image, &memRequirements);
@@ -444,11 +479,13 @@ namespace mge {
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
-            console::OutFatalError("Failed to allocate image memory!", 1 );
+        result = vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to allocate image memory! Error code: " + VkResultToString(result), 1 );
 
-        if (vkBindImageMemory(device, image, imageMemory, 0) != VK_SUCCESS)
-            console::OutFatalError("Failed to bind image memory!", 1);
+        result = vkBindImageMemory(device, image, imageMemory, 0);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to bind image memory! Error code: " + VkResultToString(result), 1);
     }
     VkCommandBuffer BeginSingleTimeCommands() {
         VkCommandBufferAllocateInfo allocInfo{};
@@ -458,25 +495,37 @@ namespace mge {
         allocInfo.commandBufferCount = 1;
 
         VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+        auto result = vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to allocate command buffers! Error code: " + VkResultToString(result), 1);
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to begin command buffer! Error code: " + VkResultToString(result), 1);
+
         return commandBuffer;
     }
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer) {
-        vkEndCommandBuffer(commandBuffer);
+        auto result = vkEndCommandBuffer(commandBuffer);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to end command buffer! Error code: " + VkResultToString(result), 1);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(graphicsQueue);
+        result = vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to submit command buffers to the queue! Error code: " + VkResultToString(result), 1);
+        
+        result = vkQueueWaitIdle(graphicsQueue);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to wait for the queue to idle! Error code: " + VkResultToString(result), 1);
 
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }

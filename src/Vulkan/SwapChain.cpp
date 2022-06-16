@@ -26,15 +26,15 @@ namespace mge {
 
     // Helper functions
     static VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const vector<VkSurfaceFormatKHR>& availableFormats) {
-        for (size_t i = 0; i < availableFormats.size(); i++)
-            if (availableFormats[i].format == VK_FORMAT_B8G8R8A8_SRGB && availableFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+        for(size_t i = 0; i < availableFormats.size(); i++)
+            if(availableFormats[i].format == VK_FORMAT_B8G8R8A8_SRGB && availableFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
                 return availableFormats[i];
 
         return availableFormats[0];
     }
     static VkPresentModeKHR ChooseSwapPresentMode(const vector<VkPresentModeKHR>& availablePresentModes) {
-        for (size_t i = 0; i < availablePresentModes.size(); i++)
-            if (availablePresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
+        for(size_t i = 0; i < availablePresentModes.size(); i++)
+            if(availablePresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
                 console::OutMessageFunction("Present mode: Mailbox");
                 return availablePresentModes[i];
             }
@@ -43,7 +43,7 @@ namespace mge {
         return VK_PRESENT_MODE_FIFO_KHR;
     }
     static VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
-        if (capabilities.currentExtent.width != UINT_MAX)
+        if(capabilities.currentExtent.width != UINT_MAX)
             return capabilities.currentExtent;
         else {
             VkExtent2D actualExtent = windowExtent;
@@ -62,7 +62,7 @@ namespace mge {
         VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-        if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+        if(swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
             imageCount = swapChainSupport.capabilities.maxImageCount;
 
         VkSwapchainCreateInfoKHR createInfo = {};
@@ -79,7 +79,7 @@ namespace mge {
         QueueFamilyIndices indices = FindPhysicalQueueFamilies();
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
 
-        if (indices.graphicsFamily != indices.presentFamily) {
+        if(indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
             createInfo.pQueueFamilyIndices = (::uint32_t*)queueFamilyIndices;
@@ -98,13 +98,19 @@ namespace mge {
 
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(GetDevice(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-            console::OutFatalError("Failed to create swap chain!", 1);
-        }
+        auto result = vkCreateSwapchainKHR(GetDevice(), &createInfo, nullptr, &swapChain);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create swap chain! Error code: " + VkResultToString(result), 1);
 
-        vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, nullptr);
+        result = vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, nullptr);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to get the swap chain images! Error code: " + VkResultToString(result), 1);
+
         swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, swapChainImages.data());
+
+        result = vkGetSwapchainImagesKHR(GetDevice(), swapChain, (::uint32_t*)&imageCount, swapChainImages.data());
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to get the swap chain images! Error code: " + VkResultToString(result), 1);
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -112,7 +118,7 @@ namespace mge {
     static void CreateImageViews() {
         swapChainImageViews.resize(swapChainImages.size());
 
-        for (size_t i = 0; i < swapChainImages.size(); i++) {
+        for(size_t i = 0; i < swapChainImages.size(); i++) {
             VkImageViewCreateInfo viewInfo{};
             viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             viewInfo.image = swapChainImages[i];
@@ -124,8 +130,9 @@ namespace mge {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS)
-                console::OutFatalError("failed to create texture image view!", 1);
+            auto result = vkCreateImageView(GetDevice(), &viewInfo, nullptr, &swapChainImageViews[i]);
+            if(result != VK_SUCCESS)
+                console::OutFatalError((string)"Failed to create image view! Error code: " + VkResultToString(result), 1);
         }
     }
     static void CreateRenderPass() {
@@ -182,8 +189,9 @@ namespace mge {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = dependencies;
 
-        if (vkCreateRenderPass(GetDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
-            console::OutFatalError("Failed to create render pass!", 1);
+        auto result = vkCreateRenderPass(GetDevice(), &renderPassInfo, nullptr, &renderPass);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create render pass! Error code: " + VkResultToString(result), 1);
     }
     static void CreateDepthResources() {
         VkFormat depthFormat = FindDepthFormat();
@@ -193,7 +201,7 @@ namespace mge {
         depthImageMemories.resize(GetImageCount());
         depthImageViews.resize(GetImageCount());
 
-        for (size_t i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < depthImages.size(); i++) {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -223,13 +231,14 @@ namespace mge {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(GetDevice(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS)
-                console::OutFatalError("Failed to create texture image view!", 1);
+            auto result = vkCreateImageView(GetDevice(), &viewInfo, nullptr, &depthImageViews[i]);
+            if(result != VK_SUCCESS)
+                console::OutFatalError((string)"Failed to create texture image view! Error code: " + VkResultToString(result), 1);
         }
     }
     static void CreateFramebuffers() {
         swapChainFramebuffers.resize(GetImageCount());
-        for (size_t i = 0; i < GetImageCount(); i++) {
+        for(size_t i = 0; i < GetImageCount(); i++) {
             std::array<VkImageView, 2> attachments = { swapChainImageViews[i], depthImageViews[i] };
 
             VkExtent2D swapChainExtent = GetSwapChainExtent();
@@ -242,8 +251,9 @@ namespace mge {
             framebufferInfo.height = swapChainExtent.height;
             framebufferInfo.layers = 1;
 
-            if (vkCreateFramebuffer(GetDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
-                console::OutFatalError("Failed to create framebuffer!", 1);
+            auto result = vkCreateFramebuffer(GetDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]);
+            if(result != VK_SUCCESS)
+                console::OutFatalError((string)"Failed to create framebuffer! Error code: " + VkResultToString(result), 1);
         }
     }
     static void CreateSyncObjects() {
@@ -264,8 +274,12 @@ namespace mge {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            if (vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
-                console::OutFatalError("Failed to create synchronization objects for a frame!", 1);
+            auto result1 = vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
+            auto result2 = vkCreateSemaphore(GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
+            auto result3 = vkCreateFence(GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]);
+
+            if (result1 != VK_SUCCESS || result2 != VK_SUCCESS || result3 != VK_SUCCESS)
+                console::OutFatalError((string)"Failed to create synchronization objects for a frame! Error codes: " + VkResultToString(result1) + ", " + VkResultToString(result2) + ", " + VkResultToString(result3), 1);
         }
     }
 
@@ -280,23 +294,23 @@ namespace mge {
         CreateSyncObjects();
     }
     void DeleteSwapChain() {
-        for (size_t i = 0; i < swapChainImageViews.size(); i++)
+        for(size_t i = 0; i < swapChainImageViews.size(); i++)
             vkDestroyImageView(GetDevice(), swapChainImageViews[i], nullptr);
 
         vkDestroySwapchainKHR(GetDevice(), swapChain, nullptr);
 
-        for (size_t i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < depthImages.size(); i++) {
             vkDestroyImageView(GetDevice(), depthImageViews[i], nullptr);
             vkDestroyImage(GetDevice(), depthImages[i], nullptr);
             vkFreeMemory(GetDevice(), depthImageMemories[i], nullptr);
         }
 
-        for (size_t i = 0; i < swapChainFramebuffers.size(); i++)
+        for(size_t i = 0; i < swapChainFramebuffers.size(); i++)
             vkDestroyFramebuffer(GetDevice(), swapChainFramebuffers[i], nullptr);
 
         vkDestroyRenderPass(GetDevice(), renderPass, nullptr);
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(GetDevice(), renderFinishedSemaphores[i], nullptr);
             vkDestroySemaphore(GetDevice(), imageAvailableSemaphores[i], nullptr);
             vkDestroyFence(GetDevice(), inFlightFences[i], nullptr);
@@ -339,15 +353,20 @@ namespace mge {
     }
 
     VkResult AcquireNextImage(uint32_t* imageIndex) {
-        vkWaitForFences(GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, ULLONG_MAX);
+        auto result = vkWaitForFences(GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, ULLONG_MAX);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to wait for fences! Error code: " + VkResultToString(result), 1);
 
-        VkResult result = vkAcquireNextImageKHR(GetDevice(), swapChain, ULLONG_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, (::uint32_t*)imageIndex);
+        result = vkAcquireNextImageKHR(GetDevice(), swapChain, ULLONG_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, (::uint32_t*)imageIndex);
 
         return result;
     }
     VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex, uint32_t bufferCount) {
-        if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE)
-            vkWaitForFences(GetDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
+        if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
+            auto result = vkWaitForFences(GetDevice(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
+            if(result != VK_SUCCESS)
+                console::OutFatalError((string)"Failed to wait for fences! Error code: " + VkResultToString(result), 1);
+        }
 
         imagesInFlight[*imageIndex] = inFlightFences[currentFrame];
 
@@ -367,9 +386,13 @@ namespace mge {
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkResetFences(GetDevice(), 1, &inFlightFences[currentFrame]);
-        if (vkQueueSubmit(GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS)
-            console::OutFatalError("Failed to submit draw command buffer!", 1);
+        auto result = vkResetFences(GetDevice(), 1, &inFlightFences[currentFrame]);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to reset fences! Error code: " + VkResultToString(result), 1);
+
+        result = vkQueueSubmit(GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to submit draw command buffer! Error code: " + VkResultToString(result), 1);
 
         VkPresentInfoKHR presentInfo = {};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -383,7 +406,7 @@ namespace mge {
 
         presentInfo.pImageIndices = (const ::uint32_t*)imageIndex;
 
-        VkResult result = vkQueuePresentKHR(GetPresentQueue(), &presentInfo);
+        result = vkQueuePresentKHR(GetPresentQueue(), &presentInfo);
 
         ++currentFrame;
         if(currentFrame == MAX_FRAMES_IN_FLIGHT)
