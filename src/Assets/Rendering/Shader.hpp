@@ -30,14 +30,25 @@ namespace mge {
 
         /// @brief Returns all of the shader's properties
         vector<ShaderProperty> GetProperties() const {
-            vector<ShaderProperty> propertyVec((size_t)(properties.end() - properties.begin()));
+            vector<ShaderProperty> propertiesVec(properties.size());
             size_t ind = 0;
             for(const auto& property : properties)
-                propertyVec[ind++] = property.val2;
-            return propertyVec;
+                propertiesVec[ind++] = property.val2;
+            return propertiesVec;
         }
         /// @brief Returns a map of all of the shader properties and their names.
-        map<string, ShaderProperty> GetPropertyMap() const { return properties; }
+        map<string, ShaderProperty> GetPropertyMap() const { 
+            return properties; 
+        }
+        /// @brief Returns the names of all of the shader's image properties
+        vector<string> GetImageProperties() const {
+            return { imageProperties.begin(), imageProperties.end() };
+        }
+        /// @brief Returns a set of all of the names of the image properties
+        set<string> GetImagePropertySet() const {
+            return imageProperties;
+        }
+        
         /// @brief Adds a new property to the shader.
         template<class T>
         void AddProperty(const string& propertyName) {
@@ -53,13 +64,23 @@ namespace mge {
 
             properties.insert(propertyName, property);
         }
+        /// @brief Adds a new image property to the shader
+        void AddImageProperty(const string& propertyName) {
+            imageProperties.insert(propertyName);
+        }
 
         /// @brief Returns the shader's module.
-        VkShaderModule GetModule() const { return shaderModule; }
+        VkShaderModule GetModule() const { 
+            return shaderModule; 
+        }
         /// @brief Returns the shader's parent pipeline
-        Pipeline* GetPipeline() const { return pipeline; }
+        Pipeline* GetPipeline() const { 
+            return pipeline; 
+        }
         /// @brief Returns a vector of every material that has this shader.
-        set<Material*> GetMaterials() const { return materials; }
+        set<Material*> GetMaterials() const { 
+            return materials; 
+        }
 
         ~Shader();
     private:
@@ -69,6 +90,8 @@ namespace mge {
         VkShaderModule shaderModule;
 
         map<string, ShaderProperty> properties;
+        set<string> imageProperties;
+        
         set<Material*> materials;
         Pipeline* pipeline;
 

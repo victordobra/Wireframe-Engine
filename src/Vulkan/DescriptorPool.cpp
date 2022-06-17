@@ -16,7 +16,7 @@ namespace mge {
 
         auto result = vkCreateDescriptorPool(GetDevice(), &createInfo, nullptr, &descriptorPool);
         if(result != VK_SUCCESS)
-            mge::console::OutFatalError("Failed to create descriptor pool!", 1);
+            mge::console::OutFatalError((string)"Failed to create descriptor pool! Error code: " + VkResultToString(result), 1);
     }
     void DescriptorPool::CreateDescriptorSetLayouts() {
         // Loop through every descriptor set layout info
@@ -33,7 +33,7 @@ namespace mge {
 
             auto result = vkCreateDescriptorSetLayout(GetDevice(), &createInfo, nullptr, &layout.layout);
             if(result != VK_SUCCESS)
-                mge::console::OutFatalError("Failed to create descriptor set layout!", 1);
+                mge::console::OutFatalError((string)"Failed to create descriptor set layout! Error code: " + VkResultToString(result), 1);
         }
     }
     void DescriptorPool::CreateDescriptorSets() {
@@ -59,7 +59,7 @@ namespace mge {
 
         auto result = vkAllocateDescriptorSets(GetDevice(), &allocateInfo, descriptorSets.data());
         if(result != VK_SUCCESS)
-            mge::console::OutFatalError("Failed to allocate descriptor sets!", 1);
+            mge::console::OutFatalError((string)"Failed to allocate descriptor sets! Error code: " + VkResultToString(result), 1);
     }
 
     // External functions

@@ -1,35 +1,42 @@
 #include "Pipeline.hpp"
 #include "Material.hpp"
 #include "Vulkan/Device.hpp"
+#include "Vulkan/Sampler.hpp"
 
 namespace mge {
 	// Internal helper functions
 	void Pipeline::CreateDescriptorPool() {
 		if(pipelineInfo.globalBufferSize) {
 			// The descriptor pool info isn't set, create it
-			size_t materialCount = 0;
+			vector<Material*> materials;
 
-			for(const auto& shaderStage : pipelineInfo.shaderStages)
-				materialCount += (size_t)(shaderStage.shader->materials.end() - shaderStage.shader->materials.begin());
+			for(auto& shaderStage : pipelineInfo.shaderStages)
+				for(auto* material : shaderStage.shader->materials){
+					materials.push_back(material);
+				}
 			
-			// Set descriptor pool sizes
-			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(1);
+			// Set uniform descriptor pool size
+			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(2);
 
 			VkDescriptorPoolSize uniformBufferSize;
 			uniformBufferSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			uniformBufferSize.descriptorCount = materialCount * MAX_FRAMES_IN_FLIGHT /*<- Material buffers*/ + MAX_FRAMES_IN_FLIGHT /*<- Global buffer*/;
+			uniformBufferSize.descriptorCount = materials.size() * MAX_FRAMES_IN_FLIGHT /*<- Material buffers*/ + MAX_FRAMES_IN_FLIGHT /*<- Global buffer*/;
 
 			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes[0] = uniformBufferSize;
+
+			// Set image descriptor pool size
+			size_t imageCount = 0;
+			for(auto* material : materials)
+				imageCount += material->GetShader()->imageProperties.size();
+
+			VkDescriptorPoolSize imageDescriptorPoolSize;
+			imageDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			imageDescriptorPoolSize.descriptorCount = (uint32_t)(imageCount * MAX_FRAMES_IN_FLIGHT);
+
+			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes[1] = imageDescriptorPoolSize;
 			
 			// Set descriptor set layout bindings
-			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(materialCount /*<- Material buffers*/ + 1 /*<- Global buffer*/);
-
-			VkDescriptorSetLayoutBinding materialBinding;
-			materialBinding.binding = 0;
-			materialBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			materialBinding.descriptorCount = 1;
-			materialBinding.pImmutableSamplers = nullptr;
-			materialBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(materials.size() /*<- Material buffers*/ + 1 /*<- Global buffer*/);
 
 			VkDescriptorSetLayoutBinding globalBinding;
 			globalBinding.binding = 0;
@@ -40,8 +47,24 @@ namespace mge {
 
 			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[0].bindings = { globalBinding };
 			
-			for(size_t i = 1; i < pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size(); ++i)
-				pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings = { materialBinding };
+			for(size_t i = 1; i < pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size(); ++i) {
+				vector<VkDescriptorSetLayoutBinding> materialBindings(1 + materials[i - 1]->GetShader()->imageProperties.size());
+				materialBindings[0].binding = 0;
+				materialBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				materialBindings[0].descriptorCount = 1;
+				materialBindings[0].pImmutableSamplers = nullptr;
+				materialBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+				for(size_t j = 1; j < materialBindings.size(); ++j) {
+					materialBindings[j].binding = j;
+					materialBindings[j].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+					materialBindings[j].descriptorCount = 1;
+					materialBindings[j].pImmutableSamplers = nullptr;
+					materialBindings[j].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+				}
+
+				pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings = materialBindings;
+			}
 		}
 
 		descriptorPool = new DescriptorPool(pipelineInfo.descriptorPoolInfo);
@@ -69,7 +92,7 @@ namespace mge {
 				vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
 			}
 
-			// Write the material buffers
+			// Write the material buffers and images
 			size_t descriptorIndex = MAX_FRAMES_IN_FLIGHT;
 			vector<Material*> materials;
 
@@ -80,20 +103,42 @@ namespace mge {
 
 			for(size_t i = 0; i < materials.size(); ++i)
 				for(size_t j = 0; j < MAX_FRAMES_IN_FLIGHT; ++j) {
-					// Get the descriptor info
+					// Get the descriptor infos
 					VkDescriptorBufferInfo bufferInfo = materials[i]->GetBuffers()[j]->GetDescriptorInfo();
 
-					// Set information about the write
-					VkWriteDescriptorSet write{};
+					vector<VkDescriptorImageInfo> imageInfos(materials[i]->GetImageVectors()[j].size());
 
-					write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-					write.dstBinding = 0;
-					write.pBufferInfo = &bufferInfo;
-					write.descriptorCount = 1;
-					write.dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex++];
+					for(size_t k = 0; k < imageInfos.size(); ++k) {
+						imageInfos[k].sampler = GetSampler();
+						imageInfos[k].imageView = materials[i]->GetImageVectors()[j][k]->GetImageView();
+						imageInfos[k].imageLayout = materials[i]->GetImageVectors()[j][k]->GetImageLayout();
+					}
 
-					vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
+					// Set information about the writes
+					vector<VkWriteDescriptorSet> writes(1 + imageInfos.size());
+
+					writes[0] = {};
+
+					writes[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+					writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+					writes[0].dstBinding = 0;
+					writes[0].pBufferInfo = &bufferInfo;
+					writes[0].descriptorCount = 1;
+					writes[0].dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex];
+
+					for(size_t k = 1; k < writes.size(); ++k) {
+						writes[k] = {};
+
+						writes[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+						writes[k].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+						writes[k].dstBinding = k;
+						writes[k].pImageInfo = imageInfos.begin() + k - 1;
+						writes[k].descriptorCount = 1;
+						writes[k].dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex];
+					}
+					++descriptorIndex;
+
+					vkUpdateDescriptorSets(GetDevice(), (uint32_t)writes.size(), writes.data(), 0, nullptr);
 				}
 		}
 	}
@@ -116,8 +161,9 @@ namespace mge {
 		pipelineLayoutInfo.pNext = nullptr;
 
 		// Create the pipeline layout
-		if (vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
-			console::OutFatalError("Failed to create pipeline layout!", 1);
+		auto result = vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout);
+		if(result != VK_SUCCESS)
+			console::OutFatalError((string)"Failed to create pipeline layout! Error code: " + VkResultToString(result), 1);
 	}
 	void Pipeline::CreatePipeline() {
 		// Set vertex binding and attribute descriptions
@@ -165,9 +211,9 @@ namespace mge {
 		pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
 		
 		// Create the pipeline
-		VkResult result = vkCreateGraphicsPipelines(GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &graphicsPipeline);
+		auto result = vkCreateGraphicsPipelines(GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &graphicsPipeline);
 		if (result != VK_SUCCESS)
-			console::OutFatalError("Failed to create graphics pipeline!", 1);
+			console::OutFatalError((string)"Failed to create graphics pipeline! Error code: " + VkResultToString(result), 1);
 	}
 
 	// External functions

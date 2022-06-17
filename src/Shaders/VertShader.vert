@@ -8,6 +8,7 @@ layout(location = 2) in vec2 uv;
 // Output to fragment shader
 layout(location = 0) out vec3 worldPosition;
 layout(location = 1) out vec3 worldNormal;
+layout(location = 2) out vec2 uvCoord;
 
 // Lighting buffer (for camera matrix)
 layout(set = 0, binding = 0) uniform LightingUbo {
@@ -24,6 +25,7 @@ void main() {
     // Set output variables to the fragment shader
     worldPosition = vec3(vec4(position, 1.0) * push.modelTransform);
     worldNormal = normalize(vec3(vec4(normal, 1.0) * push.modelRotation));
+    uvCoord = uv;
 
     // Calculate the screen position
     gl_Position = vec4(position, 1.0) * push.modelTransform * lightingUbo.cameraMatrix;

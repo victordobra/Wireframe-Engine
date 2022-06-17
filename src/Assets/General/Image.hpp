@@ -27,6 +27,9 @@ namespace mge {
         VkDeviceMemory GetImageMemory() const {
             return imageMemory;
         }
+        VkImageView    GetImageView()   const {
+            return imageView;
+        }
         VkFormat       GetFormat()      const {
             return format;
         }

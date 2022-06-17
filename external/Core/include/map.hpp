@@ -152,6 +152,10 @@ namespace mge {
             return pairs.end();
         }
 
+        size_t size() const {
+            return pairs.size();
+        }
+
         ~map() = default;
     private:
         vector<pair_type> pairs;

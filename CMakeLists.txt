@@ -28,26 +28,10 @@ else()
     message(STATUS "${SOURCE_COUNT} sources found.")
 endif()
 
-# Find the header files
-file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/src/*.hpp ${PROJECT_SOURCE_DIR}/src/*.h ${PROJECT_SOURCE_DIR}/external/*.hpp ${PROJECT_SOURCE_DIR}/external/*.h)
-list(LENGTH HEADERS HEADER_COUNT)
-
-if(HEADER_COUNT EQUAL 1)
-    message(STATUS "1 header found.")
-else()
-    message(STATUS "${SOURCE_COUNT} headers found. ${HEADERS}")
-endif()
-
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 message(STATUS "Executable created successfully.")
-
-# Add the precompiled headers
-# if(HEADER_COUNT GREATER 0)
-#     target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
-#     message(STATUS "Added precompiled headers successfully.")
-# endif()
 
 # Add the include directories
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)

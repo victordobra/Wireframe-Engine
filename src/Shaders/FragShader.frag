@@ -3,6 +3,7 @@
 // Inputs from the vertex shader
 layout(location = 0) in vec3 worldPosition;
 layout(location = 1) in vec3 worldNormal;
+layout(location = 2) in vec2 uvCoord;
 
 // Output
 layout(location = 0) out vec4 outColor;
@@ -35,6 +36,9 @@ layout(set = 1, binding = 0) uniform MaterialUbo {
     vec4 color;
 } material;
 
+// Material images
+layout(set = 1, binding = 1) uniform sampler2D diffuse;
+
 void main() {
     // Set the initial diffuse color to the ambient lighting
     vec3 diffuseColor = lightingUbo.ambientLightColor.xyz * lightingUbo.ambientLightColor.w;
@@ -62,5 +66,5 @@ void main() {
     }
 
     // Set the output color
-    outColor = material.color * vec4(diffuseColor, 1.0);
+    outColor = material.color * vec4(diffuseColor, 1.0) * texture(diffuse, uvCoord);
 } 

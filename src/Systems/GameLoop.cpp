@@ -80,6 +80,7 @@ namespace mge {
         fragShader = new Shader("shaders/FragShader.frag.spv");
 
         fragShader->AddProperty<Vector4>("color");
+        fragShader->AddImageProperty("diffuse");
 
         vertShader->Save("shaders/VertShader.shader");
         fragShader->Save("shaders/FragShader.shader");
@@ -87,8 +88,9 @@ namespace mge {
         Material* material = new Material(fragShader);
 
         material->Map();
-        Vector4 color = { 1.f, 0.f, 0.f, 0.f };
+        Vector4 color = { 1.f, 1.f, 1.f, 1.f };
         material->SetPropertyValue("color", color);
+        material->SetImagePropertyValue("diffuse", image);
         material->Unmap();
 
         vertShader->Save("shaders/VertShader.shader");

@@ -120,6 +120,10 @@ namespace mge {
             return values.end();
         }
 
+        size_t size() const {
+            return values.size();
+        }
+
         ~set() = default;
     private:
         vector<Value> values;
