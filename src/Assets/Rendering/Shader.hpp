@@ -12,9 +12,14 @@ namespace mge {
     public:
         /// @brief Stores a property of the shader.
         struct ShaderProperty {
+            typedef enum : uint8_t {
+                SHADER_RPOPERTY_TYPE_COLOR,
+                SHADER_RPOPERTY_TYPE_FLOAT,
+                SHADER_PROPERTY_TYPE_IMAGE
+            } ShaderPropertyType;
+
             string name;
-            size_t size;
-            size_t offset;
+            ShaderPropertyType type;
         };
 
         Shader() = default;
@@ -30,43 +35,11 @@ namespace mge {
 
         /// @brief Returns all of the shader's properties
         vector<ShaderProperty> GetProperties() const {
-            vector<ShaderProperty> propertiesVec(properties.size());
-            size_t ind = 0;
-            for(const auto& property : properties)
-                propertiesVec[ind++] = property.val2;
-            return propertiesVec;
+            return properties;
         }
-        /// @brief Returns a map of all of the shader properties and their names.
-        map<string, ShaderProperty> GetPropertyMap() const { 
-            return properties; 
-        }
-        /// @brief Returns the names of all of the shader's image properties
-        vector<string> GetImageProperties() const {
-            return { imageProperties.begin(), imageProperties.end() };
-        }
-        /// @brief Returns a set of all of the names of the image properties
-        set<string> GetImagePropertySet() const {
-            return imageProperties;
-        }
-        
         /// @brief Adds a new property to the shader.
-        template<class T>
-        void AddProperty(const string& propertyName) {
-            ShaderProperty property{};
-            
-            if(properties.begin() == properties.end())
-                property.offset = 0;
-            else
-                property.offset = (properties.end() - 1)->val2.offset + (properties.end() - 1)->val2.size;
-
-            property.size = sizeof(T);
-            property.name = propertyName;
-
-            properties.insert(propertyName, property);
-        }
-        /// @brief Adds a new image property to the shader
-        void AddImageProperty(const string& propertyName) {
-            imageProperties.insert(propertyName);
+        void AddProperty(const ShaderProperty& property) {
+            properties.push_back(property);
         }
 
         /// @brief Returns the shader's module.
@@ -89,11 +62,10 @@ namespace mge {
         string spirvPath;
         VkShaderModule shaderModule;
 
-        map<string, ShaderProperty> properties;
-        set<string> imageProperties;
+        vector<ShaderProperty> properties;
         
         set<Material*> materials;
-        Pipeline* pipeline;
+        Pipeline* pipeline{nullptr};
 
         friend Pipeline;
         friend Material;

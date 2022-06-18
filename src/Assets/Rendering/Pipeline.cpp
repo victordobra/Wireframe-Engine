@@ -27,7 +27,9 @@ namespace mge {
 			// Set image descriptor pool size
 			size_t imageCount = 0;
 			for(auto* material : materials)
-				imageCount += material->GetShader()->imageProperties.size();
+				for(const auto& property : material->GetShader()->properties)
+					if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
+						++imageCount;
 
 			VkDescriptorPoolSize imageDescriptorPoolSize;
 			imageDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -48,7 +50,12 @@ namespace mge {
 			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[0].bindings = { globalBinding };
 			
 			for(size_t i = 1; i < pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size(); ++i) {
-				vector<VkDescriptorSetLayoutBinding> materialBindings(1 + materials[i - 1]->GetShader()->imageProperties.size());
+				size_t imageCount = 0;
+				for(const auto& property : materials[i - 1]->GetShader()->properties)
+					if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
+						++imageCount;
+
+				vector<VkDescriptorSetLayoutBinding> materialBindings(1 + imageCount);
 				materialBindings[0].binding = 0;
 				materialBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 				materialBindings[0].descriptorCount = 1;

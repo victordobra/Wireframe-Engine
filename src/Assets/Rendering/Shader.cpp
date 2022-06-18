@@ -53,17 +53,11 @@ namespace mge {
             input.Get((char_t*)property.name.c_str(), stringLength * sizeof(char_t));
             property.name[stringLength] = 0;
 
-            // Read the other properties
-            uint64_t size64{}, offset64{};
-            
-            input.Get((char_t*)&size64, sizeof(uint64_t));
-            input.Get((char_t*)&offset64, sizeof(uint64_t));
-
-            property.size = (size_t)size64;
-            property.offset = (size_t)offset64;
+            // Read the type
+            input.Get((char_t*)&property.type, sizeof(ShaderProperty::ShaderPropertyType));
 
             // Insert the property into the map
-            properties.insert(property.name, property);
+            properties.push_back(property);
         }
 
         // Read the SPIR-V binary file location
@@ -75,12 +69,12 @@ namespace mge {
         spirvPath[stringLength] = 0;
 
         // Read the pipeline location
-        string pipelinePath;
+        string pipelineLocation;
         input.Get((char_t*)&stringLength, sizeof(uint64_t));
-        pipelinePath.resize((size_t)stringLength);
+        pipelineLocation.resize((size_t)stringLength);
 
-        input.Get((char_t*)pipelinePath.c_str(), stringLength * sizeof(char_t));
-        pipelinePath[stringLength] = 0;
+        input.Get((char_t*)pipelineLocation.c_str(), stringLength * sizeof(char_t));
+        pipelineLocation[stringLength] = 0;
 
         // Read the locations of every material
         uint64_t materialCount{};
@@ -115,20 +109,15 @@ namespace mge {
         // Save all of the properties
         uint64_t propertyCount = (uint64_t)(properties.end() - properties.begin());
         output.WriteBuffer((char_t*)&propertyCount, sizeof(uint64_t));
-        
-        // Write every property
+
         for(const auto& property : properties) {
-            // Write the string
-            uint64_t stringLength = (uint64_t)property.val2.name.length();
-            output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
-            output.WriteBuffer((char_t*)property.val2.name.c_str(), stringLength * sizeof(char_t));
+            // Write the name
+            uint64_t nameLength = (uint64_t)property.name.length();
+            output.WriteBuffer((char_t*)&nameLength, sizeof(uint64_t));
+            output.WriteBuffer((char_t*)property.name.c_str(), nameLength * sizeof(char_t));
 
-            // Write the other properties
-            uint64_t size64 = (uint64_t)property.val2.size;
-            uint64_t offset64 = (uint64_t)property.val2.offset;
-
-            output.WriteBuffer((char_t*)&size64, sizeof(uint64_t));
-            output.WriteBuffer((char_t*)&offset64, sizeof(uint64_t));
+            // Write the property type
+            output.WriteBuffer((char_t*)&property.type, sizeof(ShaderProperty::ShaderPropertyType));
         }
 
         // Write the SPIR-V binary file location
@@ -138,6 +127,9 @@ namespace mge {
 
         // Write the pipeline location
         string str = "";
+        if(pipeline)
+            str = pipeline->location;
+
         stringLength = (uint64_t)str.length();
         output.WriteBuffer((char_t*)&stringLength, sizeof(uint64_t));
         output.WriteBuffer((char_t*)str.c_str(), stringLength * sizeof(char_t));

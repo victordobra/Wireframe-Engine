@@ -22,21 +22,130 @@ namespace mge {
         }
         template<class T>
         T GetPropertyValue(const string& propertyName) {
-            Shader::ShaderProperty property = shader->properties[propertyName];
-            
-            assert((property.size == sizeof(T)) && "Invalid property size!");
+            // Calculate the offset and the image index
+            size_t imageIndex = 0;
+            VkDeviceSize offset = 0;
+            size_t propertyIndex = 0;
+            for(const auto& property : shader->properties) {
+                if(propertyName == property.name)
+                    break;
+                switch(property.type) {
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE:
+                    // Increment the image counter
+                    ++imageIndex;
+                    break;
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                {
+                    // Align to a Vector4
+                    VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                    offset = (vectorCount + 1) * sizeof(Vector4);
+                    break;
+                }
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                    offset += sizeof(float32_t);
+                    break;
+                }
+                ++propertyIndex;
+            }
 
-            T val;
-            buffers[0]->ReadFromBuffer(&val, sizeof(T), property.offset);
-            return val;
+            if(propertyIndex == shader->properties.size())
+                console::OutFatalError("Failed to find a shader property with the specified name!", 1);
+
+            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
+                return images[0].begin() + imageIndex;
+            }
+            T value;
+            buffers[0]->ReadFromBuffer(&value, sizeof(T), offset);
+            return value;
         }
         template<class T>
         void SetPropertyValue(const string& propertyName, const T& newValue) {
-            Shader::ShaderProperty property = shader->properties[propertyName];
-            
-            assert((property.size == sizeof(T)) && "Invalid property size!");
+            // Calculate the offset and the image index
+            size_t imageIndex = 0;
+            VkDeviceSize offset = 0;
+            size_t propertyIndex = 0;
+            for(const auto& property : shader->properties) {
+                if(propertyName == property.name)
+                    break;
+                switch(property.type) {
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE:
+                    // Increment the image counter
+                    ++imageIndex;
+                    break;
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                {
+                    // Align to a Vector4
+                    VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                    offset = (vectorCount + 1) * sizeof(Vector4);
+                    break;
+                }
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                    offset += sizeof(float32_t);
+                    break;
+                }
+                ++propertyIndex;
+            }
 
-            buffers[0]->WriteToBuffer((void*)&newValue, sizeof(T), property.offset);
+            if(propertyIndex == shader->properties.size())
+                console::OutFatalError("Failed to find a shader property with the specified name!", 1);
+            
+            assert(shader->properties[propertyIndex].type != Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE && "The specified property is an image!");
+            
+            // Apply this change to the first buffer
+            buffers[0]->WriteToBuffer((void*)&newValue, sizeof(T), offset);
+            buffers[0]->Flush(sizeof(T), offset);
+        }
+        void SetPropertyValue(const string& propertyName, Image* newValue) {
+            // Calculate the offset and the image index
+            size_t imageIndex = 0;
+            VkDeviceSize offset = 0;
+            size_t propertyIndex = 0;
+            for(const auto& property : shader->properties) {
+                if(propertyName == property.name)
+                    break;
+                switch(property.type) {
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE:
+                    // Increment the image counter
+                    ++imageIndex;
+                    break;
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                {
+                    // Align to a Vector4
+                    VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                    offset = (vectorCount + 1) * sizeof(Vector4);
+                    break;
+                }
+                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                    offset += sizeof(float32_t);
+                    break;
+                }
+                ++propertyIndex;
+            }
+
+            if(propertyIndex == shader->properties.size())
+                console::OutFatalError("Failed to find a shader property with the specified name!", 1);
+
+            assert(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE && "The specified property is not an image!");
+
+            // Set the first image and copy every other image
+            for(size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; ++i)
+                delete images[i][imageIndex];
+            
+            images[0][imageIndex] = newValue;
+            images[0][imageIndex]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+
+            size_t imageWidth  = images[0][imageIndex]->GetWidth();
+            size_t imageHeight = images[0][imageIndex]->GetHeight();
+            VkImage srcImage = images[0][imageIndex]->GetImage();
+
+            for(size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; ++i) {
+                images[i][imageIndex] = new Image(imageWidth, imageHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                images[i][imageIndex]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+                CopyImage(srcImage, images[i][imageIndex]->GetImage(), imageWidth, imageHeight, 1, 1);
+                images[i][imageIndex]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            }
+
+            images[0][imageIndex]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         }
         void Unmap() {
             // Unmap the first buffer
@@ -48,34 +157,6 @@ namespace mge {
 
             for(size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; ++i)
                 CopyBuffer(firstBuffer, buffers[i]->GetBuffer(), bufferSize);
-        }
-
-        Image* GetImagePropertyValue(const string& propertyName) {
-            size_t index = (size_t)(&shader->imageProperties[propertyName] - shader->imageProperties.begin());
-
-            return images[0][index];
-        }
-        void SetImagePropertyValue(const string& propertyName, Image* newImage) {
-            size_t index = (size_t)(&shader->imageProperties[propertyName] - shader->imageProperties.begin());
-
-            images[0][index] = newImage;
-            newImage->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-
-            size_t imageWidth  = images[0][index]->GetWidth();
-            size_t imageHeight = images[0][index]->GetHeight();
-            VkImage srcImage = images[0][index]->GetImage();
-
-            // Copy every other image
-            for(size_t i = 1; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-                delete images[i][index];
-
-                images[i][index] = new Image(imageWidth, imageHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-                images[i][index]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-                CopyImage(srcImage, images[i][index]->GetImage(), imageWidth, imageHeight, 1, 1);
-                images[i][index]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-            }
-
-            images[0][index]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         }
 
         Shader* GetShader() const { 

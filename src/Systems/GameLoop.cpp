@@ -73,14 +73,14 @@ namespace mge {
     // External functions
     void StartGameLoop() {
         // Create assets and objects for testing
-        Image* image = Asset::GetOrCreateAssetWithLocation<Image>("images/ding.png");
-        image->Save("images/ding.png");
+        Image* diffuseTexture = Asset::GetOrCreateAssetWithLocation<Image>("images/ding.png");
+        diffuseTexture->Save("images/ding.png");
 
         vertShader = new Shader("shaders/VertShader.vert.spv");
         fragShader = new Shader("shaders/FragShader.frag.spv");
 
-        fragShader->AddProperty<Vector4>("color");
-        fragShader->AddImageProperty("diffuse");
+        fragShader->AddProperty({ "diffuseColor",   Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR });
+        fragShader->AddProperty({ "diffuseTexture", Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
 
         vertShader->Save("shaders/VertShader.shader");
         fragShader->Save("shaders/FragShader.shader");
@@ -89,8 +89,8 @@ namespace mge {
 
         material->Map();
         Vector4 color = { 1.f, 1.f, 1.f, 1.f };
-        material->SetPropertyValue("color", color);
-        material->SetImagePropertyValue("diffuse", image);
+        material->SetPropertyValue("diffuseColor", color);
+        material->SetPropertyValue("diffuseTexture", diffuseTexture);
         material->Unmap();
 
         vertShader->Save("shaders/VertShader.shader");
