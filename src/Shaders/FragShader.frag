@@ -43,8 +43,25 @@ layout(set = 1, binding = 0) uniform MaterialUbo {
 // Material images
 layout(set = 1, binding = 1) uniform sampler2D diffuseTexture;
 layout(set = 1, binding = 2) uniform sampler2D specularTexture;
+layout(set = 1, binding = 3) uniform sampler2D normalMap;
 
 void main() {
+    // Calculate the world normal based on the normal map
+    vec3 zAxis = worldNormal;
+    vec3 xAxis = normalize(cross(zAxis, vec3(0.0, 1.0, 0.0)));
+    vec3 yAxis = cross(xAxis, zAxis);
+
+    mat3 tbnMatrix;
+
+    tbnMatrix[0] = xAxis;
+	tbnMatrix[1] = yAxis;
+	tbnMatrix[2] = zAxis;
+
+    tbnMatrix = transpose(tbnMatrix);
+
+    vec3 surfaceNormal = 2.0 * texture(normalMap, uvCoord).rgb - 1.0;
+    surfaceNormal = normalize(surfaceNormal * tbnMatrix);
+
     // Set the initial diffuse light to the ambient lighting
     vec3 diffuseLight = lightingUbo.ambientLightColor.xyz * lightingUbo.ambientLightColor.w;
 
@@ -59,13 +76,13 @@ void main() {
         DirectionalLight directionalLight = lightingUbo.directionalLights[i];
         
         vec3 lightColor = directionalLight.color.xyz * directionalLight.color.w;
-        float cosAngIncidence = max(dot(worldNormal, -vec3(directionalLight.direction)), 0.0);
+        float cosAngIncidence = max(dot(surfaceNormal, -vec3(directionalLight.direction)), 0.0);
 
         diffuseLight += lightColor * cosAngIncidence;
 
         // Specular lighting
         vec3 halfAngle = normalize(-vec3(directionalLight.direction) + viewDirection);
-        float blinnTerm = dot(worldNormal, halfAngle);
+        float blinnTerm = dot(surfaceNormal, halfAngle);
         blinnTerm = clamp(blinnTerm, 0, 1);
         blinnTerm = pow(blinnTerm, material.specularExponent);
 
@@ -83,14 +100,14 @@ void main() {
 
         directionToLight = normalize(directionToLight);
 
-        float cosAngIncidence = max(dot(worldNormal, directionToLight), 0.0);
+        float cosAngIncidence = max(dot(surfaceNormal, directionToLight), 0.0);
         vec3 intensity = lightColor * attenuation;
 
         diffuseLight += intensity * cosAngIncidence;
 
         // Specular lighting
         vec3 halfAngle = normalize(directionToLight + viewDirection);
-        float blinnTerm = dot(worldNormal, halfAngle);
+        float blinnTerm = dot(surfaceNormal, halfAngle);
         blinnTerm = clamp(blinnTerm, 0, 1);
         blinnTerm = pow(blinnTerm, material.specularExponent);
 

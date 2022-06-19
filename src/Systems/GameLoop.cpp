@@ -74,7 +74,7 @@ namespace mge {
     void StartGameLoop() {
         // Create assets and objects for testing
         Image* diffuseTexture = Asset::GetOrCreateAssetWithLocation<Image>("images/ding.png");
-        diffuseTexture->Save("images/ding.png");
+        Image* normalMap = Asset::GetOrCreateAssetWithLocation<Image>("images/NormalMap.png");
 
         vertShader = new Shader("shaders/VertShader.vert.spv");
         fragShader = new Shader("shaders/FragShader.frag.spv");
@@ -84,6 +84,7 @@ namespace mge {
         fragShader->AddProperty({ "specularExponent", Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT });
         fragShader->AddProperty({ "specularColor",    Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR });
         fragShader->AddProperty({ "specularTexture",  Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
+        fragShader->AddProperty({ "normalMap",        Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
 
         vertShader->Save("shaders/VertShader.shader");
         fragShader->Save("shaders/FragShader.shader");
@@ -101,6 +102,7 @@ namespace mge {
         material->SetPropertyValue("specularExponent", specularExponent);
         material->SetPropertyValue("specularColor",    specularColor);
         material->SetPropertyValue("specularTexture",  diffuseTexture);
+        material->SetPropertyValue("normalMap",        normalMap);
         material->Unmap();
 
         vertShader->Save("shaders/VertShader.shader");
