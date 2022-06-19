@@ -15,8 +15,10 @@ namespace mge {
 
     struct LightingUbo {
         Matrix4x4 cameraTransform;
-        Vector4 ambientLightColor;
+        Vector4 cameraWorldPos;
 
+        Vector4 ambientLightColor;
+        
         DirectionalLight directionalLights[MAX_LIGHT_COUNT];
         PointLight       pointLights      [MAX_LIGHT_COUNT];
 

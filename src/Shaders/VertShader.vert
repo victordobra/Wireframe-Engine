@@ -13,6 +13,7 @@ layout(location = 2) out vec2 uvCoord;
 // Lighting buffer (for camera matrix)
 layout(set = 0, binding = 0) uniform LightingUbo {
     mat4 cameraMatrix;
+    mat4 inverseView;
 } lightingUbo;
 
 // Push constant
@@ -28,5 +29,7 @@ void main() {
     uvCoord = uv;
 
     // Calculate the screen position
-    gl_Position = vec4(position, 1.0) * push.modelTransform * lightingUbo.cameraMatrix;
+    vec4 screenPosition = vec4(position, 1.0) * push.modelTransform * lightingUbo.cameraMatrix;
+    screenPosition.y = -screenPosition.y;
+    gl_Position = screenPosition;
 } 

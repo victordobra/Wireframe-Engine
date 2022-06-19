@@ -14,8 +14,8 @@ namespace mge {
         Matrix4x4 modelScaling = Matrix4x4::Scaling(body->scale);
         Matrix4x4 modelRotation = Matrix4x4::Rotation(body->rotation);
         Matrix4x4 modelPosition = Matrix4x4::Translation(body->position);
-        Matrix4x4 cameraPosition = Matrix4x4::Translation(-camera->position);
-        Matrix4x4 cameraRotation = Matrix4x4::Rotation(camera->rotation.Inverted());
+        Matrix4x4 cameraInvPosition = Matrix4x4::Translation(-camera->position);
+        Matrix4x4 cameraInvRotation = Matrix4x4::Rotation(camera->rotation.Inverted());
         Matrix4x4 cameraPerspective = Matrix4x4::PerspectiveProjection(camera->fov * RAD_TO_DEG_MULTIPLIER, ExtentAspectRatio(), camera->nearPlane, camera->farPlane);
 
         pushConstant.modelRotation = modelRotation;
@@ -30,8 +30,10 @@ namespace mge {
         // Copy to the lighting buffer
         LightingUbo lightingUbo{};
 
-        lightingUbo.cameraTransform = cameraPosition * cameraRotation * cameraPerspective;
+        lightingUbo.cameraTransform = cameraInvPosition * cameraInvRotation * cameraPerspective;
         lightingUbo.cameraTransform.Transpose();
+        lightingUbo.cameraWorldPos = camera->position;
+
         lightingUbo.ambientLightColor = Light::ambientLightColor;
 
         for(const auto* light : Light::GetLights())

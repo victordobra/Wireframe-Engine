@@ -149,7 +149,7 @@ namespace mge {
                 Vector3 dif1 = verticesArr[1].position - verticesArr[0].position;
                 Vector3 dif2 = verticesArr[2].position - verticesArr[0].position;
 
-                if(verticesArr[0].normal.Dot(dif1.Cross(dif2)) < 0.f) {
+                if(verticesArr[0].normal.Dot(dif1.Cross(dif2)) > 0.f) {
                     Vertex aux = verticesArr[1];
                     verticesArr[1] = verticesArr[2];
                     verticesArr[2] = aux;

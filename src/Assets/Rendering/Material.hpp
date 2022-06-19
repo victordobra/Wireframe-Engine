@@ -34,14 +34,14 @@ namespace mge {
                     // Increment the image counter
                     ++imageIndex;
                     break;
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
                 {
                     // Align to a Vector4
                     VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
                     offset = (vectorCount + 1) * sizeof(Vector4);
                     break;
                 }
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
                     offset += sizeof(float32_t);
                     break;
                 }
@@ -51,9 +51,14 @@ namespace mge {
             if(propertyIndex == shader->properties.size())
                 console::OutFatalError("Failed to find a shader property with the specified name!", 1);
 
-            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
+            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
                 return images[0].begin() + imageIndex;
+            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
+                // Align to a Vector4
+                VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                offset = vectorCount * sizeof(Vector4);
             }
+
             T value;
             buffers[0]->ReadFromBuffer(&value, sizeof(T), offset);
             return value;
@@ -72,14 +77,14 @@ namespace mge {
                     // Increment the image counter
                     ++imageIndex;
                     break;
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
                 {
                     // Align to a Vector4
                     VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
                     offset = (vectorCount + 1) * sizeof(Vector4);
                     break;
                 }
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
                     offset += sizeof(float32_t);
                     break;
                 }
@@ -90,10 +95,16 @@ namespace mge {
                 console::OutFatalError("Failed to find a shader property with the specified name!", 1);
             
             assert(shader->properties[propertyIndex].type != Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE && "The specified property is an image!");
+
+            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR) {
+                // Align to a Vector4
+                VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                offset = vectorCount * sizeof(Vector4);
+            }
             
             // Apply this change to the first buffer
             buffers[0]->WriteToBuffer((void*)&newValue, sizeof(T), offset);
-            buffers[0]->Flush(sizeof(T), offset);
+            buffers[0]->Flush();
         }
         void SetPropertyValue(const string& propertyName, Image* newValue) {
             // Calculate the offset and the image index
@@ -108,14 +119,14 @@ namespace mge {
                     // Increment the image counter
                     ++imageIndex;
                     break;
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
                 {
                     // Align to a Vector4
                     VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
                     offset = (vectorCount + 1) * sizeof(Vector4);
                     break;
                 }
-                case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+                case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
                     offset += sizeof(float32_t);
                     break;
                 }

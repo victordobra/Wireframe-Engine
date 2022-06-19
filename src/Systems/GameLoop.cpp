@@ -79,8 +79,11 @@ namespace mge {
         vertShader = new Shader("shaders/VertShader.vert.spv");
         fragShader = new Shader("shaders/FragShader.frag.spv");
 
-        fragShader->AddProperty({ "diffuseColor",   Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR });
-        fragShader->AddProperty({ "diffuseTexture", Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
+        fragShader->AddProperty({ "diffuseColor",     Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR });
+        fragShader->AddProperty({ "diffuseTexture",   Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
+        fragShader->AddProperty({ "specularExponent", Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT });
+        fragShader->AddProperty({ "specularColor",    Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR });
+        fragShader->AddProperty({ "specularTexture",  Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
 
         vertShader->Save("shaders/VertShader.shader");
         fragShader->Save("shaders/FragShader.shader");
@@ -88,9 +91,16 @@ namespace mge {
         Material* material = new Material(fragShader);
 
         material->Map();
-        Vector4 color = { 1.f, 1.f, 1.f, 1.f };
-        material->SetPropertyValue("diffuseColor", color);
-        material->SetPropertyValue("diffuseTexture", diffuseTexture);
+
+        Vector4 diffuseColor = { 1.f, 1.f, 1.f, 1.f };
+        float32_t specularExponent = 32.f;
+        Vector4 specularColor = { 1.f, 1.f, 1.f, 1.f };
+
+        material->SetPropertyValue("diffuseColor",     diffuseColor);
+        material->SetPropertyValue("diffuseTexture",   diffuseTexture);
+        material->SetPropertyValue("specularExponent", specularExponent);
+        material->SetPropertyValue("specularColor",    specularColor);
+        material->SetPropertyValue("specularTexture",  diffuseTexture);
         material->Unmap();
 
         vertShader->Save("shaders/VertShader.shader");
@@ -138,7 +148,7 @@ namespace mge {
 
         Light* light = new Light();
         light->type = Light::LIGHT_TYPE_DIRECTIONAL;
-        light->direction = Vector3(1.f, 1.f, -1.f).Normalized();
+        light->direction = Vector3(1.f, -1.f, -1.f).Normalized();
         light->color = { 1.f, 1.f, 1.f, 1.f };
         light->SetParent(Node::scene);
 

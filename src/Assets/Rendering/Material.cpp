@@ -14,14 +14,14 @@ namespace mge {
                 // Increment the image counter
                 ++imageCount;
                 break;
-            case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
             {
                 // Align to a Vector4
                 VkDeviceSize vectorCount = (size + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
                 size = (vectorCount + 1) * sizeof(Vector4);
                 break;
             }
-            case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
                 size += sizeof(float32_t);
                 break;
             }
@@ -64,14 +64,14 @@ namespace mge {
                 // Increment the image counter
                 ++imageCount;
                 break;
-            case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_COLOR:
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
             {
                 // Align to a Vector4
                 VkDeviceSize vectorCount = (size + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
                 size = (vectorCount + 1) * sizeof(Vector4);
                 break;
             }
-            case Shader::ShaderProperty::SHADER_RPOPERTY_TYPE_FLOAT:
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
                 size += sizeof(float32_t);
                 break;
             }

@@ -13,8 +13,8 @@ namespace mge {
         /// @brief Stores a property of the shader.
         struct ShaderProperty {
             typedef enum : uint8_t {
-                SHADER_RPOPERTY_TYPE_COLOR,
-                SHADER_RPOPERTY_TYPE_FLOAT,
+                SHADER_PROPERTY_TYPE_COLOR,
+                SHADER_PROPERTY_TYPE_FLOAT,
                 SHADER_PROPERTY_TYPE_IMAGE
             } ShaderPropertyType;
 

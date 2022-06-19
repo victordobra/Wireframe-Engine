@@ -21,7 +21,7 @@ namespace mge {
             if(KeyDown(KEY_LBUTTON)) {
                 MouseMovement movement = GetMouseMovement();
 
-                Vector2 movementVec = { movement.x * sensitivity * DEG_TO_RAD_MULTIPLIER, -movement.y * sensitivity * DEG_TO_RAD_MULTIPLIER };
+                Vector2 movementVec = { movement.x * sensitivity * DEG_TO_RAD_MULTIPLIER, movement.y * sensitivity * DEG_TO_RAD_MULTIPLIER };
 
                 Quaternion newRotation = Quaternion::EulerAngles({movementVec.y, movementVec.x, 0});
                 camera->rotation *= newRotation;
