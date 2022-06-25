@@ -22,8 +22,9 @@ namespace mge {
         createInfo.flags = 0;
         createInfo.pNext = nullptr;
 
-        if(vkCreateShaderModule(GetDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-            console::OutFatalError("Failes to create shader!", 1);
+        auto result = vkCreateShaderModule(GetDevice(), &createInfo, nullptr, &shaderModule);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failes to create shader! Error code: " + VkResultToString(result), 1);
     }
 
     // External functions
@@ -68,6 +69,8 @@ namespace mge {
         input.Get((char_t*)spirvPath.c_str(), stringLength * sizeof(char_t));
         spirvPath[stringLength] = 0;
 
+        LoadFromBinary(spirvPath);
+
         // Read the pipeline location
         string pipelineLocation;
         input.Get((char_t*)&stringLength, sizeof(uint64_t));
@@ -78,7 +81,7 @@ namespace mge {
 
         // Read the locations of every material
         uint64_t materialCount{};
-        input.Get((char_t*)&materialCount, materialCount);
+        input.Get((char_t*)&materialCount, sizeof(uint64_t));
 
         for(uint64_t i = 0; i < materialCount; ++i) {
             // Read the location of the material
@@ -92,11 +95,12 @@ namespace mge {
             materialLocation[stringLength] = 0;
 
             // Load the material from the file
-            materials.insert(Asset::GetOrCreateAssetWithLocation<Material>(materialLocation));
+            Material* material = Asset::GetOrCreateAssetWithLocation<Material>(materialLocation);
+            material->shader = this;
+            materials.insert(material);
         }
 
-        // Create the shader module
-        LoadFromBinary(spirvPath);
+        pipeline = Asset::GetOrCreateAssetWithLocation<Pipeline>(pipelineLocation);
 
         input.Close();
     }

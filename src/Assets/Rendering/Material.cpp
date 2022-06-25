@@ -51,31 +51,11 @@ namespace mge {
         input.Get((char_t*)shaderLocation.c_str(), len64 * sizeof(char_t));
         shaderLocation[len64] = 0;
 
-        // Load the shader
-        shader = Asset::GetOrCreateAssetWithLocation<Shader>(shaderLocation);
-        shader->materials.insert_or_assign(this);
-
         // Calculate the total size
-        size_t imageCount = 0;
+        uint64_t imageCount = 0;
         VkDeviceSize size = 0;
-        for(const auto& property : shader->properties)
-            switch(property.type) {
-            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE:
-                // Increment the image counter
-                ++imageCount;
-                break;
-            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
-            {
-                // Align to a Vector4
-                VkDeviceSize vectorCount = (size + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
-                size = (vectorCount + 1) * sizeof(Vector4);
-                break;
-            }
-            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
-                size += sizeof(float32_t);
-                break;
-            }
         
+        input.Get((char_t*)&size, sizeof(VkDeviceSize));
         char_t* data = new char_t[size];
         input.Get(data, size * sizeof(char_t));
 
@@ -91,6 +71,7 @@ namespace mge {
             }
         
         // Load every image
+        input.Get((char_t*)&imageCount, sizeof(uint64_t));
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
             images[i].resize(imageCount);
 
@@ -122,6 +103,10 @@ namespace mge {
             images[0][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         }
 
+        // Load the shader
+        shader = Asset::GetOrCreateAssetWithLocation<Shader>(shaderLocation);
+        shader->materials.insert_or_assign(this);
+
         input.Close();
     }
     void Material::SaveToFile(const string& fileLocation) {
@@ -133,21 +118,35 @@ namespace mge {
         output.WriteBuffer((char_t*)&len64, sizeof(uint64_t));
         output.WriteBuffer((char_t*)shaderLocation.c_str(), len64 * sizeof(char_t));
 
-        // Calculate the total size
-        size_t imageCount = 0;
+        uint64_t imageCount = 0;
+        VkDeviceSize size = 0;
         for(const auto& property : shader->properties)
-            if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
+            switch(property.type) {
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE:
+                // Increment the image counter
                 ++imageCount;
-
-        VkDeviceSize size = (VkDeviceSize)((shader->properties.size() - imageCount) * sizeof(Vector4));
+                break;
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR:
+            {
+                // Align to a Vector4
+                VkDeviceSize vectorCount = (size + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
+                size = (vectorCount + 1) * sizeof(Vector4);
+                break;
+            }
+            case Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT:
+                size += sizeof(float32_t);
+                break;
+            }
 
         // Save the data to the file
+        output.WriteBuffer((char_t*)&size, sizeof(VkDeviceSize));
         buffers[0]->Map();
         output.WriteBuffer((char_t*)buffers[0]->GetMappedMemory(), size * sizeof(char_t));
         buffers[0]->Unmap();
 
         // Save every image's location to the file
-        size_t imageIndex = 0;
+        output.WriteBuffer((char_t*)&imageCount, sizeof(uint64_t));
+        uint64_t imageIndex = 0;
         for(const auto& property : shader->properties) 
             if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE){
                 len64 = (uint64_t)images[0][imageIndex]->location.size();

@@ -77,7 +77,7 @@ namespace mge {
     }
 
     // Static functions
-    void Asset::LoadAllAssets() {
+    void Asset::SortAssetTypes() {
         // Sort the type array with the set class
         set<AssetType> typeSet;
 
@@ -89,27 +89,6 @@ namespace mge {
             assetTypes[ind++] = type;
     }
     void Asset::DeleteAllAssets() {
-        // Save the asset vector
-        FileOutput output((string)ASSET_PATH + "Assets.assets");
-
-        vector<Asset*> validAssets;
-        for(size_t i = 0; i < assets.size(); ++i)
-            if(assets[i]->assetType)
-                validAssets.push_back(assets[i]);
-
-        uint64_t size64 = validAssets.size();
-        output.WriteBuffer((char_t*)&size64, sizeof(uint64_t));
-
-        for(uint64_t i = 0; i < size64; ++i) {
-            output.WriteBuffer((char_t*)&validAssets[i]->assetType->hashCode, sizeof(size_t));
-
-            uint64_t pathLength = validAssets[i]->location.size();
-            output.WriteBuffer((char_t*)&pathLength, sizeof(uint64_t));
-            output.WriteBuffer((char_t*)validAssets[i]->location.c_str(), pathLength * sizeof(char_t));
-        }
-
-        output.Close();
-
         // Delete every asset
         size_t assetCount = assets.size();
         for(size_t i = 0; i < assetCount; ++i)
@@ -128,6 +107,13 @@ namespace mge {
         // If the type's hash code is the specified one, return a pointer to the type, otherwhise return a nullptr
         if(assetTypes[pos].hashCode == hashCode)
             return assetTypes + pos;
+        return nullptr;
+    }
+    AssetType* Asset::GetAssetPtrType(size_t hashCode) { 
+        // Search for the type
+        for(size_t i = 0; i < assetTypeCount; ++i)
+            if(assetTypes[i].ptrHashCode == hashCode)
+                return assetTypes + i;
         return nullptr;
     }
     Asset* Asset::GetAssetWithName(const string& name) { 

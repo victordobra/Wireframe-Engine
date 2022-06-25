@@ -33,37 +33,36 @@ namespace mge {
 
             PropertyType type = PROPERTY_TYPE_OTHER;
             PropertyAccess access = PROPERTY_ACCESS_PRIVATE;
+            size_t hashCode = 0;
             uint64_t size = 0;
             uint64_t offset = 0;
 
             template<class T>
             static Property GetPropertyInfo() {
-                size_t hashCode = typeid(T).hash_code();
+                Property prop{};
 
-                Property prop;
+                prop.hashCode = typeid(T).hash_code();
                 prop.size = sizeof(T);
-                if(hashCode == typeid(sint16_t).hash_code() || hashCode == typeid(sint32_t).hash_code() || hashCode == typeid(sint64_t).hash_code())
+
+                if(prop.hashCode == typeid(sint16_t).hash_code() || prop.hashCode == typeid(sint32_t).hash_code() || prop.hashCode == typeid(sint64_t).hash_code())
                     prop.type = PROPERTY_TYPE_INTEGER;
-                else if(hashCode == typeid(uint16_t).hash_code() || hashCode == typeid(uint32_t).hash_code() || hashCode == typeid(uint64_t).hash_code())
+                else if(prop.hashCode == typeid(uint16_t).hash_code() || prop.hashCode == typeid(uint32_t).hash_code() || prop.hashCode == typeid(uint64_t).hash_code())
                     prop.type = PROPERTY_TYPE_UNSIGNED;
-                else if(hashCode == typeid(float32_t).hash_code() || hashCode == typeid(float64_t).hash_code())
+                else if(prop.hashCode == typeid(float32_t).hash_code() || prop.hashCode == typeid(float64_t).hash_code())
                     prop.type = PROPERTY_TYPE_FLOAT;
-                else if(hashCode == typeid(string).hash_code())
+                else if(prop.hashCode == typeid(string).hash_code())
                     prop.type = PROPERTY_TYPE_STRING;
-                else if(hashCode == typeid(Vector2).hash_code())
+                else if(prop.hashCode == typeid(Vector2).hash_code())
                     prop.type = PROPERTY_TYPE_VEC2;
-                else if(hashCode == typeid(Vector3).hash_code())
+                else if(prop.hashCode == typeid(Vector3).hash_code())
                     prop.type = PROPERTY_TYPE_VEC3;
-                else if(hashCode == typeid(Vector4).hash_code())
+                else if(prop.hashCode == typeid(Vector4).hash_code())
                     prop.type = PROPERTY_TYPE_VEC4;
-                else if(hashCode == typeid(Quaternion).hash_code())
+                else if(prop.hashCode == typeid(Quaternion).hash_code())
                     prop.type = PROPERTY_TYPE_QUAT;
-                else if(hashCode == typeid(Matrix4x4).hash_code())
+                else if(prop.hashCode == typeid(Matrix4x4).hash_code())
                     prop.type = PROPERTY_TYPE_MAT4X4;
-                else if(Asset::GetAssetType(hashCode)) {
-                    prop.type = PROPERTY_TYPE_ASSET_PTR;
-                    prop.size = hashCode;
-                } else 
+                else 
                     prop.type = PROPERTY_TYPE_OTHER;
 
                 return prop;
@@ -133,6 +132,14 @@ namespace mge {
         /// @param hashCode The node type's hash code.
         /// @return A pointer to the specific node type, or a nullptr if it doesn't exist.
         static NodeType* GetNodeType(size_t hashCode);
+        /// @brief Creates a node of the specified type.
+        /// @return A pointe to the newly created node.
+        template<class T>
+        static T* CreateNode() {
+            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            assert(nodeType && "The inputted type must be a node!");
+            return dynamic_cast<T*>(nodeType->create());
+        }
 
         virtual ~Node();
     protected:
@@ -156,6 +163,7 @@ namespace { \
         mge::Node* node = dynamic_cast<mge::Node*>(new type()); \
         if(!node) \
             mge::console::OutFatalError("Failed to convert object to node type!", 1); \
+        node->nodeType = mge::Node::GetNodeType(typeid(type).hash_code()); \
         return node; \
     } \
  \

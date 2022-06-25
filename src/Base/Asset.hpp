@@ -14,6 +14,7 @@ namespace mge {
     struct AssetType {
         string name{};
         size_t hashCode{};
+        size_t ptrHashCode{};
 
         Asset*(*create)();
 
@@ -59,13 +60,21 @@ namespace mge {
         void Save(const string& fileLocation);
 
         /// @brief Loads every asset. Called at the start of the program.
-        static void LoadAllAssets();
+        static void SortAssetTypes();
         /// @brief Deletes every asset. Called at the end of the program.
         static void DeleteAllAssets();
         /// @brief Returns the asset type with the specified hash code.
         /// @param hashCode The hash code of the type.
         /// @return A pointer to the asset type, or a nullptr if it doesn't exist.
         static AssetType* GetAssetType(size_t hashCode);
+        /// @brief Returns the asset type with its pointer's hash code equal to the given hash code.
+        /// @param hashCode The hash code of the type pointer.
+        /// @return A pointer to the asset type, or a nullptr if it doesn't exist.
+        static AssetType* GetAssetPtrType(size_t hashCode);
+        /// @brief Returns a vector with every asset.
+        static vector<Asset*> GetAssets() {
+            return assets;
+        }
         /// @brief Returns the asset with the specified name.
         /// @param name The name of the asset.
         /// @return A pointer to the asset, or a nullptr if it doesn't exist.
@@ -89,7 +98,7 @@ namespace mge {
                     return (T*)assets[i];
             
             // Create the asset
-            T* asset = new T();
+            T* asset = dynamic_cast<T*>(assetType->create());
             asset->Load(location);
             return asset;
         }
@@ -110,6 +119,7 @@ namespace { \
         mge::Asset* asset = dynamic_cast<mge::Asset*>(new type()); \
         if(!asset) \
             mge::console::OutFatalError("Failed to convert object to asset type!", 1); \
+        asset->assetType = mge::Asset::GetAssetType(typeid(type).hash_code()); \
         return asset; \
     } \
     struct type ## AssetTypeInitializer { \
@@ -118,6 +128,7 @@ namespace { \
             mge::AssetType assetType{}; \
             assetType.name = #type; \
             assetType.hashCode = typeid(type).hash_code(); \
+            assetType.ptrHashCode = typeid(type*).hash_code(); \
             assetType.create = Create ## type ## Asset; \
  \
             mge::Asset::assetTypes[mge::Asset::assetTypeCount++] = assetType; \

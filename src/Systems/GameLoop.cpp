@@ -14,12 +14,6 @@
 #include "Nodes/Controllers/CameraController.hpp"
 
 namespace mge {
-    // Testing variables
-    Shader* vertShader;
-    Shader* fragShader;
-    Pipeline* pipeline;
-    Material* material;
-
     // Internal helper functions
     static void AddChildrenToVector(vector<Node*>& vec, Node* node) {
         for(auto child : node->GetChildren()) {
@@ -72,87 +66,9 @@ namespace mge {
 
     // External functions
     void StartGameLoop() {
-        // Create assets and objects for testing
-        Image* diffuseTexture = Asset::GetOrCreateAssetWithLocation<Image>("images/ding.png");
-        Image* normalMap = Asset::GetOrCreateAssetWithLocation<Image>("images/NormalMap.png");
-
-        vertShader = new Shader("shaders/VertShader.vert.spv");
-        fragShader = new Shader("shaders/FragShader.frag.spv");
-
-        fragShader->AddProperty({ "diffuseColor",     Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR });
-        fragShader->AddProperty({ "diffuseTexture",   Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
-        fragShader->AddProperty({ "specularExponent", Shader::ShaderProperty::SHADER_PROPERTY_TYPE_FLOAT });
-        fragShader->AddProperty({ "specularColor",    Shader::ShaderProperty::SHADER_PROPERTY_TYPE_COLOR });
-        fragShader->AddProperty({ "specularTexture",  Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
-        fragShader->AddProperty({ "normalMap",        Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE });
-
-        vertShader->Save("shaders/VertShader.shader");
-        fragShader->Save("shaders/FragShader.shader");
-        
-        Material* material = new Material(fragShader);
-
-        material->Map();
-
-        Vector4 diffuseColor = { 1.f, 1.f, 1.f, 1.f };
-        float32_t specularExponent = 32.f;
-        Vector4 specularColor = { 1.f, 1.f, 1.f, 1.f };
-
-        material->SetPropertyValue("diffuseColor",     diffuseColor);
-        material->SetPropertyValue("diffuseTexture",   diffuseTexture);
-        material->SetPropertyValue("specularExponent", specularExponent);
-        material->SetPropertyValue("specularColor",    specularColor);
-        material->SetPropertyValue("specularTexture",  diffuseTexture);
-        material->SetPropertyValue("normalMap",        normalMap);
-        material->Unmap();
-
-        vertShader->Save("shaders/VertShader.shader");
-        fragShader->Save("shaders/FragShader.shader");
-
-        material->Save("materials/Default.mat");
-
-        Pipeline::PipelineInfo pipelineInfo;
-        Pipeline::PopulatePipelineInfo(pipelineInfo);
-
-        pipelineInfo.pushConstantRanges.resize(1);
-        pipelineInfo.pushConstantRanges[0].offset = 0;
-        pipelineInfo.pushConstantRanges[0].size = sizeof(ModelRenderer::PushConstant);
-        pipelineInfo.pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-        pipelineInfo.globalBufferSize = sizeof(LightingUbo);
-
-        pipelineInfo.vertexBindings = Model::Vertex::GetBindingDescriptions();
-        pipelineInfo.vertexAttributes = Model::Vertex::GetAttributeDescriptions();
-
-        pipelineInfo.shaderStages = { { vertShader, VK_SHADER_STAGE_VERTEX_BIT }, { fragShader, VK_SHADER_STAGE_FRAGMENT_BIT } };
-
-        pipeline = new Pipeline(pipelineInfo);
-        pipeline->Save("MainPipeline.pipeline");
-
-        Model* model = new Model("models/Torus.obj");
-        model->Save("models/Torus.model");
-
-        Camera* camera = new Camera();
-        camera->fov = 60.f;
-        camera->SetParent(Node::scene);
-
-        CameraController* controller = new CameraController();
-        controller->center = { 0.f, 0.f, -5.f };
-        controller->SetParent(camera);
-
-        Body* body = new Body();
-        body->position = { 0.f, 0.f, -5.f };
-        body->SetParent(Node::scene);
-        
-        ModelRenderer* modelRenderer = new ModelRenderer();
-        modelRenderer->model = model;
-        modelRenderer->material = material;
-        modelRenderer->SetParent(body);
-
-        Light* light = new Light();
-        light->type = Light::LIGHT_TYPE_DIRECTIONAL;
-        light->direction = Vector3(1.f, -1.f, -1.f).Normalized();
-        light->color = { 1.f, 1.f, 1.f, 1.f };
-        light->SetParent(Node::scene);
+        // Load the scene
+        Node::scene = new Node();
+        Node::scene->Load("Scene.node");
 
         // Find all nodes reccursively
         vector<Node*> nodes;

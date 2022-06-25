@@ -194,5 +194,7 @@ namespace mge {
         Shader* shader;
         Buffer* buffers[MAX_FRAMES_IN_FLIGHT];
         vector<Image*> images[MAX_FRAMES_IN_FLIGHT];
+
+        friend Shader;
     };
 }

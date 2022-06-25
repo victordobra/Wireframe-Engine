@@ -239,7 +239,7 @@ namespace mge {
 
 		pipelineInfo.shaderStages.resize(shaderStageCount);
 		
-		for(size_t i = 0; i < shaderStageCount; i++) {
+		for(uint64_t i = 0; i < shaderStageCount; i++) {
 			string location{};
 
 			uint64_t stringLength{};
@@ -249,7 +249,8 @@ namespace mge {
 			input.Get((char_t*)location.c_str(), stringLength * sizeof(char_t));
 			location[stringLength] = 0;
 
-			pipelineInfo.shaderStages[i].shader = Asset::GetOrCreateAssetWithLocation<Shader>(location);
+			Shader* shader = Asset::GetOrCreateAssetWithLocation<Shader>(location);
+			pipelineInfo.shaderStages[i].shader = shader;
 			input.Get((char_t*)&pipelineInfo.shaderStages[i].shaderStage, sizeof(VkShaderStageFlagBits));
 		}
 
@@ -258,6 +259,28 @@ namespace mge {
 		input.Get((char_t*)&pushConstantRangeCount, sizeof(uint64_t));
 		pipelineInfo.pushConstantRanges.resize((size_t)pushConstantRangeCount);
 		input.Get((char_t*)pipelineInfo.pushConstantRanges.data(), pushConstantRangeCount * sizeof(VkPushConstantRange));
+
+		// Read the descriptor pool sizes
+		uint64_t descriptorPoolSizeCount{};
+		input.Get((char_t*)&descriptorPoolSizeCount, sizeof(uint64_t));
+		pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(descriptorPoolSizeCount);
+		input.Get((char_t*)pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.data(), descriptorPoolSizeCount * sizeof(VkDescriptorPoolSize));
+
+		// Read the descriptor set layouts
+		uint64_t descriptorSetLayoutCount{};
+		input.Get((char_t*)&descriptorSetLayoutCount, sizeof(uint64_t));
+		pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(descriptorSetLayoutCount);
+
+		for(uint64_t i = 0; i < descriptorSetLayoutCount; ++i) {
+			uint64_t bindingCount{};
+			input.Get((char_t*)&bindingCount, sizeof(uint64_t));
+			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings.resize(bindingCount);
+			input.Get((char_t*)pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings.data(), bindingCount * sizeof(VkDescriptorSetLayoutBinding));
+		}
+
+		// Read the descriptor pool create flags
+		input.Get((char_t*)&pipelineInfo.descriptorPoolInfo.poolCreateFlags, sizeof(VkDescriptorPoolCreateFlags));
+		input.Get((char_t*)&pipelineInfo.globalBufferSize, sizeof(VkDeviceSize));
 
 		// Read the vertex bindings
 		uint64_t vertexBindingCount{};
@@ -314,14 +337,24 @@ namespace mge {
 		output.WriteBuffer((char_t*)&pushConstantRangeCount, sizeof(uint64_t));
 		output.WriteBuffer((char_t*)pipelineInfo.pushConstantRanges.data(), pushConstantRangeCount * sizeof(VkPushConstantRange));
 
+		// Save the descriptor pool sizes
+		uint64_t descriptorPoolSizeCount = (uint64_t)pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.size();
+		output.WriteBuffer((char_t*)&descriptorPoolSizeCount, sizeof(uint64_t));
+		output.WriteBuffer((char_t*)pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.data(), descriptorPoolSizeCount * sizeof(VkDescriptorPoolSize));
+
 		// Save the descriptor set layouts
 		uint64_t descriptorSetLayoutCount = (uint64_t)pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size();
 		output.WriteBuffer((char_t*)&descriptorSetLayoutCount, sizeof(uint64_t));
 
 		for(const auto& descriptorSetLayout : pipelineInfo.descriptorPoolInfo.descriptorSetLayouts) {
-			uint64_t descriptorBindingCount = (uint64_t)descriptorSetLayout.bindings.size();
-			output.WriteBuffer((char_t*)&descriptorBindingCount, sizeof(uint64_t));
+			uint64_t bindingCount = (uint64_t)descriptorSetLayout.bindings.size();
+			output.WriteBuffer((char_t*)&bindingCount, sizeof(uint64_t));
+			output.WriteBuffer((char_t*)descriptorSetLayout.bindings.data(), bindingCount * sizeof(VkDescriptorSetLayoutBinding));
 		}
+
+		// Save the descriptor pool create flags and the global buffer size
+		output.WriteBuffer((char_t*)&pipelineInfo.descriptorPoolInfo.poolCreateFlags, sizeof(VkDescriptorPoolCreateFlags));
+		output.WriteBuffer((char_t*)&pipelineInfo.globalBufferSize, sizeof(VkDeviceSize));
 
 		// Save the vertex bindings
 		uint64_t vertexBindingCount = (uint64_t)pipelineInfo.vertexBindings.size();

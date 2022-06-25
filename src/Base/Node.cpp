@@ -31,6 +31,14 @@ namespace mge {
     }
 
     void Node::LoadFromStream(FileInput& stream) {
+        // Load the node's name
+        uint64_t nameLength{};
+        stream.Get((char_t*)&nameLength, sizeof(uint64_t));
+        name.resize(nameLength);
+
+        stream.Get((char_t*)name.c_str(), nameLength * sizeof(char_t));
+        name[nameLength] = 0;
+
         // Load every single property
         for(const auto& property : nodeType->properties)
             NodeType::Property::LoadProperty(this, property, stream);
@@ -38,18 +46,23 @@ namespace mge {
         // Load the number of children
         uint64_t childCount;
         stream.Get((char_t*)&childCount, sizeof(uint64_t));
-        children.resize(childCount);
 
         // Create every child
         for(size_t i = 0; i < childCount; ++i) {
             size_t hashCode;
             stream.Get((char_t*)&hashCode, sizeof(size_t));
             
-            children[i] = nodeTypes[hashCode].create();
-            children[i]->LoadFromStream(stream);
+            Node* child = GetNodeType(hashCode)->create();
+            child->SetParent(this);
+            child->LoadFromStream(stream);
         }
     }
     void Node::SaveToStream(FileOutput& stream) {
+        // Save the node's name
+        uint64_t nameLength = name.length();
+        stream.WriteBuffer((char_t*)&nameLength, sizeof(uint64_t));
+        stream.WriteBuffer((char_t*)name.c_str(), nameLength * sizeof(char_t));
+
         // Save every single property
         for(const auto& property : nodeType->properties)
             NodeType::Property::SaveProperty(this, property, stream);
@@ -133,9 +146,17 @@ namespace mge {
             str[length] = 0;
 
             Asset*& ptr = *(Asset**)address;
-            ptr = Asset::GetAssetType(prop.size)->create();
-            ptr->Load(str);
+            ptr = nullptr;
+            for(auto* asset : Asset::GetAssets())
+                if(asset->location == str) {
+                    ptr = asset;
+                    break;
+                }
 
+            if(!ptr) {
+                ptr = Asset::GetAssetPtrType(prop.hashCode)->create();
+                ptr->Load(str);
+            }
 
             break;
         }
@@ -186,6 +207,12 @@ namespace mge {
         size_t ind = 0;
         for(const auto& type : typeSet)
             nodeTypes[ind++] = type;
+        
+        // Try to find asset types for every single property
+        for(size_t i = 0; i < nodeTypeCount; ++i)
+            for(auto& property : nodeTypes[i].properties)
+                if(Asset::GetAssetPtrType(property.hashCode))
+                    property.type = NodeType::Property::PROPERTY_TYPE_ASSET_PTR;
     }
     NodeType* Node::GetNodeType(size_t hashCode) { 
         // Binary search for it
@@ -203,4 +230,7 @@ namespace mge {
     }
 
     MGE_ASSET(Node)
+
+    MGE_NODE(Node)
+    MGE_END_NODE(Node)
 }

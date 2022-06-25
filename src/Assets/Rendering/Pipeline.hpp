@@ -19,25 +19,25 @@ namespace mge {
         };
         /// @brief A struct that holds information about the pipeline. Used to initialize the pipeline.
         struct PipelineInfo {
-            vector<ShaderStage> shaderStages;
-            vector<VkPushConstantRange> pushConstantRanges;
+            vector<ShaderStage> shaderStages{};
+            vector<VkPushConstantRange> pushConstantRanges{};
 
-            DescriptorPool::DescriptorPoolInfo descriptorPoolInfo;
+            DescriptorPool::DescriptorPoolInfo descriptorPoolInfo{};
             VkDeviceSize globalBufferSize = 0;
 
-            vector<VkVertexInputBindingDescription> vertexBindings;
-            vector<VkVertexInputAttributeDescription> vertexAttributes;
+            vector<VkVertexInputBindingDescription> vertexBindings{};
+            vector<VkVertexInputAttributeDescription> vertexAttributes{};
 
-            VkPipelineViewportStateCreateInfo viewportInfo;
-            VkPipelineVertexInputStateCreateInfo vertexInputInfo;
-            VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-            VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-            VkPipelineMultisampleStateCreateInfo multisampleInfo;
-            VkPipelineColorBlendAttachmentState colorBlendAttachment;
-            VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-            VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-            VkDynamicState dynamicStateEnables[2];
-            VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+            VkPipelineViewportStateCreateInfo viewportInfo{};
+            VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+            VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{};
+            VkPipelineRasterizationStateCreateInfo rasterizationInfo{};
+            VkPipelineMultisampleStateCreateInfo multisampleInfo{};
+            VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+            VkPipelineColorBlendStateCreateInfo colorBlendInfo{};
+            VkPipelineDepthStencilStateCreateInfo depthStencilInfo{};
+            VkDynamicState dynamicStateEnables[2]{};
+            VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
             uint32_t subpass = 0;
         };
 

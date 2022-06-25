@@ -121,9 +121,8 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         mge::CreateSwapChain({ (mge::uint32_t)screenWidth, (mge::uint32_t)screenHeight });
         mge::CreateSampler();
 
-        mge::Asset::LoadAllAssets();
+        mge::Asset::SortAssetTypes();
         mge::Node::SortNodeTypes();
-        mge::Node::scene = new mge::Node();
         mge::StartGameLoop();
     }
         return 0;
