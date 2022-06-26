@@ -8,13 +8,13 @@
 namespace mge {
     class Camera : public Node {
     public:
-        Vector3 position{0.f, 0.f, 0.f};
+        Vector3 position{ 0.f, 0.f, 0.f };
         Quaternion rotation{};
 
-        float32_t fov{60.f};
-        Color8 clearColor{10, 10, 10, 255};
-        float32_t nearPlane{.01f};
-        float32_t farPlane{1000.f};
+        float32_t fov{ 60.f };
+        Color32f clearColor{ .01f, .01f, .01f, 1.f };
+        float32_t nearPlane{ .001f };
+        float32_t farPlane{ 1000.f };
 
         Camera() = default;
         Camera(const Camera&) = delete;

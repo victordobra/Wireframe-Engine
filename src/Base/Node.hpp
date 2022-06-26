@@ -24,6 +24,8 @@ namespace mge {
                 PROPERTY_TYPE_VEC4,
                 PROPERTY_TYPE_QUAT,
                 PROPERTY_TYPE_MAT4X4,
+                PROPERTY_TYPE_COLOR,
+                PROPERTY_TYPE_COLORF,
                 PROPERTY_TYPE_ASSET_PTR
             };
             enum PropertyAccess : uint32_t {
@@ -62,6 +64,10 @@ namespace mge {
                     prop.type = PROPERTY_TYPE_QUAT;
                 else if(prop.hashCode == typeid(Matrix4x4).hash_code())
                     prop.type = PROPERTY_TYPE_MAT4X4;
+                else if(prop.hashCode == typeid(Color8).hash_code() || prop.hashCode == typeid(Color16).hash_code() || prop.hashCode == typeid(Color32).hash_code() || prop.hashCode == typeid(Color64).hash_code())
+                    prop.type = PROPERTY_TYPE_COLOR;
+                else if(prop.hashCode == typeid(Color32f).hash_code() || prop.hashCode == typeid(Color64f).hash_code())
+                    prop.type = PROPERTY_TYPE_COLORF;
                 else 
                     prop.type = PROPERTY_TYPE_OTHER;
 
@@ -133,12 +139,82 @@ namespace mge {
         /// @return A pointer to the specific node type, or a nullptr if it doesn't exist.
         static NodeType* GetNodeType(size_t hashCode);
         /// @brief Creates a node of the specified type.
-        /// @return A pointe to the newly created node.
+        /// @tparam T The type of node to create
+        /// @return A pointer to the newly created node.
         template<class T>
         static T* CreateNode() {
             NodeType* nodeType = GetNodeType(typeid(T).hash_code());
             assert(nodeType && "The inputted type must be a node!");
             return dynamic_cast<T*>(nodeType->create());
+        }
+        /// @brief Finds a node with the specified type from the specified parent.
+        /// @tparam T The type of the node to look for.
+        /// @param start The starting point for the search (defaulted as Node::scene).
+        /// @param checkStart If the function should check the start node for the given type (defaulted as false).
+        /// @return A pointer to the node with the specified type, or a nullptr if it doesn't exist.
+        template<class T>
+        static T* FindNodeWithType(Node* start = scene, bool8_t checkStart = false) {
+            // Assert that the inputted type must be a node type
+            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            assert(nodeType && "The inputted type must be a node type!");
+
+            // Check the start node if checkStart is set to true
+            if(checkStart && start->nodeType == nodeType)
+                return dynamic_cast<T*>(start);
+
+            // Recursively search for the node
+            for(auto* child : start->children) {
+                Node* ptr = FindNodeWithType<T>(child, true);
+                if(ptr)
+                    return dynamic_cast<T*>(ptr);
+            }
+            // The node hasn't been found. Return a nullptr
+            return nullptr;
+        }
+        /// @brief Finds every node with the specified type from the specified parent.
+        /// @tparam T The type of the node to look for.
+        /// @param start The starting point for the search (defaulted as Node::scene).
+        /// @param checkStart If the function should check the start node for the given type (defaulted as false).
+        /// @return A vector with pointers to every node with the specified type.
+        template<class T>
+        static T* FindNodesWithType(Node* start = scene, bool8_t checkStart = false) {
+            // Assert that the inputted type must be a node type
+            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            assert(nodeType && "The inputted type must be a node type!");
+
+            vector<T*> nodes;
+
+            // Check the start node if checkStart is set to true
+            if(checkStart && start->nodeType == nodeType)
+                nodes.push_back(start);
+
+            // Recursively search for every node
+            for(auto* child : start->children) {
+                vector<T*> childNodes = FindNodesWithType<T>(child, true);
+                nodes.insert(nodes.end(), childNodes.begin(), childNodes.end());
+            }
+
+            // Return the node vector
+            return nodes;
+        }
+        /// @brief Find the node with the specified name from the specified parent.
+        /// @param name THe name of the node.
+        /// @param start The starting point for the search (defaulted as Node::scene).
+        /// @param checkStart If the function should check the start node for the given name (defaulted as false).
+        /// @return A pointer to the node with the specified name, or a nullptr if it doesn't exist.
+        static Node* FindNodeWithName(const string& name, Node* start = scene, bool8_t checkStart = false) {
+            // Check the start node if checkStart is set to true
+            if(checkStart && start->name == name)
+                return start;
+
+            // Recursively search for the node
+            for(auto* child : start->children) {
+                Node* ptr = FindNodeWithName(name, child, true);
+                if(ptr)
+                    return ptr;
+            }
+            // The node hasn't been found. Return a nullptr
+            return nullptr;
         }
 
         virtual ~Node();

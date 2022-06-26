@@ -41,7 +41,7 @@ namespace mge {
 
 		VkClearValue clearValues[2]{};
 
-		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
+		clearValues[0].color = { clearColor.r, clearColor.g, clearColor.b, clearColor.a };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		renderPassInfo.clearValueCount = 2;
@@ -103,5 +103,7 @@ namespace mge {
     MGE_ADD_NODE_PROPERTY(rotation, PUBLIC)
     MGE_ADD_NODE_PROPERTY(fov, PUBLIC)
     MGE_ADD_NODE_PROPERTY(clearColor, PUBLIC)
+	MGE_ADD_NODE_PROPERTY(nearPlane, PUBLIC)
+	MGE_ADD_NODE_PROPERTY(farPlane, PUBLIC)
     MGE_END_NODE(Camera)
 }
