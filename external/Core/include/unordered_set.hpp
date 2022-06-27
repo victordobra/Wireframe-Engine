@@ -12,24 +12,26 @@ namespace mge {
             Value value{};
             node* next{nullptr};
 
-            node() = default;
-            node(const node&) = default;
-            node(node&&) noexcept = default;
-            node(Value v, node* next = nullptr) : value(v), next(next) { }
+            constexpr node() = default;
+            constexpr node(const node&) = default;
+            constexpr node(node&&) noexcept = default;
+            constexpr node(Value v, node* next = nullptr) : value(v), next(next) { 
+
+            }
 
             node& operator=(const node&) = default;
             node& operator=(node&&) noexcept = default;
 
-            ~node() {
+            constexpr ~node() {
                 delete next;
             }
         };
 
-        unordered_set() : bucketCount(16), allocatedBuckets(0), buckets(new node*[bucketCount]) { 
+        constexpr unordered_set() : bucketCount(16), allocatedBuckets(0), buckets(new node*[bucketCount]) { 
             for(size_t i = 0; i < bucketCount; i++)
                 buckets[i] = nullptr;
         }
-        unordered_set(const unordered_set& other) : bucketCount(other.bucketCount), allocatedBuckets(other.allocatedBuckets), buckets(new node*[other.bucketCount]) {
+        constexpr unordered_set(const unordered_set& other) : bucketCount(other.bucketCount), allocatedBuckets(other.allocatedBuckets), buckets(new node*[other.bucketCount]) {
             //Copy all of the buckets
             for(size_t i = 0; i < bucketCount; i++) {
                 buckets[i] = nullptr;
@@ -46,13 +48,13 @@ namespace mge {
                 }
             }
         }
-        unordered_set(unordered_set&& other) noexcept : bucketCount(other.bucketCount), allocatedBuckets(other.allocatedBuckets), buckets(other.buckets) {
+        constexpr unordered_set(unordered_set&& other) noexcept : bucketCount(other.bucketCount), allocatedBuckets(other.allocatedBuckets), buckets(other.buckets) {
             //Unasign the other map's buckets
             other.buckets = nullptr;
             other.bucketCount = 0;
             other.allocatedBuckets = 0;
         }
-        unordered_set(size_t bucketCount) : bucketCount(bucketCount), allocatedBuckets(0), buckets(new node*[bucketCount]) {
+        constexpr unordered_set(size_t bucketCount) : bucketCount(bucketCount), allocatedBuckets(0), buckets(new node*[bucketCount]) {
             for(size_t i = 0; i < bucketCount; i++)
                 buckets[i] = nullptr;
         }
@@ -241,7 +243,7 @@ namespace mge {
             return bucketCount; 
             }
         
-        ~unordered_set() {
+        constexpr ~unordered_set() {
             for(size_t i = 0; i < bucketCount; i++)
                 delete buckets[i];
             delete[] buckets;

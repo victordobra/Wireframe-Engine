@@ -16,7 +16,14 @@ namespace mge {
         size_t hashCode{};
         size_t ptrHashCode{};
 
-        Asset*(*create)();
+        Asset*(*create)(){};
+
+        constexpr AssetType() = default;
+        constexpr AssetType(const AssetType&) = default;
+        constexpr AssetType(AssetType&&) noexcept = default;
+
+        AssetType& operator=(const AssetType&) = default;
+        AssetType& operator=(AssetType&&) noexcept = default;
 
         bool8_t operator==(const AssetType& other) const {
             return hashCode == other.hashCode;
@@ -33,6 +40,8 @@ namespace mge {
         bool8_t operator>=(const AssetType& other) const {
             return hashCode >= other.hashCode;
         }
+
+        constexpr ~AssetType() = default;
     };
 
     class Asset {

@@ -87,9 +87,9 @@ namespace mge {
 
         string line;
         // Process every line of the file
-        while(input.Tell() != fileLength) {
+        while(!input.IsAtTheEnd()) {
             line = "";
-            input.GetLine(line, 100001);
+            input.ReadLine(line, 100001);
 
             // If the line begins with #, it is a comment, skip it
             if(line[0] == '#')
@@ -181,14 +181,14 @@ namespace mge {
         vector<uint32_t> indices;
 
         // Read all of the vertices from the file
-        input.Get((char_t*)&vertexCount, sizeof(uint32_t));
+        input.ReadBuffer((char_t*)&vertexCount, sizeof(uint32_t));
         vertices.resize(vertexCount);
-        input.Get((char_t*)vertices.data(), sizeof(Vertex) * vertexCount);
+        input.ReadBuffer((char_t*)vertices.data(), sizeof(Vertex) * vertexCount);
 
         // Read all of the indices from the file
-        input.Get((char_t*)&indexCount, sizeof(uint32_t));
+        input.ReadBuffer((char_t*)&indexCount, sizeof(uint32_t));
         indices.resize(indexCount);
-        input.Get((char_t*)indices.data(), sizeof(uint32_t) * indexCount);
+        input.ReadBuffer((char_t*)indices.data(), sizeof(uint32_t) * indexCount);
 
         // Create the vertex and index buffers
         CreateVertexBuffer(vertices);

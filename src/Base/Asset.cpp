@@ -54,7 +54,7 @@ namespace mge {
     void Asset::LoadFromFile(const string& fileLocation) {
         FileInput input(fileLocation);
 
-        input.Get((char_t*)this, sizeof(*this));
+        input.ReadBuffer((char_t*)this, sizeof(*this));
 
         input.Close();
     }

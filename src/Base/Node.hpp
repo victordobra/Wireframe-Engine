@@ -80,7 +80,14 @@ namespace mge {
         string name{};
         size_t hashCode{};
         vector<Property> properties{};
-        Node*(*create)();
+        Node*(*create)(){};
+
+        constexpr NodeType() = default;
+        constexpr NodeType(const NodeType&) = default;
+        constexpr NodeType(NodeType&&) noexcept = default;
+
+        NodeType& operator=(const NodeType&) = default;
+        NodeType& operator=(NodeType&&) noexcept = default;
 
         bool8_t operator==(const NodeType& other) const {
             return hashCode == other.hashCode;
@@ -97,6 +104,8 @@ namespace mge {
         bool8_t operator>=(const NodeType& other) const {
             return hashCode >= other.hashCode;
         }
+
+        constexpr ~NodeType() = default;
     };
 
     class Node : public Asset {

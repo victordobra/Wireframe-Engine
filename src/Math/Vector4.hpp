@@ -75,7 +75,7 @@ namespace mge {
 		/// @brief Returns the length of the vector.
 		float32_t Magnitude() const { return sqrtf(x * x + y * y + z * z + w * w); }
 		/// @brief Returns the square of the length of the vector.
-		float32_t SqrMagnitude() const { return x * x + y * y + z * z, w * w; }
+		float32_t SqrMagnitude() const { return x * x + y * y + z * z + w * w; }
 		/// @brief Reduces the vector's length to 1.
 		Vector4& Normalize() {
 			float32_t sqrMag = SqrMagnitude();

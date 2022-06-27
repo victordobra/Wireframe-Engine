@@ -18,20 +18,19 @@ namespace mge {
 
         static constexpr size_type MAX_SIZE = 16777216; //2 ^ 24
 
-        vector() : _size(0), _capacity(0), _data(nullptr) { 
+        constexpr vector() : _size(0), _capacity(0), _data(nullptr) { 
 
         }
-        vector(const vector& other) : _size(other._size), _capacity(other._capacity), _data(new value_type[_capacity]) {
+        constexpr vector(const vector& other) : _size(other._size), _capacity(other._capacity), _data(new value_type[_capacity]) {
             // Copy everything from the other vector
             for(size_type i = 0; i < _size; ++i)
                 _data[i] = other._data[i];
         }
-        vector(vector&& other) noexcept : _size(other._size), _capacity(other._capacity), _data(other._data) {
+        constexpr vector(vector&& other) noexcept : _size(other._size), _capacity(other._capacity), _data(other._data) {
             // Unassign the other vector's data pointer
             other._data = nullptr;
         }
-
-        vector(size_type _size) : _size(_size), _capacity(1) { 
+        constexpr vector(size_type _size) : _size(_size), _capacity(1) { 
             // Find the lowest possible capacity
             while(_capacity < _size) {
                 _capacity = _capacity << 1;
@@ -39,7 +38,7 @@ namespace mge {
             // Create the data
             _data = new value_type[_capacity];
         }
-        vector(std::initializer_list<value_type> _list) : _size(_list.size()), _capacity(1) {
+        constexpr vector(std::initializer_list<value_type> _list) : _size(_list.size()), _capacity(1) {
             // Find the lowest possible capacity
             while(_capacity < _size) {
                 _capacity = _capacity << 1;
@@ -52,7 +51,7 @@ namespace mge {
             for(size_type i = 0; i < _size; ++i)
                 _data[i] = *p++;
         }
-        vector(const_pointer begin, const_pointer end) : _size((size_type)(end - begin)), _capacity(1) {
+        constexpr vector(const_pointer begin, const_pointer end) : _size((size_type)(end - begin)), _capacity(1) {
             // Find the lowest possible capacity
             while(_capacity < _size) {
                 _capacity = _capacity << 1;
@@ -343,7 +342,7 @@ namespace mge {
         pointer       data()           { return _data;     }
         const_pointer data()     const { return _data;     }
 
-        ~vector() {
+        constexpr ~vector() {
             delete[] _data;
         }
     private:

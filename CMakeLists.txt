@@ -40,7 +40,7 @@ message(STATUS "Include directories added.")
 # Add the link directories and link the libraries
 target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
 message(STATUS "Link directories added.")
-target_link_libraries(${PROJECT_NAME} MG-Engine-Core-x64 vulkan-x64)
+target_link_libraries(${PROJECT_NAME} MG-Engine-Core-x86_64 vulkan-x86_64)
 message(STATUS "Link libraries added.")
 
 # Find all shaders in the project

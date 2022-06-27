@@ -7,14 +7,14 @@ namespace mge {
         T1 val1{};
         T2 val2{};
 
-        pair() { val1 = {}; val2 = {}; }
-        pair(const pair&) = default;
-        pair(pair&&) noexcept = default;
-        pair(T1 v1, T2 v2) : val1(v1), val2(v2) { }
+        constexpr pair() = default;
+        constexpr pair(const pair&) = default;
+        constexpr pair(pair&&) noexcept = default;
+        constexpr pair(T1 v1, T2 v2) : val1(v1), val2(v2) { }
 
         pair& operator=(const pair&) = default;
         pair& operator=(pair&&) noexcept = default;
 
-        ~pair() = default;
+        constexpr ~pair() = default;
     };
 }

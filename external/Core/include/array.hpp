@@ -14,9 +14,9 @@ namespace mge {
         typedef value_type*       pointer;
         typedef const value_type* const_pointer;
 
-        array() = default;
-        array(const array&) = default;
-        array(array&&) noexcept = default;
+        constexpr array() = default;
+        constexpr array(const array&) = default;
+        constexpr array(array&&) noexcept = default;
         
         array(std::initializer_list<value_type> list) {
             size_t minSize = (list.size() < _size) ? list.size() : _size;
@@ -72,7 +72,7 @@ namespace mge {
             }
         }
 
-        ~array() = default;
+        constexpr ~array() = default;
     private:
         value_type arr[_size]{};
     };

@@ -33,10 +33,10 @@ namespace mge {
     void Node::LoadFromStream(FileInput& stream) {
         // Load the node's name
         uint64_t nameLength{};
-        stream.Get((char_t*)&nameLength, sizeof(uint64_t));
+        stream.ReadBuffer((char_t*)&nameLength, sizeof(uint64_t));
         name.resize(nameLength);
 
-        stream.Get((char_t*)name.c_str(), nameLength * sizeof(char_t));
+        stream.ReadBuffer((char_t*)name.c_str(), nameLength * sizeof(char_t));
         name[nameLength] = 0;
 
         // Load every single property
@@ -45,12 +45,12 @@ namespace mge {
 
         // Load the number of children
         uint64_t childCount;
-        stream.Get((char_t*)&childCount, sizeof(uint64_t));
+        stream.ReadBuffer((char_t*)&childCount, sizeof(uint64_t));
 
         // Create every child
         for(size_t i = 0; i < childCount; ++i) {
             size_t hashCode;
-            stream.Get((char_t*)&hashCode, sizeof(size_t));
+            stream.ReadBuffer((char_t*)&hashCode, sizeof(size_t));
             
             Node* child = GetNodeType(hashCode)->create();
             child->SetParent(this);
@@ -72,12 +72,14 @@ namespace mge {
         stream.WriteBuffer((char_t*)&childCount, sizeof(uint64_t));
 
         // Save every child
-        for(size_t i = 0; i < childCount; ++i) {
-            size_t hashCode = typeid(*children[i]).hash_code();
-            stream.WriteBuffer((char_t*)&hashCode, sizeof(size_t));
-            
-            children[i]->SaveToStream(stream);
-        }
+        for(size_t i = 0; i < childCount; ++i) 
+            if(children[i]) {
+                Node& ref = *children[i];
+                size_t hashCode = typeid(ref).hash_code();
+                stream.WriteBuffer((char_t*)&hashCode, sizeof(size_t));
+                
+                children[i]->SaveToStream(stream);
+            }
     }
 
     Node* Node::GetParent() const {
@@ -126,10 +128,10 @@ namespace mge {
             string& str = *(string*)address;
 
             uint64_t length{};
-            input.Get((char_t*)&length, sizeof(uint64_t));
+            input.ReadBuffer((char_t*)&length, sizeof(uint64_t));
             str.resize(length);
 
-            input.Get((char_t*)str.c_str(), length * sizeof(char_t));
+            input.ReadBuffer((char_t*)str.c_str(), length * sizeof(char_t));
             str[length] = 0;
             
             break;
@@ -139,10 +141,10 @@ namespace mge {
             string str{};
 
             uint64_t length{};
-            input.Get((char_t*)&length, sizeof(uint64_t));
+            input.ReadBuffer((char_t*)&length, sizeof(uint64_t));
             str.resize(length);
 
-            input.Get((char_t*)str.c_str(), length * sizeof(char_t));
+            input.ReadBuffer((char_t*)str.c_str(), length * sizeof(char_t));
             str[length] = 0;
 
             Asset*& ptr = *(Asset**)address;
@@ -161,7 +163,7 @@ namespace mge {
             break;
         }
         default:
-            input.Get(address, prop.size);
+            input.ReadBuffer(address, prop.size);
             break;
         }
     }

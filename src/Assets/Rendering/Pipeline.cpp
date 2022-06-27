@@ -235,7 +235,7 @@ namespace mge {
 
 		// Read all of the shader stages
 		uint64_t shaderStageCount{};
-		input.Get((char_t*)&shaderStageCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&shaderStageCount, sizeof(uint64_t));
 
 		pipelineInfo.shaderStages.resize(shaderStageCount);
 		
@@ -243,69 +243,69 @@ namespace mge {
 			string location{};
 
 			uint64_t stringLength{};
-			input.Get((char_t*)&stringLength, sizeof(uint64_t));
+			input.ReadBuffer((char_t*)&stringLength, sizeof(uint64_t));
 			location.resize(stringLength);
 
-			input.Get((char_t*)location.c_str(), stringLength * sizeof(char_t));
+			input.ReadBuffer((char_t*)location.c_str(), stringLength * sizeof(char_t));
 			location[stringLength] = 0;
 
 			Shader* shader = Asset::GetOrCreateAssetWithLocation<Shader>(location);
 			pipelineInfo.shaderStages[i].shader = shader;
-			input.Get((char_t*)&pipelineInfo.shaderStages[i].shaderStage, sizeof(VkShaderStageFlagBits));
+			input.ReadBuffer((char_t*)&pipelineInfo.shaderStages[i].shaderStage, sizeof(VkShaderStageFlagBits));
 		}
 
 		// Read the push constant ranges
 		uint64_t pushConstantRangeCount{};
-		input.Get((char_t*)&pushConstantRangeCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&pushConstantRangeCount, sizeof(uint64_t));
 		pipelineInfo.pushConstantRanges.resize((size_t)pushConstantRangeCount);
-		input.Get((char_t*)pipelineInfo.pushConstantRanges.data(), pushConstantRangeCount * sizeof(VkPushConstantRange));
+		input.ReadBuffer((char_t*)pipelineInfo.pushConstantRanges.data(), pushConstantRangeCount * sizeof(VkPushConstantRange));
 
 		// Read the descriptor pool sizes
 		uint64_t descriptorPoolSizeCount{};
-		input.Get((char_t*)&descriptorPoolSizeCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&descriptorPoolSizeCount, sizeof(uint64_t));
 		pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(descriptorPoolSizeCount);
-		input.Get((char_t*)pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.data(), descriptorPoolSizeCount * sizeof(VkDescriptorPoolSize));
+		input.ReadBuffer((char_t*)pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.data(), descriptorPoolSizeCount * sizeof(VkDescriptorPoolSize));
 
 		// Read the descriptor set layouts
 		uint64_t descriptorSetLayoutCount{};
-		input.Get((char_t*)&descriptorSetLayoutCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&descriptorSetLayoutCount, sizeof(uint64_t));
 		pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(descriptorSetLayoutCount);
 
 		for(uint64_t i = 0; i < descriptorSetLayoutCount; ++i) {
 			uint64_t bindingCount{};
-			input.Get((char_t*)&bindingCount, sizeof(uint64_t));
+			input.ReadBuffer((char_t*)&bindingCount, sizeof(uint64_t));
 			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings.resize(bindingCount);
-			input.Get((char_t*)pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings.data(), bindingCount * sizeof(VkDescriptorSetLayoutBinding));
+			input.ReadBuffer((char_t*)pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings.data(), bindingCount * sizeof(VkDescriptorSetLayoutBinding));
 		}
 
 		// Read the descriptor pool create flags
-		input.Get((char_t*)&pipelineInfo.descriptorPoolInfo.poolCreateFlags, sizeof(VkDescriptorPoolCreateFlags));
-		input.Get((char_t*)&pipelineInfo.globalBufferSize, sizeof(VkDeviceSize));
+		input.ReadBuffer((char_t*)&pipelineInfo.descriptorPoolInfo.poolCreateFlags, sizeof(VkDescriptorPoolCreateFlags));
+		input.ReadBuffer((char_t*)&pipelineInfo.globalBufferSize, sizeof(VkDeviceSize));
 
 		// Read the vertex bindings
 		uint64_t vertexBindingCount{};
-		input.Get((char_t*)&vertexBindingCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&vertexBindingCount, sizeof(uint64_t));
 		pipelineInfo.vertexBindings.resize((size_t)vertexBindingCount);
-		input.Get((char_t*)pipelineInfo.vertexBindings.data(), vertexBindingCount * sizeof(VkVertexInputBindingDescription));
+		input.ReadBuffer((char_t*)pipelineInfo.vertexBindings.data(), vertexBindingCount * sizeof(VkVertexInputBindingDescription));
 
 		// Read the vertex attributes
 		uint64_t vertexAttributeCount{};
-		input.Get((char_t*)&vertexAttributeCount, sizeof(uint64_t));
+		input.ReadBuffer((char_t*)&vertexAttributeCount, sizeof(uint64_t));
 		pipelineInfo.vertexAttributes.resize((size_t)vertexAttributeCount);
-		input.Get((char_t*)pipelineInfo.vertexAttributes.data(), vertexAttributeCount * sizeof(VkVertexInputAttributeDescription));
+		input.ReadBuffer((char_t*)pipelineInfo.vertexAttributes.data(), vertexAttributeCount * sizeof(VkVertexInputAttributeDescription));
 
 		// Read the rest of the pipeline info
-		input.Get((char_t*)&pipelineInfo.viewportInfo, sizeof(VkPipelineViewportStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.vertexInputInfo, sizeof(VkPipelineVertexInputStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.inputAssemblyInfo, sizeof(VkPipelineInputAssemblyStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.rasterizationInfo, sizeof(VkPipelineRasterizationStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.multisampleInfo, sizeof(VkPipelineMultisampleStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.colorBlendAttachment, sizeof(VkPipelineColorBlendAttachmentState));
-		input.Get((char_t*)&pipelineInfo.colorBlendInfo, sizeof(VkPipelineColorBlendStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.depthStencilInfo, sizeof(VkPipelineDepthStencilStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.dynamicStateEnables, 2 * sizeof(VkDynamicState));
-		input.Get((char_t*)&pipelineInfo.dynamicStateInfo, sizeof(VkPipelineDynamicStateCreateInfo));
-		input.Get((char_t*)&pipelineInfo.subpass, sizeof(uint32_t));
+		input.ReadBuffer((char_t*)&pipelineInfo.viewportInfo, sizeof(VkPipelineViewportStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.vertexInputInfo, sizeof(VkPipelineVertexInputStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.inputAssemblyInfo, sizeof(VkPipelineInputAssemblyStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.rasterizationInfo, sizeof(VkPipelineRasterizationStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.multisampleInfo, sizeof(VkPipelineMultisampleStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.colorBlendAttachment, sizeof(VkPipelineColorBlendAttachmentState));
+		input.ReadBuffer((char_t*)&pipelineInfo.colorBlendInfo, sizeof(VkPipelineColorBlendStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.depthStencilInfo, sizeof(VkPipelineDepthStencilStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.dynamicStateEnables, 2 * sizeof(VkDynamicState));
+		input.ReadBuffer((char_t*)&pipelineInfo.dynamicStateInfo, sizeof(VkPipelineDynamicStateCreateInfo));
+		input.ReadBuffer((char_t*)&pipelineInfo.subpass, sizeof(uint32_t));
 
 		input.Close();
 

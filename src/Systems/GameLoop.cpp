@@ -68,7 +68,9 @@ namespace mge {
     void StartGameLoop() {
         // Load the scene
         Node::scene = new Node();
+        
         Node::scene->Load("Scene.node");
+        Node::scene->Save("Scene.node");
 
         // Find all nodes reccursively
         vector<Node*> nodes;

@@ -8,10 +8,34 @@ namespace mge {
     public:
         static constexpr size_t MAX_SIZE = 16777216; //2 ^ 24
 
-        string();
-        string(const string& other);
-        string(string&& other) noexcept;
-        string(const char_t* other);
+        constexpr string() : str(nullptr), _capacity(0) { 
+        
+        }
+        constexpr string(const string& other) : _capacity(other._capacity), str(new char_t[other._capacity]) {
+            //Copy the string over
+            memcpy(str, other.str, _capacity * sizeof(char_t));
+        }
+        constexpr string(string&& other) noexcept : _capacity(other._capacity), str(other.str) {
+            //Unassign the other vector's string pointer
+            other.str = nullptr;
+        }
+        constexpr string(const char_t* other) : _capacity(1), str(nullptr) {
+            // Get the size of the string
+            size_t sSize = 1;
+
+            for(const char_t* ptr = other; *ptr; ++ptr)
+                ++sSize;
+
+            assert((sSize <= MAX_SIZE) && "The string's size bust be lower than or equal to MAX_SIZE!");
+
+            // Find the lowest possible capacity
+            while(_capacity < sSize) {
+                _capacity = _capacity << 1;
+            }
+
+            str = new char_t[_capacity];
+            memcpy(str, other, sSize);
+        }
 
         string& operator=(const string& other);
         string& operator=(string&& other) noexcept;
@@ -50,21 +74,17 @@ namespace mge {
         char_t*       data()           { return str; }
         const char_t* data()     const { return str; }
         size_t        size()     const { 
-            size_t size = 0;
-            
-            for(; size < _capacity && str[size]; size++) { }
-            return size;
+            return strnlen_s(str, _capacity);
         }
         size_t        length()   const { 
-            size_t size = 0;
-            
-            for(; size < _capacity && str[size]; size++) { }
-            return size;
+            return strnlen_s(str, _capacity);
         }
         size_t        max_size() const { return MAX_SIZE; }
         size_t        capacity()       { return _capacity; }
 
-        ~string();
+        constexpr ~string()  {
+            delete[] str;
+        }
     private:
         char_t* str{};
         size_t _capacity{};

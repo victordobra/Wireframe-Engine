@@ -46,18 +46,18 @@ namespace mge {
         // Load the shader location from the file
         string shaderLocation;
         uint64_t len64;
-        input.Get((char_t*)&len64, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&len64, sizeof(uint64_t));
         shaderLocation.resize((size_t)len64);
-        input.Get((char_t*)shaderLocation.c_str(), len64 * sizeof(char_t));
+        input.ReadBuffer((char_t*)shaderLocation.c_str(), len64 * sizeof(char_t));
         shaderLocation[len64] = 0;
 
         // Calculate the total size
         uint64_t imageCount = 0;
         VkDeviceSize size = 0;
         
-        input.Get((char_t*)&size, sizeof(VkDeviceSize));
+        input.ReadBuffer((char_t*)&size, sizeof(VkDeviceSize));
         char_t* data = new char_t[size];
-        input.Get(data, size * sizeof(char_t));
+        input.ReadBuffer(data, size * sizeof(char_t));
 
         // Create every buffer
         if(size)
@@ -71,17 +71,17 @@ namespace mge {
             }
         
         // Load every image
-        input.Get((char_t*)&imageCount, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&imageCount, sizeof(uint64_t));
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
             images[i].resize(imageCount);
 
         for(size_t i = 0; i < imageCount; ++i) {
             // Load the image's file path
-            input.Get((char_t*)&len64, sizeof(uint64_t));
+            input.ReadBuffer((char_t*)&len64, sizeof(uint64_t));
             string imageLocation{};
             imageLocation.resize(len64);
 
-            input.Get((char_t*)imageLocation.c_str(), len64 * sizeof(char_t));
+            input.ReadBuffer((char_t*)imageLocation.c_str(), len64 * sizeof(char_t));
             imageLocation[len64] = 0;
 
             // Load the first image

@@ -37,10 +37,10 @@ namespace mge {
         FileInput& Close();
 
         FileInput& Get();
-        FileInput& Get(char_t& c);
-        FileInput& Get(char_t* buffer, size_t count);
+        FileInput& ReadBuffer(char_t& c);
+        FileInput& ReadBuffer(char_t* buffer, size_t count);
 
-        FileInput& GetLine(string& str, size_t size, char_t sep = '\n');
+        FileInput& ReadLine(string& str, size_t size, char_t sep = '\n');
 
         FileInput& Read(sint8_t  & num, const char_t* sep = " \n");
         FileInput& Read(sint16_t & num, const char_t* sep = " \n");

@@ -11,7 +11,7 @@ namespace mge {
         size_t size = input.Tell();
         input.Seek(0);
         char_t* data = (char_t*)malloc(size);
-        input.Get(data, size);
+        input.ReadBuffer(data, size);
 
         input.Close();
 
@@ -40,7 +40,7 @@ namespace mge {
 
         // Read the number of properties
         uint64_t propertyCount{};
-        input.Get((char_t*)&propertyCount, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&propertyCount, sizeof(uint64_t));
 
         // Read every property
         for(size_t i = 0; i < propertyCount; i++) {
@@ -48,14 +48,14 @@ namespace mge {
 
             // Read the string
             uint64_t stringLength{};
-            input.Get((char_t*)&stringLength, sizeof(uint64_t));
+            input.ReadBuffer((char_t*)&stringLength, sizeof(uint64_t));
             property.name.resize((size_t)stringLength);
 
-            input.Get((char_t*)property.name.c_str(), stringLength * sizeof(char_t));
+            input.ReadBuffer((char_t*)property.name.c_str(), stringLength * sizeof(char_t));
             property.name[stringLength] = 0;
 
             // Read the type
-            input.Get((char_t*)&property.type, sizeof(ShaderProperty::ShaderPropertyType));
+            input.ReadBuffer((char_t*)&property.type, sizeof(ShaderProperty::ShaderPropertyType));
 
             // Insert the property into the map
             properties.push_back(property);
@@ -63,35 +63,35 @@ namespace mge {
 
         // Read the SPIR-V binary file location
         uint64_t stringLength{};
-        input.Get((char_t*)&stringLength, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&stringLength, sizeof(uint64_t));
         spirvPath.resize((size_t)stringLength);
 
-        input.Get((char_t*)spirvPath.c_str(), stringLength * sizeof(char_t));
+        input.ReadBuffer((char_t*)spirvPath.c_str(), stringLength * sizeof(char_t));
         spirvPath[stringLength] = 0;
 
         LoadFromBinary(spirvPath);
 
         // Read the pipeline location
         string pipelineLocation;
-        input.Get((char_t*)&stringLength, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&stringLength, sizeof(uint64_t));
         pipelineLocation.resize((size_t)stringLength);
 
-        input.Get((char_t*)pipelineLocation.c_str(), stringLength * sizeof(char_t));
+        input.ReadBuffer((char_t*)pipelineLocation.c_str(), stringLength * sizeof(char_t));
         pipelineLocation[stringLength] = 0;
 
         // Read the locations of every material
         uint64_t materialCount{};
-        input.Get((char_t*)&materialCount, sizeof(uint64_t));
+        input.ReadBuffer((char_t*)&materialCount, sizeof(uint64_t));
 
         for(uint64_t i = 0; i < materialCount; ++i) {
             // Read the location of the material
             string materialLocation;
             uint64_t stringLength{};
 
-            input.Get((char_t*)&stringLength, sizeof(uint64_t));
+            input.ReadBuffer((char_t*)&stringLength, sizeof(uint64_t));
             materialLocation.resize((size_t)stringLength);
 
-            input.Get((char_t*)materialLocation.c_str(), stringLength * sizeof(char_t));
+            input.ReadBuffer((char_t*)materialLocation.c_str(), stringLength * sizeof(char_t));
             materialLocation[stringLength] = 0;
 
             // Load the material from the file

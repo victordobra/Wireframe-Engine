@@ -13,24 +13,28 @@ namespace mge {
             Value value;
             node* next{nullptr};
 
-            node() = default;
-            node(const node&) = default;
-            node(node&&) noexcept = default;
-            node(Key k) : key(k) { }
-            node(Key k, Value v, node* next = nullptr) : key(k), value(v), next(next) { }
+            constexpr node() = default;
+            constexpr node(const node&) = default;
+            constexpr node(node&&) noexcept = default;
+            constexpr node(Key k) : key(k) { 
+
+            }
+            constexpr node(Key k, Value v, node* next = nullptr) : key(k), value(v), next(next) { 
+
+            }
 
             node& operator=(const node&) = default;
             node& operator=(node&&) noexcept = default;
 
-            ~node() {
+            constexpr ~node() {
                 delete next;
             }
         };
 
-        unordered_map() : bucketCount(16), allocatedBucketCount(0), buckets(new node[bucketCount]) {
+        constexpr unordered_map() : bucketCount(16), allocatedBucketCount(0), buckets(new node[bucketCount]) {
 
         }
-        unordered_map(const unordered_map& other) : bucketCount(other.bucketCount), allocatedBucketCount(other.allocatedBuckets), buckets(new node[bucketCount]) {
+        constexpr unordered_map(const unordered_map& other) : bucketCount(other.bucketCount), allocatedBucketCount(other.allocatedBuckets), buckets(new node[bucketCount]) {
             // Copy every bucket
             for(size_t i = 0; i < bucketCount; ++i) {
                 // Copy the linked list at every bucket
@@ -46,7 +50,7 @@ namespace mge {
                 }
             }
         }
-        unordered_map(unordered_map&& other) noexcept : bucketCount(other.bucketCount), allocatedBucketCount(other.allocatedBucketCount), buckets(other.buckets) {
+        constexpr unordered_map(unordered_map&& other) noexcept : bucketCount(other.bucketCount), allocatedBucketCount(other.allocatedBucketCount), buckets(other.buckets) {
             // Unkink the buckets from the other map
             other.buckets = nullptr;
         }
@@ -269,7 +273,7 @@ namespace mge {
             return bucketCount; 
         }
 
-        ~unordered_map() {
+        constexpr ~unordered_map() {
             delete[] buckets;
         }
     private:

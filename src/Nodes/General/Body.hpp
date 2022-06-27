@@ -11,8 +11,8 @@ namespace mge {
         Vector3 scale{ 1.f, 1.f, 1.f };
 
         Body() = default;
-        Body(const Body&) = default;
-        Body(Body&&) noexcept = default;
+        Body(const Body&) = delete;
+        Body(Body&&) noexcept = delete;
 
         Body& operator=(const Body&) = delete;
         Body& operator=(Body&&) noexcept = delete;

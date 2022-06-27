@@ -5,7 +5,10 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdefaulted-function-deleted"
 #include "vulkan.hpp"
+#pragma clang diagnostic pop
 
 namespace mge {
     inline string VkResultToString(VkResult result) {
