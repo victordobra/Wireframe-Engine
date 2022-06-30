@@ -75,17 +75,21 @@ namespace mge {
 		}
 
 		/// @brief Returns the length of the quaternion.
-		float32_t Magnitude() const { return sqrtf(x * x + y * y + z * z + w * w); }
+		float32_t Magnitude() const { 
+			return sqrtf(x * x + y * y + z * z + w * w); 
+		}
 		/// @brief Returns the square of the length of the quaternion.
-		float32_t SqrMagnitude() const { return x * x + y * y + z * z + w * w; }
-		/// @brief Reduces the quaternion's length to 1.
-		Quaternion& Normalize() {
+		float32_t SqrMagnitude() const { 
+			return x * x + y * y + z * z + w * w; 
+		}
+		/// @brief Returns the inverse of the magnitude.
+		float32_t InvMagnitude() const {
 			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
+			if (sqrMag == 0)
+				return 0;
 
 			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
+			float32_t halfSqrMag = sqrMag * .5f, invMag = sqrMag;
 			const float32_t threeHalves = 1.5f;
 
 			memcpy(&i, &invMag, sizeof(uint32_t));
@@ -93,6 +97,12 @@ namespace mge {
 			memcpy(&invMag, &i, sizeof(uint32_t));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+
+			return invMag;
+		}
+		/// @brief Reduces the quaternion's length to 1.
+		Quaternion& Normalize() {
+			float32_t invMag = InvMagnitude();
 
 			x *= invMag;
 			y *= invMag;
@@ -103,36 +113,31 @@ namespace mge {
 		}
 		/// @brief Returns a version of the quaternion with the length 1.
 		Quaternion Normalized() const {
-			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
-
-			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
-			const float32_t threeHalves = 1.5f;
-
-			memcpy(&i, &invMag, sizeof(uint32_t));
-			i = 0x5f3759df - (i >> 1);
-			memcpy(&invMag, &i, sizeof(uint32_t));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+			float32_t invMag = InvMagnitude();
 
 			Quaternion newQuat{ x * invMag, y * invMag, z * invMag, w * invMag };
 			return newQuat;
 		}
 		/// @brief Inverts the quaternion
-		Quaternion& Invert() { x = -x; y = -y; z = -z; return *this; }
+		Quaternion& Invert() { 
+			x = -x; y = -y; z = -z; return *this; 
+		}
 		/// @brief Returns the inverted version of the quaternion
-		Quaternion Inverted() const { return { -x, -y, -z, w }; };
+		Quaternion Inverted() const { 
+			return { -x, -y, -z, w }; 
+		};
 		/// @brief Returns the dot product between two quaternions
 		/// @param other The other quaternion
-		float32_t Dot(const Quaternion& other) const { return x * other.x + y * other.y + z * other.z + w * other.w; }
+		float32_t Dot(const Quaternion& other) const { 
+			return x * other.x + y * other.y + z * other.z + w * other.w; 
+		}
 		/// @brief Returns the dot product between two quaternions
 		/// @param other The other quaternion
-		float32_t Dot(Quaternion&& other) const { return x * other.x + y * other.y + z * other.z + w * other.w; }
+		float32_t Dot(Quaternion&& other) const { 
+			return x * other.x + y * other.y + z * other.z + w * other.w; 
+		}
 
 		/// @brief Returns a quaternion that represents the rotation around an axis.
-		/// 
 		/// @param axis The axis to rotate around.
 		/// @param angle The angle of rotation.
 		/// @param normalize (optional) Whether to normalize the quaternion or not.
@@ -148,7 +153,6 @@ namespace mge {
 			return outQuaternion;
 		}
 		/// @brief Returns a quaternion that represents euler angle rotation.
-		/// 
 		/// @param eulerAngles The euler angles in radians.
 		static Quaternion EulerAngles(Vector3 eulerAngles) {
 			return Quaternion(AroundAxis({ 0.f, 0.f, 1.f }, eulerAngles.z, false) * AroundAxis({ 1.f, 0.f, 0.f }, eulerAngles.x, false) * AroundAxis({ 0.f, 1.f, 0.f }, eulerAngles.y, false)).Normalized();

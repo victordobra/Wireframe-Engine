@@ -72,14 +72,16 @@ namespace mge {
         stream.WriteBuffer((char_t*)&childCount, sizeof(uint64_t));
 
         // Save every child
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpotentially-evaluated-expression"
         for(size_t i = 0; i < childCount; ++i) 
             if(children[i]) {
-                Node& ref = *children[i];
-                size_t hashCode = typeid(ref).hash_code();
+                size_t hashCode = typeid(*children[i]).hash_code();
                 stream.WriteBuffer((char_t*)&hashCode, sizeof(size_t));
                 
                 children[i]->SaveToStream(stream);
             }
+#pragma clang diagnostic pop
     }
 
     Node* Node::GetParent() const {

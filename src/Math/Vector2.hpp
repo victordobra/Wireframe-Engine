@@ -70,17 +70,21 @@ namespace mge {
 		Vector2& operator/=(float32_t other)           { x /= other;   y /= other;   return *this; }
 
 		/// @brief Returns the length of the vector.
-		float32_t Magnitude() const { return sqrtf(x * x + y * y); }
+		float32_t Magnitude() const { 
+			return sqrtf(x * x + y * y); 
+		}
 		/// @brief Returns the square of the length of the vector.
-		float32_t SqrMagnitude() const { return x * x + y * y; }
-		/// @brief Reduces the vector's length to 1.
-		Vector2& Normalize() {
+		float32_t SqrMagnitude() const { 
+			return x * x + y * y; 
+		}
+		/// @brief Returns the inverse of the magnitude.
+		float32_t InvMagnitude() const {
 			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
+			if (sqrMag == 0)
+				return 0;
 
 			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
+			float32_t halfSqrMag = sqrMag * .5f, invMag = sqrMag;
 			const float32_t threeHalves = 1.5f;
 
 			memcpy(&i, &invMag, sizeof(uint32_t));
@@ -88,6 +92,12 @@ namespace mge {
 			memcpy(&invMag, &i, sizeof(uint32_t));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+
+			return invMag;
+		}
+		/// @brief Reduces the vector's length to 1.
+		Vector2& Normalize() {
+			float32_t invMag = InvMagnitude();
 
 			x *= invMag;
 			y *= invMag;
@@ -96,29 +106,21 @@ namespace mge {
 		} 
 		/// @brief Returns a version of the vector with the length 1.
 		Vector2 Normalized() const {
-			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
-
-			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
-			const float32_t threeHalves = 1.5f;
-
-			memcpy(&i, &invMag, sizeof(uint32_t));
-			i = 0x5f3759df - (i >> 1);
-			memcpy(&invMag, &i, sizeof(uint32_t));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+			float32_t invMag = InvMagnitude();
 
 			Vector2 newVec{ x * invMag, y * invMag };
 			return newVec;
 		}
 		/// @brief Returns the dot product between two vectors.
 		/// @param other The other vector.
-		Vector2 Dot(const Vector2& other) const { return x * other.x + y * other.y; }
+		Vector2 Dot(const Vector2& other) const { 
+			return x * other.x + y * other.y; 
+		}
 		/// @brief Returns the dot product between two vectors.
 		/// @param other The other vector.
-		Vector2 Dot(Vector2&& other) const { return x * other.x + y * other.y; }
+		Vector2 Dot(Vector2&& other) const { 
+			return x * other.x + y * other.y; 
+		}
 
 		~Vector2() = default;
 	};

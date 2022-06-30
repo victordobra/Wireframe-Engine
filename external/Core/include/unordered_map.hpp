@@ -54,6 +54,9 @@ namespace mge {
             // Unkink the buckets from the other map
             other.buckets = nullptr;
         }
+        constexpr unordered_map(size_t bucketCount) : bucketCount(bucketCount), allocatedBucketCount(0), buckets(new node[bucketCount]) {
+
+        }
 
         unordered_map& operator=(const unordered_map& other) {
             if(&other == this)

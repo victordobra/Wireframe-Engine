@@ -77,17 +77,21 @@ namespace mge {
 		Vector3& operator/=(float32_t other)           { x /= other;   y /= other;   z /= other;   return *this; }
 
 		/// @brief Returns the length of the vector.
-		float32_t Magnitude() const { return sqrtf(x * x + y * y + z * z); }
+		float32_t Magnitude() const { 
+			return sqrtf(x * x + y * y + z * z); 
+		}
 		/// @brief Returns the square of the length of the vector.
-		float32_t SqrMagnitude() const { return x * x + y * y + z * z; }
-		/// @brief Reduces the vector's length to 1.
-		Vector3& Normalize() {
+		float32_t SqrMagnitude() const { 
+			return x * x + y * y + z * z; 
+		}
+		/// @brief Returns the inverse of the magnitude.
+		float32_t InvMagnitude() const {
 			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
+			if (sqrMag == 0)
+				return 0;
 
 			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
+			float32_t halfSqrMag = sqrMag * .5f, invMag = sqrMag;
 			const float32_t threeHalves = 1.5f;
 
 			memcpy(&i, &invMag, sizeof(uint32_t));
@@ -95,6 +99,12 @@ namespace mge {
 			memcpy(&invMag, &i, sizeof(uint32_t));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
 			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+
+			return invMag;
+		}
+		/// @brief Reduces the vector's length to 1.
+		Vector3& Normalize() {
+			float32_t invMag = InvMagnitude();
 
 			x *= invMag;
 			y *= invMag;
@@ -104,35 +114,45 @@ namespace mge {
 		}
 		/// @brief Returns a version of the vector with the length 1.
 		Vector3 Normalized() const {
-			float32_t sqrMag = SqrMagnitude();
-			if (sqrMag == 1)
-				return *this;
-
-			uint32_t i;
-			float32_t halfSqrMag = sqrMag * 0.5f, invMag = sqrMag;
-			const float32_t threeHalves = 1.5f;
-
-			memcpy(&i, &invMag, sizeof(uint32_t));
-			i = 0x5f3759df - (i >> 1);
-			memcpy(&invMag, &i, sizeof(uint32_t));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
-			invMag = invMag * (threeHalves - (halfSqrMag * invMag * invMag));
+			float32_t invMag = InvMagnitude();
 
 			Vector3 newVec{ x * invMag, y * invMag, z * invMag };
 			return newVec;
 		}
 		/// @brief Returns the dot product between two vectors.
 		/// @param other The other vector.
-		float32_t Dot(const Vector3& other) const { return x * x + y * y + z * z; }
+		float32_t Dot(const Vector3& other) const { 
+			return x * other.x + y * other.y + z * other.z; 
+		}
 		/// @brief Returns the dot product between two vectors.
 		/// @param other The other vector.
-		float32_t Dot(Vector3&& other) const { return x * x + y * y + z * z; }
+		float32_t Dot(Vector3&& other) const { 
+			return x * other.x + y * other.y + z * other.z; 
+		}
 		/// @brief Returns the cross product between two vectors.
 		/// @param other The other vector.
-		Vector3 Cross(const Vector3& other) const { return { y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x }; }
+		Vector3 Cross(const Vector3& other) const { 
+			return { y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x }; 
+		}
 		/// @brief Returns the cross product between two vectors.
 		/// @param other The other vector.
-		Vector3 Cross(Vector3&& other) const { return { y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x }; }
+		Vector3 Cross(Vector3&& other) const { 
+			return { y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x }; 
+		}
+		/// @brief Returns the angle between two vectors in radians.
+		/// @param other The other vector.
+		float32_t Angle(const Vector3& other) const {
+			float32_t dot = Dot(other);
+			dot *= InvMagnitude() * other.InvMagnitude();
+			return acos(dot);
+		}
+		/// @brief Returns the angle between two vectors in radians.
+		/// @param other The other vector.
+		float32_t Angle(Vector3&& other) const {
+			float32_t dot = Dot(other);
+			dot *= InvMagnitude() * other.InvMagnitude();
+			return acos(dot);
+		}
 
 		~Vector3() = default;
 	};

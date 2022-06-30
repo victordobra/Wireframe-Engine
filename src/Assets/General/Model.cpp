@@ -15,11 +15,13 @@ namespace mge {
     }
     vector<VkVertexInputAttributeDescription> Model::Vertex::GetAttributeDescriptions() { 
         // Create the vector of vertex attributes
-        vector<VkVertexInputAttributeDescription> vertexAttributes(3);
+        vector<VkVertexInputAttributeDescription> vertexAttributes(5);
 
-        vertexAttributes[0] = { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) };
-		vertexAttributes[1] = { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)   };
-		vertexAttributes[2] = { 2, 0, VK_FORMAT_R32G32_SFLOAT,    offsetof(Vertex, uvCoord)  };
+        vertexAttributes[0] = { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)  };
+		vertexAttributes[2] = { 1, 0, VK_FORMAT_R32G32_SFLOAT,    offsetof(Vertex, uvCoord)   };
+        vertexAttributes[1] = { 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)    };
+        vertexAttributes[3] = { 3, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, tangent)   };
+        vertexAttributes[4] = { 4, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, bitangent) };
 
         return vertexAttributes;
     }
@@ -30,6 +32,8 @@ namespace mge {
         GetHashCode(vert.position, hash);
         CombineHash(hash, vert.uvCoord);
         CombineHash(hash, vert.normal);
+        CombineHash(hash, vert.tangent);
+        CombineHash(hash, vert.bitangent);
     }
 
     // Internal helper functions
@@ -73,26 +77,26 @@ namespace mge {
     // External functions
     Model::Model(const string& fileLocation) {
         // Open the file stream
-        FileInput input((string)ASSET_PATH + fileLocation, StreamType::AT_THE_END);
-        size_t fileLength = input.Tell();
-        input.Seek(0);
+        FileInput input((string)ASSET_PATH + fileLocation);
 
         vector<Vector3> positions{};
         vector<Vector2> uvCoords{};
         vector<Vector3> normals{};
 
-        unordered_map<Vertex, uint32_t> map{};
+        unordered_map<Vertex, uint32_t> map{64};
         vector<Vertex> vertices;
         vector<uint32_t> indices;
+        vector<Vector3> tangents;
+        vector<Vector3> bitangents;
+        bool8_t smoothShading = false;
 
-        string line;
         // Process every line of the file
         while(!input.IsAtTheEnd()) {
-            line = "";
-            input.ReadLine(line, 100001);
+            string line = "";
+            input.ReadLine(line, 1000001);
 
-            // If the line begins with #, it is a comment, skip it
-            if(line[0] == '#')
+            // Only continue if the line isn't a comment
+            if(line[0] == '#' || !line.length())
                 continue;
 
             char_t* p = strchr(line.c_str(), ' ');
@@ -123,6 +127,9 @@ namespace mge {
 
                 Vector3 vec{ stof(p), stof(y), stof(z) };
                 normals.push_back(vec);
+            } else if(line == "s") {
+                uint32_t result = stoul(p);
+                smoothShading = result;
             } else if(line == "f") {
                 // Split the string into 3 strings for every vertex
                 char_t* vertStr[3];
@@ -146,28 +153,106 @@ namespace mge {
                 }
 
                 // Check if the vertices are ordered correctly; if not, swap the second and third
-                Vector3 dif1 = verticesArr[1].position - verticesArr[0].position;
-                Vector3 dif2 = verticesArr[2].position - verticesArr[0].position;
+                Vector3 edge1 = verticesArr[1].position - verticesArr[0].position;
+                Vector3 edge2 = verticesArr[2].position - verticesArr[0].position;
+                Vector3 averageNormal = (verticesArr[0].normal + verticesArr[1].normal + verticesArr[2].normal) / 3.f;
 
-                if(verticesArr[0].normal.Dot(dif1.Cross(dif2)) > 0.f) {
-                    Vertex aux = verticesArr[1];
+                if(averageNormal.Dot(edge1.Cross(edge2)) > 0.f) {
+                    Vertex auxVert = verticesArr[1];
                     verticesArr[1] = verticesArr[2];
-                    verticesArr[2] = aux;
+                    verticesArr[2] = auxVert;
+
+                    Vector3 auxEdge = edge1;
+                    edge1 = edge2;
+                    edge2 = auxEdge;
                 }
 
+                // Compute the tangent for the face
+                Vector2 deltaUV1 = verticesArr[1].uvCoord - verticesArr[0].uvCoord;
+                Vector2 deltaUV2 = verticesArr[2].uvCoord - verticesArr[0].uvCoord;
+
+                float32_t fc = 1.f / (deltaUV1.u * deltaUV2.v - deltaUV1.v * deltaUV2.u);
+
+                Vector3 tangent{ fc * (deltaUV2.v * edge1.x - deltaUV1.v * edge2.x),
+                                 fc * (deltaUV2.v * edge1.y - deltaUV1.v * edge2.y),
+                                 fc * (deltaUV2.v * edge1.z - deltaUV1.v * edge2.z) };
+                tangent.Normalize();
+                Vector3 bitangent{ fc * (deltaUV1.u * edge2.x - deltaUV2.u * edge1.x),
+                                   fc * (deltaUV1.u * edge2.y - deltaUV2.u * edge1.y),
+                                   fc * (deltaUV1.u * edge2.z - deltaUV2.u * edge1.z) };
+                bitangent.Normalize();
+                
+                // Compute the tangent and bitangent for every vertex
+                Vector3 tangentsArr[3], bitangentsArr[3];
+
+                if(smoothShading) {
+                    Vector3 edge3 = verticesArr[1].position - verticesArr[2].position;
+
+                    float32_t angles[3];
+                    angles[0] = edge1.Angle(edge2);
+                    angles[1] = edge1.Angle(edge3);
+                    angles[2] = PI - angles[0] - angles[1];
+
+                    for(size_t i = 0; i < 3; ++i) {
+                        Vector3 tangentVert = tangent, bitangentVert = bitangent, normalVert = verticesArr[i].normal;
+
+                        tangentVert -= normalVert * tangentVert.Dot(normalVert);
+                        tangentVert.Normalize();
+                        bitangentVert -= normalVert * bitangentVert.Dot(normalVert) + tangentVert * bitangentVert.Dot(tangentVert);
+                        bitangentVert.Normalize();
+
+                        tangentsArr[i] = tangentVert * angles[i];
+                        bitangentsArr[i] = bitangentVert * angles[i];
+                    }
+                } else {
+                    for(size_t i = 0; i < 3; ++i) {
+                        Vector3 tangentVert = tangent, bitangentVert = bitangent, normalVert = verticesArr[i].normal;
+
+                        tangentVert -= normalVert * tangentVert.Dot(normalVert);
+                        tangentVert.Normalize();
+                        bitangentVert -= normalVert * bitangentVert.Dot(normalVert) + tangentVert * bitangentVert.Dot(tangentVert);
+                        bitangentVert.Normalize();
+
+                        verticesArr[i].tangent = tangentVert;
+                        verticesArr[i].bitangent = bitangentVert;
+                    }
+                }
+                
                 // Add every vertex or its index to the array
                 for(size_t i = 0; i < 3; ++i) {
-                    if(map.count(verticesArr[i])) {
-                        indices.push_back(map[verticesArr[i]]);
+                    Vertex vertex = verticesArr[i];
+
+                    if(map.count(vertex)) {
+                        size_t ind = map[vertex];
+
+                        indices.push_back(ind);
+
+                        if(smoothShading) {
+                            tangents[ind] += tangentsArr[i];
+                            bitangents[ind] += bitangentsArr[i];
+                        }
                     } else {
                         size_t ind = vertices.size();
-                        map.insert(verticesArr[i], ind);
-                        vertices.push_back(verticesArr[i]);
+
+                        map.insert(vertex, ind);
                         indices.push_back(ind);
+
+                        vertices.push_back(vertex);
+                        if(smoothShading) {
+                            tangents.push_back(tangentsArr[i]);
+                            bitangents.push_back(bitangentsArr[i]);
+                        }
                     }
                 }
             }
         }
+        if(smoothShading)
+            for(size_t i = 0; i < vertices.size(); ++i) {
+                vertices[i].tangent = tangents[i].Normalized();
+                vertices[i].bitangent = bitangents[i].Normalized();
+            }
+
+        console::OutMessageFunction((string)"Imported mesh: " + ToString(vertices.size()) + " vertices, " + ToString(indices.size()) + " indices, " + (smoothShading ? "smooth shading." : "flat shading."));
 
         // Create the vertex and index buffers
         CreateVertexBuffer(vertices);

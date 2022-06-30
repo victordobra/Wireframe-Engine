@@ -12,26 +12,28 @@ namespace mge {
             Vector3 position;
             Vector2 uvCoord;
             Vector3 normal;
+            Vector3 tangent;
+            Vector3 bitangent;
 
             Vertex() = default;
             Vertex(const Vertex&) = default;
             Vertex(Vertex&&) noexcept = default;
-            Vertex(Vector3 pos, Vector2 uv, Vector3 norm) : position(pos), uvCoord(uv), normal(norm) { }
+            Vertex(Vector3 pos, Vector2 uv, Vector3 norm, Vector3 tan = {}) : position(pos), uvCoord(uv), normal(norm), tangent(tan) { }
 
             Vertex& operator=(const Vertex&) = default;
             Vertex& operator=(Vertex&&) noexcept = default;
 
             bool8_t operator==(const Vertex& other) const { 
-                return position == other.position && uvCoord == other.uvCoord && normal == other.normal; 
+                return position == other.position && uvCoord == other.uvCoord && normal == other.normal && tangent == other.tangent && bitangent == other.bitangent;
             } 
             bool8_t operator==(Vertex&& other)      const { 
-                return position == other.position && uvCoord == other.uvCoord && normal == other.normal; 
+                return position == other.position && uvCoord == other.uvCoord && normal == other.normal && tangent == other.tangent && bitangent == other.bitangent;
             } 
             bool8_t operator!=(const Vertex& other) const { 
-                return position != other.position || uvCoord != other.uvCoord || normal != other.normal; 
+                return position != other.position || uvCoord != other.uvCoord || normal != other.normal || tangent != other.tangent || bitangent != other.bitangent;
             }
 			bool8_t operator!=(Vertex&& other)      const { 
-                return position != other.position || uvCoord != other.uvCoord || normal != other.normal; 
+                return position != other.position || uvCoord != other.uvCoord || normal != other.normal || tangent != other.tangent || bitangent != other.bitangent;
             }
             
             static vector<VkVertexInputBindingDescription>   GetBindingDescriptions();

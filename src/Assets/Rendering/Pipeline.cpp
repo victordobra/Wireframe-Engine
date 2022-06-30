@@ -8,69 +8,96 @@ namespace mge {
 	void Pipeline::CreateDescriptorPool() {
 		if(pipelineInfo.globalBufferSize) {
 			// The descriptor pool info isn't set, create it
-			vector<Material*> materials;
-
-			for(auto& shaderStage : pipelineInfo.shaderStages)
-				for(auto* material : shaderStage.shader->materials){
-					materials.push_back(material);
-				}
+			struct ShaderCount {
+				Shader* shader;
+				VkShaderStageFlags shaderStageFlags;
+				size_t count;
+				size_t imageCount;
+			};
+			vector<ShaderCount> shaderCounts;
 			
-			// Set uniform descriptor pool size
-			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes.resize(2);
-
-			VkDescriptorPoolSize uniformBufferSize;
-			uniformBufferSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			uniformBufferSize.descriptorCount = materials.size() * MAX_FRAMES_IN_FLIGHT /*<- Material buffers*/ + MAX_FRAMES_IN_FLIGHT /*<- Global buffer*/;
-
-			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes[0] = uniformBufferSize;
-
-			// Set image descriptor pool size
+			// Extract every shader and how many times it appears
+			for(auto& shaderStage : pipelineInfo.shaderStages) {
+				size_t materialCount = shaderStage.shader->materials.size();
+				if(!materialCount) {
+					materialCount = 0;
+					for(const auto& property : shaderStage.shader->properties)
+						if(property.type != Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
+							materialCount = 1;
+							break;
+						}
+				}
+				shaderCounts.push_back({shaderStage.shader, (VkShaderStageFlags)shaderStage.shaderStage, materialCount, 0});
+			}
+			
+			// Find the number of image properties
 			size_t imageCount = 0;
-			for(auto* material : materials)
-				for(const auto& property : material->GetShader()->properties)
-					if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
-						++imageCount;
-
-			VkDescriptorPoolSize imageDescriptorPoolSize;
-			imageDescriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			imageDescriptorPoolSize.descriptorCount = (uint32_t)(imageCount * MAX_FRAMES_IN_FLIGHT);
-
-			pipelineInfo.descriptorPoolInfo.descriptorPoolSizes[1] = imageDescriptorPoolSize;
+			for(auto& shaderCount : shaderCounts)
+				for(const auto& property : shaderCount.shader->properties)
+					if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
+						imageCount += shaderCount.count;
+						++shaderCount.imageCount;
+					}
 			
-			// Set descriptor set layout bindings
-			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.resize(materials.size() /*<- Material buffers*/ + 1 /*<- Global buffer*/);
-
-			VkDescriptorSetLayoutBinding globalBinding;
-			globalBinding.binding = 0;
-			globalBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			globalBinding.descriptorCount = 1;
-			globalBinding.pImmutableSamplers = nullptr;
-			globalBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
-
-			pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[0].bindings = { globalBinding };
+			// Find the total number of materials
+			size_t materialCount = 0;
+			for(const auto& shaderCount : shaderCounts)
+				materialCount += shaderCount.count;
 			
-			for(size_t i = 1; i < pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size(); ++i) {
-				size_t imageCount = 0;
-				for(const auto& property : materials[i - 1]->GetShader()->properties)
-					if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
-						++imageCount;
+			// Set the descriptor pool sizes
+			auto& poolSizes = pipelineInfo.descriptorPoolInfo.descriptorPoolSizes;
 
-				vector<VkDescriptorSetLayoutBinding> materialBindings(1 + imageCount);
-				materialBindings[0].binding = 0;
-				materialBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				materialBindings[0].descriptorCount = 1;
-				materialBindings[0].pImmutableSamplers = nullptr;
-				materialBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+			poolSizes.push_back({ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, materialCount * MAX_FRAMES_IN_FLIGHT /*<- Material buffers*/ + MAX_FRAMES_IN_FLIGHT /*<- Global buffer*/ });
+			if(imageCount)
+				poolSizes.push_back({ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, imageCount * MAX_FRAMES_IN_FLIGHT });
+			
+			// Create the descriptor set layouts
+			auto& setLayouts = pipelineInfo.descriptorPoolInfo.descriptorSetLayouts;
+			using SetLayout = DescriptorPool::DescriptorPoolInfo::DescriptorSetLayout;
 
-				for(size_t j = 1; j < materialBindings.size(); ++j) {
-					materialBindings[j].binding = j;
-					materialBindings[j].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-					materialBindings[j].descriptorCount = 1;
-					materialBindings[j].pImmutableSamplers = nullptr;
-					materialBindings[j].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+			// Global buffer layout
+			SetLayout globalBufferLayout;
+			
+			VkDescriptorSetLayoutBinding globalBufferBinding;
+			
+			globalBufferBinding.binding = 0;
+			globalBufferBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			globalBufferBinding.descriptorCount = 1;
+			globalBufferBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+			globalBufferBinding.pImmutableSamplers = nullptr;
+
+			globalBufferLayout.bindings.push_back(globalBufferBinding);
+			setLayouts.push_back(globalBufferLayout);
+
+			for(auto& shaderCount : shaderCounts) {
+				if(!shaderCount.count)
+					continue;
+				
+				SetLayout materialLayout;
+
+				VkDescriptorSetLayoutBinding materialBufferBinding;
+
+				materialBufferBinding.binding = 0;
+				materialBufferBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				materialBufferBinding.descriptorCount = 1;
+				materialBufferBinding.stageFlags = shaderCount.shaderStageFlags;
+				materialBufferBinding.pImmutableSamplers = nullptr;
+
+				materialLayout.bindings.push_back(materialBufferBinding);
+
+				for(size_t i = 0; i < shaderCount.imageCount; ++i) {
+					VkDescriptorSetLayoutBinding materialImageBinding;
+
+					materialImageBinding.binding = i + 1;
+					materialImageBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+					materialImageBinding.descriptorCount = 1;
+					materialImageBinding.stageFlags = shaderCount.shaderStageFlags;
+					materialImageBinding.pImmutableSamplers = nullptr;
+
+					materialLayout.bindings.push_back(materialImageBinding);
 				}
 
-				pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].bindings = materialBindings;
+				setLayouts.push_back(materialLayout);
 			}
 		}
 

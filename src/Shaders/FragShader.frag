@@ -1,9 +1,13 @@
 #version 450
 
 // Inputs from the vertex shader
-layout(location = 0) in vec3 worldPosition;
-layout(location = 1) in vec3 worldNormal;
-layout(location = 2) in vec2 uvCoord;
+layout(location = 0) in ShaderIn {
+    vec3 worldPosition;
+    vec3 worldNormal;
+    vec3 worldTangent;
+    vec3 worldBitangent;
+    vec2 uvCoord;
+} shaderIn;
 
 // Output
 layout(location = 0) out vec4 outColor;
@@ -46,20 +50,11 @@ layout(set = 1, binding = 2) uniform sampler2D specularTexture;
 layout(set = 1, binding = 3) uniform sampler2D normalMap;
 
 void main() {
-    // Calculate the world normal based on the normal map
-    vec3 zAxis = worldNormal;
-    vec3 xAxis = normalize(cross(zAxis, vec3(0.0, 1.0, 0.0)));
-    vec3 yAxis = cross(xAxis, zAxis);
+    // Calculate the surface normal
+    mat3 tbnMatrix = mat3(shaderIn.worldTangent, shaderIn.worldBitangent, shaderIn.worldNormal);
 
-    mat3 tbnMatrix;
-
-    tbnMatrix[0] = xAxis;
-	tbnMatrix[1] = yAxis;
-	tbnMatrix[2] = zAxis;
-
-    tbnMatrix = transpose(tbnMatrix);
-
-    vec3 surfaceNormal = 2.0 * texture(normalMap, uvCoord).rgb - 1.0;
+    vec3 surfaceNormal = normalize(2.0 * texture(normalMap, shaderIn.uvCoord).rgb - 1.0);
+    surfaceNormal.z = -surfaceNormal.z; // For rh-lh conversion
     surfaceNormal = normalize(surfaceNormal * tbnMatrix);
 
     // Set the initial diffuse light to the ambient lighting
@@ -68,7 +63,7 @@ void main() {
     // Set a initial specular light and other important variables for specular lighting
     vec3 specularLight = vec3(0.0);
 
-    vec3 viewDirection = normalize(vec3(lightingUbo.cameraWorldPos) - worldPosition);
+    vec3 viewDirection = normalize(vec3(lightingUbo.cameraWorldPos) - shaderIn.worldPosition);
 
     // Add to the diffuse color for every directional light
     for(uint i = 0; i < lightingUbo.directionalLightCount; ++i) {
@@ -94,7 +89,7 @@ void main() {
         // Diffuse lighting
         PointLight pointLight = lightingUbo.pointLights[i];
 
-        vec3 directionToLight = pointLight.position.xyz - worldPosition;
+        vec3 directionToLight = pointLight.position.xyz - shaderIn.worldPosition;
         vec3 lightColor = pointLight.color.xyz * pointLight.color.w;
         float attenuation = 1.0 / dot(directionToLight, directionToLight);
 
@@ -115,5 +110,5 @@ void main() {
     }
 
     // Set the output color
-    outColor = material.diffuseColor * vec4(diffuseLight, 1.0) * texture(diffuseTexture, uvCoord) + material.specularColor * vec4(specularLight, 1.0) * texture(specularTexture, uvCoord);
+    outColor = material.diffuseColor * vec4(diffuseLight, 1.0) * texture(diffuseTexture, shaderIn.uvCoord) + material.specularColor * vec4(specularLight, 1.0) * texture(specularTexture, shaderIn.uvCoord);
 } 
