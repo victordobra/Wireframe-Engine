@@ -10,27 +10,28 @@ namespace mge {
 		uint32_t imageIndex;
 		VkResult result = AcquireNextImage(&imageIndex);
 
-		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+		if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 			console::OutFatalError("Failed to acquire swap chain image!", 1);
 
-		//Allocate the command buffer
+		// Allocate the command buffer
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandPool = GetCommandPool();
 		allocInfo.commandBufferCount = 1;
 
-		if (vkAllocateCommandBuffers(GetDevice(), &allocInfo, &commandBuffer) != VK_SUCCESS)
+		if(vkAllocateCommandBuffers(GetDevice(), &allocInfo, &commandBuffer) != VK_SUCCESS)
 			console::OutFatalError("Failed to allocate command buffer!", 1);
 
-		//Begin recording the command buffer
+		// Begin recording the command buffer
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-			console::OutFatalError("Failed to begin recording command buffer!", 1);
+		result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+		if(result != VK_SUCCESS)
+			console::OutFatalError((string)"Failed to begin recording command buffer! Error code: " + VkResultToString(result), 1);
 
-		//Begin the render pass
+		// Begin the render pass
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = GetRenderPass();
@@ -49,7 +50,7 @@ namespace mge {
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		//Set the viewport and scissor
+		// Set the viewport and scissor
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
@@ -77,13 +78,14 @@ namespace mge {
 		vkCmdEndRenderPass(commandBuffer);
 
         // Stop recording the command buffer
-		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-			console::OutFatalError("Failed to end recording command buffer!", 1);
+		result = vkEndCommandBuffer(commandBuffer);
+		if(result != VK_SUCCESS)
+			console::OutFatalError((string)"Failed to end recording command buffer! Error code: " + VkResultToString(result), 1);
 		
         // Submit the command buffer
 		result = SubmitCommandBuffers(&commandBuffer, &imageIndex);
-		if (result != VK_SUCCESS)
-			console::OutFatalError("Failed to submit command buffers!", 1);
+		if(result != VK_SUCCESS)
+			console::OutFatalError((string)"Failed to submit command buffers! Error code: " + VkResultToString(result), 1);
 		
         // Free the command buffer
 		vkDeviceWaitIdle(GetDevice());

@@ -28,6 +28,11 @@ namespace mge {
             vector<VkVertexInputBindingDescription> vertexBindings{};
             vector<VkVertexInputAttributeDescription> vertexAttributes{};
 
+            vector<VkDynamicState> dynamicStateEnables{};
+
+            VkViewport viewport{};
+            VkRect2D scissor{};
+
             VkPipelineViewportStateCreateInfo viewportInfo{};
             VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{};
@@ -36,7 +41,6 @@ namespace mge {
             VkPipelineColorBlendAttachmentState colorBlendAttachment{};
             VkPipelineColorBlendStateCreateInfo colorBlendInfo{};
             VkPipelineDepthStencilStateCreateInfo depthStencilInfo{};
-            VkDynamicState dynamicStateEnables[2]{};
             VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
             uint32_t subpass = 0;
         };

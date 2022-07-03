@@ -12,10 +12,6 @@ namespace mge {
     Asset::Asset() : name(""), location("") {
         // Add itself to the asset vector
         assets.push_back(this);
-
-        // Set the asset's type
-        const char_t* name = typeid(*this).name();
-        assetType = GetAssetType(typeid(*this).hash_code());
     }
 
     void Asset::Load(const string& fileLocation) {
@@ -94,7 +90,7 @@ namespace mge {
         for(size_t i = 0; i < assetCount; ++i)
             delete assets[0];
     }
-    AssetType* Asset::GetAssetType(size_t hashCode) { 
+    AssetType* Asset::GetAssetType(uint64_t hashCode) { 
         // Binary search for the type
         size_t pos = 0, step = MAX_ASSET_TYPE_COUNT >> 1;
 
@@ -109,7 +105,7 @@ namespace mge {
             return assetTypes + pos;
         return nullptr;
     }
-    AssetType* Asset::GetAssetPtrType(size_t hashCode) { 
+    AssetType* Asset::GetAssetPtrType(uint64_t hashCode) { 
         // Search for the type
         for(size_t i = 0; i < assetTypeCount; ++i)
             if(assetTypes[i].ptrHashCode == hashCode)

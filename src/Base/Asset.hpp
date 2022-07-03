@@ -13,8 +13,8 @@ namespace mge {
 
     struct AssetType {
         string name{};
-        size_t hashCode{};
-        size_t ptrHashCode{};
+        uint64_t hashCode{};
+        uint64_t ptrHashCode{};
 
         Asset*(*create)(){};
 
@@ -75,11 +75,11 @@ namespace mge {
         /// @brief Returns the asset type with the specified hash code.
         /// @param hashCode The hash code of the type.
         /// @return A pointer to the asset type, or a nullptr if it doesn't exist.
-        static AssetType* GetAssetType(size_t hashCode);
+        static AssetType* GetAssetType(uint64_t hashCode);
         /// @brief Returns the asset type with its pointer's hash code equal to the given hash code.
         /// @param hashCode The hash code of the type pointer.
         /// @return A pointer to the asset type, or a nullptr if it doesn't exist.
-        static AssetType* GetAssetPtrType(size_t hashCode);
+        static AssetType* GetAssetPtrType(uint64_t hashCode);
         /// @brief Returns a vector with every asset.
         static vector<Asset*> GetAssets() {
             return assets;
@@ -97,7 +97,7 @@ namespace mge {
         template<class T>
         static T* GetOrCreateAssetWithLocation(const string& location) {
             // Assert that the imputted type must be an asset
-            size_t hashCode = typeid(T).hash_code();
+            uint64_t hashCode = MGE_TYPE_ID(T).Hash64();
             AssetType* assetType = GetAssetType(hashCode);
             assert(assetType && "The inputted type must me an asset!");
 
@@ -128,7 +128,7 @@ namespace { \
         mge::Asset* asset = dynamic_cast<mge::Asset*>(new type()); \
         if(!asset) \
             mge::console::OutFatalError("Failed to convert object to asset type!", 1); \
-        asset->assetType = mge::Asset::GetAssetType(typeid(type).hash_code()); \
+        asset->assetType = mge::Asset::GetAssetType(MGE_TYPE_ID(type).Hash64()); \
         return asset; \
     } \
     struct type ## AssetTypeInitializer { \
@@ -136,8 +136,8 @@ namespace { \
         type ## AssetTypeInitializer() { \
             mge::AssetType assetType{}; \
             assetType.name = #type; \
-            assetType.hashCode = typeid(type).hash_code(); \
-            assetType.ptrHashCode = typeid(type*).hash_code(); \
+            assetType.hashCode = MGE_TYPE_ID(type).Hash64(); \
+            assetType.ptrHashCode = MGE_TYPE_ID(type*).Hash64(); \
             assetType.create = Create ## type ## Asset; \
  \
             mge::Asset::assetTypes[mge::Asset::assetTypeCount++] = assetType; \

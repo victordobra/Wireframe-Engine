@@ -8,11 +8,6 @@ namespace mge {
     constinit size_t Node::nodeTypeCount = 0;
 
     // Member functions
-    Node::Node() {
-        size_t hashCode = typeid(*this).hash_code();
-        nodeType = GetNodeType(hashCode);
-    }
-
     void Node::LoadFromFile(const string& fileLocation) {
         // Open a file stream, load the object from the file and then close the stream
         FileInput input(fileLocation, StreamType::BINARY);
@@ -49,8 +44,8 @@ namespace mge {
 
         // Create every child
         for(size_t i = 0; i < childCount; ++i) {
-            size_t hashCode;
-            stream.ReadBuffer((char_t*)&hashCode, sizeof(size_t));
+            uint64_t hashCode;
+            stream.ReadBuffer((char_t*)&hashCode, sizeof(uint64_t));
             
             Node* child = GetNodeType(hashCode)->create();
             child->SetParent(this);
@@ -72,16 +67,13 @@ namespace mge {
         stream.WriteBuffer((char_t*)&childCount, sizeof(uint64_t));
 
         // Save every child
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpotentially-evaluated-expression"
         for(size_t i = 0; i < childCount; ++i) 
             if(children[i]) {
-                size_t hashCode = typeid(*children[i]).hash_code();
-                stream.WriteBuffer((char_t*)&hashCode, sizeof(size_t));
+                uint64_t hashCode = children[i]->nodeType->hashCode;
+                stream.WriteBuffer((char_t*)&hashCode, sizeof(uint64_t));
                 
                 children[i]->SaveToStream(stream);
             }
-#pragma clang diagnostic pop
     }
 
     Node* Node::GetParent() const {
@@ -218,7 +210,7 @@ namespace mge {
                 if(Asset::GetAssetPtrType(property.hashCode))
                     property.type = NodeType::Property::PROPERTY_TYPE_ASSET_PTR;
     }
-    NodeType* Node::GetNodeType(size_t hashCode) { 
+    NodeType* Node::GetNodeType(uint64_t hashCode) { 
         // Binary search for it
         size_t pos = 0, step = MAX_NODE_TYPE_COUNT >> 1;
 

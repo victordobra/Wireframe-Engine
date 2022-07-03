@@ -10,6 +10,7 @@
 #include "pair.hpp"
 #include "set.hpp"
 #include "string.hpp"
+#include "TypeInfo.hpp"
 #include "unordered_map.hpp"
 #include "unordered_set.hpp"
 #include "vector.hpp"

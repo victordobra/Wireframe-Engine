@@ -35,7 +35,7 @@ namespace mge {
 
             PropertyType type = PROPERTY_TYPE_OTHER;
             PropertyAccess access = PROPERTY_ACCESS_PRIVATE;
-            size_t hashCode = 0;
+            uint64_t hashCode = 0;
             uint64_t size = 0;
             uint64_t offset = 0;
 
@@ -43,30 +43,30 @@ namespace mge {
             static Property GetPropertyInfo() {
                 Property prop{};
 
-                prop.hashCode = typeid(T).hash_code();
+                prop.hashCode = MGE_TYPE_ID(T).Hash64();
                 prop.size = sizeof(T);
 
-                if(prop.hashCode == typeid(sint16_t).hash_code() || prop.hashCode == typeid(sint32_t).hash_code() || prop.hashCode == typeid(sint64_t).hash_code())
+                if(prop.hashCode == MGE_TYPE_ID(sint16_t).Hash64() || prop.hashCode == MGE_TYPE_ID(sint32_t).Hash64() || prop.hashCode == MGE_TYPE_ID(sint64_t).Hash64())
                     prop.type = PROPERTY_TYPE_INTEGER;
-                else if(prop.hashCode == typeid(uint16_t).hash_code() || prop.hashCode == typeid(uint32_t).hash_code() || prop.hashCode == typeid(uint64_t).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(uint16_t).Hash64() || prop.hashCode == MGE_TYPE_ID(uint32_t).Hash64() || prop.hashCode == MGE_TYPE_ID(uint64_t).Hash64())
                     prop.type = PROPERTY_TYPE_UNSIGNED;
-                else if(prop.hashCode == typeid(float32_t).hash_code() || prop.hashCode == typeid(float64_t).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(float32_t).Hash64() || prop.hashCode == MGE_TYPE_ID(float64_t).Hash64())
                     prop.type = PROPERTY_TYPE_FLOAT;
-                else if(prop.hashCode == typeid(string).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(string).Hash64())
                     prop.type = PROPERTY_TYPE_STRING;
-                else if(prop.hashCode == typeid(Vector2).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Vector2).Hash64())
                     prop.type = PROPERTY_TYPE_VEC2;
-                else if(prop.hashCode == typeid(Vector3).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Vector3).Hash64())
                     prop.type = PROPERTY_TYPE_VEC3;
-                else if(prop.hashCode == typeid(Vector4).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Vector4).Hash64())
                     prop.type = PROPERTY_TYPE_VEC4;
-                else if(prop.hashCode == typeid(Quaternion).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Quaternion).Hash64())
                     prop.type = PROPERTY_TYPE_QUAT;
-                else if(prop.hashCode == typeid(Matrix4x4).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Matrix4x4).Hash64())
                     prop.type = PROPERTY_TYPE_MAT4X4;
-                else if(prop.hashCode == typeid(Color8).hash_code() || prop.hashCode == typeid(Color16).hash_code() || prop.hashCode == typeid(Color32).hash_code() || prop.hashCode == typeid(Color64).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Color8).Hash64() || prop.hashCode == MGE_TYPE_ID(Color16).Hash64() || prop.hashCode == MGE_TYPE_ID(Color32).Hash64() || prop.hashCode == MGE_TYPE_ID(Color64).Hash64())
                     prop.type = PROPERTY_TYPE_COLOR;
-                else if(prop.hashCode == typeid(Color32f).hash_code() || prop.hashCode == typeid(Color64f).hash_code())
+                else if(prop.hashCode == MGE_TYPE_ID(Color32f).Hash64() || prop.hashCode == MGE_TYPE_ID(Color64f).Hash64())
                     prop.type = PROPERTY_TYPE_COLORF;
                 else 
                     prop.type = PROPERTY_TYPE_OTHER;
@@ -78,7 +78,7 @@ namespace mge {
         };
 
         string name{};
-        size_t hashCode{};
+        uint64_t hashCode{};
         vector<Property> properties{};
         Node*(*create)(){};
 
@@ -119,7 +119,7 @@ namespace mge {
         string name;
         NodeType* nodeType;
 
-        Node();
+        Node() = default;
         Node(const Node&) = delete;
         Node(Node&&) = delete;
 
@@ -146,13 +146,13 @@ namespace mge {
         /// @brief Returns the node type with the specified hash code.
         /// @param hashCode The node type's hash code.
         /// @return A pointer to the specific node type, or a nullptr if it doesn't exist.
-        static NodeType* GetNodeType(size_t hashCode);
+        static NodeType* GetNodeType(uint64_t hashCode);
         /// @brief Creates a node of the specified type.
         /// @tparam T The type of node to create
         /// @return A pointer to the newly created node.
         template<class T>
         static T* CreateNode() {
-            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            NodeType* nodeType = GetNodeType(MGE_TYPE_ID(T).Hash64());
             assert(nodeType && "The inputted type must be a node!");
             return dynamic_cast<T*>(nodeType->create());
         }
@@ -164,7 +164,7 @@ namespace mge {
         template<class T>
         static T* FindNodeWithType(Node* start = scene, bool8_t checkStart = false) {
             // Assert that the inputted type must be a node type
-            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            NodeType* nodeType = GetNodeType(MGE_TYPE_ID(T).Hash64());
             assert(nodeType && "The inputted type must be a node type!");
 
             // Check the start node if checkStart is set to true
@@ -188,7 +188,7 @@ namespace mge {
         template<class T>
         static T* FindNodesWithType(Node* start = scene, bool8_t checkStart = false) {
             // Assert that the inputted type must be a node type
-            NodeType* nodeType = GetNodeType(typeid(T).hash_code());
+            NodeType* nodeType = GetNodeType(MGE_TYPE_ID(T).Hash64());
             assert(nodeType && "The inputted type must be a node type!");
 
             vector<T*> nodes;
@@ -248,7 +248,7 @@ namespace { \
         mge::Node* node = dynamic_cast<mge::Node*>(new type()); \
         if(!node) \
             mge::console::OutFatalError("Failed to convert object to node type!", 1); \
-        node->nodeType = mge::Node::GetNodeType(typeid(type).hash_code()); \
+        node->nodeType = mge::Node::GetNodeType(MGE_TYPE_ID(type).Hash64()); \
         return node; \
     } \
  \
@@ -257,7 +257,7 @@ namespace { \
             mge::NodeType nodeType; \
  \
             nodeType.name = #type; \
-            nodeType.hashCode = typeid(type).hash_code(); \
+            nodeType.hashCode = MGE_TYPE_ID(type).Hash64(); \
             nodeType.create = Create ## type ## Node; \
  \
             type* ptr = nullptr;

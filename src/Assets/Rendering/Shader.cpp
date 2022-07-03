@@ -10,7 +10,7 @@ namespace mge {
 
         size_t size = input.Tell();
         input.Seek(0);
-        char_t* data = (char_t*)malloc(size);
+        char_t* data = new char_t[size];
         input.ReadBuffer(data, size);
 
         input.Close();
@@ -100,7 +100,7 @@ namespace mge {
             materials.insert(material);
         }
 
-        pipeline = Asset::GetOrCreateAssetWithLocation<Pipeline>(pipelineLocation);
+        //pipeline = Asset::GetOrCreateAssetWithLocation<Pipeline>(pipelineLocation);
 
         input.Close();
     }

@@ -67,12 +67,12 @@ namespace mge {
     // External functions
     void StartGameLoop() {
         // Load the scene
-        Node::scene = new Node();
+        Node::scene = Node::CreateNode<Node>();
         Node::scene->Load("Scene.node");
 
         // Find all nodes reccursively
         vector<Node*> nodes;
-
+        
         AddChildrenToVector(nodes, Node::scene);
 
         // Create a vector of threads
