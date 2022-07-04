@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")
 
 # Create the project
-project(${NAME} VERSION ${VERSION})
+project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
 message(STATUS "Project name set to \"${PROJECT_NAME}\".")
 message(STATUS "Project version set to ${PROJECT_VERSION}.")
 
@@ -17,15 +17,15 @@ enable_testing()
 message(STATUS "Testing enabled successfilly")
 
 # Find the source files
-file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/engine/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cpp)
 list(LENGTH SOURCES SOURCE_COUNT)
 
 if(SOURCE_COUNT EQUAL 0)
-    message(FATAL_ERROR "ERROR: No sources found!")
-elseif(SOURCE_COUNT EQUAL 1)
-    message(STATUS "1 source found.")
+    message(FATAL_ERROR "ERROR: No engine sources found!")
+elseif(ENGINE_SOURCE_COUNT EQUAL 1)
+    message(STATUS "1 engine source found.")
 else()
-    message(STATUS "${SOURCE_COUNT} sources found.")
+    message(STATUS "${SOURCE_COUNT} engine sources found.")
 endif()
 
 # Create the executable
@@ -34,13 +34,13 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 message(STATUS "Executable created successfully.")
 
 # Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
 message(STATUS "Include directories added.")
 
 # Add the link directories and link the libraries
 target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
 message(STATUS "Link directories added.")
-target_link_libraries(${PROJECT_NAME} MG-Engine-Core-x86_64 vulkan-x86_64)
+target_link_libraries(${PROJECT_NAME} Wireframe-Core-x86_64 vulkan-x86_64)
 message(STATUS "Link libraries added.")
 
 # Find all shaders in the project

@@ -4,7 +4,7 @@
 #include "pair.hpp"
 #include "IO.hpp"
 
-namespace mge {
+namespace wfe {
     template<class Key, class Value>
     class unordered_map {
     public:
@@ -200,7 +200,7 @@ namespace mge {
                 currentNode = currentNode->next;
             }
 
-            mge::console::OutFatalError("Failed to find an item with the specified key!", 1);
+            console::OutFatalError("Failed to find an item with the specified key!", 1);
         }
         const Value& at(const Key& key) const{
             // Find the appropriate index for the key
@@ -215,7 +215,7 @@ namespace mge {
                 currentNode = currentNode->next;
             }
 
-            mge::console::OutFatalError("Failed to find an item with the specified key!", 1);
+            console::OutFatalError("Failed to find an item with the specified key!", 1);
         }
 
         node* begin() { 

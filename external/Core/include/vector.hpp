@@ -4,7 +4,7 @@
 #include <initializer_list>
 #include <assert.h>
 
-namespace mge {
+namespace wfe {
     template<class T>
     class vector {
     public:

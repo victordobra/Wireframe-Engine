@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <initializer_list>
 
-namespace mge {
+namespace wfe {
     template<class T, size_t _size>
     class array {
     public:

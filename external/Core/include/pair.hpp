@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mge {
+namespace wfe {
     template<class T1, class T2>
     class pair {
     public:

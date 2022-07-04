@@ -4,7 +4,7 @@
 #include "BuildInfo.hpp"
 #include "Defines.hpp"
 
-namespace mge {
+namespace wfe {
     class TypeInfo {
     public:
         TypeInfo() = delete;
@@ -67,5 +67,5 @@ namespace mge {
         string name{};
     };
 
-    #define MGE_TYPE_ID(expr) mge::TypeInfo(typeid(expr))
+    #define WFE_TYPE_ID(expr) wfe::TypeInfo(typeid(expr))
 }

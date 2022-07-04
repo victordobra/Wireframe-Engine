@@ -4,7 +4,7 @@
 #include "IO.hpp"
 #include <assert.h>
 
-namespace mge {
+namespace wfe {
     template<class Key, class Value>
     class map {
     public:

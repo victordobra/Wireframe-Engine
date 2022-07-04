@@ -8,7 +8,7 @@
 #undef ERROR
 #endif
 
-namespace mge {
+namespace wfe {
     namespace console {
         enum class MessageType : uint8_t {
             MESSAGE,

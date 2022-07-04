@@ -3,7 +3,7 @@
 #include "Defines.hpp"
 #include <typeinfo>
 
-namespace mge {
+namespace wfe {
     template<class T>
     void GetHashCode(T val, size_t& hash);
     template<class T>

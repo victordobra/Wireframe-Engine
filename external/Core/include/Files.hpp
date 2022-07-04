@@ -4,28 +4,26 @@
 #include "string.hpp"
 #include <stdio.h>
 
-namespace mge {
-    namespace StreamType {
-        constexpr uint8_t NONE       = 0;
-        constexpr uint8_t BINARY     = 1;
-        constexpr uint8_t AT_THE_END = 2;
-        constexpr uint8_t APPEND     = 4;
-        constexpr uint8_t TRUNCATE   = 8;
-    };
-    typedef uint8_t SType;
-    namespace SeekRelative {
-        constexpr uint8_t BEGINNING = SEEK_SET;
-        constexpr uint8_t POSITION = SEEK_CUR;
-        constexpr uint8_t END = SEEK_END;
-    }
-    typedef uint8_t SeekRel;
+namespace wfe {
+    typedef enum : uint8_t {
+        NONE       = 0,
+        BINARY     = 1,
+        AT_THE_END = 2,
+        APPEND     = 4,
+        TRUNCATE   = 8
+    } StreamType;
+    typedef enum : uint8_t {
+        BEGINNING = SEEK_SET,
+        POSITION = SEEK_CUR,
+        END = SEEK_END
+    } SeekRelative;
 
     class FileInput {
     public:
         FileInput();
         FileInput(const FileInput& other) = delete;
         FileInput(FileInput&& other) noexcept = delete;
-        FileInput(const string& fileLocation, SType type = StreamType::NONE);
+        FileInput(const string& fileLocation, StreamType type = StreamType::NONE);
 
         FileInput& operator=(const FileInput& other) = delete;
         FileInput& operator=(FileInput&& other) noexcept = delete;
@@ -33,7 +31,7 @@ namespace mge {
         bool8_t operator!();
         operator bool8_t();
 
-        FileInput& Open(const string& fileLocation, SType type = StreamType::NONE);
+        FileInput& Open(const string& fileLocation, StreamType type = StreamType::NONE);
         FileInput& Close();
 
         FileInput& Get();
@@ -54,7 +52,7 @@ namespace mge {
         FileInput& Read(float64_t& num, const char_t* sep = " \n");
         FileInput& Read(string   & str, const char_t* sep = " \n");
 
-        FileInput& Seek(ptrdiff_t pos, SeekRel relative = SeekRelative::BEGINNING);
+        FileInput& Seek(ptrdiff_t pos, SeekRelative relative = SeekRelative::BEGINNING);
 
         bool8_t IsOpen() const;
         bool8_t IsAtTheEnd() const;
@@ -73,12 +71,12 @@ namespace mge {
         FileOutput();
         FileOutput(const FileOutput&) = delete;
         FileOutput(FileOutput&&) noexcept = delete;
-        FileOutput(const string& fileLocation, SType type = StreamType::NONE);
+        FileOutput(const string& fileLocation, StreamType type = StreamType::NONE);
 
         bool8_t operator!();
         operator bool8_t();
 
-        FileOutput& Open(const string& fileLocation, SType type = StreamType::NONE);
+        FileOutput& Open(const string& fileLocation, StreamType type = StreamType::NONE);
         FileOutput& Close();
 
         FileOutput& WriteBuffer(char_t c);

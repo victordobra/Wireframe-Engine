@@ -3,7 +3,7 @@
 #include "vector.hpp"
 #include "Hash.hpp"
 
-namespace mge {
+namespace wfe {
     template<class Value>
     class unordered_set {
     public:

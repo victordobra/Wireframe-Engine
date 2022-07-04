@@ -3,7 +3,7 @@
 #include "Defines.hpp"
 #include <string.h>
 
-namespace mge {
+namespace wfe {
     class string {
     public:
         static constexpr size_t MAX_SIZE = 16777216; //2 ^ 24
