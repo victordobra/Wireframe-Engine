@@ -6,7 +6,7 @@
 namespace wfe {
     // Internal helper functions
     void Shader::LoadFromBinary(const string& spirvPath) {
-        FileInput input{(string)ASSET_PATH + spirvPath, (StreamType)(BINARY | AT_THE_END)};
+        FileInput input{(string)ASSET_PATH + spirvPath, (StreamType)(STREAM_TYPE_BINARY | STREAM_TYPE_AT_THE_END)};
 
         size_t size = input.Tell();
         input.Seek(0);
@@ -33,7 +33,7 @@ namespace wfe {
     }
 
     void Shader::LoadFromFile(const string& filePath) {
-        FileInput input{filePath, StreamType::BINARY};
+        FileInput input{filePath, STREAM_TYPE_BINARY};
 
         if(!input)
             console::OutFatalError("Failed to open file!", 1);
@@ -105,7 +105,7 @@ namespace wfe {
         input.Close();
     }
     void Shader::SaveToFile(const string& filePath) {
-        FileOutput output{filePath, StreamType::BINARY};
+        FileOutput output{filePath, STREAM_TYPE_BINARY};
 
         if(!output)
             console::OutFatalError("Failed to open file!", 1);

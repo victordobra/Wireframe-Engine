@@ -64,7 +64,9 @@ namespace wfe {
         /// @brief Returns the Vulkan pipeline layout.
         VkPipelineLayout GetPipelineLayout() const { return pipelineLayout; }
         /// @brief Returns the pipeline info.
-        PipelineInfo GetPipelineInfo() const { return pipelineInfo; }
+        PipelineInfo& GetPipelineInfo() { return pipelineInfo; }
+        /// @brief Returns the pipeline info.
+        const PipelineInfo& GetPipelineInfo() const { return pipelineInfo; }
         /// @brief Returns the pipeline's descriptor pool.
         DescriptorPool* GetDescriptorPool() const { return descriptorPool; }
         /// @brief Returns the descriptor pool's current global buffer.

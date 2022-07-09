@@ -1,25 +1,24 @@
 #pragma once
 
+#include "Components/Rendering/Renderer.hpp"
+#include "Assets/Rendering/Material.hpp"
 #include "Assets/General/Model.hpp"
-#include "Nodes/Rendering/Renderer.hpp"
-#include "Math/EngineMath.hpp"
-#include "Nodes/Rendering/Camera.hpp"
-#include "Nodes/Lighting/Light.hpp"
 
 namespace wfe {
     class ModelRenderer : public Renderer {
     public:
-        struct PushConstant {
+        struct PushConstants {
             Matrix4x4 modelTransform;
             Matrix4x4 modelRotation;
         };
 
-        Model* model{nullptr};
+        Material* material;
+        Model* model;
 
         ModelRenderer() = default;
         ModelRenderer(const ModelRenderer&) = delete;
         ModelRenderer(ModelRenderer&&) noexcept = delete;
-        
+
         ModelRenderer& operator=(const ModelRenderer&) = delete;
         ModelRenderer& operator=(ModelRenderer&&) noexcept = delete;
 

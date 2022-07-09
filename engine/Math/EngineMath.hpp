@@ -30,40 +30,40 @@ namespace wfe {
 	constexpr float32_t INFINITY_VAL = 1e30f;
 	constexpr float32_t FLOAT_EPSILON = 1.192092896e-07f;
 
-	inline float32_t Sin(float32_t x) { return sinf(x); }
-	inline float32_t Cos(float32_t x) { return cosf(x); }
-	inline float32_t Tan(float32_t x) { return tanf(x); }
-	inline float32_t Asin(float32_t x) { return asinf(x); }
-	inline float32_t Acos(float32_t x) { return acosf(x); }
-	inline float32_t Atan(float32_t x) { return atanf(x); }
-	inline float32_t Atan2(float32_t x, float32_t y) { return atan2f(x, y); }
+	INLINE float32_t Sin(float32_t x) { return sinf(x); }
+	INLINE float32_t Cos(float32_t x) { return cosf(x); }
+	INLINE float32_t Tan(float32_t x) { return tanf(x); }
+	INLINE float32_t Asin(float32_t x) { return asinf(x); }
+	INLINE float32_t Acos(float32_t x) { return acosf(x); }
+	INLINE float32_t Atan(float32_t x) { return atanf(x); }
+	INLINE float32_t Atan2(float32_t x, float32_t y) { return atan2f(x, y); }
 
-	inline float32_t Sqrt(float32_t x) { return sqrtf(x); }
+	INLINE float32_t Sqrt(float32_t x) { return sqrtf(x); }
 
-	inline bool8_t IsPowerOf2(uint64_t value) {
-		return (value != 0) && ((value & (value - 1)) == 0); // Based and redpilled epic gayer bithacking
+	INLINE bool8_t IsPowerOf2(uint64_t value) {
+		return (value != 0) && ((value & (value - 1)) == 0);
 	}
 
-	inline sint32_t Random(uint32_t seed = _time32(0)) {
+	INLINE int32_t Random(uint32_t seed = _time32(0)) {
 		srand(seed);
 		return rand();
 	}
-	inline sint32_t RandomInRange(sint32_t min, sint32_t max, uint32_t seed = _time32(0)) {
+	INLINE int32_t RandomInRange(int32_t min, int32_t max, uint32_t seed = _time32(0)) {
 		srand(seed);
 
 		assert((max >= min) && "The maximum value must be higher than or equal to the minimum value!");
 
-		sint32_t dif = max - min;
-		sint32_t num = rand() % dif + min;
+		int32_t dif = max - min;
+		int32_t num = rand() % dif + min;
 
 		return num;
 	}
 
-	inline float32_t RandomF(uint32_t seed = _time32(0)) {
+	INLINE float32_t RandomF(uint32_t seed = _time32(0)) {
 		srand(seed);
 		return (float32_t)rand();
 	}
-	inline float32_t RandomInRangeF(float32_t min, float32_t max, uint32_t seed = _time32(0)) {
+	INLINE float32_t RandomInRangeF(float32_t min, float32_t max, uint32_t seed = _time32(0)) {
 		srand(seed);
 
 		assert((max >= min) && "The maximum value must be higher than or equal to the minimum value!");
@@ -75,5 +75,5 @@ namespace wfe {
 	}
 
 	template<class T>
-	inline T Lerp(T x, T y, float32_t t) { return x + (x - y) * t; }
+	INLINE T Lerp(T x, T y, float32_t t) { return x + (x - y) * t; }
 }

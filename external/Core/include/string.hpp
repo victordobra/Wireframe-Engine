@@ -13,7 +13,8 @@ namespace wfe {
         }
         constexpr string(const string& other) : _capacity(other._capacity), str(new char_t[other._capacity]) {
             //Copy the string over
-            memcpy(str, other.str, _capacity * sizeof(char_t));
+            for(size_t i = 0; i < _capacity; ++i)
+                str[i] = other.str[i];
         }
         constexpr string(string&& other) noexcept : _capacity(other._capacity), str(other.str) {
             //Unassign the other vector's string pointer
@@ -21,20 +22,22 @@ namespace wfe {
         }
         constexpr string(const char_t* other) : _capacity(1), str(nullptr) {
             // Get the size of the string
-            size_t sSize = 1;
+            size_t strLength = 1;
 
             for(const char_t* ptr = other; *ptr; ++ptr)
-                ++sSize;
+                ++strLength;
+            ++strLength;
 
-            assert((sSize <= MAX_SIZE) && "The string's size bust be lower than or equal to MAX_SIZE!");
+            assert((strLength <= MAX_SIZE) && "The string's size bust be lower than or equal to MAX_SIZE!");
 
             // Find the lowest possible capacity
-            while(_capacity < sSize) {
+            while(_capacity < strLength) {
                 _capacity = _capacity << 1;
             }
 
             str = new char_t[_capacity];
-            memcpy(str, other, sSize);
+            for(size_t i = 0; i < strLength; ++i)
+                str[i] = other[i];
         }
 
         string& operator=(const string& other);
@@ -90,9 +93,9 @@ namespace wfe {
         size_t _capacity{};
     };
 
-    sint32_t  stoi  (const string& str, char_t** endPtr = nullptr, size_t base = 10);
-    sint32_t  stol  (const string& str, char_t** endPtr = nullptr, size_t base = 10);
-    sint64_t  stoll (const string& str, char_t** endPtr = nullptr, size_t base = 10);
+     int32_t  stoi  (const string& str, char_t** endPtr = nullptr, size_t base = 10);
+     int32_t  stol  (const string& str, char_t** endPtr = nullptr, size_t base = 10);
+     int64_t  stoll (const string& str, char_t** endPtr = nullptr, size_t base = 10);
     uint32_t  stoui (const string& str, char_t** endPtr = nullptr, size_t base = 10);
     uint32_t  stoul (const string& str, char_t** endPtr = nullptr, size_t base = 10);
     uint64_t  stoull(const string& str, char_t** endPtr = nullptr, size_t base = 10);

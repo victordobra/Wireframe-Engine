@@ -6,10 +6,10 @@
 
 namespace wfe {
     // Signed int types
-    typedef signed __int8 sint8_t;
-    typedef signed __int16 sint16_t;
-    typedef signed __int32 sint32_t;
-    typedef signed __int64 sint64_t;
+    typedef signed __int8 int8_t;
+    typedef signed __int16 int16_t;
+    typedef signed __int32 int32_t;
+    typedef signed __int64 int64_t;
 
     // Unsigned int types
     typedef unsigned __int8  uint8_t;
@@ -31,12 +31,12 @@ namespace wfe {
 
 #ifdef ARCH_X64
     typedef uint64_t size_t;
-    typedef sint64_t ptrdiff_t;
-    typedef sint64_t intptr_t;
+    typedef  int64_t ptrdiff_t;
+    typedef  int64_t intptr_t;
 #else
     typedef uint32_t size_t;
-    typedef sint32_t ptrdiff_t;
-    typedef sint32_t intptr_t;
+    typedef  int32_t ptrdiff_t;
+    typedef  int32_t intptr_t;
 #endif
 
     // Properly define static assertions
@@ -47,10 +47,10 @@ namespace wfe {
 #endif
 
     // Ensure all types are of the correct size
-    STATIC_ASSERT((sizeof(sint8_t)   == 1), "Expected sint8_t to be 1 byte."   );
-    STATIC_ASSERT((sizeof(sint16_t)  == 2), "Expected sint16_t to be 2 bytes." );
-    STATIC_ASSERT((sizeof(sint32_t)  == 4), "Expected sint32_t to be 4 bytes." );
-    STATIC_ASSERT((sizeof(sint64_t)  == 8), "Expected sint64_t to be 8 bytes." );
+    STATIC_ASSERT((sizeof(int8_t)   == 1), "Expected int8_t to be 1 byte."   );
+    STATIC_ASSERT((sizeof(int16_t)  == 2), "Expected int16_t to be 2 bytes." );
+    STATIC_ASSERT((sizeof(int32_t)  == 4), "Expected int32_t to be 4 bytes." );
+    STATIC_ASSERT((sizeof(int64_t)  == 8), "Expected int64_t to be 8 bytes." );
 
     STATIC_ASSERT((sizeof(uint8_t)   == 1), "Expected uint8_t to be 1 byte."   );
     STATIC_ASSERT((sizeof(uint16_t)  == 2), "Expected uint16_t to be 2 bytes." );

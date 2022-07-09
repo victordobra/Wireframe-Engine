@@ -136,7 +136,7 @@ namespace wfe {
 
     void Image::LoadFromFile(const string& fileLocation) {
         // Load the stbi image
-        sint32_t width32, height32, channels;
+        int32_t width32, height32, channels;
         Color8* pixels = (Color8*)stbi_load(fileLocation.c_str(), &width32, &height32, &channels, STBI_rgb_alpha);
 
         if(!pixels)
@@ -188,7 +188,7 @@ namespace wfe {
         // Map the buffer and save its contents as an image
         stagingBuffer.Map();
 
-        sint32_t result = stbi_write_png(fileLocation.c_str(), (sint32_t)width, (sint32_t)height, sizeof(Color8), stagingBuffer.GetMappedMemory(), width * sizeof(Color8));
+        int32_t result = stbi_write_png(fileLocation.c_str(), (int32_t)width, (int32_t)height, sizeof(Color8), stagingBuffer.GetMappedMemory(), width * sizeof(Color8));
 
         if(!result)
             console::OutFatalError((string)"Failed to save image! Reason: " + stbi_failure_reason(), 1);

@@ -26,7 +26,7 @@ namespace wfe {
         BOOL result = GetCursorPos(&point);
 
         if(!result) {
-            sint32_t errorCode = GetLastError();
+            int32_t errorCode = GetLastError();
             console::OutFatalError((string)"Failed to retrieve the cursor's position! Error code: " + ToString(errorCode), 1);
         }
 
@@ -90,7 +90,7 @@ namespace wfe {
             BOOL result = SetCursorPos((int)(GetWidth() >> 1), (int)(GetHeight() >> 1));
 
             if(!result) {
-                sint32_t errorCode = GetLastError();
+                int32_t errorCode = GetLastError();
                 console::OutFatalError((string)"Failed to set the cursor's position! Error code: " + ToString(errorCode), 1);
             }
 #endif

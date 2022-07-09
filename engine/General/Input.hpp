@@ -4,7 +4,7 @@
 
 namespace wfe {
     typedef struct {
-        sint64_t x, y;
+        int64_t x, y;
     } MousePos, MouseMovement;
     typedef enum : uint8_t {
         MOUSE_STATE_LOCKED,

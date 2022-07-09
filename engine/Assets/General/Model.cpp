@@ -260,7 +260,7 @@ namespace wfe {
     }
 
     void Model::LoadFromFile(const string& fileLocation) {
-        FileInput input(fileLocation, StreamType::BINARY);
+        FileInput input(fileLocation, STREAM_TYPE_BINARY);
 
         vector<Vertex> vertices;
         vector<uint32_t> indices;
@@ -282,7 +282,7 @@ namespace wfe {
         input.Close();
     }
     void Model::SaveToFile  (const string& fileLocation) {
-        FileOutput output(fileLocation, StreamType::BINARY);
+        FileOutput output(fileLocation, STREAM_TYPE_BINARY);
 
         // Create a vertex staging buffer
         VkDeviceSize vertexBufferSize = sizeof(Vertex) * vertexCount;

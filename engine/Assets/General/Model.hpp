@@ -58,9 +58,6 @@ namespace wfe {
         size_t GetVertexCount() const { return (size_t)vertexCount; }
         size_t GetIndexCount()  const { return (size_t)indexCount;  }
 
-        void Bind(VkCommandBuffer commandBuffer) const;
-        void Draw(VkCommandBuffer commandBuffer) const;
-
         ~Model();
     protected:
         void LoadFromFile(const string& fileLocation) override;

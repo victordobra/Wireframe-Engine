@@ -1,19 +1,20 @@
 #pragma once
+
 #include "Math/EngineMath.hpp"
 
 namespace wfe {
-    constexpr size_t MAX_LIGHT_COUNT = 100;
-
-    struct DirectionalLight {
-        Vector4 direction;
-        Vector4 color;
-    };
-    struct PointLight {
-        Vector4 position;
-        Vector4 color;
-    };
-
     struct LightingUbo {
+        static const size_t MAX_LIGHT_COUNT = 128;
+
+        struct DirectionalLight {
+            Vector4 direction;
+            Vector4 color;
+        };
+        struct PointLight {
+            Vector4 position;
+            Vector4 color;
+        };
+
         Matrix4x4 cameraTransform;
         Vector4 cameraWorldPos;
 

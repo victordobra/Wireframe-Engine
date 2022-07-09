@@ -41,7 +41,7 @@ namespace wfe {
     }
 
     void Material::LoadFromFile(const string& fileLocation) {
-        FileInput input(fileLocation, StreamType::BINARY);
+        FileInput input(fileLocation, STREAM_TYPE_BINARY);
 
         // Load the shader location from the file
         string shaderLocation;
@@ -110,7 +110,7 @@ namespace wfe {
         input.Close();
     }
     void Material::SaveToFile(const string& fileLocation) {
-        FileOutput output(fileLocation, StreamType::BINARY);
+        FileOutput output(fileLocation, STREAM_TYPE_BINARY);
 
         // Save the shader's location to the file
         string shaderLocation = shader->location;

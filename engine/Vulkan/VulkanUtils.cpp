@@ -97,8 +97,8 @@ namespace wfe {
         auto* ptr = data;
 
         for(size_t i = 0; i < count; ++i) {
-            stream.ReadBuffer((char_t*)&ptr->x, sizeof(sint32_t));
-            stream.ReadBuffer((char_t*)&ptr->y, sizeof(sint32_t));
+            stream.ReadBuffer((char_t*)&ptr->x, sizeof(int32_t));
+            stream.ReadBuffer((char_t*)&ptr->y, sizeof(int32_t));
 
             ++ptr;
         }
@@ -107,9 +107,9 @@ namespace wfe {
         auto* ptr = data;
 
         for(size_t i = 0; i < count; ++i) {
-            stream.ReadBuffer((char_t*)&ptr->x, sizeof(sint32_t));
-            stream.ReadBuffer((char_t*)&ptr->y, sizeof(sint32_t));
-            stream.ReadBuffer((char_t*)&ptr->z, sizeof(sint32_t));
+            stream.ReadBuffer((char_t*)&ptr->x, sizeof(int32_t));
+            stream.ReadBuffer((char_t*)&ptr->y, sizeof(int32_t));
+            stream.ReadBuffer((char_t*)&ptr->z, sizeof(int32_t));
 
             ++ptr;
         }
@@ -414,8 +414,8 @@ namespace wfe {
         const auto* ptr = data;
 
         for(size_t i = 0; i < count; ++i) {
-            stream.WriteBuffer((char_t*)&ptr->x, sizeof(sint32_t));
-            stream.WriteBuffer((char_t*)&ptr->y, sizeof(sint32_t));
+            stream.WriteBuffer((char_t*)&ptr->x, sizeof(int32_t));
+            stream.WriteBuffer((char_t*)&ptr->y, sizeof(int32_t));
 
             ++ptr;
         }
@@ -424,9 +424,9 @@ namespace wfe {
         const auto* ptr = data;
 
         for(size_t i = 0; i < count; ++i) {
-            stream.WriteBuffer((char_t*)&ptr->x, sizeof(sint32_t));
-            stream.WriteBuffer((char_t*)&ptr->y, sizeof(sint32_t));
-            stream.WriteBuffer((char_t*)&ptr->z, sizeof(sint32_t));
+            stream.WriteBuffer((char_t*)&ptr->x, sizeof(int32_t));
+            stream.WriteBuffer((char_t*)&ptr->y, sizeof(int32_t));
+            stream.WriteBuffer((char_t*)&ptr->z, sizeof(int32_t));
 
             ++ptr;
         }

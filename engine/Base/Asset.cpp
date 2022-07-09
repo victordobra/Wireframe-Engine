@@ -1,6 +1,5 @@
 #include "Asset.hpp"
 
-#include "Node.hpp"
 namespace wfe {
     // Variables
     constinit AssetType Asset::assetTypes[MAX_ASSET_TYPE_COUNT];

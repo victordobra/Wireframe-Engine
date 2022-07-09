@@ -27,7 +27,8 @@
 #include "Vulkan/SwapChain.hpp"
 #include "Vulkan/Sampler.hpp"
 #include "General/GameLoop.hpp"
-#include "Base/Node.hpp"
+#include "Base/Asset.hpp"
+#include "ECS/EngineECS.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -122,7 +123,8 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         wfe::CreateSampler();
 
         wfe::Asset::SortAssetTypes();
-        wfe::Node::SortNodeTypes();
+        wfe::Component::SortComponentTypes();
+        
         wfe::StartGameLoop();
     }
         return 0;
@@ -130,7 +132,7 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
         wfe::UpdateGameLoop();
         return 0;
     case WM_CLOSE:
-        delete wfe::Node::scene;
+        delete wfe::GameObject::scene;
         wfe::Asset::DeleteAllAssets();
 
         wfe::DeleteSampler();
