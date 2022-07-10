@@ -43,6 +43,10 @@ message(STATUS "Link directories added.")
 target_link_libraries(${PROJECT_NAME} Wireframe-Core-x86_64 vulkan-x86_64)
 message(STATUS "Link libraries added.")
 
+# Add the precompiled header
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine/WireframeEngine.hpp)
+message(STATUS "Precompiled header added.")
+
 # Find all shaders in the project
 file(GLOB_RECURSE GLSL_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/Shaders/*.frag" "${PROJECT_SOURCE_DIR}/src/Shaders/*.vert")
 set(GLSL_VALIDATOR ${PROJECT_SOURCE_DIR}/external/Vulkan/glsl/glslc.exe)
