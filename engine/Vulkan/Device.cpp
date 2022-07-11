@@ -272,7 +272,7 @@ namespace wfe {
 #ifdef PLATFORM_WINDOWS
         VkWin32SurfaceCreateInfoKHR createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-        createInfo.hwnd = GetHandle();
+        createInfo.hwnd = GetMainWindowHandle();
         createInfo.hinstance = GetWindowsInstance();
 
         auto result = vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface);

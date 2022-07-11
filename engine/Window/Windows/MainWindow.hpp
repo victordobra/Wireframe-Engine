@@ -4,19 +4,17 @@
 #include "Core.hpp"
 
 namespace wfe {
-    typedef HWND WindowHandle;
-
     /// @brief Returns the width of the main window.
-    size_t GetWidth();
+    size_t GetMainWindowWidth();
     /// @brief Returns the height of the main window.
-    size_t GetHeight();
+    size_t GetMainWindowHeight();
     /// @brief Returns the name of the application.
-    string GetName();
+    string GetMainWindowName();
     /// @brief Sets the name of the application.
     /// @param newName The new name of the application.
-    void SetName(const string& newName);
+    void SetMainWindowName(const string& newName);
     /// @brief Returns the handle of the window. Meant for internal use.
-    WindowHandle GetHandle();
+    HWND GetMainWindowHandle();
     /// @brief Returns the handle of the Windows instance. Meant for internal use.
     HINSTANCE GetWindowsInstance();
 }

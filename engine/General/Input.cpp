@@ -87,7 +87,7 @@ namespace wfe {
         // Reset the mouse's position if it is locked
         if(mouseState == MOUSE_STATE_LOCKED) {
 #ifdef PLATFORM_WINDOWS
-            BOOL result = SetCursorPos((int)(GetWidth() >> 1), (int)(GetHeight() >> 1));
+            BOOL result = SetCursorPos((int32_t)(GetMainWindowWidth() >> 1), (int32_t)(GetMainWindowWidth() >> 1));
 
             if(!result) {
                 int32_t errorCode = GetLastError();

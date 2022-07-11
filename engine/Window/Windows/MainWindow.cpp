@@ -153,20 +153,20 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
 }
 
 // External functions
-wfe::size_t wfe::GetWidth() {
+wfe::size_t wfe::GetMainWindowWidth() {
     return screenWidth;
 }
-wfe::size_t wfe::GetHeight() {
+wfe::size_t wfe::GetMainWindowHeight() {
     return screenHeight;
 }
-wfe::string wfe::GetName() {
+wfe::string wfe::GetMainWindowName() {
     return appName;
 }
-void wfe::SetName(const wfe::string& newName) {
+void wfe::SetMainWindowName(const wfe::string& newName) {
     appName = newName;
     SetWindowText(hWnd, appName.c_str());
 }
-wfe::WindowHandle wfe::GetHandle() {
+HWND wfe::GetMainWindowHandle() {
     return hWnd;
 }
 HINSTANCE wfe::GetWindowsInstance() {
