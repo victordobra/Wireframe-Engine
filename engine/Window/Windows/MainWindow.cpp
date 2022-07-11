@@ -29,16 +29,16 @@
 #include "General/GameLoop.hpp"
 #include "Base/Asset.hpp"
 #include "ECS/EngineECS.hpp"
+#include "ProjectInfo.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <tchar.h>
 
-// Const variables
-const wfe::char_t* className = "Application";
-const wfe::char_t* appName = "MG Engine";
-
 // Variables
+wfe::string className = "Application";
+wfe::string appName = PROJECT_NAME;
+
 HWND hWnd;
 HINSTANCE hInstance;
 wfe::size_t screenWidth, screenHeight;
@@ -60,7 +60,7 @@ static void RegisterApplicationClass() {
     wcex.hIcon         = LoadIcon(wcex.hInstance, IDI_APPLICATION);
     wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
     wcex.lpszMenuName  = NULL;
-    wcex.lpszClassName = className;
+    wcex.lpszClassName = className.c_str();
     wcex.hIconSm       = LoadIcon(wcex.hInstance, IDI_APPLICATION);
 
     // Throw an error if the class wasn't registered
@@ -75,8 +75,8 @@ static void CreateHWnd() {
     // Create the window
     hWnd = CreateWindowEx(
         0,
-        className,
-        appName,
+        className.c_str(),
+        appName.c_str(),
         WS_POPUP,
         0, 0,
         screenWidth, screenHeight,
@@ -159,12 +159,12 @@ wfe::size_t wfe::GetWidth() {
 wfe::size_t wfe::GetHeight() {
     return screenHeight;
 }
-const wfe::char_t* wfe::GetName() {
+wfe::string wfe::GetName() {
     return appName;
 }
-void wfe::SetName(const wfe::char_t* newName) {
+void wfe::SetName(const wfe::string& newName) {
     appName = newName;
-    SetWindowText(hWnd, appName);
+    SetWindowText(hWnd, appName.c_str());
 }
 wfe::WindowHandle wfe::GetHandle() {
     return hWnd;

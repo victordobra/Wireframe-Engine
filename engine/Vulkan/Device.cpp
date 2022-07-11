@@ -2,6 +2,7 @@
 #include "Window/MainWindow.hpp"
 #include "VulkanInclude.hpp"
 #include "Core.hpp"
+#include "ProjectInfo.hpp"
 
 namespace wfe {
     // Variables
@@ -226,10 +227,10 @@ namespace wfe {
 
         VkApplicationInfo appInfo = {};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Unnamed Project";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "Wireframe Engine";
-        appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
+        appInfo.pApplicationName = PROJECT_NAME;
+        appInfo.applicationVersion = VK_MAKE_VERSION(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MAJOR, PROJECT_VERSION_PATCH);
+        appInfo.pEngineName = ENGINE_NAME;
+        appInfo.engineVersion = VK_MAKE_VERSION(ENGINE_VERSION_MAJOR, ENGINE_VERSION_MINOR, ENGINE_VERSION_PATCH);
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
         VkInstanceCreateInfo createInfo = {};

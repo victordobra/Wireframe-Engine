@@ -7,9 +7,13 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")
 
 # Create the project
-project(${PROJECT_NAME} VERSION ${PROJECT_VERSION})
+project(${PROJECT_NAME} VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK})
 message(STATUS "Project name set to \"${PROJECT_NAME}\".")
 message(STATUS "Project version set to ${PROJECT_VERSION}.")
+
+# Configure the info header file
+configure_file(${PROJECT_SOURCE_DIR}/info/ProjectInfo.hpp.in ${PROJECT_SOURCE_DIR}/info/ProjectInfo.hpp)
+message(STATUS "Configured info header file successfully.")
 
 # Enable testing
 include(CTest)
@@ -34,7 +38,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 message(STATUS "Executable created successfully.")
 
 # Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
 message(STATUS "Include directories added.")
 
 # Add the link directories and link the libraries
