@@ -5,15 +5,15 @@
 namespace wfe {
     class AmbientLight : public Light { 
     public:
-        Vector4 ambientColor{};
+        Color32f ambientColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override { 
-            ubo.ambientLightColor = ambientColor;
+            ubo.ambientLightColor = { ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a };
         }
     };
     class DirectionalLight : public Light {
     public:
-        Vector4 lightColor{};
+        Color32f lightColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override { 
             const Transform& transform = GetGameObject()->transform;
@@ -21,7 +21,7 @@ namespace wfe {
             // Create the info about the directional light
             LightingUbo::DirectionalLight directionalLightInfo;
             directionalLightInfo.direction = transform.GetRotationMatrix() * Vector4(0.f, 0.f, -1.f, 1.f);
-            directionalLightInfo.color = lightColor;
+            directionalLightInfo.color = { lightColor.r, lightColor.g, lightColor.b, lightColor.a };
 
             // Add it to the array
             ubo.directionalLights[ubo.directionalLightCount++] = directionalLightInfo;
@@ -29,7 +29,7 @@ namespace wfe {
     };
     class PointLight : public Light {
     public:
-        Vector4 lightColor{};
+        Color32f lightColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override {
             const Transform& transform = GetGameObject()->transform;
@@ -37,7 +37,7 @@ namespace wfe {
             // Create the info about the point light
             LightingUbo::PointLight pointLightInfo;
             pointLightInfo.position = transform.position;
-            pointLightInfo.color = lightColor;
+            pointLightInfo.color = { lightColor.r, lightColor.g, lightColor.b, lightColor.a };
 
             // Add it to the array
             ubo.pointLights[ubo.pointLightCount++] = pointLightInfo;
