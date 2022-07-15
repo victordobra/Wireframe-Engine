@@ -52,7 +52,7 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine/Wi
 message(STATUS "Precompiled header added.")
 
 # Find all shaders in the project
-file(GLOB_RECURSE GLSL_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/Shaders/*.frag" "${PROJECT_SOURCE_DIR}/src/Shaders/*.vert")
+file(GLOB_RECURSE GLSL_SOURCE_FILES ${PROJECT_SOURCE_DIR}/engine/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag ${PROJECT_SOURCE_DIR}/src/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag)
 set(GLSL_VALIDATOR ${PROJECT_SOURCE_DIR}/external/Vulkan/glsl/glslc.exe)
 list(LENGTH GLSL_SOURCE_FILES GLSL_COUNT)
 
