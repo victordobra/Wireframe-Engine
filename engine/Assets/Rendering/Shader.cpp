@@ -100,7 +100,7 @@ namespace wfe {
             materials.insert(material);
         }
 
-        //pipeline = Asset::GetOrCreateAssetWithLocation<Pipeline>(pipelineLocation);
+        pipeline = Asset::GetOrCreateAssetWithLocation<Pipeline>(pipelineLocation);
 
         input.Close();
     }

@@ -5,9 +5,9 @@
 
 namespace wfe {
     struct Transform {
-        Vector3 position;
-        Quaternion rotation;
-        Vector3 scale;
+        Vector3 position = { 0.f, 0.f, 0.f };
+        Quaternion rotation = { 0.f, 0.f, 0.f, 1.f };
+        Vector3 scale = { 1.f, 1.f, 1.f };
 
         Matrix4x4 GetTranslationMatrix()    const {
             return Matrix4x4::Translation(position);
