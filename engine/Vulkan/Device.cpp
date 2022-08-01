@@ -17,6 +17,12 @@ namespace wfe {
 
     // Variables
     VkAllocationCallbacks* allocator = nullptr;
+ 
+#ifdef NDEBUG
+    bool8_t enableValidationLayers = false;
+#else
+    bool8_t enableValidationLayers = true;
+#endif 
 
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -100,15 +106,12 @@ namespace wfe {
             availableLayerSet.insert(layer.layerName);
         
         // Find all of the missing layers
-        string missingLayers = "";
-
         for(const auto* layer : validationLayers)
-            if(!availableLayerSet.count(layer))
-                missingLayers += (string)layer + "; ";
-        
-        // Output an error if at least one of the layers is missing
-        if(missingLayers.length())
-            console::OutFatalError((string)"Failed to find all required validation layers! Missing layers: " + missingLayers, 1);
+            if(!availableLayerSet.count(layer)) {
+                enableValidationLayers = false;
+                console::OutWarningFunction("Validation layers requested, but not supported.");
+                break;
+            }
     }
     static QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice) {
         QueueFamilyIndices indices{};
@@ -222,8 +225,9 @@ namespace wfe {
     }
 
     static void CreateInstance() {
-        // Check if the instance has the required extensions
+        // Check for suitability
         CheckRequiredInstanceExtensions();
+        CheckValidationLayerSupport();
 
         // Set the application info
         VkApplicationInfo appInfo;
@@ -513,6 +517,15 @@ namespace wfe {
     }
     const VkPhysicalDeviceProperties& GetDeviceProperties() {
         return physicalDeviceProperties;
+    }
+    bool8_t AreValidationLayersEnabled() {
+        return enableValidationLayers;
+    }
+    void EnableValidationLayers() {
+        enableValidationLayers = true;
+    }
+    void DisableValidationLayers() {
+        enableValidationLayers = false;
     }
 
     SwapChainSupportDetails GetSwapChainSupport() {
