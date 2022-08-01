@@ -16,8 +16,13 @@ namespace wfe {
         createInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         createInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
-        createInfo.anisotropyEnable = VK_TRUE;
-        createInfo.maxAnisotropy = GetDeviceProperties().limits.maxSamplerAnisotropy;
+        if(GetPhysicalDeviceFeatures().samplerAnisotropy) {
+            createInfo.anisotropyEnable = VK_TRUE;
+            createInfo.maxAnisotropy = GetPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
+        } else {
+            createInfo.anisotropyEnable = VK_FALSE;
+            createInfo.maxAnisotropy = 0.f;
+        }
 
         createInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
         createInfo.unnormalizedCoordinates = VK_FALSE;

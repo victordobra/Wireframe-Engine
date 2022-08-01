@@ -39,7 +39,9 @@ namespace wfe {
     /// @brief Returns the Vulkan present queue.
     VkQueue GetPresentQueue();
     /// @brief Returns the properties of the Vulkan physical device.
-    const VkPhysicalDeviceProperties& GetDeviceProperties();
+    const VkPhysicalDeviceProperties& GetPhysicalDeviceProperties();
+    /// @brief Returns the features of the VUlkan physical device.
+    const VkPhysicalDeviceFeatures& GetPhysicalDeviceFeatures();
     /// @brief Returns true if validation layers are enabled, otherwise false.
     bool8_t AreValidationLayersEnabled();
     /// @brief Enables validation layers. Internal use only.

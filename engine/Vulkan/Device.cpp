@@ -29,6 +29,7 @@ namespace wfe {
     VkSurfaceKHR surface;
     VkPhysicalDevice physicalDevice;
     VkPhysicalDeviceProperties physicalDeviceProperties;
+    VkPhysicalDeviceFeatures physicalDeviceFeatures; 
     VkDevice device;
     VkQueue graphicsQueue, presentQueue;
     VkCommandPool commandPool;
@@ -337,8 +338,10 @@ namespace wfe {
         if(physicalDevice == VK_NULL_HANDLE)
             console::OutFatalError("Failed to find a suitable GPU!", 1);
         
-        // Output the device's name
+        // Save the physical device properties and features
         vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+        vkGetPhysicalDeviceFeatures(physicalDevice, &physicalDeviceFeatures);
+
         console::OutMessageFunction((string)"Found suitable GPU: " + physicalDeviceProperties.deviceName + ".");
     }
     static void CreateLogicalDevice() {
@@ -365,65 +368,6 @@ namespace wfe {
             queueCreateInfos[1].pQueuePriorities = &queuePriority;
         }
 
-        // Set the physical device fratures
-        VkPhysicalDeviceFeatures physicalDeviceFeatues;
-
-        physicalDeviceFeatues.robustBufferAccess = VK_FALSE;
-        physicalDeviceFeatues.fullDrawIndexUint32 = VK_FALSE;
-        physicalDeviceFeatues.imageCubeArray = VK_FALSE;
-        physicalDeviceFeatues.independentBlend = VK_FALSE;
-        physicalDeviceFeatues.geometryShader = VK_FALSE;
-        physicalDeviceFeatues.tessellationShader = VK_FALSE;
-        physicalDeviceFeatues.sampleRateShading = VK_FALSE;
-        physicalDeviceFeatues.dualSrcBlend = VK_FALSE;
-        physicalDeviceFeatues.logicOp = VK_FALSE;
-        physicalDeviceFeatues.multiDrawIndirect = VK_FALSE;
-        physicalDeviceFeatues.drawIndirectFirstInstance = VK_FALSE;
-        physicalDeviceFeatues.depthClamp = VK_FALSE;
-        physicalDeviceFeatues.depthBiasClamp = VK_FALSE;
-        physicalDeviceFeatues.fillModeNonSolid = VK_FALSE;
-        physicalDeviceFeatues.depthBounds = VK_FALSE;
-        physicalDeviceFeatues.wideLines = VK_FALSE;
-        physicalDeviceFeatues.largePoints = VK_FALSE;
-        physicalDeviceFeatues.alphaToOne = VK_FALSE;
-        physicalDeviceFeatues.multiViewport = VK_FALSE;
-        physicalDeviceFeatues.samplerAnisotropy = VK_FALSE;
-        physicalDeviceFeatues.textureCompressionETC2 = VK_FALSE;
-        physicalDeviceFeatues.textureCompressionASTC_LDR = VK_FALSE;
-        physicalDeviceFeatues.textureCompressionBC = VK_FALSE;
-        physicalDeviceFeatues.occlusionQueryPrecise = VK_FALSE;
-        physicalDeviceFeatues.pipelineStatisticsQuery = VK_FALSE;
-        physicalDeviceFeatues.vertexPipelineStoresAndAtomics = VK_FALSE;
-        physicalDeviceFeatues.fragmentStoresAndAtomics = VK_FALSE;
-        physicalDeviceFeatues.shaderTessellationAndGeometryPointSize = VK_FALSE;
-        physicalDeviceFeatues.shaderImageGatherExtended = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageImageExtendedFormats = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageImageMultisample = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageImageReadWithoutFormat = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageImageWriteWithoutFormat = VK_FALSE;
-        physicalDeviceFeatues.shaderUniformBufferArrayDynamicIndexing = VK_FALSE;
-        physicalDeviceFeatues.shaderSampledImageArrayDynamicIndexing = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageBufferArrayDynamicIndexing = VK_FALSE;
-        physicalDeviceFeatues.shaderStorageImageArrayDynamicIndexing = VK_FALSE;
-        physicalDeviceFeatues.shaderClipDistance = VK_FALSE;
-        physicalDeviceFeatues.shaderCullDistance = VK_FALSE;
-        physicalDeviceFeatues.shaderFloat64 = VK_FALSE;
-        physicalDeviceFeatues.shaderInt64 = VK_FALSE;
-        physicalDeviceFeatues.shaderInt16 = VK_FALSE;
-        physicalDeviceFeatues.shaderResourceResidency = VK_FALSE;
-        physicalDeviceFeatues.shaderResourceMinLod = VK_FALSE;
-        physicalDeviceFeatues.sparseBinding = VK_FALSE;
-        physicalDeviceFeatues.sparseResidencyBuffer = VK_FALSE;
-        physicalDeviceFeatues.sparseResidencyImage2D = VK_FALSE;
-        physicalDeviceFeatues.sparseResidencyImage3D = VK_FALSE;
-        physicalDeviceFeatues.sparseResidency2Samples = VK_FALSE;
-        physicalDeviceFeatues.sparseResidency4Samples = VK_FALSE;
-        physicalDeviceFeatues.sparseResidency8Samples = VK_FALSE;
-        physicalDeviceFeatues.sparseResidency16Samples = VK_FALSE;
-        physicalDeviceFeatues.sparseResidencyAliased = VK_FALSE;
-        physicalDeviceFeatues.variableMultisampleRate = VK_FALSE;
-        physicalDeviceFeatues.inheritedQueries = VK_FALSE;
-
         // Set the device create info
         VkDeviceCreateInfo createInfo;
 
@@ -443,7 +387,7 @@ namespace wfe {
 
         createInfo.enabledExtensionCount = (uint32_t)deviceExtensions.size();
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-        createInfo.pEnabledFeatures = &physicalDeviceFeatues;
+        createInfo.pEnabledFeatures = &physicalDeviceFeatures;
 
         // Create the device
         auto result = vkCreateDevice(physicalDevice, &createInfo, allocator, &device);
@@ -515,8 +459,11 @@ namespace wfe {
     VkQueue GetPresentQueue() {
         return presentQueue;
     }
-    const VkPhysicalDeviceProperties& GetDeviceProperties() {
+    const VkPhysicalDeviceProperties& GetPhysicalDeviceProperties() {
         return physicalDeviceProperties;
+    }
+    const VkPhysicalDeviceFeatures& GetPhysicalDeviceFeatures() {
+        return physicalDeviceFeatures;
     }
     bool8_t AreValidationLayersEnabled() {
         return enableValidationLayers;

@@ -1,15 +1,11 @@
 #include "Buffer.hpp"
 
 namespace wfe {
-    VkDeviceSize Buffer::GetAlignment(VkDeviceSize instanceSize) {
-        return (instanceSize + GetDeviceProperties().limits.nonCoherentAtomSize - 1) & ~(GetDeviceProperties().limits.nonCoherentAtomSize - 1);
-    }
-
     Buffer::Buffer(VkDeviceSize instanceSize, size_t instanceCount, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags) {
         this->instanceSize = instanceSize;
         this->instanceCount = instanceCount;
         this->bufferSize = instanceSize * instanceCount;
-        this->alignmentSize = GetAlignment(instanceSize);
+        this->alignmentSize = PadUniformBufferSize(bufferSize);
         this->usageFlags = usageFlags;
         this->memoryPropertyFlags = memoryPropertyFlags;
 
