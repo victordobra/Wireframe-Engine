@@ -1,22 +1,20 @@
 #pragma once
 
 #include "VulkanInclude.hpp"
-#include "Core.hpp"
 
 namespace wfe {
-    /// @brief Holds details about swap chain support.
-    struct SwapChainSupportDetails {
-        VkSurfaceCapabilitiesKHR capabilities{};
-        vector<VkSurfaceFormatKHR> formats{};
-        vector<VkPresentModeKHR> presentModes{};
-    };
-    /// @brief Holds indices for the graphics and present queue families.
     struct QueueFamilyIndices {
-        uint32_t graphicsFamily{};
-        uint32_t presentFamily{};
-        bool8_t graphicsFamilyHasValue = false;
-        bool8_t presentFamilyHasValue = false;
-        bool8_t IsComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
+        uint32_t graphicsFamily; bool8_t graphicsFamilyHasValue;
+        uint32_t presentFamily;  bool8_t presentFamilyHasValue;
+
+        bool8_t IsComplete() {
+            return graphicsFamilyHasValue && presentFamilyHasValue;
+        }
+    };
+    struct SwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR capabilities;
+        vector<VkSurfaceFormatKHR> formats;
+        vector<VkPresentModeKHR> presentModes;
     };
 
 #ifdef NDEBUG
@@ -25,11 +23,13 @@ namespace wfe {
     const bool8_t enableValidationLayers = true;
 #endif
 
-    /// @brief Create the Vulkan device. Meant for internal use.
-    void CreateVulkanDevice();
-    /// @brief Delete the Vulkan device. Meant for internal use.
-    void DeleteVulkanDevice();
+    /// @brief Creates the Vulkan device. Internal use only
+    void CreateDevice();
+    /// @brief Deletes the Vulkan device. Internal use only
+    void DeleteDevice();
 
+    /// @brief Returns the Vulkan allocator.
+    const VkAllocationCallbacks* GetVulkanAllocator();
     /// @brief Returns the Vulkan instance.
     VkInstance GetVulkanInstance();
     /// @brief Returns the Vulkan physical device.
@@ -66,13 +66,15 @@ namespace wfe {
     /// @brief Ends single time commands.
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
     /// @brief Copies a buffer to another buffer.
-    void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+    void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandBuffer commandBuffer = nullptr);
     /// @brief Copies an image to another image.
-    void CopyImage(VkImage srcImage, VkImage dstImage, uint32_t width, uint32_t height, uint32_t srcLayerCount, uint32_t dstLayerCount);
+    void CopyImage(VkImage srcImage, VkImage dstImage, uint32_t width, uint32_t height, uint32_t srcLayerCount, uint32_t dstLayerCount, VkCommandBuffer commandBuffer = nullptr);
     /// @brief Copies a buffer to an image.
-    void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+    void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount, VkCommandBuffer commandBuffer = nullptr);
     /// @brief Copies an image to a buffer.
-    void CopyImageToBuffer(VkImage image, VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount);
-    /// @brief Pads the uniform buffer size to the nonCoherentAtomSize of the Vulkan physical device.
-    size_t PadUniformBufferSize(size_t originalSize);
+    void CopyImageToBuffer(VkImage image, VkBuffer buffer, uint32_t width, uint32_t height, uint32_t layerCount, VkCommandBuffer commandBuffer = nullptr);
+    /// @brief Transitions the image's layout.
+    void TransitionImageLayout(VkImage image, VkImageLayout srcLayout, VkImageLayout dstLayout, VkFormat format, VkCommandBuffer commandBuffer = nullptr);
+    /// @brief Pads the given uniform buffer size.
+    VkDeviceSize PadUniformBufferSize(VkDeviceSize originalSize);
 }

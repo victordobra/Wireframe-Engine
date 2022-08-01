@@ -118,8 +118,8 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
     case WM_CREATE: 
     {
         hWnd = hWindow;
-        wfe::CreateVulkanDevice();
-        wfe::CreateSwapChain({ (wfe::uint32_t)screenWidth, (wfe::uint32_t)screenHeight });
+        wfe::CreateDevice();
+        wfe::CreateSwapChain();
         wfe::CreateSampler();
 
         wfe::Asset::SortAssetTypes();
@@ -137,7 +137,7 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
 
         wfe::DeleteSampler();
         wfe::DeleteSwapChain();
-        wfe::DeleteVulkanDevice();
+        wfe::DeleteDevice();
         
         wfe::console::CloseLogFile();
         DestroyWindow(hWindow);

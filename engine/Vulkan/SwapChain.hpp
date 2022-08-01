@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Device.hpp"
-#include "Core.hpp"
+#include "VulkanInclude.hpp"
 
 namespace wfe {
-    static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+    const size_t MAX_FRAMES_IN_FLIGHT = 2;
 
-    /// @brief Creates the swap chain. Meant for internal use.
-    void CreateSwapChain(VkExtent2D extent);
-    /// @brief Deletes the swap chain. Meant for internal use.
+    /// @brief Creates the Vulkan swap chain. Internal use only.
+    void CreateSwapChain();
+    /// @brief Deletes the Vulkan swap chain. Internal use only.
     void DeleteSwapChain();
+    /// @brief Recreates the Vulkan swap chain, called when the window is resized. Internal use only.
+    void RecreateSwapChain();
 
     /// @brief Returns the framebuffer at the specified index.
     VkFramebuffer GetFrameBuffer(size_t index);
@@ -27,7 +28,7 @@ namespace wfe {
     size_t GetSwapChainWidth();
     /// @brief Returns the height of the swap chain.
     size_t GetSwapChainHeight();
-    /// @brief Returns the current frame index % MAX_FRAMES_IN_FLIGHT
+    /// @brief Returns the current frame index % MAX_FRAMES_IN_FLIGHT.
     uint32_t GetCurrentFrame();
 
     /// @brief Returns the aspect ratio of the swap chain's extent.
