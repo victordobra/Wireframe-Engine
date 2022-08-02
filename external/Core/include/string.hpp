@@ -11,24 +11,19 @@ namespace wfe {
         constexpr string() : str(nullptr), _capacity(0) { 
         
         }
-        constexpr string(const string& other) : _capacity(other._capacity), str(new char_t[other._capacity]) {
-            //Copy the string over
-            for(size_t i = 0; i < _capacity; ++i)
-                str[i] = other.str[i];
+        string(const string& other) : _capacity(other._capacity), str(new char_t[other._capacity]) {
+            strcpy(str, other.str);
         }
-        constexpr string(string&& other) noexcept : _capacity(other._capacity), str(other.str) {
+        string(string&& other) noexcept : _capacity(other._capacity), str(other.str) {
             //Unassign the other vector's string pointer
             other.str = nullptr;
         }
-        constexpr string(const char_t* other) : _capacity(1), str(nullptr) {
+        string(const char_t* other) : _capacity(1), str(nullptr) {
             // Get the size of the string
             size_t strLength = 1;
 
-            for(const char_t* ptr = other; *ptr; ++ptr)
-                ++strLength;
+            strLength = strnlen_s(other, MAX_SIZE);
             ++strLength;
-
-            assert((strLength <= MAX_SIZE) && "The string's size bust be lower than or equal to MAX_SIZE!");
 
             // Find the lowest possible capacity
             while(_capacity < strLength) {
@@ -36,8 +31,7 @@ namespace wfe {
             }
 
             str = new char_t[_capacity];
-            for(size_t i = 0; i < strLength; ++i)
-                str[i] = other[i];
+            memcpy(str, other, _capacity);
         }
 
         string& operator=(const string& other);
@@ -45,8 +39,8 @@ namespace wfe {
         string& operator+=(const string& other);
         string& operator+=(string&& other) noexcept;
 
-        string operator+(const string& other);
-        string operator+(string&& other);
+        string operator+(const string& other) const;
+        string operator+(string&& other) const;
 
         bool8_t operator==(const string& other) const { return strcmp(str, other.c_str()) == 0; }
         bool8_t operator==(string&& other)      const { return strcmp(str, other.c_str()) == 0; }
@@ -83,7 +77,7 @@ namespace wfe {
             return strnlen_s(str, _capacity);
         }
         size_t        max_size() const { return MAX_SIZE; }
-        size_t        capacity()       { return _capacity; }
+        size_t        capacity() const { return _capacity; }
 
         constexpr ~string()  {
             delete[] str;
