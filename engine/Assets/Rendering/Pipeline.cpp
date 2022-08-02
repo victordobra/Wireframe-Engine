@@ -115,14 +115,18 @@ namespace wfe {
 				VkDescriptorBufferInfo bufferInfo = globalBuffers[i]->GetDescriptorInfo();
 
 				// Set information about the write
-				VkWriteDescriptorSet write{};
+				VkWriteDescriptorSet write;
 
 				write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-				write.dstBinding = 0;
-				write.pBufferInfo = &bufferInfo;
-				write.descriptorCount = 1;
+				write.pNext = nullptr;
 				write.dstSet = descriptorPool->GetDescriptorSets()[descriptorPool->GetDescriptorSetIndex(0, i)];
+				write.dstBinding = 0;
+				write.dstArrayElement = 0;
+				write.descriptorCount = 1;
+				write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				write.pImageInfo = nullptr;
+				write.pBufferInfo = &bufferInfo;
+				write.pTexelBufferView = nullptr;
 
 				vkUpdateDescriptorSets(GetDevice(), 1, &write, 0, nullptr);
 			}
@@ -152,24 +156,28 @@ namespace wfe {
 					// Set information about the writes
 					vector<VkWriteDescriptorSet> writes(1 + imageInfos.size());
 
-					writes[0] = {};
-
 					writes[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-					writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-					writes[0].dstBinding = 0;
-					writes[0].pBufferInfo = &bufferInfo;
-					writes[0].descriptorCount = 1;
+					writes[0].pNext = nullptr;
 					writes[0].dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex];
+					writes[0].dstBinding = 0;
+					writes[0].dstArrayElement = 0;
+					writes[0].descriptorCount = 1;
+					writes[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+					writes[0].pImageInfo = imageInfos.data();
+					writes[0].pBufferInfo = nullptr;
+					writes[0].pTexelBufferView = nullptr;
 
 					for(size_t k = 1; k < writes.size(); ++k) {
-						writes[k] = {};
-
 						writes[k].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-						writes[k].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-						writes[k].dstBinding = k;
-						writes[k].pImageInfo = imageInfos.begin() + k - 1;
-						writes[k].descriptorCount = 1;
+						writes[k].pNext = nullptr;
 						writes[k].dstSet = descriptorPool->GetDescriptorSets()[descriptorIndex];
+						writes[k].dstBinding = 0;
+						writes[k].dstArrayElement = 0;
+						writes[k].descriptorCount = 1;
+						writes[k].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+						writes[k].pImageInfo = imageInfos.data() + k;
+						writes[k].pBufferInfo = nullptr;
+						writes[k].pTexelBufferView = nullptr;
 					}
 					++descriptorIndex;
 
@@ -178,34 +186,43 @@ namespace wfe {
 		}
 	}
 	void Pipeline::CreatePipelineLayout() {
-		// Add every descriptor set layout in a vector
+		// Add every descriptor set layout to a vector
 		vector<VkDescriptorSetLayout> layouts(pipelineInfo.descriptorPoolInfo.descriptorSetLayouts.size());
 		for(size_t i = 0; i < layouts.size(); ++i) {
 			VkDescriptorSetLayout layout = pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].layout;
 			layouts[i] = pipelineInfo.descriptorPoolInfo.descriptorSetLayouts[i].layout;
 		}
 
-		// Pipeline layout info
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		// Set the pipeline layout info
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.pNext = nullptr;
+		pipelineLayoutInfo.flags = 0;
 		pipelineLayoutInfo.setLayoutCount = (uint32_t)layouts.size();
 		pipelineLayoutInfo.pSetLayouts = layouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = (uint32_t)pipelineInfo.pushConstantRanges.size();
 		pipelineLayoutInfo.pPushConstantRanges = pipelineInfo.pushConstantRanges.data();
-		pipelineLayoutInfo.flags = 0;
-		pipelineLayoutInfo.pNext = nullptr;
 
 		// Create the pipeline layout
-		auto result = vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout);
+		auto result = vkCreatePipelineLayout(GetDevice(), &pipelineLayoutInfo, GetVulkanAllocator(), &pipelineLayout);
 		if(result != VK_SUCCESS)
 			console::OutFatalError((string)"Failed to create pipeline layout! Error code: " + VkResultToString(result), 1);
 	}
 	void Pipeline::CreatePipeline() {
-		// Set vertex binding and attribute descriptions
+		// Set all pointer values
+		pipelineInfo.viewportInfo.pViewports = &pipelineInfo.viewport;
+		pipelineInfo.viewportInfo.pScissors = &pipelineInfo.scissor;
+
 		pipelineInfo.vertexInputInfo.vertexBindingDescriptionCount = (uint32_t)pipelineInfo.vertexBindings.size();
 		pipelineInfo.vertexInputInfo.pVertexBindingDescriptions = pipelineInfo.vertexBindings.data();
 		pipelineInfo.vertexInputInfo.vertexAttributeDescriptionCount = (uint32_t)pipelineInfo.vertexAttributes.size();
 		pipelineInfo.vertexInputInfo.pVertexAttributeDescriptions = pipelineInfo.vertexAttributes.data();
+
+		pipelineInfo.colorBlendInfo.pAttachments = &pipelineInfo.colorBlendAttachment;
+
+		pipelineInfo.dynamicStateInfo.dynamicStateCount = (uint32_t)pipelineInfo.dynamicStateEnables.size();
+		pipelineInfo.dynamicStateInfo.pDynamicStates = pipelineInfo.dynamicStateEnables.data();
 
 		// Add itself to every single shader
 		for(const auto& shaderStage : pipelineInfo.shaderStages)
@@ -225,17 +242,22 @@ namespace wfe {
         }
 
 		// Pipeline info
-		VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
+		VkGraphicsPipelineCreateInfo pipelineCreateInfo;
+
 		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		pipelineCreateInfo.pNext = nullptr;
+		pipelineCreateInfo.flags = 0;
 		pipelineCreateInfo.stageCount = (uint32_t)vkShaderStages.size();
 		pipelineCreateInfo.pStages = vkShaderStages.data();
+
 		pipelineCreateInfo.pVertexInputState = &pipelineInfo.vertexInputInfo;
 		pipelineCreateInfo.pInputAssemblyState = &pipelineInfo.inputAssemblyInfo;
+		pipelineCreateInfo.pTessellationState = nullptr;
 		pipelineCreateInfo.pViewportState = &pipelineInfo.viewportInfo;
 		pipelineCreateInfo.pRasterizationState = &pipelineInfo.rasterizationInfo;
 		pipelineCreateInfo.pMultisampleState = &pipelineInfo.multisampleInfo;
-		pipelineCreateInfo.pColorBlendState = &pipelineInfo.colorBlendInfo;
 		pipelineCreateInfo.pDepthStencilState = &pipelineInfo.depthStencilInfo;
+		pipelineCreateInfo.pColorBlendState = &pipelineInfo.colorBlendInfo;
 		pipelineCreateInfo.pDynamicState = &pipelineInfo.dynamicStateInfo;
 		
 		pipelineCreateInfo.layout = pipelineLayout;
@@ -246,7 +268,7 @@ namespace wfe {
 		pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
 		
 		// Create the pipeline
-		auto result = vkCreateGraphicsPipelines(GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &graphicsPipeline);
+		auto result = vkCreateGraphicsPipelines(GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, GetVulkanAllocator(), &graphicsPipeline);
 		if (result != VK_SUCCESS)
 			console::OutFatalError((string)"Failed to create graphics pipeline! Error code: " + VkResultToString(result), 1);
 	}
@@ -347,20 +369,6 @@ namespace wfe {
 
 		input.Close();
 
-		// Set some values
-		pipelineInfo.dynamicStateEnables.clear();
-
-		pipelineInfo.viewportInfo.viewportCount = 1;
-		pipelineInfo.viewportInfo.pViewports = &pipelineInfo.viewport;
-		pipelineInfo.viewportInfo.scissorCount = 1;
-		pipelineInfo.viewportInfo.pScissors = &pipelineInfo.scissor;
-
-		pipelineInfo.colorBlendInfo.attachmentCount = 1;
-		pipelineInfo.colorBlendInfo.pAttachments = &pipelineInfo.colorBlendAttachment;
-
-		pipelineInfo.dynamicStateInfo.dynamicStateCount = pipelineInfo.dynamicStateEnables.size();
-		pipelineInfo.dynamicStateInfo.pDynamicStates = pipelineInfo.dynamicStateEnables.data();
-
 		// Create the pipeline
 		Create();
 	}
@@ -439,63 +447,72 @@ namespace wfe {
 	}
 
     void Pipeline::PopulatePipelineInfo(PipelineInfo& pipelineInfo) {
-		// Viewport and scissor
+		// Other variables
+		pipelineInfo.shaderStages = {};
+		pipelineInfo.pushConstantRanges = {};
+
+		pipelineInfo.descriptorPoolInfo = {};
+		pipelineInfo.globalBufferSize = 0;
+
+		pipelineInfo.vertexBindings = {};
+		pipelineInfo.vertexAttributes = {};
+		pipelineInfo.dynamicStateEnables = {};
+
 		pipelineInfo.viewport = { 0, 0, (float32_t)GetSwapChainExtent().width, (float32_t)GetSwapChainExtent().height, 0.f, 1.f };
 		pipelineInfo.scissor = { { 0, 0 }, GetSwapChainExtent() };
 
 		// Viewport info
 		pipelineInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		pipelineInfo.viewportInfo.viewportCount = 1;
-		pipelineInfo.viewportInfo.pViewports = &pipelineInfo.viewport;
-		pipelineInfo.viewportInfo.scissorCount = 1;
-		pipelineInfo.viewportInfo.pScissors = &pipelineInfo.scissor;
-		pipelineInfo.viewportInfo.flags = 0;
 		pipelineInfo.viewportInfo.pNext = nullptr;
+		pipelineInfo.viewportInfo.flags = 0;
+		pipelineInfo.viewportInfo.viewportCount = 1;
+		pipelineInfo.viewportInfo.pViewports = nullptr;
+		pipelineInfo.viewportInfo.scissorCount = 1;
+		pipelineInfo.viewportInfo.pScissors = nullptr;
 
 		// Vertex input info
 		pipelineInfo.vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		pipelineInfo.vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		pipelineInfo.vertexInputInfo.vertexBindingDescriptionCount = 0;
-		pipelineInfo.vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-		pipelineInfo.vertexInputInfo.pVertexBindingDescriptions = nullptr;
-		pipelineInfo.vertexInputInfo.flags = 0;
 		pipelineInfo.vertexInputInfo.pNext = nullptr;
+		pipelineInfo.vertexInputInfo.flags = 0;
+		pipelineInfo.vertexInputInfo.vertexAttributeDescriptionCount = 0;
+		pipelineInfo.vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+		pipelineInfo.vertexInputInfo.vertexBindingDescriptionCount = 0;
+		pipelineInfo.vertexInputInfo.pVertexBindingDescriptions = nullptr;
 
         // Input assembly info
 		pipelineInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		pipelineInfo.inputAssemblyInfo.pNext = nullptr;
+		pipelineInfo.inputAssemblyInfo.flags = 0;
 		pipelineInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		pipelineInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
-		pipelineInfo.inputAssemblyInfo.flags = 0;
-		pipelineInfo.inputAssemblyInfo.pNext = nullptr;
 
 		// Rasterization info
 		pipelineInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		pipelineInfo.rasterizationInfo.pNext = nullptr;
+		pipelineInfo.rasterizationInfo.flags = 0;
 		pipelineInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
 		pipelineInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		pipelineInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
-		pipelineInfo.rasterizationInfo.lineWidth = 1.f;
 		pipelineInfo.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		pipelineInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		pipelineInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;
 		pipelineInfo.rasterizationInfo.depthBiasConstantFactor = 0.f;
 		pipelineInfo.rasterizationInfo.depthBiasClamp = 0.f;
 		pipelineInfo.rasterizationInfo.depthBiasSlopeFactor = 0.f;
-		pipelineInfo.rasterizationInfo.flags = 0;
-		pipelineInfo.rasterizationInfo.pNext = nullptr;
+		pipelineInfo.rasterizationInfo.lineWidth = 1.f;
 
 		// Multisample info
 		pipelineInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		pipelineInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
+		pipelineInfo.multisampleInfo.pNext = nullptr;
+		pipelineInfo.multisampleInfo.flags = 0;
 		pipelineInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		pipelineInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
 		pipelineInfo.multisampleInfo.minSampleShading = 1.0f;
 		pipelineInfo.multisampleInfo.pSampleMask = nullptr;
 		pipelineInfo.multisampleInfo.alphaToCoverageEnable = VK_FALSE;
 		pipelineInfo.multisampleInfo.alphaToOneEnable = VK_FALSE;
-		pipelineInfo.multisampleInfo.flags = 0;
-		pipelineInfo.multisampleInfo.pNext = nullptr;
 
 		// Color blend attachmemt
-		pipelineInfo.colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 		pipelineInfo.colorBlendAttachment.blendEnable = VK_FALSE;
 		pipelineInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 		pipelineInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
@@ -503,22 +520,25 @@ namespace wfe {
 		pipelineInfo.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		pipelineInfo.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		pipelineInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+		pipelineInfo.colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 
 		// Color blend info
 		pipelineInfo.colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+		pipelineInfo.colorBlendInfo.pNext = nullptr;
+		pipelineInfo.colorBlendInfo.flags = 0;
 		pipelineInfo.colorBlendInfo.logicOpEnable = VK_FALSE;
 		pipelineInfo.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
 		pipelineInfo.colorBlendInfo.attachmentCount = 1;
-		pipelineInfo.colorBlendInfo.pAttachments = &pipelineInfo.colorBlendAttachment;
-		pipelineInfo.colorBlendInfo.blendConstants[0] = 0.0f;
-		pipelineInfo.colorBlendInfo.blendConstants[1] = 0.0f;
-		pipelineInfo.colorBlendInfo.blendConstants[2] = 0.0f;
-		pipelineInfo.colorBlendInfo.blendConstants[3] = 0.0f;
-		pipelineInfo.colorBlendInfo.flags = 0;
-		pipelineInfo.colorBlendInfo.pNext = nullptr;
+		pipelineInfo.colorBlendInfo.pAttachments = nullptr;
+		pipelineInfo.colorBlendInfo.blendConstants[0] = 0.f;
+		pipelineInfo.colorBlendInfo.blendConstants[1] = 0.f;
+		pipelineInfo.colorBlendInfo.blendConstants[2] = 0.f;
+		pipelineInfo.colorBlendInfo.blendConstants[3] = 0.f;
 
 		// Depth stencil info
 		pipelineInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		pipelineInfo.depthStencilInfo.pNext = nullptr;
+		pipelineInfo.depthStencilInfo.flags = 0;
 		pipelineInfo.depthStencilInfo.depthTestEnable = VK_TRUE;
 		pipelineInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;
 		pipelineInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
@@ -526,19 +546,31 @@ namespace wfe {
 		pipelineInfo.depthStencilInfo.minDepthBounds = 0.0f;
 		pipelineInfo.depthStencilInfo.maxDepthBounds = 1.0f;
 		pipelineInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
-		pipelineInfo.depthStencilInfo.front = {};
-		pipelineInfo.depthStencilInfo.back = {};
-		pipelineInfo.depthStencilInfo.flags = 0;
-		pipelineInfo.depthStencilInfo.pNext = nullptr;
+
+		pipelineInfo.depthStencilInfo.front.failOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.front.passOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.front.depthFailOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.front.compareOp = VK_COMPARE_OP_NEVER;
+		pipelineInfo.depthStencilInfo.front.compareMask = 0;
+		pipelineInfo.depthStencilInfo.front.writeMask = 0;
+		pipelineInfo.depthStencilInfo.front.reference = 0;
+		pipelineInfo.depthStencilInfo.back.failOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.back.passOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.back.depthFailOp = VK_STENCIL_OP_KEEP;
+		pipelineInfo.depthStencilInfo.back.compareOp = VK_COMPARE_OP_NEVER;
+		pipelineInfo.depthStencilInfo.back.compareMask = 0;
+		pipelineInfo.depthStencilInfo.back.writeMask = 0;
+		pipelineInfo.depthStencilInfo.back.reference = 0;
+		
+		pipelineInfo.depthStencilInfo.minDepthBounds = 0.f;
+		pipelineInfo.depthStencilInfo.maxDepthBounds = 0.f;
 
 		// Dynamic state info
-		pipelineInfo.dynamicStateEnables.clear();
-
 		pipelineInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-		pipelineInfo.dynamicStateInfo.dynamicStateCount = pipelineInfo.dynamicStateEnables.size();
-		pipelineInfo.dynamicStateInfo.pDynamicStates = pipelineInfo.dynamicStateEnables.data();
-		pipelineInfo.dynamicStateInfo.flags = 0;
 		pipelineInfo.dynamicStateInfo.pNext = nullptr;
+		pipelineInfo.dynamicStateInfo.flags = 0;
+		pipelineInfo.dynamicStateInfo.dynamicStateCount = 0;
+		pipelineInfo.dynamicStateInfo.pDynamicStates = nullptr;
     }
 
     Pipeline::~Pipeline() {
@@ -553,8 +585,8 @@ namespace wfe {
 		delete descriptorPool;
 
 		// Delete the pipeline
-        vkDestroyPipeline(GetDevice(), graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(GetDevice(), pipelineLayout, nullptr);
+        vkDestroyPipeline(GetDevice(), graphicsPipeline, GetVulkanAllocator());
+		vkDestroyPipelineLayout(GetDevice(), pipelineLayout, GetVulkanAllocator());
     }
 
 	WFE_ASSET(Pipeline)

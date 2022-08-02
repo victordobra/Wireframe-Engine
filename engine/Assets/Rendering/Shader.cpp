@@ -22,7 +22,7 @@ namespace wfe {
         createInfo.flags = 0;
         createInfo.pNext = nullptr;
 
-        auto result = vkCreateShaderModule(GetDevice(), &createInfo, nullptr, &shaderModule);
+        auto result = vkCreateShaderModule(GetDevice(), &createInfo, GetVulkanAllocator(), &shaderModule);
         if(result != VK_SUCCESS)
             console::OutFatalError((string)"Failes to create shader! Error code: " + VkResultToString(result), 1);
     }
@@ -156,7 +156,7 @@ namespace wfe {
 
     Shader::~Shader() {
         vkDeviceWaitIdle(GetDevice());
-        vkDestroyShaderModule(GetDevice(), shaderModule, nullptr);
+        vkDestroyShaderModule(GetDevice(), shaderModule, GetVulkanAllocator());
     }
 
     WFE_ASSET(Shader)

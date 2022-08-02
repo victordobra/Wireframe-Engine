@@ -91,7 +91,7 @@ namespace wfe {
 
     Buffer::~Buffer() {
         Unmap();
-        vkDestroyBuffer(GetDevice(), buffer, nullptr);
-        vkFreeMemory(GetDevice(), memory, nullptr);
+        vkDestroyBuffer(GetDevice(), buffer, GetVulkanAllocator());
+        vkFreeMemory(GetDevice(), memory, GetVulkanAllocator());
     }
 }

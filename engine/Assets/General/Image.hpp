@@ -12,8 +12,7 @@ namespace wfe {
         Image(Image&&) noexcept = delete;
         Image(size_t width, size_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VkMemoryPropertyFlags memoryPropertyFlags);
 
-        void TransitionImageLayout(VkImageLayout newLayout, VkCommandBuffer commandBuffer);
-        void TransitionImageLayout(VkImageLayout newLayout);
+        void TransitionImageLayout(VkImageLayout newLayout, VkCommandBuffer commandBuffer = nullptr);
 
         size_t         GetWidth()       const {
             return width;

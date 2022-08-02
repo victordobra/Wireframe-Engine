@@ -5,33 +5,46 @@
 namespace wfe {
     // Internal helper functions
     void DescriptorPool::CreateDescriptorPool() {
-        VkDescriptorPoolCreateInfo createInfo{};
+        // Set the descriptor pool create info
+        VkDescriptorPoolCreateInfo createInfo;
 
         createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        createInfo.pNext = nullptr;
+        createInfo.flags = 0;
         createInfo.maxSets = (uint32_t)(info.descriptorSetLayouts.size() * MAX_FRAMES_IN_FLIGHT);
         createInfo.poolSizeCount = (uint32_t)info.descriptorPoolSizes.size();
         createInfo.pPoolSizes = info.descriptorPoolSizes.data();
-        createInfo.flags = info.poolCreateFlags;
-        createInfo.pNext = nullptr;
 
-        auto result = vkCreateDescriptorPool(GetDevice(), &createInfo, nullptr, &descriptorPool);
+        // Create the descriptor pool
+        auto result = vkCreateDescriptorPool(GetDevice(), &createInfo, GetVulkanAllocator(), &descriptorPool);
         if(result != VK_SUCCESS)
             console::OutFatalError((string)"Failed to create descriptor pool! Error code: " + VkResultToString(result), 1);
     }
     void DescriptorPool::CreateDescriptorSetLayouts() {
+        /*
+typedef struct VkDescriptorSetLayoutCreateInfo {
+    VkStructureType                        sType;
+    const void*                            pNext;
+    VkDescriptorSetLayoutCreateFlags       flags;
+    uint32_t                               bindingCount;
+    const VkDescriptorSetLayoutBinding*    pBindings;
+} VkDescriptorSetLayoutCreateInfo;
+*/
         // Loop through every descriptor set layout info
         for(size_t i = 0; i < info.descriptorSetLayouts.size(); ++i) {
             auto& layout = info.descriptorSetLayouts[i];
 
+            // Set the descriptor set layout info
             VkDescriptorSetLayoutCreateInfo createInfo{};
 
             createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            createInfo.pNext = nullptr;
+            createInfo.flags = 0;
             createInfo.bindingCount = (uint32_t)layout.bindings.size();
             createInfo.pBindings = layout.bindings.data();
-            createInfo.flags = 0;
-            createInfo.pNext = nullptr;
 
-            auto result = vkCreateDescriptorSetLayout(GetDevice(), &createInfo, nullptr, &layout.layout);
+            // Create the descriptor set layout
+            auto result = vkCreateDescriptorSetLayout(GetDevice(), &createInfo, GetVulkanAllocator(), &layout.layout);
             if(result != VK_SUCCESS)
                 console::OutFatalError((string)"Failed to create descriptor set layout! Error code: " + VkResultToString(result), 1);
         }
@@ -42,20 +55,20 @@ namespace wfe {
         descriptorSets.shrink_to_fit();
 
         // Add every descriptor set layout once for every possible frame in flight
-        vector<VkDescriptorSetLayout> layouts{};
+        vector<VkDescriptorSetLayout> layouts;
 
         for(size_t i = 0; i < info.descriptorSetLayouts.size(); ++i)
             for(size_t j = 0; j < MAX_FRAMES_IN_FLIGHT; ++j)
                 layouts.push_back(info.descriptorSetLayouts[i].layout);
         
         // Allocate the descriptor sets
-        VkDescriptorSetAllocateInfo allocateInfo{};
+        VkDescriptorSetAllocateInfo allocateInfo;
 
         allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocateInfo.pNext = nullptr;
         allocateInfo.descriptorPool = descriptorPool;
         allocateInfo.descriptorSetCount = (uint32_t)descriptorSets.size();
         allocateInfo.pSetLayouts = layouts.data();
-        allocateInfo.pNext = nullptr;
 
         auto result = vkAllocateDescriptorSets(GetDevice(), &allocateInfo, descriptorSets.data());
         if(result != VK_SUCCESS)
@@ -76,7 +89,7 @@ namespace wfe {
 
         // Destroy descriptor set layouts and the descriptor pool
         for(size_t i = 0; i < info.descriptorSetLayouts.size(); ++i)
-            vkDestroyDescriptorSetLayout(GetDevice(), info.descriptorSetLayouts[i].layout, nullptr);
-        vkDestroyDescriptorPool(GetDevice(), descriptorPool, nullptr);
+            vkDestroyDescriptorSetLayout(GetDevice(), info.descriptorSetLayouts[i].layout, GetVulkanAllocator());
+        vkDestroyDescriptorPool(GetDevice(), descriptorPool, GetVulkanAllocator());
     }
 }

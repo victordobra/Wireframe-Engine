@@ -75,6 +75,9 @@ namespace wfe {
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
             images[i].resize(imageCount);
 
+        // Begin single time commands
+        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
+
         for(size_t i = 0; i < imageCount; ++i) {
             // Load the image's file path
             input.ReadBuffer((char_t*)&len64, sizeof(uint64_t));
@@ -86,7 +89,7 @@ namespace wfe {
 
             // Load the first image
             images[0][i] = Asset::GetOrCreateAssetWithLocation<Image>(imageLocation);
-            images[0][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+            images[0][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, commandBuffer);
 
             size_t imageWidth  = images[0][i]->GetWidth();
             size_t imageHeight = images[0][i]->GetHeight();
@@ -95,17 +98,17 @@ namespace wfe {
             // Copy every other image
             for(size_t j = 1; j < MAX_FRAMES_IN_FLIGHT; ++j) {
                 images[j][i] = new Image(imageWidth, imageHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-                images[j][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-                CopyImage(srcImage, images[j][i]->GetImage(), imageWidth, imageHeight, 1, 1);
-                images[j][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+                images[j][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, commandBuffer);
+                CopyImage(srcImage, images[j][i]->GetImage(), imageWidth, imageHeight, 1, 1, commandBuffer);
+                images[j][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
             }
 
-            images[0][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            images[0][i]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandBuffer);
         }
 
         // Load the shader
         shader = Asset::GetOrCreateAssetWithLocation<Shader>(shaderLocation);
-        shader->materials.insert_or_assign(this);
+        shader->materials.insert(this);
 
         input.Close();
     }
