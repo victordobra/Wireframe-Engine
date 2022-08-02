@@ -96,8 +96,15 @@ static void CreateHWnd() {
 }
 
 // Windows functions
-int WINAPI WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
-    hInstance = hInst;
+int main(int argc, char** args) {
+    hInstance = GetModuleHandle(NULL);
+
+    for(int32_t i = 0; i < argc; ++i) {
+        if(!strcmp(args[i], "--vkdebug"))
+            wfe::EnableValidationLayers();
+        else if(!strcmp(args[i], "--novkdebug"))
+            wfe::DisableValidationLayers();
+    }
 
     wfe::console::OpenLogFile();
 

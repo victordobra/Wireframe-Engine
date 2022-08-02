@@ -19,8 +19,8 @@ namespace wfe {
         Asset*(*create)(){};
 
         constexpr AssetType() = default;
-        constexpr AssetType(const AssetType&) = default;
-        constexpr AssetType(AssetType&&) noexcept = default;
+        AssetType(const AssetType&) = default;
+        AssetType(AssetType&&) noexcept = default;
 
         AssetType& operator=(const AssetType&) = default;
         AssetType& operator=(AssetType&&) noexcept = default;

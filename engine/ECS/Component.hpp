@@ -82,8 +82,8 @@ namespace wfe {
         Component*(*create)(GameObject*) = 0;
 
         constexpr ComponentType() = default;
-        constexpr ComponentType(const ComponentType&) = default;
-        constexpr ComponentType(ComponentType&&) noexcept = default;
+        ComponentType(const ComponentType&) = default;
+        ComponentType(ComponentType&&) noexcept = default;
 
         ComponentType& operator=(const ComponentType&) = default;
         ComponentType& operator=(ComponentType&&) noexcept = default;
