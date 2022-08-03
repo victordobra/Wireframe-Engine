@@ -60,15 +60,25 @@ namespace wfe {
         static void PopulatePipelineInfo(PipelineInfo& info);
 
         /// @brief Returns the Vulkan graphics pipeline.
-        VkPipeline GetPipeline() const { return graphicsPipeline; }
+        VkPipeline GetPipeline() const { 
+            return graphicsPipeline;
+        }
         /// @brief Returns the Vulkan pipeline layout.
-        VkPipelineLayout GetPipelineLayout() const { return pipelineLayout; }
+        VkPipelineLayout GetPipelineLayout() const { 
+            return pipelineLayout;
+        }
         /// @brief Returns the pipeline info.
-        PipelineInfo& GetPipelineInfo() { return pipelineInfo; }
+        PipelineInfo& GetPipelineInfo() { 
+            return pipelineInfo;
+        }
         /// @brief Returns the pipeline info.
-        const PipelineInfo& GetPipelineInfo() const { return pipelineInfo; }
+        const PipelineInfo& GetPipelineInfo() const { 
+            return pipelineInfo;
+        }
         /// @brief Returns the pipeline's descriptor pool.
-        DescriptorPool* GetDescriptorPool() const { return descriptorPool; }
+        DescriptorPool* GetDescriptorPool() const { 
+            return descriptorPool;
+        }
         /// @brief Returns the descriptor pool's current global buffer.
         Buffer* GetGlobalBuffer() const { 
             return globalBuffers[GetCurrentFrame()]; 
