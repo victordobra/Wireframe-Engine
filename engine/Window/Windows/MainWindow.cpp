@@ -125,12 +125,10 @@ LRESULT CALLBACK WinProc(_In_ HWND hWindow, _In_ UINT message, _In_ WPARAM wPara
     case WM_CREATE: 
     {
         hWnd = hWindow;
+        wfe::Component::AddAssetTypeProperties();
         wfe::CreateDevice();
         wfe::CreateSwapChain();
         wfe::CreateSampler();
-
-        wfe::Asset::SortAssetTypes();
-        wfe::Component::SortComponentTypes();
         
         wfe::StartGameLoop();
     }

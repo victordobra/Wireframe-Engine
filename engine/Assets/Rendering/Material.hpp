@@ -16,10 +16,12 @@ namespace wfe {
         Material& operator=(const Material&) = delete;
         Material& operator=(Material&&) noexcept = delete;
 
+        /// @brief Maps all of the shader's properties and allows them to be modified.
         void Map() {
             // Map the first buffer and only modify it
             buffers[0]->Map();
         }
+        /// @brief Returns the value of the property with the specified name
         template<class T>
         T GetPropertyValue(const string& propertyName) {
             // Calculate the offset and the image index
@@ -63,6 +65,7 @@ namespace wfe {
             buffers[0]->ReadFromBuffer(&value, sizeof(T), offset);
             return value;
         }
+        /// @brief Sets the value of the property with the specified name.
         template<class T>
         void SetPropertyValue(const string& propertyName, const T& newValue) {
             // Calculate the offset and the image index
@@ -106,6 +109,7 @@ namespace wfe {
             buffers[0]->WriteToBuffer((void*)&newValue, sizeof(T), offset);
             buffers[0]->Flush();
         }
+        /// @brief Sets the value of the property with the specified name.
         void SetPropertyValue(const string& propertyName, Image* newValue) {
             // Calculate the offset and the image index
             size_t imageIndex = 0;
@@ -158,6 +162,7 @@ namespace wfe {
 
             images[0][imageIndex]->TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         }
+        /// @brief Unmaps the material's properties. Called after modifications.
         void Unmap() {
             // Unmap the first buffer
             buffers[0]->Unmap();
@@ -170,18 +175,23 @@ namespace wfe {
                 CopyBuffer(firstBuffer, buffers[i]->GetBuffer(), bufferSize);
         }
 
+        /// @brief Returns the material's specified shader.
         Shader* GetShader() const { 
             return shader; 
         }
+        /// @brief Returns the material's buffer for this specific frame.
         Buffer* GetBuffer() const {
             return buffers[GetCurrentFrame()];
         }
+        /// @brief Returns the material's buffers.
         Buffer** GetBuffers() const {
             return (Buffer**)buffers;
         }
+        /// @brief Returns the material's images.
         vector<Image*> GetImages() const {
             return images[GetCurrentFrame()];
         }
+        /// @brief Returns the material's image vectors.
         vector<Image*>* GetImageVectors() const {
             return (vector<Image*>*)images;
         }

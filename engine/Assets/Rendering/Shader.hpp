@@ -30,9 +30,6 @@ namespace wfe {
         Shader& operator=(const Shader&) = delete;
         Shader& operator=(Shader&&) noexcept = delete;
 
-        void LoadFromFile(const string& filePath) override;
-        void SaveToFile(const string& filePath) override;
-
         /// @brief Returns all of the shader's properties
         vector<ShaderProperty> GetProperties() const {
             return properties;
@@ -56,6 +53,9 @@ namespace wfe {
         }
 
         ~Shader();
+    protected:
+        void LoadFromFile(const string& filePath) override;
+        void SaveToFile(const string& filePath) override;
     private:
         void LoadFromBinary(const string& spirvPath);
 

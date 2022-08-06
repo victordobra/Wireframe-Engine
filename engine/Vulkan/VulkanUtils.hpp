@@ -48,8 +48,6 @@ namespace wfe {
     void SaveVkPipelineDepthStencilStateCreateInfo (FileOutput& stream, const VkPipelineDepthStencilStateCreateInfo*  data, size_t count);
     void SaveVkPipelineDynamicStateCreateInfo      (FileOutput& stream, const VkPipelineDynamicStateCreateInfo*       data, size_t count, bool8_t loadDynamicStates = false);
 
-
-    // Other functions
     /// @brief Converts the given VkResult to a string
     string VkResultToString(VkResult result);
 }

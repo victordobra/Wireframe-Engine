@@ -78,10 +78,10 @@ namespace wfe {
             uint64_t hashCode{};
             input.ReadBuffer((char_t*)&hashCode, sizeof(uint64_t));
 
-            ComponentType* componentType = Component::GetComponentType(hashCode);
-            assert(componentType && "Invalid hash code read from the file!");
+            auto* componentType = Component::componentTypes.find(hashCode);
+            assert((componentType != Component::componentTypes.end()) && "Invalid type read from a file!");
 
-            Component* component = componentType->create(this);
+            Component* component = componentType->val2.create(this);
 
             component->LoadFromStream(input);
         }

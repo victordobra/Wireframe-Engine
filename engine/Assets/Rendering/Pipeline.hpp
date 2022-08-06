@@ -53,9 +53,6 @@ namespace wfe {
         Pipeline& operator=(const Pipeline&) = delete;
         Pipeline& operator=(Pipeline&&) noexcept = delete;
 
-        void LoadFromFile(const string& filePath) override;
-        void SaveToFile(const string& filePath) override;
-
         /// @brief Populates the pipeline info with the default values.
         static void PopulatePipelineInfo(PipelineInfo& info);
 
@@ -89,6 +86,9 @@ namespace wfe {
         }
 
         ~Pipeline();
+    protected:
+        void LoadFromFile(const string& filePath) override;
+        void SaveToFile(const string& filePath) override;
     private:
         void Create() {
             CreateDescriptorPool();

@@ -3,8 +3,7 @@
 
 namespace wfe {
     // Static variables
-    constinit ComponentType Component::componentTypes[MAX_COMPONENT_TYPE_COUNT];
-    constinit size_t Component::componentTypeCount = 0;
+    constinit map<uint64_t, ComponentType> Component::componentTypes;
 
     // Load and save property functions
     void ComponentType::Property::LoadProperty(Component* component, ComponentType::Property prop, FileInput& input) {
@@ -37,15 +36,10 @@ namespace wfe {
             str[length] = 0;
 
             Asset*& ptr = *(Asset**)address;
-            ptr = nullptr;
-            for(auto* asset : Asset::GetAssets())
-                if(asset->location == str) {
-                    ptr = asset;
-                    break;
-                }
+            ptr = Asset::GetAssetWithLocation(str);
 
             if(!ptr) {
-                ptr = Asset::GetAssetPtrType(prop.hashCode)->create();
+                ptr = Asset::assetTypes[prop.size].create();
                 ptr->Load(str);
             }
 
@@ -139,36 +133,20 @@ namespace wfe {
     }
 
     // Static functions
-    void Component::SortComponentTypes() {
-        // Sort using the set class
-        set<ComponentType> componentTypeSet;
+    void Component::AddAssetTypeProperties() {
+        // Put all asset types into a map with their pointer hash codes as keys
+        map<uint64_t, AssetType*> assetPtrTypes;
+        for(auto& assetType : Asset::assetTypes)
+            assetPtrTypes.insert({ assetType.val2.ptrHashCode, &assetType.val2 });
 
-        ComponentType* ptr = componentTypes;
-        for(size_t i = 0; i < componentTypeCount; ++i)
-            componentTypeSet.insert(*ptr++);
-        
-        ptr = componentTypes;
-        for(const auto& componentType : componentTypeSet)
-            *ptr++ = componentType;
-        
         // Try to find asset types for every single property
-        for(size_t i = 0; i < componentTypeCount; ++i)
-            for(auto& property : componentTypes[i].properties)
-                if(Asset::GetAssetPtrType(property.hashCode))
+        for(auto& componentType : componentTypes)
+            for(auto& property : componentType.val2.properties) {
+                auto* assetPtrType = assetPtrTypes.find(property.hashCode);
+                if(assetPtrType != assetPtrTypes.end()) {
                     property.type = ComponentType::Property::PROPERTY_TYPE_ASSET_PTR;
-    }
-    ComponentType* Component::GetComponentType(uint64_t hashCode) {
-        // Binary search for the type
-        size_t pos = 0, step = MAX_COMPONENT_TYPE_COUNT >> 1;
-
-        while(step) {
-            if(pos + step < componentTypeCount && componentTypes[pos + step].hashCode <= hashCode)
-                pos += step;
-            step >>= 1;
-        }
-
-        if(componentTypes[pos].hashCode == hashCode)
-            return componentTypes + pos;
-        return nullptr;
+                    property.size = assetPtrType->val2->hashCode;
+                }
+            }
     }
 }

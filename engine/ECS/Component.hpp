@@ -37,6 +37,7 @@ namespace wfe {
             uint64_t size = 0;
             uint64_t offset = 0;
 
+            /// @brief Returns the property info for the speified type.
             template<class T>
             static Property GetPropertyInfo() {
                 Property prop{};
@@ -71,7 +72,9 @@ namespace wfe {
 
                 return prop;
             }
+            /// @brief Loads the property from the specified input stream.
             static void LoadProperty(Component* component, Property prop, FileInput& input);
+            /// @brief Saves the property to the specified output stream.
             static void SaveProperty(Component* component, Property prop, FileOutput& output);
         };
 
@@ -109,10 +112,7 @@ namespace wfe {
 
     class Component {
     public:
-        static const size_t MAX_COMPONENT_TYPE_COUNT = 1024;
-
-        static ComponentType componentTypes[MAX_COMPONENT_TYPE_COUNT];
-        static size_t componentTypeCount;
+        static map<uint64_t, ComponentType> componentTypes;
 
         ComponentType* componentType = nullptr;
         System* system = nullptr;
@@ -121,13 +121,15 @@ namespace wfe {
         Component(const Component&) = delete;
         Component(Component&&) noexcept = delete;
 
+        /// @brief Returns the component's game object
         GameObject* GetGameObject() {
             return gameObject;
         }
+        /// @brief Sets the component's game object.
         void SetGameObject(GameObject* newGameObject);
 
-        static void SortComponentTypes();
-        static ComponentType* GetComponentType(uint64_t hashCode);
+        /// @brief Adds all properties with an asset type. Interal use only.
+        static void AddAssetTypeProperties();
 
         Component& operator=(const Component&) = delete;
         Component& operator=(Component&&) noexcept = delete;
@@ -150,7 +152,7 @@ namespace { \
         wfe::Component* ptr = dynamic_cast<wfe::Component*>(new type()); \
         assert(ptr && "The given type must be a component type!"); \
         ptr->SetGameObject(gameObject); \
-        ptr->componentType = wfe::Component::GetComponentType(WFE_TYPE_ID(type).Hash64()); \
+        ptr->componentType = &wfe::Component::componentTypes[WFE_TYPE_ID(type).Hash64()]; \
         if(ptr->componentType->defaultSystemCallback) \
             ptr->system = ptr->componentType->defaultSystemCallback(); \
         return ptr; \
@@ -173,7 +175,7 @@ namespace { \
             propertyName ## Property.access = wfe::ComponentType::Property::PROPERTY_ACCESS_ ## propertyAccess; \
             componentType.properties.push_back(propertyName ## Property);
 #define WFE_END_COMPONENT(type) \
-            wfe::Component::componentTypes[wfe::Component::componentTypeCount++] = componentType; \
+            wfe::Component::componentTypes.insert({ componentType.hashCode, componentType }); \
         } \
     }; \
     type ## ComponentInfoInitializer type ## ComponentInfoInit{}; \

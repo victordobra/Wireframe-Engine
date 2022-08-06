@@ -11,7 +11,7 @@ namespace wfe {
     uint8_t statuses[128]{};
     MousePos mousePos;
     MouseMovement mouseMovement;
-    MouseState mouseState{MOUSE_STATE_UNLOCKED};
+    int32_t mouseDisplayCount;
 
     // Internal helper functions
     static bool8_t InternalKeyPressed(size_t keyCode) {
@@ -23,11 +23,10 @@ namespace wfe {
 #ifdef PLATFORM_WINDOWS
         POINT point;
 
-        BOOL result = GetCursorPos(&point);
-
-        if(!result) {
-            int32_t errorCode = GetLastError();
-            console::OutFatalError((string)"Failed to retrieve the cursor's position! Error code: " + ToString(errorCode), 1);
+        if(!GetCursorPos(&point)) {
+            char_t error[256];
+            FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), error, 256 * sizeof(char_t), NULL);
+            console::OutFatalError((string)"Failed to get the cursor's position! Reason: " + error, 1);
         }
 
         MousePos pos;
@@ -85,13 +84,12 @@ namespace wfe {
         mousePos = newPos;
 
         // Reset the mouse's position if it is locked
-        if(mouseState == MOUSE_STATE_LOCKED) {
+        if(mouseDisplayCount < 0) {
 #ifdef PLATFORM_WINDOWS
-            BOOL result = SetCursorPos((int32_t)(GetMainWindowWidth() >> 1), (int32_t)(GetMainWindowWidth() >> 1));
-
-            if(!result) {
-                int32_t errorCode = GetLastError();
-                console::OutFatalError((string)"Failed to set the cursor's position! Error code: " + ToString(errorCode), 1);
+            if(!SetCursorPos((int32_t)(GetMainWindowWidth() >> 1), (int32_t)(GetMainWindowWidth() >> 1))) {
+                char_t error[256];
+                FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), error, 256 * sizeof(char_t), NULL);
+                console::OutFatalError((string)"Failed to set the cursor's position! Reason: " + error, 1);
             }
 #endif
         }
@@ -132,17 +130,15 @@ namespace wfe {
     MouseMovement GetMouseMovement() {
         return mouseMovement;
     }
+    int32_t GetMouseDisplayCount() {
+        return mouseDisplayCount;
+    }
     MouseState GetMouseState() {
-        return mouseState;
+        return (MouseState)(mouseDisplayCount >= 0);
     }
     void SetMouseState(MouseState newState) {
-        mouseState = newState;
 #ifdef PLATFORM_WINDOWS
-        if(mouseState == MOUSE_STATE_LOCKED) {
-            while(ShowCursor(FALSE)) { }
-        } else {
-            ShowCursor(TRUE);
-        }
+        mouseDisplayCount = ShowCursor(newState == MOUSE_STATE_UNLOCKED);
 #endif
     }
 }

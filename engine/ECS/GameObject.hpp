@@ -100,11 +100,11 @@ namespace wfe {
         /// @return A pointer to the newly created component.
         Component* AddComponent(uint64_t hashCode) {
             // Find the component type with the specified hash code
-            ComponentType* componentType = Component::GetComponentType(hashCode);
-            assert(componentType && "Invalid type provided!");
+            auto* componentType = Component::componentTypes.find(hashCode);
+            assert((componentType != Component::componentTypes.end()) && "Invalid type provided!");
 
             // Create a component with the specified type
-            Component* component = componentType->create(this);
+            Component* component = componentType->val2.create(this);
 
             return component;
         }

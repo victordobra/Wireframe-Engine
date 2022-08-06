@@ -151,7 +151,7 @@ namespace wfe {
         output.WriteBuffer((char_t*)&imageCount, sizeof(uint64_t));
         uint64_t imageIndex = 0;
         for(const auto& property : shader->properties) 
-            if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE){
+            if(property.type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
                 len64 = (uint64_t)images[0][imageIndex]->location.size();
                 output.WriteBuffer((char_t*)&len64, sizeof(uint64_t));
                 output.WriteBuffer((char_t*)images[0][imageIndex++]->location.c_str(), len64 * sizeof(char_t));

@@ -35,7 +35,11 @@ namespace wfe {
     VkFormat FindDepthFormat();
 
     /// @brief Acquires the next image in the swap chain.
+    /// @param imageIndex A pointer to which the current swap chain image's index is written.
     VkResult AcquireNextImage(uint32_t* imageIndex);
-    /// @brief Submits the specified command buffer(s).
+    /// @brief Submits the specified command buffers.
+    /// @param buffer A pointer to the submitted command buffers.
+    /// @param imageIndex A pointer to the current swap chain image's index.
+    /// @param bufferCount The number of command buffers to be submitted.
     VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex, uint32_t bufferCount = 1);
 }
