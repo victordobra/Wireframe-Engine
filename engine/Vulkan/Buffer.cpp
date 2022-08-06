@@ -16,7 +16,7 @@ namespace wfe {
 
     VkResult Buffer::Map(VkDeviceSize size, VkDeviceSize offset, bool8_t handleErrors) {
         if(mapped)
-            return;
+            return VK_SUCCESS;
 
         // Map the memory region
         auto result = vkMapMemory(GetDevice(), memory, offset, size, 0, &mapped);
