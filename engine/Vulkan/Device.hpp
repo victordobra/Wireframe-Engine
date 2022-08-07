@@ -15,6 +15,10 @@ namespace wfe {
         VkSurfaceCapabilitiesKHR capabilities;
         vector<VkSurfaceFormatKHR> formats;
         vector<VkPresentModeKHR> presentModes;
+        
+        bool8_t IsAdequate() {
+            return !formats.empty() && !presentModes.empty();
+        }
     };
 
     /// @brief Creates the Vulkan device. Internal use only

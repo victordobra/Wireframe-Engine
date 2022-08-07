@@ -161,8 +161,6 @@ namespace wfe {
             
             // Assert that the new capacity must be lower than or equal to MAX_SIZE
             assert((newCapacity <= MAX_SIZE) && "A vector's capacity must always be lower than or equal to MAX_SIZE!");
-            // Assert that the new capacity must be higher than or equal to the size of the vector
-            assert((newCapacity < _size) && "A vector's capacity must be higher than or equal to the size of the vector!");
 
             // Set the new capacity
             _capacity = newCapacity;
