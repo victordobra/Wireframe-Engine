@@ -15,6 +15,7 @@ namespace wfe {
     /// @brief Sets the name of the application.
     /// @param newName The new name of the application.
     void SetMainWindowName(const string& newName);
+
     /// @brief Returns the handle of the window. Meant for internal use.
     HWND GetMainWindowHandle();
     /// @brief Returns the handle of the Windows instance. Meant for internal use.

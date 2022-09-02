@@ -6,7 +6,7 @@
 namespace wfe {
     class string {
     public:
-        static constexpr size_t MAX_SIZE = 16777216; //2 ^ 24
+        static constexpr size_t MAX_SIZE = 16777216; // 2 ^ 24
 
         constexpr string() : str(nullptr), _capacity(0) { 
         
@@ -20,9 +20,9 @@ namespace wfe {
         }
         string(const char_t* other) : _capacity(1), str(nullptr) {
             // Get the size of the string
-            size_t strLength = 1;
+            size_t strLength;
 
-            strLength = strnlen_s(other, MAX_SIZE);
+            strLength = strlen(other);
             ++strLength;
 
             // Find the lowest possible capacity
@@ -31,7 +31,7 @@ namespace wfe {
             }
 
             str = new char_t[_capacity];
-            memcpy(str, other, _capacity);
+            memcpy(str, other, strLength);
         }
 
         string& operator=(const string& other);
@@ -71,10 +71,10 @@ namespace wfe {
         char_t*       data()           { return str; }
         const char_t* data()     const { return str; }
         size_t        size()     const { 
-            return strnlen_s(str, _capacity);
+            return strnlen(str, _capacity);
         }
         size_t        length()   const { 
-            return strnlen_s(str, _capacity);
+            return strnlen(str, _capacity);
         }
         size_t        max_size() const { return MAX_SIZE; }
         size_t        capacity() const { return _capacity; }

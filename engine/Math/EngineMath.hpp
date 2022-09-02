@@ -44,11 +44,11 @@ namespace wfe {
 		return (value != 0) && ((value & (value - 1)) == 0);
 	}
 
-	INLINE int32_t Random(uint32_t seed = _time32(0)) {
+	INLINE int32_t Random(uint32_t seed = time(0)) {
 		srand(seed);
 		return rand();
 	}
-	INLINE int32_t RandomInRange(int32_t min, int32_t max, uint32_t seed = _time32(0)) {
+	INLINE int32_t RandomInRange(int32_t min, int32_t max, uint32_t seed = time(0)) {
 		srand(seed);
 
 		assert((max >= min) && "The maximum value must be higher than or equal to the minimum value!");
@@ -59,11 +59,11 @@ namespace wfe {
 		return num;
 	}
 
-	INLINE float32_t RandomF(uint32_t seed = _time32(0)) {
+	INLINE float32_t RandomF(uint32_t seed = time(0)) {
 		srand(seed);
 		return (float32_t)rand();
 	}
-	INLINE float32_t RandomInRangeF(float32_t min, float32_t max, uint32_t seed = _time32(0)) {
+	INLINE float32_t RandomInRangeF(float32_t min, float32_t max, uint32_t seed = time(0)) {
 		srand(seed);
 
 		assert((max >= min) && "The maximum value must be higher than or equal to the minimum value!");

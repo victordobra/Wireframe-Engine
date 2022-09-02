@@ -73,8 +73,7 @@ namespace wfe {
     // Static functions
     void Asset::DeleteAllAssets() {
         // Delete every asset
-        size_t assetCount = assets.size();
-        for(size_t i = 0; i < assetCount; ++i)
+        while(assets.size())
             delete assets[0];
     }
     Asset* Asset::GetAssetWithName(const string& name) { 

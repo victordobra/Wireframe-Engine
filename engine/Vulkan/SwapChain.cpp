@@ -31,7 +31,7 @@ namespace wfe {
     static VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const vector<VkSurfaceFormatKHR>& availableFormats) {
         // Select a format with the wanted settings
         for(const auto& availableFormat : availableFormats)
-            if(availableFormat.format == VK_FORMAT_R8G8B8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
                 return availableFormat;
         
         // Select the first format
@@ -72,13 +72,12 @@ namespace wfe {
         // Get the surface format, present mode and extent
         VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent = ChooseSwapChainExtent(swapChainSupport.capabilities);
+        swapChainExtent = ChooseSwapChainExtent(swapChainSupport.capabilities);
 
         // Set the image count
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if(swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
             imageCount = swapChainSupport.capabilities.maxImageCount;
-        
 
         // Set the swapchain create info
         VkSwapchainCreateInfoKHR createInfo;
@@ -91,17 +90,21 @@ namespace wfe {
         createInfo.minImageCount = imageCount;
         createInfo.imageFormat = surfaceFormat.format;
         createInfo.imageColorSpace = surfaceFormat.colorSpace;
-        createInfo.imageExtent = extent;
+        createInfo.imageExtent = swapChainExtent;
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
-        if (indices.graphicsFamily != indices.presentFamily) {
+
+        if(indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
             createInfo.pQueueFamilyIndices = queueFamilyIndices;
-        } else
+        } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.queueFamilyIndexCount = 1;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+        }
         
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
@@ -114,9 +117,8 @@ namespace wfe {
         if(result != VK_SUCCESS)
             console::OutFatalError((string)"Failed to create swap chain! Error code: " + VkResultToString(result), 1);
         
-        // Set the swap chain image format and extent
+        // Set the swap chain image format
         swapChainImageFormat = surfaceFormat.format;
-        swapChainExtent = extent;
         
         // Acquire the swap chain images
         uint32_t swapChainImageCount;
@@ -441,7 +443,7 @@ namespace wfe {
         // Wait for the current in flight fence
         auto result = vkWaitForFences(GetDevice(), 1, inFlightFences + currentFrame, VK_TRUE, UINT64_MAX);
         if(result != VK_SUCCESS)
-            console::OutFatalError((string)"Failed to wait for fences! Error code: " + VkResultToString(result), 1);
+            console::OutFatalError((string)"Failed to wait for fence! Error code: " + VkResultToString(result), 1);
 
         return vkAcquireNextImageKHR(GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, imageIndex);
     }

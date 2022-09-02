@@ -1,3 +1,5 @@
+#pragma once
+
 // Project info
 #define PROJECT_NAME "Unnamed-Project"
 

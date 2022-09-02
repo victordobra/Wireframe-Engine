@@ -1,11 +1,6 @@
 #include "Input.hpp"
 #include "Window/MainWindow.hpp"
 
-#ifdef PLATFORM_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 namespace wfe {
     // Variables
     uint8_t statuses[128]{};
@@ -15,12 +10,14 @@ namespace wfe {
 
     // Internal helper functions
     static bool8_t InternalKeyPressed(size_t keyCode) {
-#ifdef PLATFORM_WINDOWS
-        return GetAsyncKeyState((int)keyCode) >> 15;
+#if defined(PLATFORM_WINDOWS)
+        return GetAsyncKeyState((int32_t)keyCode) >> 15;
+#elif defined(PLATFORM_LINUX)
+        return IsLinuxKeyDown((KeyCode)keyCode);
 #endif
     }
     static MousePos InternalGetMousePos() {
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
         POINT point;
 
         if(!GetCursorPos(&point)) {
@@ -34,6 +31,8 @@ namespace wfe {
         pos.y = point.y;
 
         return pos;
+#elif defined(PLATFORM_LINUX)
+        return GetLinuxMousePos();
 #endif
     }
 
@@ -85,12 +84,14 @@ namespace wfe {
 
         // Reset the mouse's position if it is locked
         if(mouseDisplayCount < 0) {
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
             if(!SetCursorPos((int32_t)(GetMainWindowWidth() >> 1), (int32_t)(GetMainWindowWidth() >> 1))) {
                 char_t error[256];
                 FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), error, 256 * sizeof(char_t), NULL);
                 console::OutFatalError((string)"Failed to set the cursor's position! Reason: " + error, 1);
             }
+#elif defined(PLATFORM_LINUX)
+            xcb_warp_pointer(GetScreenConnection(), GetWindowHandle(), GetWindowHandle(), 0, 0, GetMainWindowWidth(), GetMainWindowHeight(), GetMainWindowWidth() >> 1, GetMainWindowHeight() >> 1);
 #endif
         }
     }
@@ -137,8 +138,20 @@ namespace wfe {
         return (MouseState)(mouseDisplayCount >= 0);
     }
     void SetMouseState(MouseState newState) {
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
         mouseDisplayCount = ShowCursor(newState == MOUSE_STATE_UNLOCKED);
+#elif defined(PLATFORM_LINUX)
+        int32_t oldMouseDisplayCount = mouseDisplayCount;
+        
+        if(newState == MOUSE_STATE_UNLOCKED)
+            ++mouseDisplayCount;
+        else
+            --mouseDisplayCount;
+        
+        if(mouseDisplayCount < 0 && oldMouseDisplayCount == 0)
+            xcb_xfixes_hide_cursor(GetScreenConnection(), GetWindowHandle());
+        else if(mouseDisplayCount >= 0 && oldMouseDisplayCount == -1)
+            xcb_xfixes_show_cursor(GetScreenConnection(), GetWindowHandle());
 #endif
     }
 }

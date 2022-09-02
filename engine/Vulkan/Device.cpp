@@ -9,8 +9,10 @@ namespace wfe {
 
     const vector<const char_t*> requiredExtensions = {
         VK_KHR_SURFACE_EXTENSION_NAME
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
         , VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+#elif defined(PLATFORM_LINUX)
+        , VK_KHR_XCB_SURFACE_EXTENSION_NAME
 #endif
 #ifndef NDEBUG
         , VK_EXT_DEBUG_UTILS_EXTENSION_NAME
@@ -325,7 +327,7 @@ namespace wfe {
         console::OutMessageFunction("Created Vulkan debug messenger successfully.");
     }
     static void CreateSurface() {
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
         // Set the surface create info
         VkWin32SurfaceCreateInfoKHR createInfo;
         
@@ -337,6 +339,21 @@ namespace wfe {
 
         // Create the surface
         auto result = vkCreateWin32SurfaceKHR(instance, &createInfo, allocator, &surface);
+        if(result != VK_SUCCESS)
+            console::OutFatalError((string)"Failed to create surface! Error code: " + VkResultToString(result), 1);
+        console::OutMessageFunction("Created Vulkan window surface successfully.");
+#elif defined(PLATFORM_LINUX)
+        // Set the surface create info
+        VkXcbSurfaceCreateInfoKHR createInfo;
+        
+        createInfo.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
+        createInfo.pNext = nullptr;
+        createInfo.flags = 0;
+        createInfo.connection = GetScreenConnection();
+        createInfo.window = GetWindowHandle();
+
+        // Create the surface
+        auto result = vkCreateXcbSurfaceKHR(instance, &createInfo, allocator, &surface);
         if(result != VK_SUCCESS)
             console::OutFatalError((string)"Failed to create surface! Error code: " + VkResultToString(result), 1);
         console::OutMessageFunction("Created Vulkan window surface successfully.");

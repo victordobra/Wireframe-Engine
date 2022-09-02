@@ -2,6 +2,10 @@
 include(./.env.cmake OPTIONAL RESULT_VARIABLE LOCAL_ENV)
 message(STATUS "Local .env file included successfully.")
 
+# Include the local .build file
+include(./.build.cmake OPTIONAL RESULT_VARIABLE LOCAL_BUILD)
+message(STATUS "Local .build file included successfully.")
+
 # Set the minumum required version
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")
@@ -18,7 +22,7 @@ message(STATUS "Configured info header file successfully.")
 # Enable testing
 include(CTest)
 enable_testing()
-message(STATUS "Testing enabled successfilly")
+message(STATUS "Testing enabled successfully")
 
 # Find the source files
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/engine/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cpp)
@@ -44,7 +48,13 @@ message(STATUS "Include directories added.")
 # Add the link directories and link the libraries
 target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
 message(STATUS "Link directories added.")
-target_link_libraries(${PROJECT_NAME} Wireframe-Core-x86_64 vulkan-x86_64)
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan-${TARGET_ARCH})
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan xcb X11 X11-xcb xkbcommon xcb-xfixes)
+endif()
+
 message(STATUS "Link libraries added.")
 
 # Add the precompiled header
@@ -52,8 +62,8 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine/Wi
 message(STATUS "Precompiled header added.")
 
 # Find all shaders in the project
-file(GLOB_RECURSE GLSL_SOURCE_FILES ${PROJECT_SOURCE_DIR}/engine/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag ${PROJECT_SOURCE_DIR}/src/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag)
-set(GLSL_VALIDATOR ${PROJECT_SOURCE_DIR}/external/Vulkan/glsl/glslc.exe)
+file(GLOB_RECURSE GLSL_SOURCE_FILES ${PROJECT_SOURCE_DIR}/engine/*.vert ${PROJECT_SOURCE_DIR}/engine/*.frag ${PROJECT_SOURCE_DIR}/src/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag)
+set(GLSL_VALIDATOR glslangValidator)
 list(LENGTH GLSL_SOURCE_FILES GLSL_COUNT)
 
 if(GLSL_COUNT EQUAL 0)
@@ -68,7 +78,7 @@ endif()
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(GLSL_NAME ${GLSL} NAME)
     set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${GLSL_NAME}.spv")
-    add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -o ${SPIRV} DEPENDS ${GLSL})
+    add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -V -o ${SPIRV} DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 

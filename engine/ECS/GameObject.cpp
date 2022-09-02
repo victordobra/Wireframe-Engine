@@ -52,6 +52,7 @@ namespace wfe {
             delete child;
         
         // Delete every component
+        vector<Component*> components{ this->components.begin(), this->components.end() };
         for(auto* component : components)
             delete component;
     }

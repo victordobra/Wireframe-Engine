@@ -99,7 +99,7 @@ namespace wfe {
             if(line[0] == '#' || !line.length())
                 continue;
 
-            char_t* p = strchr(line.c_str(), ' ');
+            char_t* p = strchr(line.data(), ' ');
             *p++ = 0;
 
             if(line == "v") {
