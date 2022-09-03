@@ -61,7 +61,6 @@ namespace wfe {
                 systemMap[component->system].push_back(component);
     }
     static void RunCallbacksOnComponents(const map<System*, vector<Component*>>& systemMap, System::CallbackType callbackType) {
-        /*
         vector<pthread_t> threads(systemMap.size());
         vector<SystemArgs> argsVec(systemMap.size());
 
@@ -82,9 +81,6 @@ namespace wfe {
 
             if(result)
                 console::OutFatalError((string)"Failed to join thread! Error code: " + ThreadErrorCodeToString(result), 1);
-        */
-        for(auto& pair : systemMap) {
-            pair.val1->callback(pair.val2, callbackType);
         }
     }
 
