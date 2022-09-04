@@ -7,6 +7,7 @@ set(CMAKE_x64_CXX_COMPILER "/usr/bin/g++")
 
 # Build info
 set(TARGET_ARCH "x64")
+set(CMAKE_BUILD_TYPE Debug)
 
 if(${TARGET_ARCH} STREQUAL "x86_64")
     set(CMAKE_C_COMPILER   ${CMAKE_x86_64_C_COMPILER})

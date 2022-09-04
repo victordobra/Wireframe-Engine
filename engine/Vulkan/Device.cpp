@@ -351,7 +351,7 @@ namespace wfe {
         // Set the surface create info
         VkXlibSurfaceCreateInfoKHR createInfo;
         
-        createInfo.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
+        createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
         createInfo.pNext = nullptr;
         createInfo.flags = 0;
         createInfo.dpy = GetScreenConnection();
