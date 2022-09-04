@@ -265,8 +265,8 @@ namespace wfe {
         appInfo.pNext = nullptr;
         appInfo.pApplicationName = PROJECT_NAME;
         appInfo.applicationVersion = VK_MAKE_VERSION(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH);
-        appInfo.pEngineName = PROJECT_NAME;
-        appInfo.engineVersion = VK_MAKE_VERSION(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH);
+        appInfo.pEngineName = ENGINE_NAME;
+        appInfo.engineVersion = VK_MAKE_VERSION(ENGINE_VERSION_MAJOR, ENGINE_VERSION_MINOR, ENGINE_VERSION_PATCH);
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
         // Set the debug messenger create info for creating the instance
