@@ -9,6 +9,7 @@
 
 namespace wfe {
     typedef enum : uint8_t {
+        KEY_NONE = 0x00,
         KEY_LBUTTON = 0x01,
         KEY_RBUTTON = 0x02,
         KEY_CANCEL = 0x03,

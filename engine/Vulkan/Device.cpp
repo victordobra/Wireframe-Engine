@@ -12,7 +12,7 @@ namespace wfe {
 #if defined(PLATFORM_WINDOWS)
         , VK_KHR_WIN32_SURFACE_EXTENSION_NAME
 #elif defined(PLATFORM_LINUX)
-        , VK_KHR_XCB_SURFACE_EXTENSION_NAME
+        , VK_KHR_XLIB_SURFACE_EXTENSION_NAME
 #endif
 #ifndef NDEBUG
         , VK_EXT_DEBUG_UTILS_EXTENSION_NAME
@@ -349,16 +349,16 @@ namespace wfe {
         console::OutMessageFunction("Created Vulkan window surface successfully.");
 #elif defined(PLATFORM_LINUX)
         // Set the surface create info
-        VkXcbSurfaceCreateInfoKHR createInfo;
+        VkXlibSurfaceCreateInfoKHR createInfo;
         
         createInfo.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
         createInfo.pNext = nullptr;
         createInfo.flags = 0;
-        createInfo.connection = GetScreenConnection();
+        createInfo.dpy = GetScreenConnection();
         createInfo.window = GetWindowHandle();
 
         // Create the surface
-        auto result = vkCreateXcbSurfaceKHR(instance, &createInfo, allocator, &surface);
+        auto result = vkCreateXlibSurfaceKHR(instance, &createInfo, allocator, &surface);
         if(result != VK_SUCCESS)
             console::OutFatalError((string)"Failed to create surface! Error code: " + VkResultToString(result), 1);
         console::OutMessageFunction("Created Vulkan window surface successfully.");

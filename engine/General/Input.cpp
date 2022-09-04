@@ -1,6 +1,10 @@
 #include "Input.hpp"
 #include "Window/MainWindow.hpp"
 
+#ifdef PLATFORM_LINUX
+#include <X11/extensions/Xfixes.h>
+#endif
+
 namespace wfe {
     // Variables
     uint8_t statuses[128]{};
@@ -91,7 +95,7 @@ namespace wfe {
                 console::OutFatalError((string)"Failed to set the cursor's position! Reason: " + error, 1);
             }
 #elif defined(PLATFORM_LINUX)
-            xcb_warp_pointer(GetScreenConnection(), GetWindowHandle(), GetWindowHandle(), 0, 0, GetMainWindowWidth(), GetMainWindowHeight(), GetMainWindowWidth() >> 1, GetMainWindowHeight() >> 1);
+            XWarpPointer(GetScreenConnection(), GetWindowHandle(), GetWindowHandle(), 0, 0, GetMainWindowWidth(), GetMainWindowHeight(), GetMainWindowWidth() >> 1, GetMainWindowHeight() >> 1);
 #endif
         }
     }
@@ -148,10 +152,13 @@ namespace wfe {
         else
             --mouseDisplayCount;
         
-        if(mouseDisplayCount < 0 && oldMouseDisplayCount == 0)
-            xcb_xfixes_hide_cursor(GetScreenConnection(), GetWindowHandle());
-        else if(mouseDisplayCount >= 0 && oldMouseDisplayCount == -1)
-            xcb_xfixes_show_cursor(GetScreenConnection(), GetWindowHandle());
+        if(mouseDisplayCount < 0 && oldMouseDisplayCount == 0) {
+            XFixesHideCursor(GetScreenConnection(), GetWindowHandle());
+            XFlush(GetScreenConnection());
+        } else if(mouseDisplayCount >= 0 && oldMouseDisplayCount == -1) {
+            XFixesShowCursor(GetScreenConnection(), GetWindowHandle());
+            XFlush(GetScreenConnection());
+        }
 #endif
     }
 }

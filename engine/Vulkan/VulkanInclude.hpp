@@ -4,7 +4,7 @@
 #if defined(PLATFORM_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #elif defined(PLATFORM_LINUX)
-#define VK_USE_PLATFORM_XCB_KHR
+#define VK_USE_PLATFORM_XLIB_KHR
 #endif
 
 #pragma clang diagnostic push

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <xcb/xcb.h>
-#include <xcb/xfixes.h>
+#include <X11/Xlib.h>
 #include "Core.hpp"
 
 namespace wfe {
@@ -16,9 +15,9 @@ namespace wfe {
     void SetMainWindowName(const string& newName);
 
     /// @brief Returns a pointer to the XCB screen connection. Meant for internal use.
-    xcb_connection_t* GetScreenConnection();
+    Display* GetScreenConnection();
     /// @brief Returns the window's handle. Meant for internal use.
-    xcb_window_t GetWindowHandle();
+    Window GetWindowHandle();
     /// @brief Platform specific function for if a key is down. Use wfe::KeyDown() instead.
     /// @param keyCode The keycode to check.
     /// @return True if the key is down, otherwise false.

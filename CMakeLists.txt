@@ -52,7 +52,7 @@ message(STATUS "Link directories added.")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan-${TARGET_ARCH})
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan xcb X11 X11-xcb xkbcommon xcb-xfixes)
+    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan X11 Xfixes xkbcommon)
 endif()
 
 message(STATUS "Link libraries added.")
