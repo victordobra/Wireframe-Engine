@@ -210,6 +210,11 @@ namespace wfe {
         // Get the queue family indices and swap chain support details
         bool8_t extensionsSupported = CheckDeviceExtensionSupport(physicalDevice, score);
         QueueFamilyIndices indices = FindQueueFamilies(physicalDevice);
+
+        // Checking if the indices are complete early to avoid a validation layer error
+        if(!indices.IsComplete())
+            return false;
+
         SwapChainSupportDetails supportDetails = QuerySwapChainSupport(physicalDevice);
 
         // Get the physical device properties and features
@@ -221,7 +226,7 @@ namespace wfe {
         // Calculate the score
         score += properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 
-        return indices.IsComplete() && supportDetails.IsAdequate() && extensionsSupported;
+        return supportDetails.IsAdequate() && extensionsSupported;
     }
     static void SetStageAndAccess(VkImageLayout layout, VkAccessFlags& accessMask, VkPipelineStageFlags& stage) {
         // Check for every supported layout

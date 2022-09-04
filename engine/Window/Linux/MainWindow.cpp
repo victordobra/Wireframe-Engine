@@ -15,7 +15,6 @@
 #include <X11/Xlib-xcb.h>
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
-#include <unistd.h>
 
 // Variables
 Display* display;
