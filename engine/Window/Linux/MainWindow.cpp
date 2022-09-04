@@ -399,7 +399,8 @@ static void ProcessEvent(xcb_generic_event_t* event) {
         KeySym keySym = XkbKeycodeToKeysym(display, keyPressEvent->detail, 0, 0);
         wfe::KeyCode keyCode = KeySymToKeyCode(keySym);
 
-        keyDownMap[keyCode >> 3] |= 1 << (keyCode & 7);
+        if(keyCode)
+            keyDownMap[keyCode >> 3] |= 1 << (keyCode & 7);
         
         break;
     }
