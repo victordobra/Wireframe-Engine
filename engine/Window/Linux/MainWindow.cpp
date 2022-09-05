@@ -11,7 +11,6 @@
 #include "Base/Asset.hpp"
 #include "ProjectInfo.hpp"
 #include <X11/Xlib.h>
-#include <X11/XKBlib.h>
 #include <X11/keysym.h>
 
 // Variables
@@ -296,7 +295,7 @@ static void ConnectToX() {
     // Open the display
     display = XOpenDisplay(NULL);
     if(!display)
-        wfe::console::OutFatalError("Failed to find display! Error code: ", 1);
+        wfe::console::OutFatalError("Failed to find display!", 1);
     
     // Disable key repeats
     XAutoRepeatOff(display);
