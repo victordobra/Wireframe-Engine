@@ -446,7 +446,6 @@ int main(int argc, char** args) {
     wfe::CreateSampler();
 
     wfe::StartGameLoop();
-    wfe::SetMouseState(wfe::MOUSE_STATE_LOCKED);
 
     XEvent event;
     while(running) {

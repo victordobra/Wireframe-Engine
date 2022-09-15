@@ -42,23 +42,48 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 message(STATUS "Executable created successfully.")
 
 # Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Editor/include ${PROJECT_SOURCE_DIR}/external/ImGui/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
 message(STATUS "Include directories added.")
 
 # Add the link directories and link the libraries
-target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
+target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Editor/lib ${PROJECT_SOURCE_DIR}/external/ImGui/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
 message(STATUS "Link directories added.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan-${TARGET_ARCH})
+    target_link_libraries(${PROJECT_NAME} Wireframe-Editor-${TARGET_ARCH} Wireframe-Core-${TARGET_ARCH} ImGui-${TARGET_ARCH} vulkan-${TARGET_ARCH})
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    target_link_libraries(${PROJECT_NAME} Wireframe-Core-${TARGET_ARCH} vulkan X11 Xfixes xkbcommon)
+    target_link_libraries(${PROJECT_NAME} Wireframe-Editor-${TARGET_ARCH} Wireframe-Core-${TARGET_ARCH} ImGui-${TARGET_ARCH} vulkan X11 Xfixes xkbcommon)
 endif()
 
 message(STATUS "Link libraries added.")
 
 # Add the precompiled header
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine/WireframeEngine.hpp)
+message(STATUS "Precompiled header added.")
+
+# Create the editor dynamic library
+add_library(EditorLib SHARED ${SOURCES})
+target_compile_features(EditorLib PUBLIC cxx_std_20)
+message(STATUS "Editor dynamic library created successfully.")
+
+# Add the include directories
+target_include_directories(EditorLib PUBLIC ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external/Core/include ${PROJECT_SOURCE_DIR}/external/Editor/include ${PROJECT_SOURCE_DIR}/external/ImGui/include ${PROJECT_SOURCE_DIR}/external/Vulkan/include ${PROJECT_SOURCE_DIR}/external/stb/include)
+message(STATUS "Include directories added.")
+
+# Add the link directories and link the libraries
+target_link_directories(EditorLib PUBLIC ${PROJECT_SOURCE_DIR}/external/Core/lib ${PROJECT_SOURCE_DIR}/external/Editor/lib ${PROJECT_SOURCE_DIR}/external/ImGui/lib ${PROJECT_SOURCE_DIR}/external/Vulkan/lib)
+message(STATUS "Link directories added.")
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    target_link_libraries(EditorLib Wireframe-Editor-${TARGET_ARCH} Wireframe-Core-${TARGET_ARCH} ImGui-${TARGET_ARCH} vulkan-${TARGET_ARCH})
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    target_link_libraries(EditorLib Wireframe-Editor-${TARGET_ARCH} Wireframe-Core-${TARGET_ARCH} ImGui-${TARGET_ARCH} vulkan X11 Xfixes xkbcommon)
+endif()
+
+message(STATUS "Link libraries added.")
+
+# Add the precompiled header
+target_precompile_headers(EditorLib PUBLIC ${PROJECT_SOURCE_DIR}/engine/WireframeEngine.hpp)
 message(STATUS "Precompiled header added.")
 
 # Find all shaders in the project
