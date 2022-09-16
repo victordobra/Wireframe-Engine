@@ -35,6 +35,8 @@ namespace wfe::editor {
     string GetWorkspaceDir();
     /// @brief Sets the workspace dir.
     void SetWorkspaceDir(const string& newWorkspaceDir, bool8_t removeFromRecents = true);
+    // @brief Closes the current workspace.
+    void CloseWorkspace();
 }
 
 // Macro for creating the window type

@@ -89,6 +89,8 @@ namespace wfe {
         FileOutput& Write(char_t c);
         FileOutput& Write(const string& str);
 
+        FileOutput& Flush();
+
         bool8_t IsOpen() const;
         bool8_t IsAtTheEnd() const;
         bool8_t IsBad() const;

@@ -10,7 +10,7 @@ namespace wfe::editor {
     size_t GetMainWindowHeight();
 
     /// @brief Returns the main window's name.
-    string GetMainWindowName();
+    const string& GetMainWindowName();
     /// @brief Set the main window's name.
     void SetMainWindowName(const string& newName);
 

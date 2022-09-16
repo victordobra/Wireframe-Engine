@@ -23,12 +23,13 @@ namespace wfe::editor {
 
     typedef string(*PtrFn_GetWorkspaceDir)();
     typedef void(*PtrFn_SetWorkspaceDir)(const string&, bool8_t);
+    typedef void(*PtrFn_CloseWorkspace)();
 
     // Window/MainWindow.hpp
     typedef size_t(*PtrFn_GetMainWindowWidth)();
     typedef size_t(*PtrFn_GetMainWindowHeight)();
 
-    typedef string(*PtrFn_GetMainWindowName)();
+    typedef const string&(*PtrFn_GetMainWindowName)();
     typedef void(*PtrFn_SetMainWindowName)(const string&);
 
     typedef string(*PtrFn_OpenFolderDialog)(bool8_t&, const string&);
@@ -134,6 +135,7 @@ namespace wfe::editor {
 
         PtrFn_GetWorkspaceDir getWorkspaceDir;
         PtrFn_SetWorkspaceDir setWorkspaceDir;
+        PtrFn_CloseWorkspace closeWorkspace;
 
         PtrFn_GetMainWindowWidth getMainWindowWidth;
         PtrFn_GetMainWindowHeight getMainWindowHeight;
@@ -221,5 +223,5 @@ namespace wfe::editor {
         map<string, WindowType>* windowTypeMap;
     };
 
-    void GenerateEditorCallbacks(EditorCallbacks& callbacks);
+    void GenerateEditorCallbacks(EditorCallbacks& callbacks, map<string, WindowType>* windowTypeMap);
 }
