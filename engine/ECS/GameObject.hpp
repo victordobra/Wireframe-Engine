@@ -55,7 +55,7 @@ namespace wfe {
     public:
         static GameObject* scene;
 
-        string name;
+        string name = "";
         Transform transform;
 
         GameObject() = default;

@@ -5,7 +5,7 @@
 
 namespace wfe {
 #ifdef NDEBUG
-    #define ASSET_PATH "./assets/"
+    #define ASSET_PATH "assets/"
 #else
     #define ASSET_PATH "../assets/"
 #endif

@@ -1,4 +1,5 @@
 #include "Asset.hpp"
+#include "WireframeEngineEditor.hpp"
 
 namespace wfe {
     // Variables
@@ -26,7 +27,12 @@ namespace wfe {
         name = namePtr;
 
         // Call the internal load function
-        LoadFromFile((string)ASSET_PATH + location);
+        string assetPath;
+        if(editor::GetVulkanInstance())
+            assetPath = editor::GetWorkspaceDir() + "build/" + ASSET_PATH;
+        else
+            assetPath = ASSET_PATH;
+        LoadFromFile(assetPath + location);
     }
     void Asset::Save(const string& fileLocation) {
         // Find the name of the asset from the file location
@@ -42,7 +48,12 @@ namespace wfe {
         name = namePtr;
 
         // Call the internal save function
-        SaveToFile((string)ASSET_PATH + fileLocation);
+        string assetPath;
+        if(editor::GetVulkanInstance())
+            assetPath = editor::GetWorkspaceDir() + "build/" + ASSET_PATH;
+        else
+            assetPath = ASSET_PATH;
+        SaveToFile(assetPath + fileLocation);
     }
 
     void Asset::LoadFromFile(const string& fileLocation) {

@@ -7,10 +7,7 @@
 #define VK_USE_PLATFORM_XLIB_KHR
 #endif
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdefaulted-function-deleted"
 #include "vulkan.h"
-#pragma clang diagnostic pop
 
 #define WFE_VULKAN_UTILS_DONT_INCLUDE_VULKAN
 #include "VulkanUtils.hpp"
