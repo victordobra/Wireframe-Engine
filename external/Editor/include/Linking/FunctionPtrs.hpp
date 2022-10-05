@@ -2,6 +2,8 @@
 
 #include "Core.hpp"
 #include "Base/Window.hpp"
+#include "General/Application.hpp"
+#include "EditorPlatform/Platform.hpp"
 #include "Vulkan/Device.hpp"
 
 #if defined(PLATFORM_WINDOWS)
@@ -20,29 +22,53 @@ namespace wfe::editor {
     typedef void(*PtrFn_SetLoadCallback)(LoadCallback);
     typedef SaveCallback(*PtrFn_GetSaveCallback)();
     typedef void(*PtrFn_SetSaveCallback)(SaveCallback);
+    typedef CloseCallback(*PtrFn_GetCloseCallback)();
+    typedef void(*PtrFn_SetCloseCallback)(CloseCallback);
 
     typedef string(*PtrFn_GetWorkspaceDir)();
     typedef void(*PtrFn_SetWorkspaceDir)(const string&, bool8_t);
     typedef void(*PtrFn_CloseWorkspace)();
 
-    // Window/MainWindow.hpp
+    // General/Application.hpp
+    typedef vector<Event>(*PtrFn_GetEvents)();
+    typedef vector<Event>(*PtrFn_GetEventsOfType)(EventType);
+
+    typedef void(*PtrFn_AddEvent)(Event);
+
+    typedef void(*PtrFn_CloseApplication)(int32_t);
+    typedef bool8_t(*PtrFn_IsInsideEditor)();
+
     typedef size_t(*PtrFn_GetMainWindowWidth)();
     typedef size_t(*PtrFn_GetMainWindowHeight)();
 
-    typedef const string&(*PtrFn_GetMainWindowName)();
+    typedef string(*PtrFn_GetMainWindowName)();
     typedef void(*PtrFn_SetMainWindowName)(const string&);
 
-    typedef string(*PtrFn_OpenFolderDialog)(bool8_t&, const string&);
-    typedef void(*PtrFn_CopyFolder)(const string&, const string&);
+    // General/ImGui.hpp
+    typedef void(*PtrFn_CreateImGui)();
+    typedef void(*PtrFn_DeleteImGui)();
+    typedef void(*PtrFn_ProcessImGuiEvents)();
 
-    // Platform specific
-#if defined(PLATFORM_WINDOWS)
-    typedef HWND(*PtrFn_GetWindowHandle)();
-    typedef HINSTANCE(*PtrFn_GetWindowsInstance)();
-#elif defined(PLATFORM_LINUX)
-    typedef Display*(*PtrFn_GetScreenConnection)();
-    typedef Window(*PtrFn_GetWindowHandle)();
-#endif
+    typedef ImGuiContext*(*PtrFn_GetImGuiContext)();
+    typedef ImGuiIO*(*PtrFn_GetImGuiIO)();
+    typedef ImGuiStyle*(*PtrFn_GetImGuiStyle)();
+
+    typedef ImFont*(*PtrFn_GetImGuiNormalFont)();
+    typedef ImFont*(*PtrFn_GetImGuiBoldFont)();
+    typedef ImFont*(*PtrFn_GetImGuiItalicFont)();
+
+    // Platform/Platform.hpp
+    typedef void(*PtrFn_CreatePlatform)();
+    typedef void(*PtrFn_DeletePlatform)();
+    typedef void(*PtrFn_PollPlatformEvents)();
+
+    typedef PlatformInfo*(*PtrFn_GetPlatformInfo)();
+
+    typedef bool8_t(*PtrFn_LocationExists)(const string&);
+    typedef void(*PtrFn_CopyFiles)(const string&, const string&, bool8_t);
+    typedef string(*PtrFn_OpenFileDialog)(const string&, bool8_t&, const string&, bool8_t);
+
+    typedef VkResult(*PtrFn_CreatePlatformSurface)(VkInstance, const VkAllocationCallbacks*, VkSurfaceKHR*);
 
     // Vulkan/Device.hpp
     typedef void(*PtrFn_CreateDevice)();
@@ -132,10 +158,20 @@ namespace wfe::editor {
         PtrFn_SetLoadCallback setLoadCallback;
         PtrFn_GetSaveCallback getSaveCallback;
         PtrFn_SetSaveCallback setSaveCallback;
+        PtrFn_GetCloseCallback getCloseCallback;
+        PtrFn_SetCloseCallback setCloseCallback;
 
         PtrFn_GetWorkspaceDir getWorkspaceDir;
         PtrFn_SetWorkspaceDir setWorkspaceDir;
         PtrFn_CloseWorkspace closeWorkspace;
+
+        PtrFn_GetEvents getEvents;
+        PtrFn_GetEventsOfType getEventsOfType;
+
+        PtrFn_AddEvent addEvent;
+
+        PtrFn_CloseApplication closeApplication;
+        PtrFn_IsInsideEditor isInsideEditor;
 
         PtrFn_GetMainWindowWidth getMainWindowWidth;
         PtrFn_GetMainWindowHeight getMainWindowHeight;
@@ -143,8 +179,29 @@ namespace wfe::editor {
         PtrFn_GetMainWindowName getMainWindowName;
         PtrFn_SetMainWindowName setMainWindowName;
 
-        PtrFn_OpenFolderDialog openFolderDialog;
-        PtrFn_CopyFolder copyFolder;
+        PtrFn_CreateImGui createImGui;
+        PtrFn_DeleteImGui deleteImGui;
+        PtrFn_ProcessImGuiEvents processImGuiEvents;
+
+        PtrFn_GetImGuiContext getImGuiContext;
+        PtrFn_GetImGuiIO getImGuiIO;
+        PtrFn_GetImGuiStyle getImGuiStyle;
+
+        PtrFn_GetImGuiNormalFont getImGuiNormalFont;
+        PtrFn_GetImGuiBoldFont getImGuiBoldFont;
+        PtrFn_GetImGuiItalicFont getImGuiItalicFont;
+
+        PtrFn_CreatePlatform createPlatform;
+        PtrFn_DeletePlatform deletePlatform;
+        PtrFn_PollPlatformEvents pollPlatformEvents;
+
+        PtrFn_GetPlatformInfo getPlatformInfo;
+
+        PtrFn_LocationExists locationExists;
+        PtrFn_CopyFiles copyFiles;
+        PtrFn_OpenFileDialog openFileDialog;
+
+        PtrFn_CreatePlatformSurface createPlatformSurface;
 
         PtrFn_CreateDevice createDevice;
         PtrFn_DeleteDevice deleteDevice;

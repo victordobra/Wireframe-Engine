@@ -14,6 +14,7 @@ namespace wfe::editor {
 
     typedef void(*LoadCallback)();
     typedef void(*SaveCallback)();
+    typedef void(*CloseCallback)();
 
     /// @brief Loads the current workspace dir and the other recent dirs.
     void LoadWorkspace();
@@ -30,12 +31,16 @@ namespace wfe::editor {
     SaveCallback GetSaveCallback();
     /// @brief Sets the save callback.
     void SetSaveCallback(SaveCallback newSaveCallback);
+    /// @brief Returns the close callback.
+    CloseCallback GetCloseCallback();
+    /// @brief Sets the close callback.
+    void SetCloseCallback(CloseCallback newCloseCallback);
 
     /// @brief Returns the workspace dir.
     string GetWorkspaceDir();
     /// @brief Sets the workspace dir.
     void SetWorkspaceDir(const string& newWorkspaceDir, bool8_t removeFromRecents = true);
-    // @brief Closes the current workspace.
+    /// @brief Closes the current workspace.
     void CloseWorkspace();
 }
 
@@ -78,4 +83,16 @@ namespace { \
         } \
     }; \
     SaveCallbackSetter saveCallbackSetter; \
+}
+
+// Macro for setting the close callback
+#define WFE_EDITOR_SET_CLOSE_CALLBACK(callback) \
+namespace { \
+    /* Struct for setting the close callback */ \
+    struct CloseCallbackSetter { \
+        CloseCallbackSetter() { \
+            wfe::editor::SetCloseCallback(callback); \
+        } \
+    }; \
+    CloseCallbackSetter closeCallbackSetter; \
 }

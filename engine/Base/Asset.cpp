@@ -28,7 +28,7 @@ namespace wfe {
 
         // Call the internal load function
         string assetPath;
-        if(editor::GetVulkanInstance())
+        if(editor::IsInsideEditor())
             assetPath = editor::GetWorkspaceDir() + "build/" + ASSET_PATH;
         else
             assetPath = ASSET_PATH;

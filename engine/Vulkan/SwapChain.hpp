@@ -9,6 +9,8 @@ namespace wfe {
     void CreateSwapChain();
     /// @brief Deletes the Vulkan swap chain. Internal use only.
     void DeleteSwapChain();
+    /// @brief Recreates the VUlkan swap chain. Meant for internal use.
+    void RecreateSwapChain();
 
     /// @brief Returns the framebuffer at the specified index.
     VkFramebuffer GetFrameBuffer(size_t index);

@@ -101,8 +101,7 @@ namespace wfe {
         RunCallbacksOnComponents(systemMap, System::CALLBACK_TYPE_START);
     }
     void UpdateGameLoop() {
-        // Start the delta time timer and update the input
-        UpdateInputValues();
+        // Start the timer
         StartUpdateTimer();
 
         // Create the system map
@@ -117,7 +116,7 @@ namespace wfe {
         RunCallbacksOnComponents(systemMap, System::CALLBACK_TYPE_BEFORE_RENDER);
         RunCallbacksOnComponents(systemMap, System::CALLBACK_TYPE_RENDER);
 
-        // Stop the delta time timer
+        // Stop the timer
         StopUpdateTimer();
     }
 }

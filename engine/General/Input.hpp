@@ -11,8 +11,8 @@ namespace wfe {
         MOUSE_STATE_UNLOCKED
     } MouseState;
 
-    /// @brief Updates every input value. Meant for internal use.
-    void UpdateInputValues();
+    /// @brief Processes every input event. Meant for internal use.
+    void ProcessInputEvents();
 
     /// @brief Returns if the specified key is down.
     bool8_t KeyDown    (KeyCode key);

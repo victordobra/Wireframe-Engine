@@ -1,7 +1,11 @@
 #include "Input.hpp"
-#include "Window/MainWindow.hpp"
+#include "General/Application.hpp"
+#include "Platform/Platform.hpp"
 
-#ifdef PLATFORM_LINUX
+#if defined(PLATFORM_WINDOWS)
+#include <windows.h>
+#elif defined(PLATFORM_LINUX)
+#include <X11/Xlib.h>
 #include <X11/extensions/Xfixes.h>
 #endif
 
@@ -12,79 +16,66 @@ namespace wfe {
     MouseMovement mouseMovement;
     int32_t mouseDisplayCount;
 
-    // Internal helper functions
-    static bool8_t InternalKeyPressed(size_t keyCode) {
-#if defined(PLATFORM_WINDOWS)
-        return GetAsyncKeyState((int32_t)keyCode) >> 15;
-#elif defined(PLATFORM_LINUX)
-        return IsLinuxKeyDown((KeyCode)keyCode);
-#endif
-    }
-    static MousePos InternalGetMousePos() {
-#if defined(PLATFORM_WINDOWS)
-        POINT point;
-
-        if(!GetCursorPos(&point)) {
-            char_t error[256];
-            FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), error, 256 * sizeof(char_t), NULL);
-            console::OutFatalError((string)"Failed to get the cursor's position! Reason: " + error, 1);
-        }
-
-        MousePos pos;
-        pos.x = point.x;
-        pos.y = point.y;
-
-        return pos;
-#elif defined(PLATFORM_LINUX)
-        return GetLinuxMousePos();
-#endif
-    }
-
     // External functions
-    void UpdateInputValues() {
-        // Update the status of every single key
-        for(size_t i = 0; i < 128; ++i) {
-            // Get the old status variables
-            uint8_t status = statuses[i];
-            statuses[i] = 0;
+    void ProcessInputEvents() {
+        // Reset every key status
+        for(size_t i = 0; i < 128; ++i)
+            statuses[i] &= 0x11; // 00010001 binary
 
-            bool8_t prevDown     = status & 1;
-            bool8_t prevPressed  = status & 2;
-            bool8_t prevReleased = status & 4;
+        // Get every key event
+        auto keyEvents = GetEventsOfType(EVENT_TYPE_KEY);
 
-            // Get if the current key is down
-            bool8_t newDown = InternalKeyPressed(2 * i);
+        for(auto& keyEvent : keyEvents) {
+            KeyEventInfo* keyEventInfo = (KeyEventInfo*)keyEvent.eventInfo;
+            uint8_t status = statuses[keyEventInfo->keyCode << 1];
 
-            // Modify the status of the key
-            prevDown = newDown;
-            prevPressed = newDown && !prevDown;
-            prevReleased = prevDown && !newDown;
-            statuses[i] |= prevDown + (prevPressed << 1) + (prevReleased << 2);
+            if(keyEventInfo->keyCode & 1)
+                status <<= 4;
 
-            // Repeat the same thing for the other key value
-            status <<= 4;
+            if(keyEventInfo->pressed) {
+                // Update the key's status
+                if(!(status & 1))
+                    status |= 2;
+                status |= 1;
+            } else {
+                // Update the key's status
+                if(!(status & 2)) {
+                    status |= 5;
+                }
+            }
 
-            prevDown     = status & 1;
-            prevPressed  = status & 2;
-            prevReleased = status & 4;
-
-            // Get if the current key is down
-            newDown = InternalKeyPressed(2 * i + 1);
-
-            // Modify the status of the key
-            prevPressed = newDown && !prevDown;
-            prevReleased = prevDown && !newDown;
-            prevDown = newDown;
-            statuses[i] |= (prevDown << 4) + (prevPressed << 5) + (prevReleased << 6);
+            // Insert the status back into the vector
+            if(keyEventInfo->keyCode & 1) {
+                statuses[keyEventInfo->keyCode << 1] &= 0x0f; // 00001111 binary
+                statuses[keyEventInfo->keyCode << 1] |= status << 4;
+            } else {
+                statuses[keyEventInfo->keyCode << 1] &= 0xf0; // 11110000 binary
+                statuses[keyEventInfo->keyCode << 1] |= status;
+            }
         }
+        
+        // Get every mouse move event
+        auto mouseMoveEvents = GetEventsOfType(EVENT_TYPE_MOUSE_MOVE);
 
-        // Get the new mouse position
-        MousePos newPos = InternalGetMousePos();
+        // Check if any mouse move events exist
+        if(mouseMoveEvents.size()) {
+            MouseMoveEventInfo* mouseMoveEventInfo = (MouseMoveEventInfo*)mouseMoveEvents.back().eventInfo;
 
-        // Set the mouse's movement and position
-        mouseMovement.x = newPos.x - mousePos.x;
-        mouseMovement.y = newPos.y - mousePos.y;
-        mousePos = newPos;
+            // Set the new mouse pos
+            MousePos newMousePos;
+            newMousePos.x = mouseMoveEventInfo->mouseX;
+            newMousePos.y = mouseMoveEventInfo->mouseY;
+
+            // Set the mouse movement and pos
+            mouseMovement.x = newMousePos.x - mousePos.x;
+            mouseMovement.y = newMousePos.y - mousePos.y;
+
+            mousePos = newMousePos;
+        } else {
+            // Reset the mouse movement;
+            mouseMovement.x = 0;
+            mouseMovement.y = 0;
+        }
 
         // Reset the mouse's position if it is locked
         if(mouseDisplayCount < 0) {
@@ -95,7 +86,9 @@ namespace wfe {
                 console::OutFatalError((string)"Failed to set the cursor's position! Reason: " + error, 1);
             }
 #elif defined(PLATFORM_LINUX)
-            XWarpPointer(GetScreenConnection(), GetWindowHandle(), GetWindowHandle(), 0, 0, GetMainWindowWidth(), GetMainWindowHeight(), GetMainWindowWidth() >> 1, GetMainWindowHeight() >> 1);
+            PlatformInfo* platformInfo = GetPlatformInfo();
+
+            XWarpPointer(platformInfo->display, platformInfo->window, platformInfo->window, 0, 0, GetMainWindowWidth(), GetMainWindowHeight(), GetMainWindowWidth() >> 1, GetMainWindowHeight() >> 1);
 #endif
         }
     }
@@ -142,6 +135,8 @@ namespace wfe {
         return (MouseState)(mouseDisplayCount >= 0);
     }
     void SetMouseState(MouseState newState) {
+        PlatformInfo* platformInfo = GetPlatformInfo();
+
 #if defined(PLATFORM_WINDOWS)
         mouseDisplayCount = ShowCursor(newState == MOUSE_STATE_UNLOCKED);
 #elif defined(PLATFORM_LINUX)
@@ -153,11 +148,11 @@ namespace wfe {
             --mouseDisplayCount;
         
         if(mouseDisplayCount < 0 && oldMouseDisplayCount == 0) {
-            XFixesHideCursor(GetScreenConnection(), GetWindowHandle());
-            XFlush(GetScreenConnection());
+            XFixesHideCursor(platformInfo->display, platformInfo->window);
+            XFlush(platformInfo->display);
         } else if(mouseDisplayCount >= 0 && oldMouseDisplayCount == -1) {
-            XFixesShowCursor(GetScreenConnection(), GetWindowHandle());
-            XFlush(GetScreenConnection());
+            XFixesShowCursor(platformInfo->display, platformInfo->window);
+            XFlush(platformInfo->display);
         }
 #endif
     }

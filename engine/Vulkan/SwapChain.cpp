@@ -1,6 +1,7 @@
 #include "Vulkan/SwapChain.hpp"
 #include "Vulkan/Device.hpp"
-#include "Window/MainWindow.hpp"
+#include "General/Application.hpp"
+#include "WireframeEngineEditor.hpp"
 
 #include <limits.h>
 
@@ -402,6 +403,33 @@ namespace wfe {
         
         vkDestroySwapchainKHR(GetDevice(), swapChain, GetVulkanAllocator());
         console::OutMessageFunction("Deleted swap chain successfully.");
+    }
+    void RecreateSwapChain() {
+        // Destroy every swap chain related object
+        for(auto framebuffer : swapChainFramebuffers)
+            vkDestroyFramebuffer(GetDevice(), framebuffer, GetVulkanAllocator());
+        
+        for(auto depthImageView : depthImageViews)
+            vkDestroyImageView(GetDevice(), depthImageView, GetVulkanAllocator());
+        for(auto depthImage : depthImages)
+            vkDestroyImage(GetDevice(), depthImage, GetVulkanAllocator());
+        for(auto depthImageMemory : depthImageMemories)
+            vkFreeMemory(GetDevice(), depthImageMemory, GetVulkanAllocator());
+        
+        for(auto imageView : swapChainImageViews)
+            vkDestroyImageView(GetDevice(), imageView, GetVulkanAllocator());
+        
+        // Store the old swapchain and create the new one
+        VkSwapchainKHR oldSwapChain = swapChain;
+        CreateSwapChainInternal(oldSwapChain);
+
+        // Delete the old swap chain
+        vkDestroySwapchainKHR(GetDevice(), oldSwapChain, GetVulkanAllocator());
+
+        // Create every swap chain related object
+        CreateImageViews();
+        CreateDepthResources();
+        CreateFramebuffers();
     }
 
     VkFramebuffer GetFrameBuffer(size_t index) {

@@ -47,6 +47,8 @@ namespace wfe {
         // Acquire the next image
         uint32_t imageIndex;
         auto result = AcquireNextImage(&imageIndex);
+        if(result == VK_ERROR_OUT_OF_DATE_KHR)
+            return;
         if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
             console::OutFatalError((string)"Failed to acquire the next image! Error code: " + VkResultToString(result), 1);
         
@@ -109,7 +111,7 @@ namespace wfe {
         
         // Submit the command buffer
         result = SubmitCommandBuffers(&commandBuffer, &imageIndex);
-        if(result != VK_SUCCESS)
+        if(result != VK_SUCCESS && result != VK_ERROR_OUT_OF_DATE_KHR)
             console::OutFatalError((string)"Failed to submit the command buffer! Error code: " + VkResultToString(result), 1);
         
         // Free the command buffer
