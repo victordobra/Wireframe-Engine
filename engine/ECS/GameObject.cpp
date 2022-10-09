@@ -1,8 +1,12 @@
 #include "GameObject.hpp"
+#include "imgui.hpp"
 
 namespace wfe {
     // Static variables
     GameObject* GameObject::scene = nullptr;
+
+    // Internal variables
+    unordered_map<Quaternion*, Vector3> eulerAngleMap;
 
     // Public member functions
     GameObject::GameObject(GameObject* parent) : parent(parent) {
@@ -120,5 +124,268 @@ namespace wfe {
 
         for(auto* child : children)
             child->SaveToStream(output);
+    }
+
+    void GameObject::DrawEditorWindow() {
+        // Draw the main transform
+        if(ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::InputFloat3("Position", transform.position.elements);
+
+            if(!eulerAngleMap.count(&transform.rotation))
+                eulerAngleMap.insert(&transform.rotation, transform.rotation.ToEulerAngles());
+            
+            if(ImGui::InputFloat3("Rotation", eulerAngleMap[&transform.rotation].elements))
+                transform.rotation = Quaternion::EulerAngles(eulerAngleMap[&transform.rotation] * DEG_TO_RAD_MULTIPLIER);
+            
+            ImGui::InputFloat3("Scale", transform.scale.elements);
+        }
+
+        for(uint32_t i = 0; i < components.size(); ++i) {
+            Component* component = *(components.begin() + i);
+
+            bool8_t open = ImGui::CollapsingHeader(component->componentType->name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap);
+            ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+            if(ImGui::Button("X")) {
+                components.erase(component);
+                --i;
+                continue;
+            }
+
+            if(open) {
+                for(auto& property : component->componentType->properties) {
+                    if(property.access == ComponentType::Property::PROPERTY_ACCESS_PRIVATE)
+                        continue;
+                    
+                    char_t* propertyAddress = (char_t*)component + property.offset;
+
+                    switch(property.type) {
+                    case ComponentType::Property::PROPERTY_TYPE_INTEGER:
+                    {
+                        int32_t integer;
+
+                        switch(property.size) {
+                        case sizeof(int8_t):
+                            integer = *(int8_t*)propertyAddress;
+                            break;
+                        case sizeof(int16_t):
+                            integer = *(int16_t*)propertyAddress;
+                            break;
+                        case sizeof(int32_t):
+                            integer = *(int32_t*)propertyAddress;
+                            break;
+                        case sizeof(int64_t):
+                            integer = *(int64_t*)propertyAddress;
+                            break;
+                        }
+
+                        ImGui::InputInt(property.name.c_str(), &integer);
+
+                        switch(property.size) {
+                        case sizeof(int8_t):
+                            *(int8_t*)propertyAddress = (int8_t)integer;
+                            break;
+                        case sizeof(int16_t):
+                            *(int16_t*)propertyAddress = (int16_t)integer;
+                            break;
+                        case sizeof(int32_t):
+                            *(int32_t*)propertyAddress = (int32_t)integer;
+                            break;
+                        case sizeof(int64_t):
+                            *(int64_t*)propertyAddress = (int64_t)integer;
+                            break;
+                        }
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_UNSIGNED:
+                    {
+                        int32_t integer;
+
+                        switch(property.size) {
+                        case sizeof(uint8_t):
+                            integer = *(uint8_t*)propertyAddress;
+                            break;
+                        case sizeof(uint16_t):
+                            integer = *(uint16_t*)propertyAddress;
+                            break;
+                        case sizeof(uint32_t):
+                            integer = *(uint32_t*)propertyAddress;
+                            break;
+                        case sizeof(uint64_t):
+                            integer = *(uint64_t*)propertyAddress;
+                            break;
+                        }
+
+                        ImGui::InputInt(property.name.c_str(), &integer);
+
+                        switch(property.size) {
+                        case sizeof(uint8_t):
+                            *(uint8_t*)propertyAddress = (uint8_t)integer;
+                            break;
+                        case sizeof(uint16_t):
+                            *(uint16_t*)propertyAddress = (uint16_t)integer;
+                            break;
+                        case sizeof(uint32_t):
+                            *(uint32_t*)propertyAddress = (uint32_t)integer;
+                            break;
+                        case sizeof(uint64_t):
+                            *(uint64_t*)propertyAddress = (uint64_t)integer;
+                            break;
+                        }
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_FLOAT:
+                        if(property.size == sizeof(float64_t)) {
+                            ImGui::InputDouble(property.name.c_str(), (float64_t*)propertyAddress);
+                        } else {
+                            ImGui::InputFloat(property.name.c_str(), (float32_t*)propertyAddress);
+                        }
+
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_STRING:
+                    {
+                        string& str = *(string*)propertyAddress;
+
+                        char_t buffer[256];
+                        if(ImGui::InputText(property.name.c_str(), buffer, 256))
+                            str = buffer;
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_VEC2:
+                    {
+                        Vector2& vec2 = *(Vector2*)propertyAddress;
+
+                        ImGui::InputFloat2(property.name.c_str(), vec2.elements);
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_VEC3:
+                    {
+                        Vector3& vec3 = *(Vector3*)propertyAddress;
+
+                        ImGui::InputFloat3(property.name.c_str(), vec3.elements);
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_VEC4:
+                    {
+                        Vector4& vec4 = *(Vector4*)propertyAddress;
+
+                        ImGui::InputFloat4(property.name.c_str(), vec4.elements);
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_QUAT:
+                    {
+                        Quaternion& quat = *(Quaternion*)propertyAddress;
+
+                        if(!eulerAngleMap.count(&quat))
+                            eulerAngleMap.insert(&quat, quat.ToEulerAngles());
+                        
+                        if(ImGui::InputFloat3("Rotation", eulerAngleMap[&quat].elements))
+                            quat = Quaternion::EulerAngles(eulerAngleMap[&quat] * DEG_TO_RAD_MULTIPLIER);
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_MAT4X4:
+                    {
+                        Matrix4x4 mat4x4 = *(Matrix4x4*)propertyAddress;
+                        
+                        for(size_t i = 0; i < 4; ++i) {
+                            ImGui::InputFloat4((property.name + "[" + ToString(i) + "]").c_str(), mat4x4.mat[i]);
+                        }
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_COLOR:
+                    {
+                        Color32 color;
+
+                        switch(property.size) {
+                        case sizeof(Color8):
+                            color.r = (*(Color8*)propertyAddress).r;
+                            color.g = (*(Color8*)propertyAddress).g;
+                            color.b = (*(Color8*)propertyAddress).b;
+                            color.a = (*(Color8*)propertyAddress).a;
+                            break;
+                        case sizeof(Color16):
+                            color.r = (*(Color16*)propertyAddress).r;
+                            color.g = (*(Color16*)propertyAddress).g;
+                            color.b = (*(Color16*)propertyAddress).b;
+                            color.a = (*(Color16*)propertyAddress).a;
+                            break;
+                        case sizeof(Color32):
+                            color = *(Color32*)propertyAddress;
+                            break;
+                        case sizeof(Color64):
+                            color.r = (*(Color64*)propertyAddress).r;
+                            color.g = (*(Color64*)propertyAddress).g;
+                            color.b = (*(Color64*)propertyAddress).b;
+                            color.a = (*(Color64*)propertyAddress).a;
+                            break;
+                        }
+
+                        ImGui::ColorEdit4(property.name.c_str(), (float32_t*)&color);
+
+                        switch(property.size) {
+                        case sizeof(Color8):
+                            (*(Color8*)propertyAddress).r = color.r;
+                            (*(Color8*)propertyAddress).g = color.g;
+                            (*(Color8*)propertyAddress).b = color.b;
+                            (*(Color8*)propertyAddress).a = color.a;
+                            break;
+                        case sizeof(Color16):
+                            (*(Color16*)propertyAddress).r = color.r;
+                            (*(Color16*)propertyAddress).g = color.g;
+                            (*(Color16*)propertyAddress).b = color.b;
+                            (*(Color16*)propertyAddress).a = color.a;
+                            break;
+                        case sizeof(Color32):
+                            color = *(Color32*)propertyAddress;
+                            break;
+                        case sizeof(Color64):
+                            (*(Color64*)propertyAddress).r = color.r;
+                            (*(Color64*)propertyAddress).g = color.g;
+                            (*(Color64*)propertyAddress).b = color.b;
+                            (*(Color64*)propertyAddress).a = color.a;
+                            break;
+                        }
+                    }
+                        break;
+                    case ComponentType::Property::PROPERTY_TYPE_ASSET_PTR:
+                    {
+                        Asset*& assetPtr = *(Asset**)propertyAddress;
+                        AssetType& assetType = Asset::assetTypes.at(property.size);
+                        
+                        string assetName = "None";
+                        if(assetPtr)
+                            assetName = assetPtr->name;
+                        
+                        assetName += (string)"(" + assetType.name + ")";
+
+                        if(ImGui::BeginCombo(((string)"##" + property.name + "Select").c_str(), assetName.c_str())) {
+                            for(Asset* asset : Asset::GetAssets())
+                                if(asset->assetType == &assetType && ImGui::Selectable(asset->name.c_str(), assetPtr == asset)) {
+                                    assetPtr = asset;
+                                    break;
+                                }
+
+                            ImGui::EndCombo();
+                        }
+                    }
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Create the add component button
+        if(ImGui::Button("Add Component", ImVec2(-.1f, 0.f)))
+            ImGui::OpenPopup("Add Component");
+        
+        if(ImGui::BeginPopup("Add Component")) {
+            for(auto& type : Component::componentTypes) {
+                if(ImGui::MenuItem(type.val2.name.c_str())) {
+                    components.insert_or_assign(type.val2.create(this));
+                    break;
+                }
+            }
+
+            ImGui::EndPopup();
+        }
     }
 }

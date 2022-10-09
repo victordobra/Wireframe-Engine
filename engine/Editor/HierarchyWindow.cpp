@@ -1,5 +1,6 @@
-#include "WireframeEngineEditor.hpp"
+#include "Editor.hpp"
 #include "ECS/EngineECS.hpp"
+#include "imgui_internal.hpp"
 
 namespace wfe {
     // Variables
@@ -9,20 +10,11 @@ namespace wfe {
     // Internal helper functions
     static void RenderGameObject(GameObject* gameObject) {
         // Check if the current object should be deleted
-        if(!renamingObject && ImGui::GetIO().KeysData[ImGuiKey_Delete].Down && ImGui::GetIO().KeysData[ImGuiKey_Delete].DownDuration == 0.f && selectedAsset == (Asset*)gameObject) {
+        if(!renamingObject && ImGui::GetIO().KeysData[ImGuiKey_Delete].Down && ImGui::GetIO().KeysData[ImGuiKey_Delete].DownDuration == 0.f && selectedAsset == (Asset*)gameObject && gameObject != GameObject::scene) {
             delete gameObject;
             selectedAsset = nullptr;
             return;
         }
-
-        // Check if the current object should be renamed
-        bool8_t startedRenaming = false;
-
-        if(!renamingObject && ImGui::GetIO().KeysData[ImGuiKey_F2].Down && ImGui::GetIO().KeysData[ImGuiKey_F2].DownDuration == 0.f && selectedAsset) {
-            renamingObject = true;
-            startedRenaming = true;
-        } else if(renamingObject && ImGui::GetIO().KeysData[ImGuiKey_Enter].Down && ImGui::GetIO().KeysData[ImGuiKey_Enter].DownDuration == 0.f)
-            renamingObject = false;
 
         // Select the current tree node name
         string treeNodeName;
@@ -53,11 +45,17 @@ namespace wfe {
             char_t buffer[256];
             strcpy(buffer, gameObject->name.c_str());
 
+            ImGui::PushID(0);
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 0.f));
-            ImGui::InputText("", buffer, 256, ImGuiInputTextFlags_AutoSelectAll);
-            ImGui::PopStyleVar();
 
-            gameObject->name = buffer;
+            if(ImGui::InputText("", buffer, 256, ImGuiInputTextFlags_AutoSelectAll))
+                gameObject->name = buffer;
+
+            if(ImGui::IsItemDeactivated() || ImGui::IsItemDeactivatedAfterEdit())
+                renamingObject = false;
+
+            ImGui::PopStyleVar();
+            ImGui::PopID();
         }
 
         if(open) {
@@ -69,7 +67,7 @@ namespace wfe {
     }
 
     static void RenderWindow() {
-        editor::WindowType& windowType = editor::WindowType::windowTypes->at("Scene Hierarchy");
+        auto& windowType = editor::WindowType::windowTypes->at("Scene Hierarchy");
 
         ImGui::SetNextWindowSize(ImVec2(300.f, 600.f), ImGuiCond_FirstUseEver);
         if(ImGui::Begin("Scene Hierarchy", &windowType.open)) {
@@ -77,10 +75,18 @@ namespace wfe {
             ImVec2 windowSize = ImGui::GetWindowSize();
             ImVec2 windowRectMax = ImVec2(windowRectMin.x + windowSize.x, windowRectMin.y + windowSize.y);
 
+            // Check if the current object should be renamed
+            if(!renamingObject && ImGui::GetIO().KeysData[ImGuiKey_F2].Down && ImGui::GetIO().KeysData[ImGuiKey_F2].DownDuration == 0.f && selectedAsset)
+                renamingObject = true;
+            else if(renamingObject && ImGui::GetIO().KeysData[ImGuiKey_Enter].Down && ImGui::GetIO().KeysData[ImGuiKey_Enter].DownDuration == 0.f)
+                renamingObject = false;
+
+            // Open the options popup
             if(ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsMouseHoveringRect(windowRectMin, windowRectMax)) {
                 ImGui::OpenPopup("Options");
             }
 
+            // Begin the options popup
             if(ImGui::BeginPopup("Options")) {
                 if(ImGui::MenuItem("New game object")) {
                     GameObject* gameObject = new GameObject();
@@ -103,6 +109,14 @@ namespace wfe {
 
             RenderGameObject(GameObject::scene);
         }
+    }
+
+    // Public functions
+    Asset* editor::GetSelectedAsset() {
+        return selectedAsset;
+    }
+    void editor::SetSelectedAsset(Asset* newAsset) {
+        selectedAsset = newAsset;
     }
 
     WFE_EDITOR_WINDOW_TYPE("Scene Hierarchy", RenderWindow)

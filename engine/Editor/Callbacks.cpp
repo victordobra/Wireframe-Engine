@@ -5,6 +5,8 @@ namespace wfe {
     // Callbacks
     static void LoadCallback() {
         // Create the Vulkan objects
+        Component::AddAssetTypeProperties();
+
         CreateDevice();
         CreateSampler();
 

@@ -136,6 +136,55 @@ namespace wfe {
 		float32_t Dot(Quaternion&& other) const { 
 			return x * other.x + y * other.y + z * other.z + w * other.w; 
 		}
+		/// @brief Converts the quaternion to Euler angles.
+		Vector3 ToEulerAngles() const {
+			Vector3 euler;
+
+			// Generate the quaternion's rotation matrix
+			float32_t rows[3][3];
+			rows[0][0]  = 1.f - 2.f * y * y - 2.f * z * z;
+			rows[0][1]  =       2.f * x * y - 2.f * z * w;
+			rows[0][2]  =       2.f * x * z + 2.f * y * w;
+
+			rows[1][0]    =       2.f * x * y + 2.f * z * w;
+			rows[1][1]    = 1.f - 2.f * x * x - 2.f * z * z;
+			rows[1][2]    =       2.f * y * z - 2.f * x * w;
+
+			rows[2][0]    =       2.f * x * z - 2.f * y * w;
+			rows[2][1]    =       2.f * y * z + 2.f * x * w;
+			rows[2][2]   = 1.f - 2.f * x * x - 2.f * y * y;
+
+			// From https://github.com/godotengine/godot/blob/master/core/math/basis.cpp
+			if(rows[1][2] < 1) {
+				if(rows[1][2] > -1) {
+					// Check whether this is a pure X rotation
+					if (rows[1][0] == 0 && rows[0][1] == 0 && rows[0][2] == 0 && rows[2][0] == 0 && rows[0][0] == 1) {
+						euler.x = atan2(-rows[1][2], rows[1][1]);
+						euler.y = 0;
+						euler.z = 0;
+					} else {
+						euler.x = asin(-rows[1][2]);
+						euler.y = atan2(rows[0][2], rows[2][2]);
+						euler.z = atan2(rows[1][0], rows[1][1]);
+					}
+				} else {
+					euler.x = M_PI_2;
+					euler.y = atan2(rows[0][1], rows[0][0]);
+					euler.z = 0;
+				}
+			} else {
+				euler.x = -M_PI_2;
+				euler.y = -atan2(rows[0][1], rows[0][0]);
+				euler.z = 0;
+			}
+
+			// Convert every angle to degrees
+			euler.x *= 180.f / M_PI;
+			euler.y *= 180.f / M_PI;
+			euler.z *= 180.f / M_PI;
+
+			return euler;
+		}
 
 		/// @brief Returns a quaternion that represents the rotation around an axis.
 		/// @param axis The axis to rotate around.

@@ -23,7 +23,6 @@ namespace wfe {
                 PROPERTY_TYPE_QUAT,
                 PROPERTY_TYPE_MAT4X4,
                 PROPERTY_TYPE_COLOR,
-                PROPERTY_TYPE_COLORF,
                 PROPERTY_TYPE_ASSET_PTR
             } PropertyType;
             typedef enum : uint32_t {
@@ -33,6 +32,7 @@ namespace wfe {
 
             PropertyType type = PROPERTY_TYPE_OTHER;
             PropertyAccess access = PROPERTY_ACCESS_PRIVATE;
+            string name;
             uint64_t hashCode = 0;
             uint64_t size = 0;
             uint64_t offset = 0;
@@ -65,8 +65,6 @@ namespace wfe {
                     prop.type = PROPERTY_TYPE_MAT4X4;
                 else if(prop.hashCode == WFE_TYPE_ID(Color8).Hash64() || prop.hashCode == WFE_TYPE_ID(Color16).Hash64() || prop.hashCode == WFE_TYPE_ID(Color32).Hash64() || prop.hashCode == WFE_TYPE_ID(Color64).Hash64())
                     prop.type = PROPERTY_TYPE_COLOR;
-                else if(prop.hashCode == WFE_TYPE_ID(Color32f).Hash64() || prop.hashCode == WFE_TYPE_ID(Color64f).Hash64())
-                    prop.type = PROPERTY_TYPE_COLORF;
                 else 
                     prop.type = PROPERTY_TYPE_OTHER;
 
@@ -171,8 +169,9 @@ namespace { \
             componentType.defaultSystemCallback = defaultComponentSystemCallback;
 #define WFE_COMPONENT_PROPERTY(propertyName, propertyAccess) \
             wfe::ComponentType::Property propertyName ## Property = wfe::ComponentType::Property::GetPropertyInfo<decltype(ptr->propertyName)>(); \
-            propertyName ## Property.offset = (size_t)&(ptr->propertyName); \
             propertyName ## Property.access = wfe::ComponentType::Property::PROPERTY_ACCESS_ ## propertyAccess; \
+            propertyName ## Property.name = #propertyName; \
+            propertyName ## Property.offset = (size_t)&(ptr->propertyName); \
             componentType.properties.push_back(propertyName ## Property);
 #define WFE_END_COMPONENT(type) \
             wfe::Component::componentTypes.insert({ componentType.hashCode, componentType }); \

@@ -100,6 +100,9 @@ namespace wfe {
             return asset;
         }
 
+        /// @brief Called when the editor properties need to be drawn.
+        virtual void DrawEditorWindow() { }
+
         virtual ~Asset();
     protected:
         /// @brief Called when the asset needs to be loaded.

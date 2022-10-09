@@ -5,7 +5,7 @@
 namespace wfe {
     class AmbientLight : public Light { 
     public:
-        Color32f ambientColor{};
+        Color32 ambientColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override { 
             ubo.ambientLightColor = { ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a };
@@ -13,7 +13,7 @@ namespace wfe {
     };
     class DirectionalLight : public Light {
     public:
-        Color32f lightColor{};
+        Color32 lightColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override { 
             const Transform& transform = GetGameObject()->transform;
@@ -29,7 +29,7 @@ namespace wfe {
     };
     class PointLight : public Light {
     public:
-        Color32f lightColor{};
+        Color32 lightColor{};
 
         void WriteToLightingUbo(LightingUbo& ubo) override {
             const Transform& transform = GetGameObject()->transform;

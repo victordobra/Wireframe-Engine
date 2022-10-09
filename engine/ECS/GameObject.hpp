@@ -55,7 +55,6 @@ namespace wfe {
     public:
         static GameObject* scene;
 
-        string name = "";
         Transform transform;
 
         GameObject() = default;
@@ -120,6 +119,8 @@ namespace wfe {
             // No component was found Return a nullptr
             return nullptr;
         }
+
+        void DrawEditorWindow() override;
 
         ~GameObject();
     protected:
