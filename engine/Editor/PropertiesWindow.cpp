@@ -6,6 +6,7 @@ namespace wfe {
     static void RenderWindow() {
         auto& windowType = editor::WindowType::windowTypes->at("Properties");
 
+        ImGui::SetNextWindowSize(ImVec2(300.f, 600.f), ImGuiCond_FirstUseEver);
         if(ImGui::Begin("Properties", &windowType.open)) {
             Asset* selectedAsset = editor::GetSelectedAsset();
             if(selectedAsset)

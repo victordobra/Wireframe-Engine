@@ -30,17 +30,22 @@ namespace wfe {
 
             uint64_t length{};
             input.ReadBuffer((char_t*)&length, sizeof(uint64_t));
-            str.resize(length);
 
-            input.ReadBuffer((char_t*)str.c_str(), length * sizeof(char_t));
-            str[length] = 0;
+            if(length) {
+                str.resize(length);
 
-            Asset*& ptr = *(Asset**)address;
-            ptr = Asset::GetAssetWithLocation(str);
+                input.ReadBuffer((char_t*)str.c_str(), length * sizeof(char_t));
+                str[length] = 0;
 
-            if(!ptr) {
-                ptr = Asset::assetTypes[prop.size].create();
-                ptr->Load(str);
+                Asset*& ptr = *(Asset**)address;
+                ptr = Asset::GetAssetWithLocation(str);
+
+                if(!ptr) {
+                    ptr = Asset::assetTypes[prop.size].create();
+                    ptr->Load(str);
+                }
+            } else {
+                *(Asset**)address = nullptr;
             }
 
             break;
@@ -68,11 +73,16 @@ namespace wfe {
         case ComponentType::Property::PROPERTY_TYPE_ASSET_PTR:
         {
             Asset* ptr = *(Asset**)address;
-            auto str = ptr->location;
+            if(ptr) {
+                auto str = ptr->location;
 
-            uint64_t length = str.length();
-            output.WriteBuffer((char_t*)&length, sizeof(uint64_t));
-            output.WriteBuffer((char_t*)str.c_str(), length * sizeof(char_t));
+                uint64_t length = str.length();
+                output.WriteBuffer((char_t*)&length, sizeof(uint64_t));
+                output.WriteBuffer((char_t*)str.c_str(), length * sizeof(char_t));
+            } else {
+                const uint64_t zero = 0;
+                output.WriteBuffer((char_t*)&zero, sizeof(uint64_t));
+            }
 
             break;
         }

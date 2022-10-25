@@ -5,9 +5,9 @@
 
 namespace wfe {
 #ifdef NDEBUG
-    #define ASSET_PATH "assets/"
+    #define WFE_ASSET_LOCATION "assets/"
 #else
-    #define ASSET_PATH "../assets/"
+    #define WFE_ASSET_LOCATION "../assets/"
 #endif
     class Asset;
 
@@ -61,10 +61,13 @@ namespace wfe {
 
         /// @brief Loads the asset from a file.
         /// @param fileLocation The location of the file relative to the assets folder.
-        void Load(const string& fileLocation);
+        void Load  (const string& fileLocation);
         /// @brief Save the asset to a file.
         /// @param fileLocation The location of the file relative to the assets folder.
-        void Save(const string& fileLocation);
+        void Save  (const string& fileLocation);
+        /// @brief Imports the asset from an external file.
+        /// @param fileLocation The location of the file relative to the assets folder.
+        void Import(const string& fileLocation);
 
         /// @brief Deletes every asset. Called at the end of the program.
         static void DeleteAllAssets();
@@ -106,9 +109,11 @@ namespace wfe {
         virtual ~Asset();
     protected:
         /// @brief Called when the asset needs to be loaded.
-        virtual void LoadFromFile(const string& fileLocation);
+        virtual void LoadFromFile  (const string& fileLocation) { }
         /// @brief Called when the asset needs to be saved.
-        virtual void SaveToFile  (const string& fileLocation);
+        virtual void SaveToFile    (const string& fileLocation) { }
+        /// @brief Called when the asset needs to be imported from an external file.
+        virtual void ImportFromFile(const string& fileLocation) { }
     private:
         static vector<Asset*> assets;
     };

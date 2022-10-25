@@ -129,10 +129,16 @@ namespace wfe {
         // Create a staging buffer to copy to
         VkDeviceSize bufferSize = (VkDeviceSize)(width * height * sizeof(Color8));
 
-        Buffer stagingBuffer{bufferSize, 1, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT};
+        Buffer stagingBuffer{ bufferSize, 1, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT };
 
         // Copy the image's contents to the buffer
         CopyImageToBuffer(image, stagingBuffer.GetBuffer(), (uint32_t)width, (uint32_t)height, 1, commandBuffer);
+
+        // Transition the image's layout to its old layout
+        TransitionImageLayout(oldLayout, commandBuffer);
+
+        // End single time commands
+        EndSingleTimeCommands(commandBuffer);
 
         // Map the buffer and save its contents as an image
         stagingBuffer.Map();
@@ -143,12 +149,6 @@ namespace wfe {
             console::OutFatalError((string)"Failed to save image! Reason: " + stbi_failure_reason(), 1);
         
         stagingBuffer.Unmap();
-
-        // Transition the image's layout to its old layout
-        TransitionImageLayout(oldLayout, commandBuffer);
-
-        // End single time commands
-        EndSingleTimeCommands(commandBuffer);
     }
 
     Image::~Image() {

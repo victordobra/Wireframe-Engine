@@ -5,6 +5,7 @@
 #include "General/Application.hpp"
 #include "EditorPlatform/Platform.hpp"
 #include "Vulkan/Device.hpp"
+#include "Vulkan/ImGuiPipeline.hpp"
 
 #if defined(PLATFORM_WINDOWS)
 #include <windows.h>
@@ -114,6 +115,8 @@ namespace wfe::editor {
     typedef VkPipeline(*PtrFn_GetImGuiPipeline)();
     typedef VkPipelineLayout(*PtrFn_GetImGuiPipelineLayout)();
     typedef VkCommandBuffer(*PtrFn_GetImGuiCommandBuffer)();
+
+    typedef ImTextureID(*PtrFn_GetImGuiTexture)(ImageID);
 
     // Vulkan/SwapChain.hpp
     typedef void(*PtrFn_CreateSwapChain)();
@@ -245,6 +248,8 @@ namespace wfe::editor {
         PtrFn_GetImGuiPipeline getImGuiPipeline;
         PtrFn_GetImGuiPipelineLayout getImGuiPipelineLayout;
         PtrFn_GetImGuiCommandBuffer getImGuiCommandBuffer;
+
+        PtrFn_GetImGuiTexture getImGuiTexture;
 
         PtrFn_CreateSwapChain createSwapChain;
         PtrFn_DeleteSwapChain deleteSwapChain;

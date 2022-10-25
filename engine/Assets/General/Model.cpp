@@ -1,4 +1,5 @@
 #include "Model.hpp"
+#include "WireframeEngineEditor.hpp"
 #include <string.h>
 
 namespace wfe {
@@ -76,8 +77,79 @@ namespace wfe {
 
     // External functions
     Model::Model(const string& fileLocation) {
+        // Get the file location relative to the executable
+        string fullLocation;
+        if(editor::IsInsideEditor())
+            fullLocation = editor::GetWorkspaceDir() + "build/" + WFE_ASSET_LOCATION;
+        else
+            fullLocation = WFE_ASSET_LOCATION;
+        fullLocation += fileLocation;
+
+        // Import the model
+        ImportFromFile(fullLocation);
+    }
+
+    void Model::LoadFromFile  (const string& fileLocation) {
+        FileInput input(fileLocation, STREAM_TYPE_BINARY);
+
+        vector<Vertex> vertices;
+        vector<uint32_t> indices;
+
+        // Read all of the vertices from the file
+        input.ReadBuffer((char_t*)&vertexCount, sizeof(uint32_t));
+        vertices.resize(vertexCount);
+        input.ReadBuffer((char_t*)vertices.data(), sizeof(Vertex) * vertexCount);
+
+        // Read all of the indices from the file
+        input.ReadBuffer((char_t*)&indexCount, sizeof(uint32_t));
+        indices.resize(indexCount);
+        input.ReadBuffer((char_t*)indices.data(), sizeof(uint32_t) * indexCount);
+
+        // Create the vertex and index buffers
+        CreateVertexBuffer(vertices);
+        CreateIndexBuffer(indices);
+
+        input.Close();
+    }
+    void Model::SaveToFile    (const string& fileLocation) {
+        FileOutput output(fileLocation, STREAM_TYPE_BINARY);
+
+        if(vertexCount && indexCount) {
+            // Create a vertex staging buffer
+            VkDeviceSize vertexBufferSize = sizeof(Vertex) * vertexCount;
+            uint32_t vertexSize = sizeof(Vertex);
+
+            Buffer vertexStagingBuffer{ vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+
+            // Create an index staging buffer
+            VkDeviceSize indexBufferSize = sizeof(uint32_t) * indexCount;
+            uint32_t indexSize = sizeof(uint32_t);
+            
+            Buffer indexStagingBuffer{ indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+
+            // Copy to the staging buffers
+            CopyBuffer(vertexBuffer->GetBuffer(), vertexStagingBuffer.GetBuffer(), vertexBufferSize);
+            CopyBuffer( indexBuffer->GetBuffer(),  indexStagingBuffer.GetBuffer(),  indexBufferSize);
+
+            // Map the staging buffers
+            vertexStagingBuffer.Map();
+            indexStagingBuffer.Map();
+
+            // Write the vertors' data to the file
+            output.WriteBuffer((char_t*)&vertexCount, sizeof(uint32_t));
+            output.WriteBuffer((char_t*)vertexStagingBuffer.GetMappedMemory(), (size_t)vertexBufferSize);
+            output.WriteBuffer((char_t*)&indexCount, sizeof(uint32_t));
+            output.WriteBuffer((char_t*)indexStagingBuffer.GetMappedMemory(), (size_t)indexBufferSize);
+        } else {
+            output.WriteBuffer((char_t*)&vertexCount, sizeof(uint32_t));
+            output.WriteBuffer((char_t*)&indexCount, sizeof(uint32_t));
+        }
+
+        output.Close();
+    }
+    void Model::ImportFromFile(const string& fileLocation) {
         // Open the file stream
-        FileInput input((string)ASSET_PATH + fileLocation);
+        FileInput input(fileLocation);
 
         vector<Vector3> positions{};
         vector<Vector2> uvCoords{};
@@ -252,65 +324,9 @@ namespace wfe {
                 vertices[i].bitangent = bitangents[i].Normalized();
             }
 
-        console::OutMessageFunction((string)"Imported mesh: " + ToString(vertices.size()) + " vertices, " + ToString(indices.size()) + " indices, " + (smoothShading ? "smooth shading." : "flat shading."));
-
         // Create the vertex and index buffers
         CreateVertexBuffer(vertices);
         CreateIndexBuffer(indices);
-    }
-
-    void Model::LoadFromFile(const string& fileLocation) {
-        FileInput input(fileLocation, STREAM_TYPE_BINARY);
-
-        vector<Vertex> vertices;
-        vector<uint32_t> indices;
-
-        // Read all of the vertices from the file
-        input.ReadBuffer((char_t*)&vertexCount, sizeof(uint32_t));
-        vertices.resize(vertexCount);
-        input.ReadBuffer((char_t*)vertices.data(), sizeof(Vertex) * vertexCount);
-
-        // Read all of the indices from the file
-        input.ReadBuffer((char_t*)&indexCount, sizeof(uint32_t));
-        indices.resize(indexCount);
-        input.ReadBuffer((char_t*)indices.data(), sizeof(uint32_t) * indexCount);
-
-        // Create the vertex and index buffers
-        CreateVertexBuffer(vertices);
-        CreateIndexBuffer(indices);
-
-        input.Close();
-    }
-    void Model::SaveToFile  (const string& fileLocation) {
-        FileOutput output(fileLocation, STREAM_TYPE_BINARY);
-
-        // Create a vertex staging buffer
-        VkDeviceSize vertexBufferSize = sizeof(Vertex) * vertexCount;
-		uint32_t vertexSize = sizeof(Vertex);
-
-		Buffer vertexStagingBuffer{ vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
-
-        // Create an index staging buffer
-        VkDeviceSize indexBufferSize = sizeof(uint32_t) * indexCount;
-		uint32_t indexSize = sizeof(uint32_t);
-        
-		Buffer indexStagingBuffer{ indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
-
-        // Copy to the staging buffers
-        CopyBuffer(vertexBuffer->GetBuffer(), vertexStagingBuffer.GetBuffer(), vertexBufferSize);
-        CopyBuffer( indexBuffer->GetBuffer(),  indexStagingBuffer.GetBuffer(),  indexBufferSize);
-
-        // Map the staging buffers
-        vertexStagingBuffer.Map();
-        indexStagingBuffer.Map();
-
-        // Write the vertors' data to the file
-        output.WriteBuffer((char_t*)&vertexCount, sizeof(uint32_t));
-        output.WriteBuffer((char_t*)vertexStagingBuffer.GetMappedMemory(), (size_t)vertexBufferSize);
-        output.WriteBuffer((char_t*)&indexCount, sizeof(uint32_t));
-        output.WriteBuffer((char_t*)indexStagingBuffer.GetMappedMemory(), (size_t)indexBufferSize);
-
-        output.Close();
     }
 
     Model::~Model() {

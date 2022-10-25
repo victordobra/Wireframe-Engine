@@ -26,10 +26,10 @@ namespace wfe {
         // Select the current tree node flags
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow;
         if(selectedAsset == (Asset*)gameObject)
-            flags |= ImGuiTreeNodeFlags_Selected | ImGuiTreeNodeFlags_AllowItemOverlap;
+            flags |= ImGuiTreeNodeFlags_Selected;
         
         if(!renamingObject || selectedAsset != (Asset*)gameObject)
-            flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+            flags |= ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap;
 
         // Display the tree node
         bool8_t open = ImGui::TreeNodeEx((void*)gameObject, flags, "%s", treeNodeName.c_str());

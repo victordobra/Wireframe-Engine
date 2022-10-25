@@ -15,7 +15,8 @@ namespace wfe {
             typedef enum : uint8_t {
                 SHADER_PROPERTY_TYPE_COLOR,
                 SHADER_PROPERTY_TYPE_FLOAT,
-                SHADER_PROPERTY_TYPE_IMAGE
+                SHADER_PROPERTY_TYPE_IMAGE,
+                SHADER_PROPERTY_TYPE_COUNT
             } ShaderPropertyType;
 
             string name;
@@ -25,7 +26,7 @@ namespace wfe {
         Shader() = default;
         Shader(const Shader&) = delete;
         Shader(Shader&&) noexcept = delete;
-        Shader(const string& spirvPath);
+        Shader(const string& spirvLocation);
 
         Shader& operator=(const Shader&) = delete;
         Shader& operator=(Shader&&) noexcept = delete;
@@ -52,14 +53,17 @@ namespace wfe {
             return materials; 
         }
 
+        void DrawEditorWindow() override;
+
         ~Shader();
     protected:
-        void LoadFromFile(const string& filePath) override;
-        void SaveToFile(const string& filePath) override;
+        void LoadFromFile  (const string& fileLocation) override;
+        void SaveToFile    (const string& fileLocation) override;
+        void ImportFromFile(const string& fileLocation) override;
     private:
-        void LoadFromBinary(const string& spirvPath);
+        void LoadFromBinary(const string& spirvPath, bool8_t isFullLocation = false);
 
-        string spirvPath;
+        string spirvLocation;
         VkShaderModule shaderModule;
 
         vector<ShaderProperty> properties;

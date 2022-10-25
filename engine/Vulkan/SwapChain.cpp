@@ -433,41 +433,66 @@ namespace wfe {
     }
 
     VkFramebuffer GetFrameBuffer(size_t index) {
+        if(editor::IsInsideEditor())
+            return editor::GetFrameBuffer(index);
         return swapChainFramebuffers[index];
     }
     VkRenderPass GetRenderPass() {
+        if(editor::IsInsideEditor())
+            return editor::GetRenderPass();
         return renderPass;
     }
     VkImageView GetImageView(size_t index) {
+        if(editor::IsInsideEditor())
+            return editor::GetImageView(index);
         return swapChainImageViews[index];
     }
     size_t GetImageCount() {
+        if(editor::IsInsideEditor())
+            return editor::GetImageCount();
         return swapChainImages.size();
     }
     VkFormat GetSwapChainImageFormat() {
+        if(editor::IsInsideEditor())
+            return editor::GetSwapChainImageFormat();
         return swapChainImageFormat;
     }
     VkExtent2D GetSwapChainExtent() {
+        if(editor::IsInsideEditor())
+            return editor::GetSwapChainExtent();
         return swapChainExtent;
     }
     size_t GetSwapChainWidth() {
+        if(editor::IsInsideEditor())
+            return editor::GetSwapChainWidth();
         return swapChainExtent.width;
     }
     size_t GetSwapChainHeight() {
+        if(editor::IsInsideEditor())
+            return editor::GetSwapChainHeight();
         return swapChainExtent.height;
     }
     uint32_t GetCurrentFrame() {
+        if(editor::IsInsideEditor())
+            return editor::GetCurrentFrame();
         return currentFrame;
     }
 
     float32_t ExtentAspectRatio() {
+        if(editor::IsInsideEditor())
+            return editor::ExtentAspectRatio();
         return (float32_t)swapChainExtent.width / swapChainExtent.height;
     }
     VkFormat FindDepthFormat() {
+        if(editor::IsInsideEditor())
+            return editor::FindDepthFormat();
         return FindSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 
     VkResult AcquireNextImage(uint32_t* imageIndex) {
+        if(editor::IsInsideEditor())
+            return editor::AcquireNextImage(imageIndex);
+
         // Wait for the current in flight fence
         auto result = vkWaitForFences(GetDevice(), 1, inFlightFences + currentFrame, VK_TRUE, UINT64_MAX);
         if(result != VK_SUCCESS)
@@ -476,6 +501,9 @@ namespace wfe {
         return vkAcquireNextImageKHR(GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, imageIndex);
     }
     VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex, uint32_t bufferCount) {
+        if(editor::IsInsideEditor())
+            return editor::SubmitCommandBuffers(buffers, imageIndex, bufferCount);
+
         // Wait for the current image in flight
         if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
             auto result = vkWaitForFences(GetDevice(), 1, imagesInFlight.data() + *imageIndex, VK_TRUE, UINT64_MAX);

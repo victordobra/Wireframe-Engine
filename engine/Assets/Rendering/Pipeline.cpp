@@ -280,8 +280,8 @@ namespace wfe {
 		Create();
     }
 
-	void Pipeline::LoadFromFile(const string& filePath) {
-		FileInput input(filePath, STREAM_TYPE_BINARY);
+	void Pipeline::LoadFromFile(const string& fileLocation) {
+		FileInput input(fileLocation, STREAM_TYPE_BINARY);
 
 		// Load all of the shader stages
 		uint64_t shaderStageCount{};
@@ -372,8 +372,8 @@ namespace wfe {
 		// Create the pipeline
 		Create();
 	}
-	void Pipeline::SaveToFile(const string& filePath) {
-		FileOutput output(filePath, STREAM_TYPE_BINARY);
+	void Pipeline::SaveToFile(const string& fileLocation) {
+		FileOutput output(fileLocation, STREAM_TYPE_BINARY);
 
 		// Save all of the shader stages
 		uint64_t shaderStageCount = (uint64_t)pipelineInfo.shaderStages.size();

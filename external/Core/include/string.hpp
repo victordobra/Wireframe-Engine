@@ -12,7 +12,7 @@ namespace wfe {
         
         }
         string(const string& other) : _capacity(other._capacity), str(new char_t[other._capacity]) {
-            strcpy(str, other.str);
+            strncpy(str, other.str, _capacity);
         }
         string(string&& other) noexcept : _capacity(other._capacity), str(other.str) {
             //Unassign the other vector's string pointer

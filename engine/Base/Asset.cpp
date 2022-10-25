@@ -26,13 +26,16 @@ namespace wfe {
 
         name = namePtr;
 
-        // Call the internal load function
-        string assetPath;
+        // Get the asset location relative to the executable
+        string fullLocation;
         if(editor::IsInsideEditor())
-            assetPath = editor::GetWorkspaceDir() + "build/" + ASSET_PATH;
+            fullLocation = editor::GetWorkspaceDir() + "build/" + WFE_ASSET_LOCATION;
         else
-            assetPath = ASSET_PATH;
-        LoadFromFile(assetPath + location);
+            fullLocation = WFE_ASSET_LOCATION;
+        fullLocation += fileLocation;
+        
+        // Call the internal load function
+        LoadFromFile(fullLocation);
     }
     void Asset::Save(const string& fileLocation) {
         // Find the name of the asset from the file location
@@ -47,28 +50,28 @@ namespace wfe {
 
         name = namePtr;
 
-        // Call the internal save function
-        string assetPath;
-        if(editor::GetVulkanInstance())
-            assetPath = editor::GetWorkspaceDir() + "build/" + ASSET_PATH;
+        // Get the asset location relative to the executable
+        string fullLocation;
+        if(editor::IsInsideEditor())
+            fullLocation = editor::GetWorkspaceDir() + "build/" + WFE_ASSET_LOCATION;
         else
-            assetPath = ASSET_PATH;
-        SaveToFile(assetPath + fileLocation);
+            fullLocation = WFE_ASSET_LOCATION;
+        fullLocation += fileLocation;
+        
+        // Call the internal save function
+        SaveToFile(fullLocation);
     }
+    void Asset::Import(const string& fileLocation) {
+        // Get the asset location relative to the executable
+        string fullLocation;
+        if(editor::IsInsideEditor())
+            fullLocation = editor::GetWorkspaceDir() + "build/" + WFE_ASSET_LOCATION;
+        else
+            fullLocation = WFE_ASSET_LOCATION;
+        fullLocation += fileLocation;
 
-    void Asset::LoadFromFile(const string& fileLocation) {
-        FileInput input(fileLocation);
-
-        input.ReadBuffer((char_t*)this, sizeof(*this));
-
-        input.Close();
-    }
-    void Asset::SaveToFile  (const string& fileLocation) {
-        FileOutput output(fileLocation);
-
-        output.WriteBuffer((char_t*)this, sizeof(*this));
-
-        output.Close();
+        // Call the internal import function
+        ImportFromFile(fullLocation);
     }
 
     Asset::~Asset() {

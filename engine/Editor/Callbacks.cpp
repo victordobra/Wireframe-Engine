@@ -11,12 +11,16 @@ namespace wfe {
         CreateSampler();
 
         // Load the scene
-        GameObject::scene = new GameObject();
+        uint64_t hashCode = WFE_TYPE_ID(GameObject).Hash64();
+        auto& assetType = Asset::assetTypes[hashCode];
+        GameObject::scene = (GameObject*)assetType.create();
         GameObject::scene->Load("Scene.gameobj");
     }
     static void SaveCallback() {
-        // Save the scene
-        GameObject::scene->Save("Scene.gameobj");
+        // Save every asset
+        for(auto* asset : Asset::GetAssets())
+            if(asset->location.length())
+                asset->Save(asset->location);
     }
     static void CloseCallback() {
         // Delete every asset

@@ -60,8 +60,9 @@ namespace wfe {
 
         ~Model();
     protected:
-        void LoadFromFile(const string& fileLocation) override;
-        void SaveToFile  (const string& fileLocation) override;
+        void LoadFromFile  (const string& fileLocation) override;
+        void SaveToFile    (const string& fileLocation) override;
+        void ImportFromFile(const string& fileLocation) override;
     private:   
         void CreateVertexBuffer(const vector<Vertex>& vertices);
         void CreateIndexBuffer (const vector<uint32_t>& indices);

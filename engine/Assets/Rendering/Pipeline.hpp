@@ -87,8 +87,8 @@ namespace wfe {
 
         ~Pipeline();
     protected:
-        void LoadFromFile(const string& filePath) override;
-        void SaveToFile(const string& filePath) override;
+        void LoadFromFile(const string& fileLocation) override;
+        void SaveToFile  (const string& fileLocation) override;
     private:
         void Create() {
             CreateDescriptorPool();

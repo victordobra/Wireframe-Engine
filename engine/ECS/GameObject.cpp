@@ -297,16 +297,16 @@ namespace wfe {
 
                         switch(property.size) {
                         case sizeof(Color8):
-                            color.r = (*(Color8*)propertyAddress).r;
-                            color.g = (*(Color8*)propertyAddress).g;
-                            color.b = (*(Color8*)propertyAddress).b;
-                            color.a = (*(Color8*)propertyAddress).a;
+                            color.r = (*(Color8*)propertyAddress).r / 255.f;
+                            color.g = (*(Color8*)propertyAddress).g / 255.f;
+                            color.b = (*(Color8*)propertyAddress).b / 255.f;
+                            color.a = (*(Color8*)propertyAddress).a / 255.f;
                             break;
                         case sizeof(Color16):
-                            color.r = (*(Color16*)propertyAddress).r;
-                            color.g = (*(Color16*)propertyAddress).g;
-                            color.b = (*(Color16*)propertyAddress).b;
-                            color.a = (*(Color16*)propertyAddress).a;
+                            color.r = (*(Color16*)propertyAddress).r / 65535.f;
+                            color.g = (*(Color16*)propertyAddress).g / 65535.f;
+                            color.b = (*(Color16*)propertyAddress).b / 65535.f;
+                            color.a = (*(Color16*)propertyAddress).a / 65535.f;
                             break;
                         case sizeof(Color32):
                             color = *(Color32*)propertyAddress;
@@ -319,20 +319,20 @@ namespace wfe {
                             break;
                         }
 
-                        ImGui::ColorEdit4(property.name.c_str(), (float32_t*)&color);
+                        ImGui::ColorEdit4(property.name.c_str(), (float32_t*)&color, ImGuiColorEditFlags_Float);
 
                         switch(property.size) {
                         case sizeof(Color8):
-                            (*(Color8*)propertyAddress).r = color.r;
-                            (*(Color8*)propertyAddress).g = color.g;
-                            (*(Color8*)propertyAddress).b = color.b;
-                            (*(Color8*)propertyAddress).a = color.a;
+                            (*(Color8*)propertyAddress).r = color.r * 255;
+                            (*(Color8*)propertyAddress).g = color.g * 255;
+                            (*(Color8*)propertyAddress).b = color.b * 255;
+                            (*(Color8*)propertyAddress).a = color.a * 255;
                             break;
                         case sizeof(Color16):
-                            (*(Color16*)propertyAddress).r = color.r;
-                            (*(Color16*)propertyAddress).g = color.g;
-                            (*(Color16*)propertyAddress).b = color.b;
-                            (*(Color16*)propertyAddress).a = color.a;
+                            (*(Color16*)propertyAddress).r = color.r * 65535;
+                            (*(Color16*)propertyAddress).g = color.g * 65535;
+                            (*(Color16*)propertyAddress).b = color.b * 65535;
+                            (*(Color16*)propertyAddress).a = color.a * 65535;
                             break;
                         case sizeof(Color32):
                             color = *(Color32*)propertyAddress;
@@ -357,7 +357,7 @@ namespace wfe {
                         
                         assetName += (string)"(" + assetType.name + ")";
 
-                        if(ImGui::BeginCombo(((string)"##" + property.name + "Select").c_str(), assetName.c_str())) {
+                        if(ImGui::BeginCombo(property.name.c_str(), assetName.c_str())) {
                             for(Asset* asset : Asset::GetAssets())
                                 if(asset->assetType == &assetType && ImGui::Selectable(asset->name.c_str(), assetPtr == asset)) {
                                     assetPtr = asset;
@@ -388,4 +388,6 @@ namespace wfe {
             ImGui::EndPopup();
         }
     }
+
+    WFE_ASSET(GameObject)
 }

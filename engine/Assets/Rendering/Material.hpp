@@ -53,12 +53,11 @@ namespace wfe {
             if(propertyIndex == shader->properties.size())
                 console::OutFatalError("Failed to find a shader property with the specified name!", 1);
 
-            if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE)
-                return images[0].begin() + imageIndex;
             if(shader->properties[propertyIndex].type == Shader::ShaderProperty::SHADER_PROPERTY_TYPE_IMAGE) {
-                // Align to a Vector4
-                VkDeviceSize vectorCount = (offset + sizeof(Vector4) - sizeof(float32_t)) / sizeof(Vector4);
-                offset = vectorCount * sizeof(Vector4);
+                T value;
+                memcpy(&value, images[0].begin() + imageIndex, sizeof(Image*));
+
+                return value;
             }
 
             T value;
@@ -196,11 +195,15 @@ namespace wfe {
             return (vector<Image*>*)images;
         }
 
+        void DrawEditorWindow() override;
+
         ~Material();
     protected:
         void LoadFromFile(const string& fileLocation) override;
         void SaveToFile  (const string& fileLocation) override;
     private:
+        void CreateMaterial(Shader* shader);
+
         Shader* shader;
         Buffer* buffers[MAX_FRAMES_IN_FLIGHT];
         vector<Image*> images[MAX_FRAMES_IN_FLIGHT];
