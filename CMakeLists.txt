@@ -10,6 +10,9 @@ message(STATUS "Local .build file included successfully.")
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")
 
+# Add the core subdirectory
+add_subdirectory(./core)
+
 # Create the project
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK})
 message(STATUS "Project name set to \"${PROJECT_NAME}\".")
