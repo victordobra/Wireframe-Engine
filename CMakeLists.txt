@@ -50,7 +50,7 @@ if(NOT CMAKE_TARGET_PLATFORM STREQUAL CMAKE_SYSTEM_NAME)
 endif()
 
 # Add the include directories for the engine library
-target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine)
+target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info)
 message(STATUS "Engine include directories added.")
 
 # Add the link directories and link the libraries for the engine library
@@ -87,7 +87,7 @@ target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 message(STATUS "Project executable created successfully.")
 
 # Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
 message(STATUS "Include directories added.")
 
 # Add the link directories and link the libraries
