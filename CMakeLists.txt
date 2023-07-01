@@ -32,22 +32,17 @@ file(GLOB_RECURSE ENGINE_SOURCES ${PROJECT_SOURCE_DIR}/engine/*.cpp)
 list(LENGTH ENGINE_SOURCES ENGINE_SOURCE_COUNT)
 
 if(ENGINE_SOURCE_COUNT EQUAL 0)
-    message(FATAL_ERROR "ERROR: No engine sources found!")
+	message(FATAL_ERROR "ERROR: No engine sources found!")
 elseif(ENGINE_ENGINE_SOURCE_COUNT EQUAL 1)
-    message(STATUS "1 engine source found.")
+	message(STATUS "1 engine source found.")
 else()
-    message(STATUS "${SOURCE_COUNT} engine sources found.")
+	message(STATUS "${SOURCE_COUNT} engine sources found.")
 endif()
 
 # Create the engine library
 add_library(${ENGINE_NAME} STATIC ${ENGINE_SOURCES})
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 message(STATUS "Engine library created successfully.")
-
-# Check if the target platform was set correctly
-if(NOT CMAKE_TARGET_PLATFORM STREQUAL CMAKE_SYSTEM_NAME)
-    message(FATAL_ERROR "ERROR: Target platform set incorrectly!")
-endif()
 
 # Add the include directories for the engine library
 target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info)
@@ -58,9 +53,9 @@ target_link_directories(${ENGINE_NAME} PUBLIC ${PROJECT_BINARY_DIR}/core)
 message(STATUS "Engine link directories added.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan)
+	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan)
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
+	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
 endif()
 
 message(STATUS "Engine link libraries added.")
@@ -74,11 +69,11 @@ file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 list(LENGTH SOURCES SOURCE_COUNT)
 
 if(SOURCE_COUNT EQUAL 0)
-    message(FATAL_ERROR "ERROR: No sources found!")
+	message(FATAL_ERROR "ERROR: No sources found!")
 elseif(ENGINE_SOURCE_COUNT EQUAL 1)
-    message(STATUS "1 source found.")
+	message(STATUS "1 source found.")
 else()
-    message(STATUS "${SOURCE_COUNT} sources found.")
+	message(STATUS "${SOURCE_COUNT} sources found.")
 endif()
 
 # Create the project executable
@@ -95,9 +90,9 @@ target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR}/core)
 message(STATUS "Link directories added.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    target_link_libraries(${PROJECT_NAME} ${ENGINE_NAME} Wireframe-Core vulkan)
+	target_link_libraries(${PROJECT_NAME} ${ENGINE_NAME} Wireframe-Core vulkan)
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    target_link_libraries(${PROJECT_NAME} ${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
+	target_link_libraries(${PROJECT_NAME} ${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
 endif()
 
 message(STATUS "Link libraries added.")
@@ -108,19 +103,19 @@ set(GLSL_VALIDATOR glslangValidator)
 list(LENGTH GLSL_SOURCE_FILES GLSL_COUNT)
 
 if(GLSL_COUNT EQUAL 0)
-    message(STATUS "No shaders found.")
+	message(STATUS "No shaders found.")
 elseif(GLSL_COUNT EQUAL 1)
-    message(STATUS "1 shader found.")
+	message(STATUS "1 shader found.")
 else()
-    message(STATUS "${GLSL_COUNT} shaders found.")
+	message(STATUS "${GLSL_COUNT} shaders found.")
 endif()
 
 # Compile shaders
 foreach(GLSL ${GLSL_SOURCE_FILES})
-    get_filename_component(GLSL_NAME ${GLSL} NAME)
-    set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${GLSL_NAME}.spv")
-    add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -V -o ${SPIRV} DEPENDS ${GLSL})
-    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+	get_filename_component(GLSL_NAME ${GLSL} NAME)
+	set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${GLSL_NAME}.spv")
+	add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -V -o ${SPIRV} DEPENDS ${GLSL})
+	list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 
 add_custom_target(SHADERS ALL DEPENDS ${SPIRV_BINARY_FILES})
