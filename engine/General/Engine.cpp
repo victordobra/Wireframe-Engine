@@ -9,7 +9,8 @@ namespace wfe {
 
 	// Public functions
 	int32_t RunGame(int32_t argc, char_t** args) {
-		// Create the window
+		// Create every system
+		CreateLogger("log.txt");
 		CreateWindow();
 
 		// Run the game loop
@@ -24,8 +25,9 @@ namespace wfe {
 			sleep(1);
 		}
 
-		// Delete the window
+		// Delete every system
 		DeleteWindow();
+		DeleteLogger();
 
 		return gameReturnCode;
 	}
