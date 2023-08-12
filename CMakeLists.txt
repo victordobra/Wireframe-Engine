@@ -24,27 +24,8 @@ include(CTest)
 enable_testing()
 message(STATUS "Testing enabled successfully")
 
-# Find the core source files
-file(GLOB_RECURSE CORE_SOURCES ${PROJECT_SOURCE_DIR}/core/src/*.cpp)
-list(LENGTH CORE_SOURCES CORE_SOURCE_COUNT)
-
-if(CORE_SOURCE_COUNT EQUAL 0)
-	message(FATAL_ERROR "ERROR: No core sources found!")
-elseif(CORE_CORE_SOURCE_COUNT EQUAL 1)
-	message(STATUS "1 core source found.")
-else()
-	message(STATUS "${CORE_SOURCE_COUNT} core sources found.")
-endif()
-
-# Create the core library
-add_library(Wireframe-Core STATIC ${CORE_SOURCES})
-target_compile_features(Wireframe-Core PUBLIC cxx_std_20)
-target_compile_options(Wireframe-Core PUBLIC -fPIC)
-message(STATUS "Core library created successfully.")
-
-# Add the include directories for the core library
-target_include_directories(Wireframe-Core PUBLIC ${PROJECT_SOURCE_DIR}/core/include)
-message(STATUS "Core include directories added.")
+# Add the core subdirectory
+add_subdirectory(core)
 
 # Find the engine source files
 file(GLOB_RECURSE ENGINE_SOURCES ${PROJECT_SOURCE_DIR}/engine/*.cpp)
@@ -63,19 +44,18 @@ add_library(${ENGINE_NAME} STATIC ${ENGINE_SOURCES})
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 message(STATUS "Engine library created successfully.")
 
-# Add the include directories for the engine library
-target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info)
-message(STATUS "Engine include directories added.")
-
-# Add the link directories and link the libraries for the engine library
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+	# Add the include directories for Windows
+	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	message(STATUS "Engine include directories added.")
+
 	if(${TARGET_ARCH} STREQUAL "x86_64")
 		# Add the link directories for x86_64 Windows
-		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib32)
+		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib32 ${PROJECT_BINARY_DIR}/core)
 		message(STATUS "Engine link directories added.")
 	else()
 		# Add the link directories for x86_64 Windows
-		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib)
+		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib ${PROJECT_BINARY_DIR}/core)
 		message(STATUS "Engine link directories added.")
 	endif()
 
@@ -83,6 +63,14 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan-1)
 	message(STATUS "Engine link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+	# Add the include directories for Linux
+	target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	message(STATUS "Engine include directories added.")
+
+	# Add the link directories for Linux
+	target_link_directories(${ENGINE_NAME} PUBLIC ${PROJECT_BINARY_DIR}/core)
+	message(STATUS "Engine link directories added.")
+
 	# Add the link libraries for Linux
 	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
 	message(STATUS "Engine link libraries added.")
@@ -109,29 +97,32 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 message(STATUS "Project executable created successfully.")
 
-# Add the include directories
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
-message(STATUS "Include directories added.")
-
-# Add the link directories and link the libraries
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+	# Add the include directories for Windows
+	target_include_directories(${PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	message(STATUS "Project include directories added.")
+
 	if(${TARGET_ARCH} STREQUAL "x86_64")
 		# Add the link directories for x86_64 Windows
 		target_link_directories(${PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib32)
-		message(STATUS "Engine link directories added.")
+		message(STATUS "Project link directories added.")
 	else()
 		# Add the link directories for x86_64 Windows
 		target_link_directories(${PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib)
-		message(STATUS "Engine link directories added.")
+		message(STATUS "Project link directories added.")
 	endif()
 
 	# Add the link libraries for Windows
 	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core vulkan-1)
-	message(STATUS "Engine link libraries added.")
+	message(STATUS "Project link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+	# Add the include directories for Linux
+	target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	message(STATUS "Project include directories added.")
+
 	# Add the link libraries for Linux
 	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core vulkan X11 Xfixes xkbcommon)
-	message(STATUS "Engine link libraries added.")
+	message(STATUS "Project link libraries added.")
 endif()
 
 # Find all shaders in the project

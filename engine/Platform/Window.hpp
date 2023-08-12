@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.hpp"
+#include <Core.hpp>
 
 namespace wfe {
 	/// @brief Creates the game's window.
