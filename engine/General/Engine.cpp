@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 #include "Platform/Window.hpp"
+#include "Renderer/Renderer.hpp"
 #include <unistd.h>
 
 namespace wfe {
@@ -12,6 +13,7 @@ namespace wfe {
 		// Create every system
 		CreateLogger("log.txt");
 		CreateWindow();
+		CreateRenderer();
 
 		// Run the game loop
 		while(gameRunning) {
@@ -26,6 +28,7 @@ namespace wfe {
 		}
 
 		// Delete every system
+		DeleteRenderer();
 		DeleteWindow();
 		DeleteLogger();
 

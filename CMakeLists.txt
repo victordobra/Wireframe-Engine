@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")
 
 # Create the project
-project(${PROJECT_NAME} VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK})
+project(${PROJECT_NAME} VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.0)
 message(STATUS "Project name set to \"${PROJECT_NAME}\".")
 message(STATUS "Project version set to ${PROJECT_VERSION}.")
 
@@ -49,18 +49,12 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/core/include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
 	message(STATUS "Engine include directories added.")
 
-	if(${TARGET_ARCH} STREQUAL "x86_64")
-		# Add the link directories for x86_64 Windows
-		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib32 ${PROJECT_BINARY_DIR}/core)
-		message(STATUS "Engine link directories added.")
-	else()
-		# Add the link directories for x86_64 Windows
-		target_link_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Lib ${PROJECT_BINARY_DIR}/core)
-		message(STATUS "Engine link directories added.")
-	endif()
+	# Add the link directories for Windows
+	target_link_directories(${ENGINE_NAME} PUBLIC ${PROJECT_BINARY_DIR}/core)
+	message(STATUS "Engine link directories added.")
 
 	# Add the link libraries for Windows
-	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan-1)
+	target_link_libraries(${ENGINE_NAME} Wireframe-Core)
 	message(STATUS "Engine link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
