@@ -3,15 +3,15 @@
 #include <vulkan/vulkan.h>
 
 namespace wfe {
-    // Public functions
+	// Public functions
 	bool8_t CreateVulkanRenderer() {
-        // Create every Vulkan component, exiting the function if any of them return false
-        if(!CreateVulkanInstance()) return false;
+		// Create every Vulkan component, exiting the function if any of them return false
+		if(!CreateVulkanInstance()) return false;
 
-        return true;
-    }
+		return true;
+	}
 	void DeleteVulkanRenderer() {
-        // Delete every Vulkan component
-        DeleteVulkanInstance();
-    }
+		// Delete every Vulkan component
+		DeleteVulkanInstance();
+	}
 }
