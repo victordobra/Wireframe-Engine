@@ -21,18 +21,18 @@ namespace wfe {
 
 	static const uint32_t MIN_API_VERSION = VK_API_VERSION_1_0;
 
-	static const vector<const char_t*> MANDATORY_EXTENTIONS = {
+	static const unordered_set<const char_t*> MANDATORY_EXTENTIONS = {
 		VK_KHR_SURFACE_EXTENSION_NAME,
 		VK_KHR_PLATFORM_SURFACE_EXTENSION_NAME
 	};
-	static const vector<const char_t*> OPTIONAL_EXTENSIONS = {
-		VK_KHR_DEVICE_GROUP_EXTENSION_NAME
+	static const unordered_set<const char_t*> OPTIONAL_EXTENSIONS = {
+		
 	};
-	static const vector<const char_t*> DEBUG_EXTENSIONS = {
+	static const unordered_set<const char_t*> DEBUG_EXTENSIONS = {
 		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
 	};
 
-	static const vector<const char_t*> DEBUG_LAYERS = {
+	static const unordered_set<const char_t*> DEBUG_LAYERS = {
 		"VK_LAYER_KHRONOS_validation"
 	};
 
@@ -43,11 +43,7 @@ namespace wfe {
 	static vector<const char_t*> instanceExtensions;
 	static vector<const char_t*> instanceLayers;
 
-#ifdef WFE_BUILD_MODE_DEBUG
-	static bool8_t debugEnabled = true;
-#else
-	static bool8_t debugEnabled = false;
-#endif
+	static bool8_t debugEnabled;
 
 	static VkInstance instance;
 	static VkDebugUtilsMessengerEXT debugMessenger;
@@ -87,37 +83,27 @@ namespace wfe {
 		VkExtensionProperties* extensionsEnd = extensions + extensionCount;
 		for(VkExtensionProperties* extension = extensions; extension != extensionsEnd; ++extension) {
 			// Check if the current extension is mandatory
-			for(const char_t* mandatoryExtension : MANDATORY_EXTENTIONS)
-				if(!strncmp(mandatoryExtension, extension->extensionName, VK_MAX_EXTENSION_NAME_SIZE)) {
-					// Increment the mandatory extension count and insert the current extension in the instance extension list
-					++mandatoryExtensionCount;
-					instanceExtensions.push_back(mandatoryExtension);
-
-					// Don't bother to check for any other matches
-					break;
-				}
+			auto mandatoryExtension = MANDATORY_EXTENTIONS.find(extension->extensionName);
+			if(mandatoryExtension != MANDATORY_EXTENTIONS.end()) {
+				// Increment the mandatory extension count and insert the current extension in the instance extension list
+				++mandatoryExtensionCount;
+				instanceExtensions.push_back(*mandatoryExtension);
+			}
 
 			// Check if the current extension is optional
-			for(const char_t* optionalExtension : OPTIONAL_EXTENSIONS)
-				if(!strncmp(optionalExtension, extension->extensionName, VK_MAX_EXTENSION_NAME_SIZE)) {
-					// Insert the current extension in the instance extension list
-					instanceExtensions.push_back(optionalExtension);
-
-					// Don't bother to check for any other matches
-					break;
-				}
+			auto optionalExtension = OPTIONAL_EXTENSIONS.find(extension->extensionName);
+			if(optionalExtension != OPTIONAL_EXTENSIONS.end()) {
+				// Insert the current extension in the instance extension list
+				instanceExtensions.push_back(*optionalExtension);
+			}
 			
 			// Only proceed if debugging is enabled
 			if(debugEnabled) {
 				// Check if the current extension is for debugging
-				for(const char_t* debugExtension : DEBUG_EXTENSIONS)
-					if(!strncmp(debugExtension, extension->extensionName, VK_MAX_EXTENSION_NAME_SIZE)) {
-						// Increment the debug extension count
-						++debugExtensionCount;
-
-						// Don't bother to check for any other matches
-						break;
-					}
+				if(DEBUG_EXTENSIONS.count(extension->extensionName)) {
+					// Increment the debug extension count
+					++debugExtensionCount;
+				}
 			}
 		}
 
@@ -147,15 +133,15 @@ namespace wfe {
 		VkLayerProperties* layersEnd = layers + layerCount;
 		for(VkLayerProperties* layer = layers; layer != layersEnd; ++layer) {
 			// Check if the current layer is wanted
-			for(const char_t* debugLayer : DEBUG_LAYERS)
-				if(!strncmp(debugLayer, layer->layerName, VK_MAX_EXTENSION_NAME_SIZE)) {
-					// Increment the debug layer count and insert the current layer in the layer list
-					++debugLayerCount;
-					instanceLayers.push_back(debugLayer);
+			auto debugLayer = DEBUG_LAYERS.find(layer->layerName);
+			if(debugLayer != DEBUG_LAYERS.end()) {
+				// Increment the debug layer count and insert the current layer in the layer list
+				++debugLayerCount;
+				instanceLayers.push_back(*debugLayer);
 
-					// Don't bother to check for any other matches
-					break;
-				}
+				// Don't bother to check for any other matches
+				break;
+			}
 		}
 
 		// Return true if any layer was found
@@ -224,7 +210,7 @@ namespace wfe {
 			debugCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 			debugCreateInfo.pNext = nullptr;
 			debugCreateInfo.flags = 0;
-			debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 			debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
 			debugCreateInfo.pfnUserCallback = DebugMessageCallback;
 			debugCreateInfo.pUserData = nullptr;
@@ -273,7 +259,10 @@ namespace wfe {
 	}
 
 	// Public functions
-	bool8_t CreateVulkanInstance() {
+	bool8_t CreateVulkanInstance(bool8_t enableDebugging) {
+		// Set whether debugging is enabled or not
+		debugEnabled = enableDebugging;
+
 		// Check for Vulkan support
 		if(!CheckForVulkanSupport())
 			return false;
@@ -301,5 +290,18 @@ namespace wfe {
 
 		// Destroy the Vulkan instance
 		vkDestroyInstance(instance, GetVulkanAllocCallbacks());
+	}
+
+	VkInstance GetVulkanInstance() {
+		return instance;
+	}
+	uint32_t GetVulkanAPIVersion() {
+		return apiVersion;
+	}
+	const vector<const char_t*>& GetVulkanInstanceExtensions() {
+		return instanceExtensions;
+	}
+	const vector<const char_t*>& GetVulkanInstanceLayers() {
+		return instanceLayers;
 	}
 }

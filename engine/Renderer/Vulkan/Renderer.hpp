@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core.hpp"
+#include "Allocator.hpp"
+#include "Instance.hpp"
 
 namespace wfe {
 	/// @brief Creates a Vulkan API rendering backend.
