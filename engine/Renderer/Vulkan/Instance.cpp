@@ -40,8 +40,8 @@ namespace wfe {
 	static DynamicLib vulkanLib;
 
 	static uint32_t apiVersion;
-	static vector<const char_t*> instanceExtensions;
-	static vector<const char_t*> instanceLayers;
+	static set<const char_t*> instanceExtensions;
+	static set<const char_t*> instanceLayers;
 
 	static bool8_t debugEnabled;
 
@@ -87,14 +87,14 @@ namespace wfe {
 			if(mandatoryExtension != MANDATORY_EXTENTIONS.end()) {
 				// Increment the mandatory extension count and insert the current extension in the instance extension list
 				++mandatoryExtensionCount;
-				instanceExtensions.push_back(*mandatoryExtension);
+				instanceExtensions.insert(*mandatoryExtension);
 			}
 
 			// Check if the current extension is optional
 			auto optionalExtension = OPTIONAL_EXTENSIONS.find(extension->extensionName);
 			if(optionalExtension != OPTIONAL_EXTENSIONS.end()) {
 				// Insert the current extension in the instance extension list
-				instanceExtensions.push_back(*optionalExtension);
+				instanceExtensions.insert(*optionalExtension);
 			}
 			
 			// Only proceed if debugging is enabled
@@ -137,7 +137,7 @@ namespace wfe {
 			if(debugLayer != DEBUG_LAYERS.end()) {
 				// Increment the debug layer count and insert the current layer in the layer list
 				++debugLayerCount;
-				instanceLayers.push_back(*debugLayer);
+				instanceLayers.insert(*debugLayer);
 
 				// Don't bother to check for any other matches
 				break;
@@ -179,15 +179,11 @@ namespace wfe {
 		if(CheckForLayerSupport()) {
 			// Insert all debug extensions into the instance extension vector
 			for(const char_t* debugExtension : DEBUG_EXTENSIONS)
-				instanceExtensions.push_back(debugExtension);
+				instanceExtensions.insert(debugExtension);
 		} else {
 			// Disable debugging
 			debugEnabled = false;
 		}
-
-		// Shrink the instance extension and layer vectors to fit
-		instanceExtensions.shrink_to_fit();
-		instanceLayers.shrink_to_fit();
 
 		return true;
 	}
@@ -230,7 +226,7 @@ namespace wfe {
 		createInfo.flags = 0;
 		createInfo.pApplicationInfo = &appInfo;
 		createInfo.enabledLayerCount = (uint32_t)instanceLayers.size();
-		createInfo.ppEnabledLayerNames = instanceLayers.data();
+		createInfo.ppEnabledLayerNames = instanceLayers.begin();
 		createInfo.enabledExtensionCount = (uint32_t)instanceExtensions.size();
 		createInfo.ppEnabledExtensionNames = instanceExtensions.begin();
 
@@ -298,10 +294,10 @@ namespace wfe {
 	uint32_t GetVulkanAPIVersion() {
 		return apiVersion;
 	}
-	const vector<const char_t*>& GetVulkanInstanceExtensions() {
+	const set<const char_t*>& GetVulkanInstanceExtensions() {
 		return instanceExtensions;
 	}
-	const vector<const char_t*>& GetVulkanInstanceLayers() {
+	const set<const char_t*>& GetVulkanInstanceLayers() {
 		return instanceLayers;
 	}
 }

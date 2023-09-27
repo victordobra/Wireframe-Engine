@@ -19,8 +19,8 @@ namespace wfe {
 	uint32_t GetVulkanAPIVersion();
 	/// @brief Gets the list of all enabled instance extensions.
 	/// @return A reference to a vector containing all enabled instance extensions.
-	const vector<const char_t*>& GetVulkanInstanceExtensions();
+	const set<const char_t*>& GetVulkanInstanceExtensions();
 	/// @brief Gets the list of all enabled instance validation layers.
 	/// @return A reference to a vector containing all enabled instance validation layers.
-	const vector<const char_t*>& GetVulkanInstanceLayers();
+	const set<const char_t*>& GetVulkanInstanceLayers();
 }
