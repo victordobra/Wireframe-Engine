@@ -71,10 +71,15 @@ namespace wfe {
 
 	// Internal helper functions
 	static bool8_t CheckForExtensionSupport() {
-		// Load the list of available extensions
+		// Load the instance extension count
 		uint32_t extensionCount;
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+		// Allocate the extension array and get all instance extensions
 		VkExtensionProperties* extensions = (VkExtensionProperties*)malloc(extensionCount * sizeof(VkExtensionProperties), MEMORY_USAGE_ARRAY);
+		if(!extensions)
+			throw BadAllocException("Failed to allocate array!");
+
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions);
 
 		// Loop through every available extension, checking if it is mandatory, optional or for debugging
@@ -121,10 +126,15 @@ namespace wfe {
 		if(!debugEnabled)
 			return false;
 
-		// Load the list of available layers
+		// Load the instance layer count
 		uint32_t layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+		// Allocate the layer array and get all instance layers
 		VkLayerProperties* layers = (VkLayerProperties*)malloc(layerCount * sizeof(VkLayerProperties), MEMORY_USAGE_ARRAY);
+		if(!layers)
+			throw BadAllocException("Failed to allocate array!");
+
 		vkEnumerateInstanceLayerProperties(&layerCount, layers);
 
 		// Loop through every available layer, checking if it is wanted
@@ -143,6 +153,9 @@ namespace wfe {
 				break;
 			}
 		}
+
+		// Free the layer array
+		free(layers, MEMORY_USAGE_ARRAY);
 
 		// Return true if any layer was found
 		return debugLayerCount;
