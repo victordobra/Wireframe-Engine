@@ -1,9 +1,8 @@
-#include "BuildInfo.hpp"
+#include <BuildInfo.hpp>
 
 #ifdef WFE_PLATFORM_LINUX
 
 #include "Platform/Window.hpp"
-#include "Core.hpp"
 #include "General/Engine.hpp"
 #include "ProjectInfo.hpp"
 

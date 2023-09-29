@@ -1,10 +1,9 @@
-#include "BuildInfo.hpp"
+#include <BuildInfo.hpp>
 
 #ifdef WFE_PLATFORM_WINDOWS
 
 #include "Platform/Window.hpp"
 #include "ProjectInfo.hpp"
-#include "Core.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

@@ -74,6 +74,10 @@ namespace wfe {
 		// Load the instance extension count
 		uint32_t extensionCount;
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+		
+		// Exit the function if no extensions are supported
+		if(!extensionCount)
+			return false;
 
 		// Allocate the extension array and get all instance extensions
 		VkExtensionProperties* extensions = (VkExtensionProperties*)malloc(extensionCount * sizeof(VkExtensionProperties), MEMORY_USAGE_ARRAY);
@@ -93,6 +97,8 @@ namespace wfe {
 				// Increment the mandatory extension count and insert the current extension in the instance extension list
 				++mandatoryExtensionCount;
 				instanceExtensions.insert(*mandatoryExtension);
+
+				continue;
 			}
 
 			// Check if the current extension is optional
@@ -100,6 +106,8 @@ namespace wfe {
 			if(optionalExtension != OPTIONAL_EXTENSIONS.end()) {
 				// Insert the current extension in the instance extension list
 				instanceExtensions.insert(*optionalExtension);
+
+				continue;
 			}
 			
 			// Only proceed if debugging is enabled
@@ -108,6 +116,8 @@ namespace wfe {
 				if(DEBUG_EXTENSIONS.count(extension->extensionName)) {
 					// Increment the debug extension count
 					++debugExtensionCount;
+
+					continue;
 				}
 			}
 		}
@@ -130,6 +140,10 @@ namespace wfe {
 		uint32_t layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
+		// Exit if no layers are available
+		if(!layerCount)
+			return false;
+
 		// Allocate the layer array and get all instance layers
 		VkLayerProperties* layers = (VkLayerProperties*)malloc(layerCount * sizeof(VkLayerProperties), MEMORY_USAGE_ARRAY);
 		if(!layers)
@@ -149,8 +163,7 @@ namespace wfe {
 				++debugLayerCount;
 				instanceLayers.insert(*debugLayer);
 
-				// Don't bother to check for any other matches
-				break;
+				continue;
 			}
 		}
 
