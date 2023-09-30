@@ -12,20 +12,20 @@
 
 namespace wfe {
 	// Constants
-	const char_t* CLASS_NAME = "MainWindow";
+	static const char_t* const CLASS_NAME = "MainWindow";
 
 	// Internal variables
-	HINSTANCE instance;
-	ATOM classID;
-	HWND window;
+	static HINSTANCE hInstance;
+	static ATOM classID;
+	static HWND hWindow;
 
 	// WinProc definition
-	LRESULT CALLBACK WinProc(_In_ HWND wnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
+	static LRESULT CALLBACK WinProc(_In_ HWND wnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
 	// Internal helper functions
 	static void RegisterWindowClass() {
 		// Get a handle to the current instance
-		instance = GetModuleHandleA(nullptr);
+		hInstance = GetModuleHandleA(nullptr);
 
 		// Set the class info
 		WNDCLASSEXA winClass;
@@ -35,13 +35,13 @@ namespace wfe {
 		winClass.lpfnWndProc = WinProc;
 		winClass.cbClsExtra = 0;
 		winClass.cbWndExtra = 0;
-		winClass.hInstance = instance;
-		winClass.hIcon = LoadIcon(instance, IDI_APPLICATION);
+		winClass.hInstance = hInstance;
+		winClass.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 		winClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		winClass.hbrBackground = nullptr;
 		winClass.lpszMenuName = nullptr;
 		winClass.lpszClassName = CLASS_NAME;
-		winClass.hIconSm = LoadIcon(instance, IDI_APPLICATION);
+		winClass.hIconSm = LoadIcon(hInstance, IDI_APPLICATION);
 
 		// Register the class with the given info
 		classID = RegisterClassExA(&winClass);
@@ -51,21 +51,21 @@ namespace wfe {
 	}
 	static void CreateWin32Window() {
 		// Create the window
-		window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, CLASS_NAME, WFE_PROJECT_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, instance, nullptr);
+		hWindow = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, CLASS_NAME, WFE_PROJECT_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr);
 
-		if(!window)
+		if(!hWindow)
 			WFE_LOG_FATAL("Failed to create the game's window!")
 		
 		// Show the window as maximized and update it
-		ShowWindow(window, SW_MAXIMIZE);
-		UpdateWindow(window);
+		ShowWindow(hWindow, SW_MAXIMIZE);
+		UpdateWindow(hWindow);
 	}
 
-	LRESULT CALLBACK WinProc(_In_ HWND wnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
+	LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
 		switch(message) {
 		case WM_CLOSE:
 		 	// Send a call to destroy the window
-			DestroyWindow(wnd);
+			DestroyWindow(hWnd);
 
 			return 0;
 		case WM_DESTROY:
@@ -76,7 +76,7 @@ namespace wfe {
 		}
 
 		// Process the message as default
-		return DefWindowProcA(wnd, message, wParam, lParam);
+		return DefWindowProcA(hWnd, message, wParam, lParam);
 	}
 
 	// Public functions
@@ -91,11 +91,15 @@ namespace wfe {
 		// Loop through every pending message
 		MSG message;
 
-		while(PeekMessageA(&message, window, 0, 0, PM_REMOVE)) {
+		while(PeekMessageA(&message, hWindow, 0, 0, PM_REMOVE)) {
 			// Translate and dispatch the message to be processed
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
 		}
+	}
+
+	WindowPlatformInfo GetWindowPlatformInfo() {
+		return { hInstance, hWindow };
 	}
 }
 

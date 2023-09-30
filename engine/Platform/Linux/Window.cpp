@@ -10,22 +10,22 @@
 
 namespace wfe {
 	// Constants
-	constexpr int32_t EVENT_MASK = ButtonMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask | StructureNotifyMask;
-	const char_t* ATOM_NAMES[] = {
+	static const int32_t EVENT_MASK = ButtonMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask | StructureNotifyMask;
+	static const char_t* const ATOM_NAMES[] = {
 		"_NET_WM_STATE",
 		"WM_DELETE_WINDOW",
 		"_NET_WM_STATE_FULLSCREEN"
 	}; 
 
 	// Internal variables
-	Display* display;
-	int32_t screenIndex;
-	Screen* screen;
-	Window window;
+	static Display* display;
+	static int32_t screenIndex;
+	static Screen* screen;
+	static Window window;
 
-	Atom windowManagerState;
-	Atom deleteMsgAtom;
-	Atom fullscreenMsgAtom;
+	static Atom windowManagerState;
+	static Atom deleteMsgAtom;
+	static Atom fullscreenMsgAtom;
 
 	// Internal helper functions
 	static void ConnectToX() {
@@ -106,6 +106,10 @@ namespace wfe {
 			// Process the event
 			ProcessEvent(event);
 		}
+	}
+
+	WindowPlatformInfo GetWindowPlatformInfo() {
+		return { display, screenIndex, screen, window };
 	}
 }
 
