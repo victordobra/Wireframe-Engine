@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 #include "Instance.hpp"
 #include "SwapChain.hpp"
+#include "Device.hpp"
 #include <vulkan/vulkan.h>
 
 namespace wfe {
@@ -16,11 +17,18 @@ namespace wfe {
 		// Create every Vulkan component, exiting the function if any of them return false
 		if(!CreateVulkanInstance(debugEnabled)) return false;
 		CreateVulkanSurface();
+		if(!CreateVulkanDevice()) {
+			DeleteVulkanSurface();
+			DeleteVulkanInstance();
+
+			return false;
+		}
 
 		return true;
 	}
 	void DeleteVulkanRenderer() {
 		// Delete every Vulkan component
+		DeleteVulkanDevice();
 		DeleteVulkanSurface();
 		DeleteVulkanInstance();
 	}

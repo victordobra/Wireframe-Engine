@@ -22,7 +22,7 @@ namespace wfe {
         WindowPlatformInfo platformInfo = GetWindowPlatformInfo();
 
 #if defined(WFE_PLATFORM_WINDOWS)
-        // Create the Win32 surface
+        // Set the Win32 surface create info
         VkWin32SurfaceCreateInfoKHR createInfo;
 
         createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -31,11 +31,12 @@ namespace wfe {
         createInfo.hinstance = platformInfo.hInstance;
         createInfo.hwnd = platformInfo.hWnd;
 
+        // Create the Win32 surface
         VkResult result = vkCreateWin32SurfaceKHR(GetVulkanInstance(), &createInfo, GetVulkanAllocCallbacks(), &surface);
         if(result != VK_SUCCESS)
             WFE_LOG_FATAL("Failed to create Win32 Vulkan window surface! Error code: %s", string_VkResult(result));
 #elif defined(WFE_PLATFORM_LINUX)
-        // Create the Xlib surface
+        // Set the Xlib surface create info
         VkXlibSurfaceCreateInfoKHR createInfo;
 
         createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
@@ -44,6 +45,7 @@ namespace wfe {
         createInfo.dpy = platformInfo.display;
         createInfo.window = platformInfo.window;
 
+        // Create the Xlib surface
         VkResult result = vkCreateXlibSurfaceKHR(GetVulkanInstance(), &createInfo, GetVulkanAllocCallbacks(), &surface);
         if(result != VK_SUCCESS)
             WFE_LOG_FATAL("Failed to create Xlib Vulkan window surface! Error code: %s", string_VkResult(result));
@@ -52,5 +54,9 @@ namespace wfe {
     void DeleteVulkanSurface() {
         // Destroy the surface
         vkDestroySurfaceKHR(GetVulkanInstance(), surface, GetVulkanAllocCallbacks());
+    }
+
+    VkSurfaceKHR GetVulkanSurface() {
+        return surface;
     }
 }
