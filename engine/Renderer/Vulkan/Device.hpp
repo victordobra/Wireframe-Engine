@@ -11,9 +11,9 @@ namespace wfe {
 		uint32_t graphicsQueueIndex = -1;
 		/// @brief The index of the present queue family.
 		uint32_t presentQueueIndex = -1;
-		/// @brief The index of the transfer queue family. Set to -1 if one wasn't found.
+		/// @brief The index of the transfer queue family.
 		uint32_t transferQueueIndex = -1;
-		/// @brief The index of the compute queue family. Set to -1 if one wasn't found.
+		/// @brief The index of the compute queue family.
 		uint32_t computeQueueIndex = -1;
 	};
 
@@ -49,9 +49,9 @@ namespace wfe {
 	/// @return A handle to the current Vulkan present queue.
 	VkQueue GetVulkanPresentQueue();
 	/// @brief Gets the current Vulkan transfer queue.
-	/// @return A handle to the current Vulkan transfer queue if it is supported, otherwise a null handle.
+	/// @return A handle to the current Vulkan transfer queue.
 	VkQueue GetVulkanTransferQueue();
 	/// @brief Gets the current Vulkan graphics queue.
-	/// @return A handle to the current Vulkan compute queue if it is supported, otherwise a null handle.
+	/// @return A handle to the current Vulkan compute queue.
 	VkQueue GetVulkanComputeQueue();
 }

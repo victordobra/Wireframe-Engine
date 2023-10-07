@@ -1,7 +1,9 @@
 #include "Renderer.hpp"
+#include "CommandPool.hpp"
+#include "Device.hpp"
 #include "Instance.hpp"
 #include "SwapChain.hpp"
-#include "Device.hpp"
+
 #include <vulkan/vulkan.h>
 
 namespace wfe {
@@ -24,10 +26,14 @@ namespace wfe {
 			return false;
 		}
 
+		// Vulkan support is guaranteed; create all other Vulkan elements without checking for support
+		CreateVulkanCommandPools();
+
 		return true;
 	}
 	void DestroyVulkanRenderer() {
 		// Destroy every Vulkan component
+		DestroyVulkanCommandPools();
 		DestroyVulkanDevice();
 		DestroyVulkanSurface();
 		DestroyVulkanInstance();
