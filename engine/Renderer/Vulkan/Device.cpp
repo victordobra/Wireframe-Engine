@@ -34,8 +34,8 @@ namespace wfe {
 	static VkDevice device;
 	static VkQueue graphicsQueue;
 	static VkQueue presentQueue;
-	static VkQueue transferQueue = VK_NULL_HANDLE;
-	static VkQueue computeQueue = VK_NULL_HANDLE;
+	static VkQueue transferQueue;
+	static VkQueue computeQueue;
 
 	// Internal helper functions
 	static VulkanQueueFamilyIndices GetQueueFamilies(VkPhysicalDevice physicalDevice) {
@@ -209,10 +209,6 @@ namespace wfe {
 		if(families.graphicsQueueIndex == -1 || families.presentQueueIndex == -1)
 			return 0;
 		
-		// Award extra score if transfer and compute queue families were found
-		score += (families.transferQueueIndex != -1) * TRANSFER_QUEUE_FAMILY_SCORE_INCREASE;
-		score += (families.computeQueueIndex != -1) * COMPUTE_QUEUE_FAMILY_SCORE_INCREASE;
-
 		// Award extra score if the graphics and present queue families are grouped
 		score += (families.graphicsQueueIndex == families.presentQueueIndex) * GROUPED_GRAPHICS_PRESENT_QUEUE_FAMILIES_SCORE_INCREASE;
 
@@ -320,10 +316,8 @@ namespace wfe {
 		
 		++queueFamilyCounts[queueFamilies.graphicsQueueIndex];
 		++queueFamilyCounts[queueFamilies.presentQueueIndex];
-		if(queueFamilies.transferQueueIndex != -1)
-			++queueFamilyCounts[queueFamilies.transferQueueIndex];
-		if(queueFamilies.computeQueueIndex != -1)
-			++queueFamilyCounts[queueFamilies.computeQueueIndex];
+		++queueFamilyCounts[queueFamilies.transferQueueIndex];
+		++queueFamilyCounts[queueFamilies.computeQueueIndex];
 		
 		// Check if any queue family count surpasses its limit
 		for(uint32_t* familyCount = queueFamilyCounts; familyCount != queueFamilyCountsEnd; ++familyCount)
@@ -383,19 +377,15 @@ namespace wfe {
 		queueFamilyCounts[queueFamilies.presentQueueIndex] = presentQueueIndex;
 		vkGetDeviceQueue(device, queueFamilies.presentQueueIndex, presentQueueIndex, &presentQueue);
 
-		if(queueFamilies.transferQueueIndex) {
-			uint32_t transferQueueIndex = queueFamilyCounts[queueFamilies.transferQueueIndex];
-			transferQueueIndex -= transferQueueIndex != 0;
-			queueFamilyCounts[queueFamilies.transferQueueIndex] = transferQueueIndex;
-			vkGetDeviceQueue(device, queueFamilies.transferQueueIndex, transferQueueIndex, &transferQueue);
-		}
+		uint32_t transferQueueIndex = queueFamilyCounts[queueFamilies.transferQueueIndex];
+		transferQueueIndex -= transferQueueIndex != 0;
+		queueFamilyCounts[queueFamilies.transferQueueIndex] = transferQueueIndex;
+		vkGetDeviceQueue(device, queueFamilies.transferQueueIndex, transferQueueIndex, &transferQueue);
 
-		if(queueFamilies.computeQueueIndex) {
-			uint32_t computeQueueIndex = queueFamilyCounts[queueFamilies.computeQueueIndex];
-			computeQueueIndex -= computeQueueIndex != 0;
-			queueFamilyCounts[queueFamilies.computeQueueIndex] = computeQueueIndex;
-			vkGetDeviceQueue(device, queueFamilies.computeQueueIndex, computeQueueIndex, &computeQueue);
-		}
+		uint32_t computeQueueIndex = queueFamilyCounts[queueFamilies.computeQueueIndex];
+		computeQueueIndex -= computeQueueIndex != 0;
+		queueFamilyCounts[queueFamilies.computeQueueIndex] = computeQueueIndex;
+		vkGetDeviceQueue(device, queueFamilies.computeQueueIndex, computeQueueIndex, &computeQueue);
 
 		// Free the queue family property array
 		free(queueFamilyProperties, MEMORY_USAGE_ARRAY);
