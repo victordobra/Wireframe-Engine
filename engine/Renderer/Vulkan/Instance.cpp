@@ -298,7 +298,7 @@ namespace wfe {
 
 		return true;
 	}
-	void DeleteVulkanInstance() {
+	void DestroyVulkanInstance() {
 		// Destroy the Vulkan debug messenger, if debugging is enabled
 		if(debugEnabled) {
 			// Get the destroy debug messenger callback
@@ -312,6 +312,9 @@ namespace wfe {
 
 		// Destroy the Vulkan instance
 		vkDestroyInstance(instance, GetVulkanAllocCallbacks());
+
+		// Free the Vulkan lib
+		vulkanLib.FreeLib();
 	}
 
 	VkInstance GetVulkanInstance() {

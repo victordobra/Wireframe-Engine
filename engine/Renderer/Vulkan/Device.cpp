@@ -413,7 +413,8 @@ namespace wfe {
 
 		return true;
 	}
-	void DeleteVulkanDevice() {
+	void DestroyVulkanDevice() {
+		// Destroy the logical device
 		vkDestroyDevice(device, GetVulkanAllocCallbacks());
 	}
 

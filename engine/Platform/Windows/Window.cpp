@@ -84,8 +84,8 @@ namespace wfe {
 		RegisterWindowClass();
 		CreateWin32Window();
 	}
-	void DeleteWindow() {
-		// No action required to delete the window
+	void DestroyWindow() {
+		// No action required to destroy the window
 	}
 	void PollWindowEvents() {
 		// Loop through every pending message

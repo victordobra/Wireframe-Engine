@@ -34,8 +34,8 @@ namespace wfe {
 
 	/// @brief Creates the game's window.
 	void CreateWindow();
-	/// @brief Deletes the game's window.
-	void DeleteWindow();
+	/// @brief Destroys the game's window.
+	void DestroyWindow();
 	/// @brief Polls the window's events.
 	void PollWindowEvents();
 

@@ -18,18 +18,18 @@ namespace wfe {
 		if(!CreateVulkanInstance(debugEnabled)) return false;
 		CreateVulkanSurface();
 		if(!CreateVulkanDevice()) {
-			DeleteVulkanSurface();
-			DeleteVulkanInstance();
+			DestroyVulkanSurface();
+			DestroyVulkanInstance();
 
 			return false;
 		}
 
 		return true;
 	}
-	void DeleteVulkanRenderer() {
-		// Delete every Vulkan component
-		DeleteVulkanDevice();
-		DeleteVulkanSurface();
-		DeleteVulkanInstance();
+	void DestroyVulkanRenderer() {
+		// Destroy every Vulkan component
+		DestroyVulkanDevice();
+		DestroyVulkanSurface();
+		DestroyVulkanInstance();
 	}
 }

@@ -13,8 +13,8 @@ namespace wfe {
 
 	/// @brief Creates the rendering backend.
 	void CreateRenderer();
-	/// @brief Deletes the rendering backend.
-	void DeleteRenderer();
+	/// @brief Destroys the rendering backend.
+	void DestroyRenderer();
 
 	/// @brief Gets the active renderer backend's type.
 	/// @return The active renderer backend's type.

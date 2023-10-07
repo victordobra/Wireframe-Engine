@@ -51,7 +51,7 @@ namespace wfe {
             WFE_LOG_FATAL("Failed to create Xlib Vulkan window surface! Error code: %s", string_VkResult(result));
 #endif
     }
-    void DeleteVulkanSurface() {
+    void DestroyVulkanSurface() {
         // Destroy the surface
         vkDestroySurfaceKHR(GetVulkanInstance(), surface, GetVulkanAllocCallbacks());
     }

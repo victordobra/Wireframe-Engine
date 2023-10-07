@@ -7,8 +7,8 @@
 namespace wfe {
     /// @brief Creates the Vulkan surface.
     void CreateVulkanSurface();
-    /// @brief Deletes the Vulkan surface.
-    void DeleteVulkanSurface();
+    /// @brief Destroys the Vulkan surface.
+    void DestroyVulkanSurface();
 
     /// @brief Gets the window's Vulkan surface.
     /// @return The handle of the Vulkan surface.

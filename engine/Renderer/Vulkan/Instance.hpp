@@ -9,8 +9,8 @@ namespace wfe {
 	/// @param enableDebugging Whether or not to enable debugging.
 	/// @return True if Vulkan is supported, otherwise false.
 	bool8_t CreateVulkanInstance(bool8_t enableDebugging);
-	/// @brief Deletes the program's Vulkan instance.
-	void DeleteVulkanInstance();
+	/// @brief Destroys the program's Vulkan instance.
+	void DestroyVulkanInstance();
 
 	/// @brief Gets the current Vulkan instance.
 	/// @return The handle of the Vulkan instance.

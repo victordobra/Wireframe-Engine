@@ -27,10 +27,10 @@ namespace wfe {
 			sleep(1);
 		}
 
-		// Delete every system
-		DeleteRenderer();
-		DeleteWindow();
-		DeleteLogger();
+		// Destroy every system
+		DestroyRenderer();
+		DestroyWindow();
+		DestroyLogger();
 
 		return gameReturnCode;
 	}

@@ -20,8 +20,8 @@ namespace wfe {
 	/// @brief Creates the Vulkan logical device.
 	/// @return True if a device that supports Vulkan and meets all requirements was found, otherwise false.
 	bool8_t CreateVulkanDevice();
-	/// @brief Deletes the Vulkan logical device.
-	void DeleteVulkanDevice();
+	/// @brief Destroys the Vulkan logical device.
+	void DestroyVulkanDevice();
 
 	/// @brief Gets the current Vulkan physical device's properties.
 	/// @return A const reference to the struct containing all physical device properties.

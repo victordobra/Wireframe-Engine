@@ -17,11 +17,11 @@ namespace wfe {
 		// No available graphics API is supported; throw an error
 		WFE_LOG_FATAL("No available graphics API is supported!");
 	}
-	void DeleteRenderer() {
-		// Delete the current rendering backend
+	void DestroyRenderer() {
+		// Destroy the current rendering backend
 		switch(backendType) {
 		case RENDERER_BACKEND_VULKAN:
-			DeleteVulkanRenderer();
+			DestroyVulkanRenderer();
 			break;
 		default:
 			WFE_LOG_FATAL("No rendering API was created!");

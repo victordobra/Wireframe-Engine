@@ -24,7 +24,7 @@ namespace wfe {
 	static Window window;
 
 	static Atom windowManagerState;
-	static Atom deleteMsgAtom;
+	static Atom destroyMsgAtom;
 	static Atom fullscreenMsgAtom;
 
 	// Internal helper functions
@@ -60,11 +60,11 @@ namespace wfe {
 
 		// Set all atoms from the retrieved atom array
 		windowManagerState = internAtoms[0];
-		deleteMsgAtom = internAtoms[1];
+		destroyMsgAtom = internAtoms[1];
 		fullscreenMsgAtom = internAtoms[2];
 
-		// Set the window delete atom
-		XSetWMProtocols(display, window, &deleteMsgAtom, 1);
+		// Set the window destroy atom
+		XSetWMProtocols(display, window, &destroyMsgAtom, 1);
 
 		// Wait for the MapNotify event from the event list and discard any events before it
 		XEvent event;
@@ -77,8 +77,8 @@ namespace wfe {
 	static void ProcessEvent(const XEvent& event) {
 		switch(event.type) {
 		case ClientMessage:
-			// Check if the given message is the delete window message
-			if(event.xclient.data.l[0] == deleteMsgAtom) {
+			// Check if the given message is the destroy window message
+			if(event.xclient.data.l[0] == destroyMsgAtom) {
 				// Close the game with a return code of 0
 				wfe::CloseGame(0);
 			}
@@ -91,8 +91,8 @@ namespace wfe {
 		ConnectToX();
 		CreateXWindow();
 	}
-	void DeleteWindow() {
-		// No action required to delete the window
+	void DestroyWindow() {
+		// No action required to destroy the window
 	}
 	void PollWindowEvents() {
 		// Process every pending event from X
