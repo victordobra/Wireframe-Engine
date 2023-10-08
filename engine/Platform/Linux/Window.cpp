@@ -33,13 +33,15 @@ namespace wfe {
 		display = XOpenDisplay(NULL);
 
 		if(!display)
-			WFE_LOG_FATAL("Failed to open X display!")
+			WFE_LOG_FATAL("Failed to open X display!");
 		
 		// Get the default screen index
 		screenIndex = DefaultScreen(display);
 
 		// Get the screen with the default index
 		screen = XScreenOfDisplay(display, screenIndex);
+
+		WFE_LOG_INFO("Connected to X display.");
 	}
 	static void CreateXWindow() {
 		// Create the window
@@ -73,6 +75,8 @@ namespace wfe {
 		
 		// Flush the display
 		XFlush(display);
+
+		WFE_LOG_INFO("Created X window.");
 	}
 	static void ProcessEvent(const XEvent& event) {
 		switch(event.type) {

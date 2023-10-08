@@ -20,6 +20,7 @@ namespace wfe {
 		if(!CreateVulkanInstance(debugEnabled)) return false;
 		CreateVulkanSurface();
 		if(!CreateVulkanDevice()) {
+			WFE_LOG_INFO("No suitable Vulkan device found; destroying previously created Vulkan objects.");
 			DestroyVulkanSurface();
 			DestroyVulkanInstance();
 

@@ -294,6 +294,9 @@ namespace wfe {
 
 		// Free the extension array
 		free(extensions, MEMORY_USAGE_ARRAY);
+
+		WFE_LOG_INFO("Picked Vulkan physical device: %s", deviceProperties.deviceName);
+		WFE_LOG_INFO("Vulkan physical device queue families: graphics: %u; present: %u; transfer: %u; compute: %u", queueFamilies.graphicsQueueIndex, queueFamilies.presentQueueIndex, queueFamilies.transferQueueIndex, queueFamilies.computeQueueIndex);
 	}
 	static void CreateLogicalDevice() {
 		// Retrieve the number of queue families
@@ -389,6 +392,11 @@ namespace wfe {
 
 		// Free the queue family property array
 		free(queueFamilyProperties, MEMORY_USAGE_ARRAY);
+
+		// Count the number of unique queues
+		uint32_t uniqueQueueCount = 1 + (presentQueue != graphicsQueue) + (transferQueue != graphicsQueue && transferQueue != presentQueue) + (computeQueue != graphicsQueue && computeQueue != presentQueue && computeQueue != transferQueue);
+
+		WFE_LOG_INFO("Create Vulkan logical device with %u unique queues.", uniqueQueueCount);
 	}
 
 	// Public functions

@@ -14,6 +14,7 @@ namespace wfe {
     void CreateVulkanCommandPools() {
         // Get the queue family indices
         VulkanQueueFamilyIndices queueFamilies = GetVulkanDeviceQueueFamilyIndices();
+        uint32_t uniqueCommandPoolCount = 1;
 
         // Create the graphics command pool
         VkCommandPoolCreateInfo createInfo;
@@ -38,6 +39,9 @@ namespace wfe {
             result = vkCreateCommandPool(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &transferCommandPool);
             if(result != VK_SUCCESS)
                 WFE_LOG_FATAL("Failed to create Vulkan transfer command pool! Error code: %s", string_VkResult(result));
+            
+            // Increment the unique command pool count
+            ++uniqueCommandPoolCount;
         }
 
         // Set the compute command pool handle if the compute queue family index is not unique
@@ -51,7 +55,12 @@ namespace wfe {
             result = vkCreateCommandPool(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &computeCommandPool);
             if(result != VK_SUCCESS)
                 WFE_LOG_FATAL("Failed to create Vulkan present command pool! Error code: %s", string_VkResult(result));
+            
+            // Increment the unique command pool count
+            ++uniqueCommandPoolCount;
         }
+
+        WFE_LOG_INFO("Created %u unique Vulkan command pools.", uniqueCommandPoolCount);
     }
     void DestroyVulkanCommandPools() {
         // Destroy all unique command pools

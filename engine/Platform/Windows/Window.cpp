@@ -47,14 +47,18 @@ namespace wfe {
 		classID = RegisterClassExA(&winClass);
 
 		if(!classID)
-			WFE_LOG_FATAL("Failed to register window class!")
+			WFE_LOG_FATAL("Failed to register window class!");
+		
+		WFE_LOG_INFO("Registered Win32 window class.");
 	}
 	static void CreateWin32Window() {
 		// Create the window
 		hWindow = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, CLASS_NAME, WFE_PROJECT_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr);
 
 		if(!hWindow)
-			WFE_LOG_FATAL("Failed to create the game's window!")
+			WFE_LOG_FATAL("Failed to create the game's window!");
+		
+		WFE_LOG_INFO("Created Win32 window");
 		
 		// Show the window as maximized and update it
 		ShowWindow(hWindow, SW_MAXIMIZE);

@@ -263,6 +263,8 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			WFE_LOG_FATAL("Failed to create Vulkan instance! Error code: %s", string_VkResult(result));
 		
+		WFE_LOG_INFO("Created Vulkan instance.");
+		
 		// Exit the function if debugging is disabled
 		if(!debugEnabled)
 			return true;
@@ -276,6 +278,8 @@ namespace wfe {
 		result = createMessenger(instance, &debugCreateInfo, GetVulkanAllocCallbacks(), &debugMessenger);
 		if(result != VK_SUCCESS)
 			WFE_LOG_FATAL("Failed to create Vulkan debug messenger! Error code: %s", string_VkResult(result));
+		
+		WFE_LOG_INFO("Created Vulkan debug messenger.");
 		
 		return true;
 	}
