@@ -28,8 +28,11 @@ namespace wfe {
 	static const unordered_set<const char_t*> OPTIONAL_EXTENSIONS = {
 		
 	};
-	static const unordered_set<const char_t*> DEBUG_EXTENSIONS = {
+	static const unordered_set<const char_t*> MANDATORY_DEBUG_EXTENSIONS = {
 		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+	};
+	static const unordered_set<const char_t*> OPTIONAL_DEBUG_EXTENSIONS = {
+		VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME
 	};
 
 	static const unordered_set<const char_t*> DEBUG_LAYERS = {
@@ -87,7 +90,7 @@ namespace wfe {
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions);
 
 		// Loop through every available extension, checking if it is mandatory, optional or for debugging
-		uint32_t mandatoryExtensionCount = 0, debugExtensionCount = 0;
+		uint32_t mandatoryExtensionCount = 0, mandatoryDebugExtensionCount = 0;
 
 		VkExtensionProperties* extensionsEnd = extensions + extensionCount;
 		for(VkExtensionProperties* extension = extensions; extension != extensionsEnd; ++extension) {
@@ -113,20 +116,45 @@ namespace wfe {
 			// Only proceed if debugging is enabled
 			if(debugEnabled) {
 				// Check if the current extension is for debugging
-				if(DEBUG_EXTENSIONS.count(extension->extensionName)) {
+				if(MANDATORY_DEBUG_EXTENSIONS.count(extension->extensionName)) {
 					// Increment the debug extension count
-					++debugExtensionCount;
+					++mandatoryDebugExtensionCount;
 
 					continue;
 				}
 			}
 		}
 
+		// Check if all mandatory debug extensions are supported
+		if(mandatoryDebugExtensionCount == MANDATORY_DEBUG_EXTENSIONS.size()) {
+			// Insert all supported debug extensions in the instance extension vector
+			for(VkExtensionProperties* extension = extensions; extension != extensionsEnd; ++extension) {
+				// Check if the current extension is mandatory for debugging
+				auto mandatoryDebugExtension = MANDATORY_DEBUG_EXTENSIONS.find(extension->extensionName);
+				if(mandatoryDebugExtension != MANDATORY_DEBUG_EXTENSIONS.end()) {
+					// Insert the current extension in the instance extension list
+					instanceExtensions.insert(*mandatoryDebugExtension);
+
+					continue;
+				}
+
+				// Check if the current extension is optional for debugging
+				auto optionalDebugExtension = OPTIONAL_DEBUG_EXTENSIONS.find(extension->extensionName);
+				if(optionalDebugExtension != OPTIONAL_DEBUG_EXTENSIONS.end()) {
+					// Insert the current extension in the instance extension list
+					instanceExtensions.insert(*optionalDebugExtension);
+
+					continue;
+				}
+			}
+		} else {
+			// Disable debugging and warn the user
+			debugEnabled = false;
+			WFE_LOG_WARNING("Vulkan debugging requested, but not supported!");
+		}
+
 		// Free the allocated extension list memory
 		free(extensions, MEMORY_USAGE_ARRAY);
-
-		// Disable debugging if not all extensions are enabled
-		debugEnabled = debugExtensionCount == DEBUG_EXTENSIONS.size();
 
 		// Check if all mandatory extensions are supported
 		return mandatoryExtensionCount == MANDATORY_EXTENTIONS.size();
@@ -201,14 +229,16 @@ namespace wfe {
 			return false;
 		}
 
-		// Check if any validation layers are supported
-		if(CheckForLayerSupport()) {
-			// Insert all debug extensions into the instance extension vector
-			for(const char_t* debugExtension : DEBUG_EXTENSIONS)
-				instanceExtensions.insert(debugExtension);
-		} else {
+		// Disable debugging and erase all debug extensions if no validation layers are supported
+		if(debugEnabled && !CheckForLayerSupport()) {
 			// Disable debugging
 			debugEnabled = false;
+
+			// Remove all debug extensions from the instance extension list
+			for(auto mandatoryDebugExtension : MANDATORY_DEBUG_EXTENSIONS)
+				instanceExtensions.erase(mandatoryDebugExtension);
+			for(auto optionalDebugExtension : OPTIONAL_DEBUG_EXTENSIONS)
+				instanceExtensions.erase(optionalDebugExtension);
 		}
 
 		return true;
@@ -236,6 +266,23 @@ namespace wfe {
 			debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
 			debugCreateInfo.pfnUserCallback = DebugMessageCallback;
 			debugCreateInfo.pUserData = nullptr;
+		}
+
+		// Add the validation features struct to the chain, if its extension is supported
+		VkValidationFeatureEnableEXT enabledValidationFeatures[] = { VK_VALIDATION_FEATURE_ENABLE_BEST_PRACTICES_EXT, VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT };
+		uint32_t enabledValidationFeatureCount = 2;
+
+		VkValidationFeaturesEXT validationFeatures;
+
+		if(debugEnabled && instanceExtensions.count(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME)) {
+			debugCreateInfo.pNext = &validationFeatures;
+
+			validationFeatures.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
+			validationFeatures.pNext = nullptr;
+			validationFeatures.enabledValidationFeatureCount = enabledValidationFeatureCount;
+			validationFeatures.pEnabledValidationFeatures = enabledValidationFeatures;
+			validationFeatures.disabledValidationFeatureCount = 0;
+			validationFeatures.pDisabledValidationFeatures = nullptr;
 		}
 
 		// Set the instance create info
@@ -268,6 +315,9 @@ namespace wfe {
 		// Exit the function if debugging is disabled
 		if(!debugEnabled)
 			return true;
+		
+		// Reset the debug messenger create info pNext pointer
+		debugCreateInfo.pNext = nullptr;
 		
 		// Get the create debug messenger callback
 		PFN_vkCreateDebugUtilsMessengerEXT createMessenger = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
