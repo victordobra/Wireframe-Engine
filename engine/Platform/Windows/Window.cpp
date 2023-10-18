@@ -19,6 +19,9 @@ namespace wfe {
 	static ATOM classID;
 	static HWND hWindow;
 
+	static Event resizeEvent{};
+	static Event moveEvent{};
+
 	// WinProc definition
 	static LRESULT CALLBACK WinProc(_In_ HWND wnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
@@ -60,13 +63,34 @@ namespace wfe {
 		
 		WFE_LOG_INFO("Created Win32 window");
 		
-		// Show the window as maximized and update it
+		// Show the window as maximized
 		ShowWindow(hWindow, SW_MAXIMIZE);
-		UpdateWindow(hWindow);
 	}
 
-	LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
+	static LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
 		switch(message) {
+		case WM_SIZE: {
+			// Set the window resize event info
+			WindowResizeEventInfo resizeInfo;
+			resizeInfo.newWidth = (uint32_t)LOWORD(lParam);
+			resizeInfo.newHeight = (uint32_t)HIWORD(lParam);
+
+			// Call the resize event
+			resizeEvent.CallEvent(&resizeInfo);
+
+			break;
+		}
+		case WM_MOVE: {
+			// Set the window move event info
+			WindowMoveEventInfo moveInfo;
+			moveInfo.newX = (int32_t)(int16_t)LOWORD(lParam);
+			moveInfo.newY = (int32_t)(int16_t)HIWORD(lParam);
+
+			// Call the move event
+			moveEvent.CallEvent(&moveInfo);
+
+			break;
+		}
 		case WM_CLOSE:
 		 	// Send a call to destroy the window
 			DestroyWindow(hWnd);
@@ -100,6 +124,13 @@ namespace wfe {
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
 		}
+	}
+
+	Event& GetWindowResizeEvent() {
+		return resizeEvent;
+	}
+	Event& GetWindowMoveEvent() {
+		return moveEvent;
 	}
 
 	WindowPlatformInfo GetWindowPlatformInfo() {

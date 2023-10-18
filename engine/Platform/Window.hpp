@@ -32,12 +32,34 @@ namespace wfe {
 	};
 #endif
 
+	/// @brief A struct containing all info packed with window resize events.
+	struct WindowResizeEventInfo {
+		/// @brief The new width of the window.
+		uint32_t newWidth;
+		/// @brief The new height of the window.
+		uint32_t newHeight;
+	};
+	/// @brief A struct containing all info packed with window move events.
+	struct WindowMoveEventInfo {
+		/// @brief The new X coordinate of the window.
+		int32_t newX;
+		/// @brief The new Y coordinate of the window.
+		int32_t newY;
+	};
+
 	/// @brief Creates the game's window.
 	void CreateWindow();
 	/// @brief Destroys the game's window.
 	void DestroyWindow();
 	/// @brief Polls the window's events.
 	void PollWindowEvents();
+
+	/// @brief Gets the window resize event.
+	/// @return A reference to the window resize event.
+	Event& GetWindowResizeEvent();
+	/// @brief Gets the window move event.
+	/// @return A reference to the window move event.
+	Event& GetWindowMoveEvent();
 
 	/// @brief Gets the window's platform specific info.
 	/// @return The window platform info struct.
