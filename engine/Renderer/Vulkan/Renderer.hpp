@@ -1,8 +1,13 @@
 #pragma once
 
 #include <Core.hpp>
-#include "Allocator.hpp"
-#include "Instance.hpp"
+#include "Core/Allocator.hpp"
+#include "Core/CommandPool.hpp"
+#include "Core/Device.hpp"
+#include "Core/Instance.hpp"
+#include "Core/SwapChain.hpp"
+
+#include <vulkan/vulkan.h>
 
 namespace wfe {
 	/// @brief Creates a Vulkan API rendering backend.

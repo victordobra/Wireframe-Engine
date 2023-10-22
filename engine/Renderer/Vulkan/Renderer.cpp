@@ -1,10 +1,4 @@
 #include "Renderer.hpp"
-#include "CommandPool.hpp"
-#include "Device.hpp"
-#include "Instance.hpp"
-#include "SwapChain.hpp"
-
-#include <vulkan/vulkan.h>
 
 namespace wfe {
 	// Internal variables
