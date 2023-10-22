@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core.hpp>
+#include "Loader/Loader.hpp"
 #include "Core/Allocator.hpp"
 #include "Core/CommandPool.hpp"
 #include "Core/Device.hpp"

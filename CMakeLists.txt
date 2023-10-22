@@ -66,7 +66,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	message(STATUS "Engine link directories added.")
 
 	# Add the link libraries for Linux
-	target_link_libraries(${ENGINE_NAME} Wireframe-Core vulkan X11 Xfixes xkbcommon)
+	target_link_libraries(${ENGINE_NAME} Wireframe-Core X11 Xfixes xkbcommon)
 	message(STATUS "Engine link libraries added.")
 endif()
 
@@ -107,7 +107,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	endif()
 
 	# Add the link libraries for Windows
-	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core vulkan-1)
+	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core)
 	message(STATUS "Project link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
@@ -115,7 +115,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	message(STATUS "Project include directories added.")
 
 	# Add the link libraries for Linux
-	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core vulkan X11 Xfixes xkbcommon)
+	target_link_libraries(${PROJECT_NAME} Wireframe-Engine Wireframe-Core X11 Xfixes xkbcommon)
 	message(STATUS "Project link libraries added.")
 endif()
 

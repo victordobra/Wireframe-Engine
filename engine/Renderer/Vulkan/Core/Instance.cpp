@@ -215,7 +215,13 @@ namespace wfe {
 		}
 		
 		// Check if the Vulkan API version is too low
-		vkEnumerateInstanceVersion(&apiVersion);
+		auto enumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion)vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceVersion");
+
+		if(enumerateInstanceVersion)
+			enumerateInstanceVersion(&apiVersion);
+		else
+			apiVersion = VK_API_VERSION_1_0;
+
 		if(apiVersion < MIN_API_VERSION) {
 			// Free the library and exit the function
 			vulkanLib.FreeLib();
