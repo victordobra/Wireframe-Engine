@@ -646,609 +646,1062 @@ namespace wfe {
 			return false;
 
 		pfn_vkCreateInstance = (PFN_vkCreateInstance)vulkanLib.LoadFunc("vkCreateInstance");
-		if(!pfn_vkCreateInstance)
+		if(!pfn_vkCreateInstance) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyInstance = (PFN_vkDestroyInstance)vulkanLib.LoadFunc("vkDestroyInstance");
-		if(!pfn_vkDestroyInstance)
+		if(!pfn_vkDestroyInstance) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEnumeratePhysicalDevices = (PFN_vkEnumeratePhysicalDevices)vulkanLib.LoadFunc("vkEnumeratePhysicalDevices");
-		if(!pfn_vkEnumeratePhysicalDevices)
+		if(!pfn_vkEnumeratePhysicalDevices) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)vulkanLib.LoadFunc("vkGetDeviceProcAddr");
-		if(!pfn_vkGetDeviceProcAddr)
+		if(!pfn_vkGetDeviceProcAddr) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)vulkanLib.LoadFunc("vkGetInstanceProcAddr");
-		if(!pfn_vkGetInstanceProcAddr)
+		if(!pfn_vkGetInstanceProcAddr) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceProperties = (PFN_vkGetPhysicalDeviceProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceProperties");
-		if(!pfn_vkGetPhysicalDeviceProperties)
+		if(!pfn_vkGetPhysicalDeviceProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceQueueFamilyProperties = (PFN_vkGetPhysicalDeviceQueueFamilyProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceQueueFamilyProperties");
-		if(!pfn_vkGetPhysicalDeviceQueueFamilyProperties)
+		if(!pfn_vkGetPhysicalDeviceQueueFamilyProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceMemoryProperties = (PFN_vkGetPhysicalDeviceMemoryProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceMemoryProperties");
-		if(!pfn_vkGetPhysicalDeviceMemoryProperties)
+		if(!pfn_vkGetPhysicalDeviceMemoryProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceFeatures = (PFN_vkGetPhysicalDeviceFeatures)vulkanLib.LoadFunc("vkGetPhysicalDeviceFeatures");
-		if(!pfn_vkGetPhysicalDeviceFeatures)
+		if(!pfn_vkGetPhysicalDeviceFeatures) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceFormatProperties = (PFN_vkGetPhysicalDeviceFormatProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceFormatProperties");
-		if(!pfn_vkGetPhysicalDeviceFormatProperties)
+		if(!pfn_vkGetPhysicalDeviceFormatProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceImageFormatProperties = (PFN_vkGetPhysicalDeviceImageFormatProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceImageFormatProperties");
-		if(!pfn_vkGetPhysicalDeviceImageFormatProperties)
+		if(!pfn_vkGetPhysicalDeviceImageFormatProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateDevice = (PFN_vkCreateDevice)vulkanLib.LoadFunc("vkCreateDevice");
-		if(!pfn_vkCreateDevice)
+		if(!pfn_vkCreateDevice) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyDevice = (PFN_vkDestroyDevice)vulkanLib.LoadFunc("vkDestroyDevice");
-		if(!pfn_vkDestroyDevice)
+		if(!pfn_vkDestroyDevice) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEnumerateInstanceLayerProperties = (PFN_vkEnumerateInstanceLayerProperties)vulkanLib.LoadFunc("vkEnumerateInstanceLayerProperties");
-		if(!pfn_vkEnumerateInstanceLayerProperties)
+		if(!pfn_vkEnumerateInstanceLayerProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEnumerateInstanceExtensionProperties = (PFN_vkEnumerateInstanceExtensionProperties)vulkanLib.LoadFunc("vkEnumerateInstanceExtensionProperties");
-		if(!pfn_vkEnumerateInstanceExtensionProperties)
+		if(!pfn_vkEnumerateInstanceExtensionProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEnumerateDeviceLayerProperties = (PFN_vkEnumerateDeviceLayerProperties)vulkanLib.LoadFunc("vkEnumerateDeviceLayerProperties");
-		if(!pfn_vkEnumerateDeviceLayerProperties)
+		if(!pfn_vkEnumerateDeviceLayerProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEnumerateDeviceExtensionProperties = (PFN_vkEnumerateDeviceExtensionProperties)vulkanLib.LoadFunc("vkEnumerateDeviceExtensionProperties");
-		if(!pfn_vkEnumerateDeviceExtensionProperties)
+		if(!pfn_vkEnumerateDeviceExtensionProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetDeviceQueue = (PFN_vkGetDeviceQueue)vulkanLib.LoadFunc("vkGetDeviceQueue");
-		if(!pfn_vkGetDeviceQueue)
+		if(!pfn_vkGetDeviceQueue) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkQueueSubmit = (PFN_vkQueueSubmit)vulkanLib.LoadFunc("vkQueueSubmit");
-		if(!pfn_vkQueueSubmit)
+		if(!pfn_vkQueueSubmit) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkQueueWaitIdle = (PFN_vkQueueWaitIdle)vulkanLib.LoadFunc("vkQueueWaitIdle");
-		if(!pfn_vkQueueWaitIdle)
+		if(!pfn_vkQueueWaitIdle) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDeviceWaitIdle = (PFN_vkDeviceWaitIdle)vulkanLib.LoadFunc("vkDeviceWaitIdle");
-		if(!pfn_vkDeviceWaitIdle)
+		if(!pfn_vkDeviceWaitIdle) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkAllocateMemory = (PFN_vkAllocateMemory)vulkanLib.LoadFunc("vkAllocateMemory");
-		if(!pfn_vkAllocateMemory)
+		if(!pfn_vkAllocateMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkFreeMemory = (PFN_vkFreeMemory)vulkanLib.LoadFunc("vkFreeMemory");
-		if(!pfn_vkFreeMemory)
+		if(!pfn_vkFreeMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkMapMemory = (PFN_vkMapMemory)vulkanLib.LoadFunc("vkMapMemory");
-		if(!pfn_vkMapMemory)
+		if(!pfn_vkMapMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkUnmapMemory = (PFN_vkUnmapMemory)vulkanLib.LoadFunc("vkUnmapMemory");
-		if(!pfn_vkUnmapMemory)
+		if(!pfn_vkUnmapMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkFlushMappedMemoryRanges = (PFN_vkFlushMappedMemoryRanges)vulkanLib.LoadFunc("vkFlushMappedMemoryRanges");
-		if(!pfn_vkFlushMappedMemoryRanges)
+		if(!pfn_vkFlushMappedMemoryRanges) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkInvalidateMappedMemoryRanges = (PFN_vkInvalidateMappedMemoryRanges)vulkanLib.LoadFunc("vkInvalidateMappedMemoryRanges");
-		if(!pfn_vkInvalidateMappedMemoryRanges)
+		if(!pfn_vkInvalidateMappedMemoryRanges) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetDeviceMemoryCommitment = (PFN_vkGetDeviceMemoryCommitment)vulkanLib.LoadFunc("vkGetDeviceMemoryCommitment");
-		if(!pfn_vkGetDeviceMemoryCommitment)
+		if(!pfn_vkGetDeviceMemoryCommitment) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetBufferMemoryRequirements = (PFN_vkGetBufferMemoryRequirements)vulkanLib.LoadFunc("vkGetBufferMemoryRequirements");
-		if(!pfn_vkGetBufferMemoryRequirements)
+		if(!pfn_vkGetBufferMemoryRequirements) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkBindBufferMemory = (PFN_vkBindBufferMemory)vulkanLib.LoadFunc("vkBindBufferMemory");
-		if(!pfn_vkBindBufferMemory)
+		if(!pfn_vkBindBufferMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetImageMemoryRequirements = (PFN_vkGetImageMemoryRequirements)vulkanLib.LoadFunc("vkGetImageMemoryRequirements");
-		if(!pfn_vkGetImageMemoryRequirements)
+		if(!pfn_vkGetImageMemoryRequirements) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkBindImageMemory = (PFN_vkBindImageMemory)vulkanLib.LoadFunc("vkBindImageMemory");
-		if(!pfn_vkBindImageMemory)
+		if(!pfn_vkBindImageMemory) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetImageSparseMemoryRequirements = (PFN_vkGetImageSparseMemoryRequirements)vulkanLib.LoadFunc("vkGetImageSparseMemoryRequirements");
-		if(!pfn_vkGetImageSparseMemoryRequirements)
+		if(!pfn_vkGetImageSparseMemoryRequirements) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceSparseImageFormatProperties = (PFN_vkGetPhysicalDeviceSparseImageFormatProperties)vulkanLib.LoadFunc("vkGetPhysicalDeviceSparseImageFormatProperties");
-		if(!pfn_vkGetPhysicalDeviceSparseImageFormatProperties)
+		if(!pfn_vkGetPhysicalDeviceSparseImageFormatProperties) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkQueueBindSparse = (PFN_vkQueueBindSparse)vulkanLib.LoadFunc("vkQueueBindSparse");
-		if(!pfn_vkQueueBindSparse)
+		if(!pfn_vkQueueBindSparse) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateFence = (PFN_vkCreateFence)vulkanLib.LoadFunc("vkCreateFence");
-		if(!pfn_vkCreateFence)
+		if(!pfn_vkCreateFence) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyFence = (PFN_vkDestroyFence)vulkanLib.LoadFunc("vkDestroyFence");
-		if(!pfn_vkDestroyFence)
+		if(!pfn_vkDestroyFence) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkResetFences = (PFN_vkResetFences)vulkanLib.LoadFunc("vkResetFences");
-		if(!pfn_vkResetFences)
+		if(!pfn_vkResetFences) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetFenceStatus = (PFN_vkGetFenceStatus)vulkanLib.LoadFunc("vkGetFenceStatus");
-		if(!pfn_vkGetFenceStatus)
+		if(!pfn_vkGetFenceStatus) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkWaitForFences = (PFN_vkWaitForFences)vulkanLib.LoadFunc("vkWaitForFences");
-		if(!pfn_vkWaitForFences)
+		if(!pfn_vkWaitForFences) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateSemaphore = (PFN_vkCreateSemaphore)vulkanLib.LoadFunc("vkCreateSemaphore");
-		if(!pfn_vkCreateSemaphore)
+		if(!pfn_vkCreateSemaphore) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroySemaphore = (PFN_vkDestroySemaphore)vulkanLib.LoadFunc("vkDestroySemaphore");
-		if(!pfn_vkDestroySemaphore)
+		if(!pfn_vkDestroySemaphore) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateEvent = (PFN_vkCreateEvent)vulkanLib.LoadFunc("vkCreateEvent");
-		if(!pfn_vkCreateEvent)
+		if(!pfn_vkCreateEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyEvent = (PFN_vkDestroyEvent)vulkanLib.LoadFunc("vkDestroyEvent");
-		if(!pfn_vkDestroyEvent)
+		if(!pfn_vkDestroyEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetEventStatus = (PFN_vkGetEventStatus)vulkanLib.LoadFunc("vkGetEventStatus");
-		if(!pfn_vkGetEventStatus)
+		if(!pfn_vkGetEventStatus) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkSetEvent = (PFN_vkSetEvent)vulkanLib.LoadFunc("vkSetEvent");
-		if(!pfn_vkSetEvent)
+		if(!pfn_vkSetEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkResetEvent = (PFN_vkResetEvent)vulkanLib.LoadFunc("vkResetEvent");
-		if(!pfn_vkResetEvent)
+		if(!pfn_vkResetEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateQueryPool = (PFN_vkCreateQueryPool)vulkanLib.LoadFunc("vkCreateQueryPool");
-		if(!pfn_vkCreateQueryPool)
+		if(!pfn_vkCreateQueryPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyQueryPool = (PFN_vkDestroyQueryPool)vulkanLib.LoadFunc("vkDestroyQueryPool");
-		if(!pfn_vkDestroyQueryPool)
+		if(!pfn_vkDestroyQueryPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetQueryPoolResults = (PFN_vkGetQueryPoolResults)vulkanLib.LoadFunc("vkGetQueryPoolResults");
-		if(!pfn_vkGetQueryPoolResults)
+		if(!pfn_vkGetQueryPoolResults) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateBuffer = (PFN_vkCreateBuffer)vulkanLib.LoadFunc("vkCreateBuffer");
-		if(!pfn_vkCreateBuffer)
+		if(!pfn_vkCreateBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyBuffer = (PFN_vkDestroyBuffer)vulkanLib.LoadFunc("vkDestroyBuffer");
-		if(!pfn_vkDestroyBuffer)
+		if(!pfn_vkDestroyBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateBufferView = (PFN_vkCreateBufferView)vulkanLib.LoadFunc("vkCreateBufferView");
-		if(!pfn_vkCreateBufferView)
+		if(!pfn_vkCreateBufferView) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyBufferView = (PFN_vkDestroyBufferView)vulkanLib.LoadFunc("vkDestroyBufferView");
-		if(!pfn_vkDestroyBufferView)
+		if(!pfn_vkDestroyBufferView) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateImage = (PFN_vkCreateImage)vulkanLib.LoadFunc("vkCreateImage");
-		if(!pfn_vkCreateImage)
+		if(!pfn_vkCreateImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyImage = (PFN_vkDestroyImage)vulkanLib.LoadFunc("vkDestroyImage");
-		if(!pfn_vkDestroyImage)
+		if(!pfn_vkDestroyImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetImageSubresourceLayout = (PFN_vkGetImageSubresourceLayout)vulkanLib.LoadFunc("vkGetImageSubresourceLayout");
-		if(!pfn_vkGetImageSubresourceLayout)
+		if(!pfn_vkGetImageSubresourceLayout) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateImageView = (PFN_vkCreateImageView)vulkanLib.LoadFunc("vkCreateImageView");
-		if(!pfn_vkCreateImageView)
+		if(!pfn_vkCreateImageView) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyImageView = (PFN_vkDestroyImageView)vulkanLib.LoadFunc("vkDestroyImageView");
-		if(!pfn_vkDestroyImageView)
+		if(!pfn_vkDestroyImageView) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateShaderModule = (PFN_vkCreateShaderModule)vulkanLib.LoadFunc("vkCreateShaderModule");
-		if(!pfn_vkCreateShaderModule)
+		if(!pfn_vkCreateShaderModule) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyShaderModule = (PFN_vkDestroyShaderModule)vulkanLib.LoadFunc("vkDestroyShaderModule");
-		if(!pfn_vkDestroyShaderModule)
+		if(!pfn_vkDestroyShaderModule) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreatePipelineCache = (PFN_vkCreatePipelineCache)vulkanLib.LoadFunc("vkCreatePipelineCache");
-		if(!pfn_vkCreatePipelineCache)
+		if(!pfn_vkCreatePipelineCache) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyPipelineCache = (PFN_vkDestroyPipelineCache)vulkanLib.LoadFunc("vkDestroyPipelineCache");
-		if(!pfn_vkDestroyPipelineCache)
+		if(!pfn_vkDestroyPipelineCache) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPipelineCacheData = (PFN_vkGetPipelineCacheData)vulkanLib.LoadFunc("vkGetPipelineCacheData");
-		if(!pfn_vkGetPipelineCacheData)
+		if(!pfn_vkGetPipelineCacheData) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkMergePipelineCaches = (PFN_vkMergePipelineCaches)vulkanLib.LoadFunc("vkMergePipelineCaches");
-		if(!pfn_vkMergePipelineCaches)
+		if(!pfn_vkMergePipelineCaches) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateGraphicsPipelines = (PFN_vkCreateGraphicsPipelines)vulkanLib.LoadFunc("vkCreateGraphicsPipelines");
-		if(!pfn_vkCreateGraphicsPipelines)
+		if(!pfn_vkCreateGraphicsPipelines) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateComputePipelines = (PFN_vkCreateComputePipelines)vulkanLib.LoadFunc("vkCreateComputePipelines");
-		if(!pfn_vkCreateComputePipelines)
+		if(!pfn_vkCreateComputePipelines) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyPipeline = (PFN_vkDestroyPipeline)vulkanLib.LoadFunc("vkDestroyPipeline");
-		if(!pfn_vkDestroyPipeline)
+		if(!pfn_vkDestroyPipeline) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreatePipelineLayout = (PFN_vkCreatePipelineLayout)vulkanLib.LoadFunc("vkCreatePipelineLayout");
-		if(!pfn_vkCreatePipelineLayout)
+		if(!pfn_vkCreatePipelineLayout) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyPipelineLayout = (PFN_vkDestroyPipelineLayout)vulkanLib.LoadFunc("vkDestroyPipelineLayout");
-		if(!pfn_vkDestroyPipelineLayout)
+		if(!pfn_vkDestroyPipelineLayout) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateSampler = (PFN_vkCreateSampler)vulkanLib.LoadFunc("vkCreateSampler");
-		if(!pfn_vkCreateSampler)
+		if(!pfn_vkCreateSampler) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroySampler = (PFN_vkDestroySampler)vulkanLib.LoadFunc("vkDestroySampler");
-		if(!pfn_vkDestroySampler)
+		if(!pfn_vkDestroySampler) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateDescriptorSetLayout = (PFN_vkCreateDescriptorSetLayout)vulkanLib.LoadFunc("vkCreateDescriptorSetLayout");
-		if(!pfn_vkCreateDescriptorSetLayout)
+		if(!pfn_vkCreateDescriptorSetLayout) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyDescriptorSetLayout = (PFN_vkDestroyDescriptorSetLayout)vulkanLib.LoadFunc("vkDestroyDescriptorSetLayout");
-		if(!pfn_vkDestroyDescriptorSetLayout)
+		if(!pfn_vkDestroyDescriptorSetLayout) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateDescriptorPool = (PFN_vkCreateDescriptorPool)vulkanLib.LoadFunc("vkCreateDescriptorPool");
-		if(!pfn_vkCreateDescriptorPool)
+		if(!pfn_vkCreateDescriptorPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyDescriptorPool = (PFN_vkDestroyDescriptorPool)vulkanLib.LoadFunc("vkDestroyDescriptorPool");
-		if(!pfn_vkDestroyDescriptorPool)
+		if(!pfn_vkDestroyDescriptorPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkResetDescriptorPool = (PFN_vkResetDescriptorPool)vulkanLib.LoadFunc("vkResetDescriptorPool");
-		if(!pfn_vkResetDescriptorPool)
+		if(!pfn_vkResetDescriptorPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkAllocateDescriptorSets = (PFN_vkAllocateDescriptorSets)vulkanLib.LoadFunc("vkAllocateDescriptorSets");
-		if(!pfn_vkAllocateDescriptorSets)
+		if(!pfn_vkAllocateDescriptorSets) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkFreeDescriptorSets = (PFN_vkFreeDescriptorSets)vulkanLib.LoadFunc("vkFreeDescriptorSets");
-		if(!pfn_vkFreeDescriptorSets)
+		if(!pfn_vkFreeDescriptorSets) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkUpdateDescriptorSets = (PFN_vkUpdateDescriptorSets)vulkanLib.LoadFunc("vkUpdateDescriptorSets");
-		if(!pfn_vkUpdateDescriptorSets)
+		if(!pfn_vkUpdateDescriptorSets) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateFramebuffer = (PFN_vkCreateFramebuffer)vulkanLib.LoadFunc("vkCreateFramebuffer");
-		if(!pfn_vkCreateFramebuffer)
+		if(!pfn_vkCreateFramebuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyFramebuffer = (PFN_vkDestroyFramebuffer)vulkanLib.LoadFunc("vkDestroyFramebuffer");
-		if(!pfn_vkDestroyFramebuffer)
+		if(!pfn_vkDestroyFramebuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateRenderPass = (PFN_vkCreateRenderPass)vulkanLib.LoadFunc("vkCreateRenderPass");
-		if(!pfn_vkCreateRenderPass)
+		if(!pfn_vkCreateRenderPass) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyRenderPass = (PFN_vkDestroyRenderPass)vulkanLib.LoadFunc("vkDestroyRenderPass");
-		if(!pfn_vkDestroyRenderPass)
+		if(!pfn_vkDestroyRenderPass) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetRenderAreaGranularity = (PFN_vkGetRenderAreaGranularity)vulkanLib.LoadFunc("vkGetRenderAreaGranularity");
-		if(!pfn_vkGetRenderAreaGranularity)
+		if(!pfn_vkGetRenderAreaGranularity) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateCommandPool = (PFN_vkCreateCommandPool)vulkanLib.LoadFunc("vkCreateCommandPool");
-		if(!pfn_vkCreateCommandPool)
+		if(!pfn_vkCreateCommandPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroyCommandPool = (PFN_vkDestroyCommandPool)vulkanLib.LoadFunc("vkDestroyCommandPool");
-		if(!pfn_vkDestroyCommandPool)
+		if(!pfn_vkDestroyCommandPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkResetCommandPool = (PFN_vkResetCommandPool)vulkanLib.LoadFunc("vkResetCommandPool");
-		if(!pfn_vkResetCommandPool)
+		if(!pfn_vkResetCommandPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkAllocateCommandBuffers = (PFN_vkAllocateCommandBuffers)vulkanLib.LoadFunc("vkAllocateCommandBuffers");
-		if(!pfn_vkAllocateCommandBuffers)
+		if(!pfn_vkAllocateCommandBuffers) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkFreeCommandBuffers = (PFN_vkFreeCommandBuffers)vulkanLib.LoadFunc("vkFreeCommandBuffers");
-		if(!pfn_vkFreeCommandBuffers)
+		if(!pfn_vkFreeCommandBuffers) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkBeginCommandBuffer = (PFN_vkBeginCommandBuffer)vulkanLib.LoadFunc("vkBeginCommandBuffer");
-		if(!pfn_vkBeginCommandBuffer)
+		if(!pfn_vkBeginCommandBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkEndCommandBuffer = (PFN_vkEndCommandBuffer)vulkanLib.LoadFunc("vkEndCommandBuffer");
-		if(!pfn_vkEndCommandBuffer)
+		if(!pfn_vkEndCommandBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkResetCommandBuffer = (PFN_vkResetCommandBuffer)vulkanLib.LoadFunc("vkResetCommandBuffer");
-		if(!pfn_vkResetCommandBuffer)
+		if(!pfn_vkResetCommandBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBindPipeline = (PFN_vkCmdBindPipeline)vulkanLib.LoadFunc("vkCmdBindPipeline");
-		if(!pfn_vkCmdBindPipeline)
+		if(!pfn_vkCmdBindPipeline) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetViewport = (PFN_vkCmdSetViewport)vulkanLib.LoadFunc("vkCmdSetViewport");
-		if(!pfn_vkCmdSetViewport)
+		if(!pfn_vkCmdSetViewport) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetScissor = (PFN_vkCmdSetScissor)vulkanLib.LoadFunc("vkCmdSetScissor");
-		if(!pfn_vkCmdSetScissor)
+		if(!pfn_vkCmdSetScissor) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetLineWidth = (PFN_vkCmdSetLineWidth)vulkanLib.LoadFunc("vkCmdSetLineWidth");
-		if(!pfn_vkCmdSetLineWidth)
+		if(!pfn_vkCmdSetLineWidth) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetDepthBias = (PFN_vkCmdSetDepthBias)vulkanLib.LoadFunc("vkCmdSetDepthBias");
-		if(!pfn_vkCmdSetDepthBias)
+		if(!pfn_vkCmdSetDepthBias) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetBlendConstants = (PFN_vkCmdSetBlendConstants)vulkanLib.LoadFunc("vkCmdSetBlendConstants");
-		if(!pfn_vkCmdSetBlendConstants)
+		if(!pfn_vkCmdSetBlendConstants) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetDepthBounds = (PFN_vkCmdSetDepthBounds)vulkanLib.LoadFunc("vkCmdSetDepthBounds");
-		if(!pfn_vkCmdSetDepthBounds)
+		if(!pfn_vkCmdSetDepthBounds) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetStencilCompareMask = (PFN_vkCmdSetStencilCompareMask)vulkanLib.LoadFunc("vkCmdSetStencilCompareMask");
-		if(!pfn_vkCmdSetStencilCompareMask)
+		if(!pfn_vkCmdSetStencilCompareMask) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetStencilWriteMask = (PFN_vkCmdSetStencilWriteMask)vulkanLib.LoadFunc("vkCmdSetStencilWriteMask");
-		if(!pfn_vkCmdSetStencilWriteMask)
+		if(!pfn_vkCmdSetStencilWriteMask) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetStencilReference = (PFN_vkCmdSetStencilReference)vulkanLib.LoadFunc("vkCmdSetStencilReference");
-		if(!pfn_vkCmdSetStencilReference)
+		if(!pfn_vkCmdSetStencilReference) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBindDescriptorSets = (PFN_vkCmdBindDescriptorSets)vulkanLib.LoadFunc("vkCmdBindDescriptorSets");
-		if(!pfn_vkCmdBindDescriptorSets)
+		if(!pfn_vkCmdBindDescriptorSets) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBindIndexBuffer = (PFN_vkCmdBindIndexBuffer)vulkanLib.LoadFunc("vkCmdBindIndexBuffer");
-		if(!pfn_vkCmdBindIndexBuffer)
+		if(!pfn_vkCmdBindIndexBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBindVertexBuffers = (PFN_vkCmdBindVertexBuffers)vulkanLib.LoadFunc("vkCmdBindVertexBuffers");
-		if(!pfn_vkCmdBindVertexBuffers)
+		if(!pfn_vkCmdBindVertexBuffers) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDraw = (PFN_vkCmdDraw)vulkanLib.LoadFunc("vkCmdDraw");
-		if(!pfn_vkCmdDraw)
+		if(!pfn_vkCmdDraw) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDrawIndexed = (PFN_vkCmdDrawIndexed)vulkanLib.LoadFunc("vkCmdDrawIndexed");
-		if(!pfn_vkCmdDrawIndexed)
+		if(!pfn_vkCmdDrawIndexed) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDrawIndirect = (PFN_vkCmdDrawIndirect)vulkanLib.LoadFunc("vkCmdDrawIndirect");
-		if(!pfn_vkCmdDrawIndirect)
+		if(!pfn_vkCmdDrawIndirect) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDrawIndexedIndirect = (PFN_vkCmdDrawIndexedIndirect)vulkanLib.LoadFunc("vkCmdDrawIndexedIndirect");
-		if(!pfn_vkCmdDrawIndexedIndirect)
+		if(!pfn_vkCmdDrawIndexedIndirect) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDispatch = (PFN_vkCmdDispatch)vulkanLib.LoadFunc("vkCmdDispatch");
-		if(!pfn_vkCmdDispatch)
+		if(!pfn_vkCmdDispatch) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdDispatchIndirect = (PFN_vkCmdDispatchIndirect)vulkanLib.LoadFunc("vkCmdDispatchIndirect");
-		if(!pfn_vkCmdDispatchIndirect)
+		if(!pfn_vkCmdDispatchIndirect) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdCopyBuffer = (PFN_vkCmdCopyBuffer)vulkanLib.LoadFunc("vkCmdCopyBuffer");
-		if(!pfn_vkCmdCopyBuffer)
+		if(!pfn_vkCmdCopyBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdCopyImage = (PFN_vkCmdCopyImage)vulkanLib.LoadFunc("vkCmdCopyImage");
-		if(!pfn_vkCmdCopyImage)
+		if(!pfn_vkCmdCopyImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBlitImage = (PFN_vkCmdBlitImage)vulkanLib.LoadFunc("vkCmdBlitImage");
-		if(!pfn_vkCmdBlitImage)
+		if(!pfn_vkCmdBlitImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdCopyBufferToImage = (PFN_vkCmdCopyBufferToImage)vulkanLib.LoadFunc("vkCmdCopyBufferToImage");
-		if(!pfn_vkCmdCopyBufferToImage)
+		if(!pfn_vkCmdCopyBufferToImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdCopyImageToBuffer = (PFN_vkCmdCopyImageToBuffer)vulkanLib.LoadFunc("vkCmdCopyImageToBuffer");
-		if(!pfn_vkCmdCopyImageToBuffer)
+		if(!pfn_vkCmdCopyImageToBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdUpdateBuffer = (PFN_vkCmdUpdateBuffer)vulkanLib.LoadFunc("vkCmdUpdateBuffer");
-		if(!pfn_vkCmdUpdateBuffer)
+		if(!pfn_vkCmdUpdateBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdFillBuffer = (PFN_vkCmdFillBuffer)vulkanLib.LoadFunc("vkCmdFillBuffer");
-		if(!pfn_vkCmdFillBuffer)
+		if(!pfn_vkCmdFillBuffer) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdClearColorImage = (PFN_vkCmdClearColorImage)vulkanLib.LoadFunc("vkCmdClearColorImage");
-		if(!pfn_vkCmdClearColorImage)
+		if(!pfn_vkCmdClearColorImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdClearDepthStencilImage = (PFN_vkCmdClearDepthStencilImage)vulkanLib.LoadFunc("vkCmdClearDepthStencilImage");
-		if(!pfn_vkCmdClearDepthStencilImage)
+		if(!pfn_vkCmdClearDepthStencilImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdClearAttachments = (PFN_vkCmdClearAttachments)vulkanLib.LoadFunc("vkCmdClearAttachments");
-		if(!pfn_vkCmdClearAttachments)
+		if(!pfn_vkCmdClearAttachments) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdResolveImage = (PFN_vkCmdResolveImage)vulkanLib.LoadFunc("vkCmdResolveImage");
-		if(!pfn_vkCmdResolveImage)
+		if(!pfn_vkCmdResolveImage) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdSetEvent = (PFN_vkCmdSetEvent)vulkanLib.LoadFunc("vkCmdSetEvent");
-		if(!pfn_vkCmdSetEvent)
+		if(!pfn_vkCmdSetEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdResetEvent = (PFN_vkCmdResetEvent)vulkanLib.LoadFunc("vkCmdResetEvent");
-		if(!pfn_vkCmdResetEvent)
+		if(!pfn_vkCmdResetEvent) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdWaitEvents = (PFN_vkCmdWaitEvents)vulkanLib.LoadFunc("vkCmdWaitEvents");
-		if(!pfn_vkCmdWaitEvents)
+		if(!pfn_vkCmdWaitEvents) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdPipelineBarrier = (PFN_vkCmdPipelineBarrier)vulkanLib.LoadFunc("vkCmdPipelineBarrier");
-		if(!pfn_vkCmdPipelineBarrier)
+		if(!pfn_vkCmdPipelineBarrier) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBeginQuery = (PFN_vkCmdBeginQuery)vulkanLib.LoadFunc("vkCmdBeginQuery");
-		if(!pfn_vkCmdBeginQuery)
+		if(!pfn_vkCmdBeginQuery) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdEndQuery = (PFN_vkCmdEndQuery)vulkanLib.LoadFunc("vkCmdEndQuery");
-		if(!pfn_vkCmdEndQuery)
+		if(!pfn_vkCmdEndQuery) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdResetQueryPool = (PFN_vkCmdResetQueryPool)vulkanLib.LoadFunc("vkCmdResetQueryPool");
-		if(!pfn_vkCmdResetQueryPool)
+		if(!pfn_vkCmdResetQueryPool) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdWriteTimestamp = (PFN_vkCmdWriteTimestamp)vulkanLib.LoadFunc("vkCmdWriteTimestamp");
-		if(!pfn_vkCmdWriteTimestamp)
+		if(!pfn_vkCmdWriteTimestamp) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdCopyQueryPoolResults = (PFN_vkCmdCopyQueryPoolResults)vulkanLib.LoadFunc("vkCmdCopyQueryPoolResults");
-		if(!pfn_vkCmdCopyQueryPoolResults)
+		if(!pfn_vkCmdCopyQueryPoolResults) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdPushConstants = (PFN_vkCmdPushConstants)vulkanLib.LoadFunc("vkCmdPushConstants");
-		if(!pfn_vkCmdPushConstants)
+		if(!pfn_vkCmdPushConstants) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdBeginRenderPass = (PFN_vkCmdBeginRenderPass)vulkanLib.LoadFunc("vkCmdBeginRenderPass");
-		if(!pfn_vkCmdBeginRenderPass)
+		if(!pfn_vkCmdBeginRenderPass) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdNextSubpass = (PFN_vkCmdNextSubpass)vulkanLib.LoadFunc("vkCmdNextSubpass");
-		if(!pfn_vkCmdNextSubpass)
+		if(!pfn_vkCmdNextSubpass) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdEndRenderPass = (PFN_vkCmdEndRenderPass)vulkanLib.LoadFunc("vkCmdEndRenderPass");
-		if(!pfn_vkCmdEndRenderPass)
+		if(!pfn_vkCmdEndRenderPass) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCmdExecuteCommands = (PFN_vkCmdExecuteCommands)vulkanLib.LoadFunc("vkCmdExecuteCommands");
-		if(!pfn_vkCmdExecuteCommands)
+		if(!pfn_vkCmdExecuteCommands) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroySurfaceKHR = (PFN_vkDestroySurfaceKHR)vulkanLib.LoadFunc("vkDestroySurfaceKHR");
-		if(!pfn_vkDestroySurfaceKHR)
+		if(!pfn_vkDestroySurfaceKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceSurfaceSupportKHR = (PFN_vkGetPhysicalDeviceSurfaceSupportKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceSurfaceSupportKHR");
-		if(!pfn_vkGetPhysicalDeviceSurfaceSupportKHR)
+		if(!pfn_vkGetPhysicalDeviceSurfaceSupportKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR = (PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
-		if(!pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR)
+		if(!pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceSurfaceFormatsKHR = (PFN_vkGetPhysicalDeviceSurfaceFormatsKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceSurfaceFormatsKHR");
-		if(!pfn_vkGetPhysicalDeviceSurfaceFormatsKHR)
+		if(!pfn_vkGetPhysicalDeviceSurfaceFormatsKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceSurfacePresentModesKHR = (PFN_vkGetPhysicalDeviceSurfacePresentModesKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceSurfacePresentModesKHR");
-		if(!pfn_vkGetPhysicalDeviceSurfacePresentModesKHR)
+		if(!pfn_vkGetPhysicalDeviceSurfacePresentModesKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkCreateSwapchainKHR = (PFN_vkCreateSwapchainKHR)vulkanLib.LoadFunc("vkCreateSwapchainKHR");
-		if(!pfn_vkCreateSwapchainKHR)
+		if(!pfn_vkCreateSwapchainKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkDestroySwapchainKHR = (PFN_vkDestroySwapchainKHR)vulkanLib.LoadFunc("vkDestroySwapchainKHR");
-		if(!pfn_vkDestroySwapchainKHR)
+		if(!pfn_vkDestroySwapchainKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)vulkanLib.LoadFunc("vkGetSwapchainImagesKHR");
-		if(!pfn_vkGetSwapchainImagesKHR)
+		if(!pfn_vkGetSwapchainImagesKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkAcquireNextImageKHR = (PFN_vkAcquireNextImageKHR)vulkanLib.LoadFunc("vkAcquireNextImageKHR");
-		if(!pfn_vkAcquireNextImageKHR)
+		if(!pfn_vkAcquireNextImageKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkQueuePresentKHR = (PFN_vkQueuePresentKHR)vulkanLib.LoadFunc("vkQueuePresentKHR");
-		if(!pfn_vkQueuePresentKHR)
+		if(!pfn_vkQueuePresentKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 #if defined(WFE_PLATFORM_WINDOWS)
 		pfn_vkCreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vulkanLib.LoadFunc("vkCreateWin32SurfaceKHR");
-		if(!pfn_vkCreateWin32SurfaceKHR)
+		if(!pfn_vkCreateWin32SurfaceKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR = (PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceWin32PresentationSupportKHR");
-		if(!pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR)
+		if(!pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 #elif defined(WFE_PLATFORM_LINUX)
 		pfn_vkCreateXlibSurfaceKHR = (PFN_vkCreateXlibSurfaceKHR)vulkanLib.LoadFunc("vkCreateXlibSurfaceKHR");
-		if(!pfn_vkCreateXlibSurfaceKHR)
+		if(!pfn_vkCreateXlibSurfaceKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 
 		pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR = (PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR)vulkanLib.LoadFunc("vkGetPhysicalDeviceXlibPresentationSupportKHR");
-		if(!pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR)
+		if(!pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR) {
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
+		}
 #endif
 
 		WFE_LOG_INFO("Loaded Vulkan functions.");

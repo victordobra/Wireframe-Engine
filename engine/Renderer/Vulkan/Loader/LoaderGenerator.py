@@ -50,9 +50,12 @@ def WriteCommandLoad(command, outFile):
 	# Write the command's load
 	outFile.write("""
 		pfn_{0} = (PFN_{0})vulkanLib.LoadFunc(\"{0}\");
-		if(!pfn_{0})
+		if(!pfn_{0}) """.format(command.name) + "{" + """
+			// Free the library and exit the function
+			vulkanLib.FreeLib();
 			return false;
-""".format(command.name))
+		}
+""")
 
 def main():
 	# Open the XML tree and output file
