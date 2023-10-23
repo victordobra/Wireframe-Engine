@@ -38,6 +38,14 @@ namespace wfe {
 		uint32_t newWidth;
 		/// @brief The new height of the window.
 		uint32_t newHeight;
+		/// @brief True if the window was maximized, otherwise false.
+		bool8_t windowMaximized;
+		/// @brief True if the window was unmaximized, otherwise false.
+		bool8_t windowUnmaximized;
+		/// @brief True if the window was minimized, otherwise false.
+		bool8_t windowMinimized;
+		/// @brief True if the window was unminimized, otherwise false.
+		bool8_t windowUnminimized;
 	};
 	/// @brief A struct containing all info packed with window move events.
 	struct WindowMoveEventInfo {

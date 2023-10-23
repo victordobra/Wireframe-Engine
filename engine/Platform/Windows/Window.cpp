@@ -19,6 +19,9 @@ namespace wfe {
 	static ATOM classID;
 	static HWND hWindow;
 
+	static bool8_t isMaximized = true;
+	static bool8_t isMinimized = false;
+
 	static Event resizeEvent{};
 	static Event moveEvent{};
 
@@ -74,6 +77,43 @@ namespace wfe {
 			WindowResizeEventInfo resizeInfo;
 			resizeInfo.newWidth = (uint32_t)LOWORD(lParam);
 			resizeInfo.newHeight = (uint32_t)HIWORD(lParam);
+
+			switch(wParam) {
+			case SIZE_RESTORED:
+				// Set the resize info flags
+				resizeInfo.windowMaximized = false;
+				resizeInfo.windowUnmaximized = isMaximized;
+				resizeInfo.windowMinimized = false;
+				resizeInfo.windowUnminimized = isMinimized;
+				
+				// Set the maximized and minimized flags
+				isMaximized = false;
+				isMinimized = false;
+				
+				break;
+			case SIZE_MINIMIZED:
+				// Set the resize info flags
+				resizeInfo.windowMaximized = false;
+				resizeInfo.windowUnmaximized = false;
+				resizeInfo.windowMinimized = true;
+				resizeInfo.windowUnminimized = false;
+				
+				// Set the minimized flag
+				isMinimized = true;
+				
+				break;
+			case SIZE_MAXIMIZED:
+				// Set the resize info flags
+				resizeInfo.windowMaximized = true;
+				resizeInfo.windowUnmaximized = false;
+				resizeInfo.windowMinimized = false;
+				resizeInfo.windowUnminimized = false;
+				
+				// Set the maximized flag
+				isMaximized = true;
+				
+				break;
+			}
 
 			// Call the resize event
 			resizeEvent.CallEvent(&resizeInfo);
