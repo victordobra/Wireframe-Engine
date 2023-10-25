@@ -40,8 +40,6 @@ namespace wfe {
 	};
 
 	// Variables
-	static DynamicLib vulkanLib;
-
 	static uint32_t apiVersion;
 	static set<const char_t*> instanceExtensions;
 	static set<const char_t*> instanceLayers;
@@ -203,17 +201,6 @@ namespace wfe {
 	}
 
 	static bool8_t CheckForVulkanSupport() {
-		// Try to load the Vulkan dll
-		if(!vulkanLib.LoadLib("vulkan-1.dll"))
-			return false;
-		
-		// Check if the vkCreateInstance function is available in the DLL
-		if(!vulkanLib.LoadFunc("vkCreateInstance")) {
-			// Free the library and exit the function
-			vulkanLib.FreeLib();
-			return false;
-		}
-		
 		// Check if the Vulkan API version is too low
 		auto enumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion)vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceVersion");
 
@@ -222,18 +209,12 @@ namespace wfe {
 		else
 			apiVersion = VK_API_VERSION_1_0;
 
-		if(apiVersion < MIN_API_VERSION) {
-			// Free the library and exit the function
-			vulkanLib.FreeLib();
+		if(apiVersion < MIN_API_VERSION)
 			return false;
-		}
 
 		// Check if all required extensions are supported
-		if(!CheckForExtensionSupport()) {
-			// Free the library and exit the function
-			vulkanLib.FreeLib();
+		if(!CheckForExtensionSupport())
 			return false;
-		}
 
 		// Disable debugging and erase all debug extensions if no validation layers are supported
 		if(debugEnabled && !CheckForLayerSupport()) {
@@ -350,11 +331,8 @@ namespace wfe {
 			return false;
 		
 		// Try to create the Vulkan instance
-		if(!CreateInstance()) {
-			// Free the library and exit the function
-			vulkanLib.FreeLib();
+		if(!CreateInstance())
 			return false;
-		}
 
 		return true;
 	}
@@ -372,9 +350,6 @@ namespace wfe {
 
 		// Destroy the Vulkan instance
 		vkDestroyInstance(instance, GetVulkanAllocCallbacks());
-
-		// Free the Vulkan lib
-		vulkanLib.FreeLib();
 	}
 
 	VkInstance GetVulkanInstance() {
