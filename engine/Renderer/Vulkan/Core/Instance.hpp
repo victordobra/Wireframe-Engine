@@ -19,9 +19,9 @@ namespace wfe {
 	/// @return An unsigned integer, representing the current Vulkan API version.
 	uint32_t GetVulkanAPIVersion();
 	/// @brief Gets the list of all enabled instance extensions.
-	/// @return A reference to a vector containing all enabled instance extensions.
+	/// @return A const reference to a set containing all enabled instance extensions.
 	const set<const char_t*>& GetVulkanInstanceExtensions();
 	/// @brief Gets the list of all enabled instance validation layers.
-	/// @return A reference to a vector containing all enabled instance validation layers.
+	/// @return A const reference to a set containing all enabled instance validation layers.
 	const set<const char_t*>& GetVulkanInstanceLayers();
 }
