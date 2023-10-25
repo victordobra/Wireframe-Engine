@@ -81,10 +81,14 @@ namespace wfe {
 	static LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
 		switch(message) {
 		case WM_SIZE: {
+			// Set the window's new width and height
+			windowInfo.width = (uint32_t)LOWORD(lParam);
+			windowInfo.height = (uint32_t)HIWORD(lParam);
+
 			// Set the window resize event info
 			WindowResizeEventInfo resizeInfo;
-			resizeInfo.newWidth = (uint32_t)LOWORD(lParam);
-			resizeInfo.newHeight = (uint32_t)HIWORD(lParam);
+			resizeInfo.newWidth = windowInfo.width;
+			resizeInfo.newHeight = windowInfo.height;
 
 			switch(wParam) {
 			case SIZE_RESTORED:
@@ -126,24 +130,20 @@ namespace wfe {
 			// Call the resize event
 			resizeEvent.CallEvent(&resizeInfo);
 
-			// Set the window's new width and height
-			windowInfo.width = resizeInfo.newWidth;
-			windowInfo.height = resizeInfo.newHeight;
-
 			break;
 		}
 		case WM_MOVE: {
+			// Set the window's new position
+			windowInfo.posX = (int32_t)(int16_t)LOWORD(lParam);
+			windowInfo.posY = (int32_t)(int16_t)HIWORD(lParam);
+
 			// Set the window move event info
 			WindowMoveEventInfo moveInfo;
-			moveInfo.newX = (int32_t)(int16_t)LOWORD(lParam);
-			moveInfo.newY = (int32_t)(int16_t)HIWORD(lParam);
+			moveInfo.newX = windowInfo.posX;
+			moveInfo.newY = windowInfo.posY;
 
 			// Call the move event
 			moveEvent.CallEvent(&moveInfo);
-
-			// Set the window's new position
-			windowInfo.posX = moveInfo.newX;
-			windowInfo.posY = moveInfo.newY;
 
 			break;
 		}
