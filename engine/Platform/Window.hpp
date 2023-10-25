@@ -10,11 +10,29 @@
 #endif
 
 namespace wfe {
+	/// @brief A struct containing general information about the window.
+	struct WindowInfo {
+		/// @brief The window's X position.
+		int32_t posX;
+		/// @brief The window's Y position.
+		int32_t posY;
+		/// @brief The window's width.
+		uint32_t width;
+		/// @brief The window's height.
+		uint32_t height;
+		/// @brief True if the window is maximized, otherwise false.
+		bool8_t isMaximized;
+		/// @brief True if the window is minimized, otherwise false.
+		bool8_t isMinimized;
+	};
+
 #if defined(WFE_PLATFORM_WINDOWS)
 	/// @brief The game window's Windows specific info.
 	struct WindowPlatformInfo {
 		/// @brief The handle to the Windows instance.
 		HINSTANCE hInstance;
+		/// @brief The unique identifier of the window's class.
+		ATOM winClassID;
 		/// @brief The handle to the game window.
 		HWND hWnd;
 	};
@@ -69,6 +87,9 @@ namespace wfe {
 	/// @return A reference to the window move event.
 	Event& GetWindowMoveEvent();
 
+	/// @brief Gets the window's general info.
+	/// @return The window info struct.
+	WindowInfo GetWindowInfo();
 	/// @brief Gets the window's platform specific info.
 	/// @return The window platform info struct.
 	WindowPlatformInfo GetWindowPlatformInfo();

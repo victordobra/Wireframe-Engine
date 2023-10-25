@@ -15,12 +15,8 @@ namespace wfe {
 	static const char_t* const CLASS_NAME = "MainWindow";
 
 	// Internal variables
-	static HINSTANCE hInstance;
-	static ATOM classID;
-	static HWND hWindow;
-
-	static bool8_t isMaximized = true;
-	static bool8_t isMinimized = false;
+	static WindowInfo windowInfo;
+	static WindowPlatformInfo platformInfo;
 
 	static Event resizeEvent{};
 	static Event moveEvent{};
@@ -31,7 +27,7 @@ namespace wfe {
 	// Internal helper functions
 	static void RegisterWindowClass() {
 		// Get a handle to the current instance
-		hInstance = GetModuleHandleA(nullptr);
+		platformInfo.hInstance = GetModuleHandleA(nullptr);
 
 		// Set the class info
 		WNDCLASSEXA winClass;
@@ -41,33 +37,45 @@ namespace wfe {
 		winClass.lpfnWndProc = WinProc;
 		winClass.cbClsExtra = 0;
 		winClass.cbWndExtra = 0;
-		winClass.hInstance = hInstance;
-		winClass.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
-		winClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		winClass.hbrBackground = nullptr;
+		winClass.hInstance = platformInfo.hInstance;
+		winClass.hIcon = LoadIconA(platformInfo.hInstance, IDI_APPLICATION);
+		winClass.hCursor = LoadCursorA(nullptr, IDC_ARROW);
+		winClass.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
 		winClass.lpszMenuName = nullptr;
 		winClass.lpszClassName = CLASS_NAME;
-		winClass.hIconSm = LoadIcon(hInstance, IDI_APPLICATION);
+		winClass.hIconSm = LoadIconA(platformInfo.hInstance, IDI_APPLICATION);
 
 		// Register the class with the given info
-		classID = RegisterClassExA(&winClass);
+		platformInfo.winClassID = RegisterClassExA(&winClass);
 
-		if(!classID)
+		if(!platformInfo.winClassID)
 			WFE_LOG_FATAL("Failed to register window class!");
 		
 		WFE_LOG_INFO("Registered Win32 window class.");
 	}
 	static void CreateWin32Window() {
 		// Create the window
-		hWindow = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, CLASS_NAME, WFE_PROJECT_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr);
+		platformInfo.hWnd = CreateWindowExA(WS_EX_OVERLAPPEDWINDOW, CLASS_NAME, WFE_PROJECT_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, platformInfo.hInstance, nullptr);
 
-		if(!hWindow)
+		if(!platformInfo.hWnd)
 			WFE_LOG_FATAL("Failed to create the game's window!");
 		
 		WFE_LOG_INFO("Created Win32 window");
 		
 		// Show the window as maximized
-		ShowWindow(hWindow, SW_MAXIMIZE);
+		ShowWindow(platformInfo.hWnd, SW_MAXIMIZE);
+
+		// Get the window's size
+		RECT clientRect;
+		GetClientRect(platformInfo.hWnd, &clientRect);
+
+		// Set the window's info
+		windowInfo.posX = 0;
+		windowInfo.posY = 0;
+		windowInfo.width = (uint32_t)clientRect.right;
+		windowInfo.height = (uint32_t)clientRect.bottom;
+		windowInfo.isMaximized = true;
+		windowInfo.isMinimized = false;
 	}
 
 	static LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
@@ -82,13 +90,13 @@ namespace wfe {
 			case SIZE_RESTORED:
 				// Set the resize info flags
 				resizeInfo.windowMaximized = false;
-				resizeInfo.windowUnmaximized = isMaximized;
+				resizeInfo.windowUnmaximized = windowInfo.isMaximized;
 				resizeInfo.windowMinimized = false;
-				resizeInfo.windowUnminimized = isMinimized;
+				resizeInfo.windowUnminimized = windowInfo.isMinimized;
 				
 				// Set the maximized and minimized flags
-				isMaximized = false;
-				isMinimized = false;
+				windowInfo.isMaximized = false;
+				windowInfo.isMinimized = false;
 				
 				break;
 			case SIZE_MINIMIZED:
@@ -99,7 +107,7 @@ namespace wfe {
 				resizeInfo.windowUnminimized = false;
 				
 				// Set the minimized flag
-				isMinimized = true;
+				windowInfo.isMinimized = true;
 				
 				break;
 			case SIZE_MAXIMIZED:
@@ -110,13 +118,17 @@ namespace wfe {
 				resizeInfo.windowUnminimized = false;
 				
 				// Set the maximized flag
-				isMaximized = true;
+				windowInfo.isMaximized = true;
 				
 				break;
 			}
 
 			// Call the resize event
 			resizeEvent.CallEvent(&resizeInfo);
+
+			// Set the window's new width and height
+			windowInfo.width = resizeInfo.newWidth;
+			windowInfo.height = resizeInfo.newHeight;
 
 			break;
 		}
@@ -128,6 +140,10 @@ namespace wfe {
 
 			// Call the move event
 			moveEvent.CallEvent(&moveInfo);
+
+			// Set the window's new position
+			windowInfo.posX = moveInfo.newX;
+			windowInfo.posY = moveInfo.newY;
 
 			break;
 		}
@@ -159,7 +175,7 @@ namespace wfe {
 		// Loop through every pending message
 		MSG message;
 
-		while(PeekMessageA(&message, hWindow, 0, 0, PM_REMOVE)) {
+		while(PeekMessageA(&message, platformInfo.hWnd, 0, 0, PM_REMOVE)) {
 			// Translate and dispatch the message to be processed
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
@@ -173,8 +189,11 @@ namespace wfe {
 		return moveEvent;
 	}
 
+	WindowInfo GetWindowInfo() {
+		return windowInfo;
+	}
 	WindowPlatformInfo GetWindowPlatformInfo() {
-		return { hInstance, hWindow };
+		return platformInfo;
 	}
 }
 
