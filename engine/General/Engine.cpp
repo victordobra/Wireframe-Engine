@@ -24,7 +24,7 @@ namespace wfe {
 			if(!gameRunning)
 				break;
 
-			sleep(1);
+			sleep(0.01);
 		}
 
 		// Destroy every system

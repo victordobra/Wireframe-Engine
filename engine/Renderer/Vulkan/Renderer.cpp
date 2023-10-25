@@ -25,11 +25,13 @@ namespace wfe {
 
 		// Vulkan support is guaranteed; create all other Vulkan elements without checking for support
 		CreateVulkanCommandPools();
+		CreateVulkanSwapChain();
 
 		return true;
 	}
 	void DestroyVulkanRenderer() {
 		// Destroy every Vulkan component
+		DestroyVulkanSwapChain();
 		DestroyVulkanCommandPools();
 		DestroyVulkanDevice();
 		DestroyVulkanSurface();

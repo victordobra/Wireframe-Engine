@@ -202,6 +202,15 @@ namespace wfe {
 		if(mandatoryExtensionCount != MANDATORY_DEVICE_EXTENSIONS.size())
 			return 0;
 		
+		// Get the physical device's supported surface present mode and format count
+		uint32_t surfacePresentModeCount, surfaceFormatCount;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, GetVulkanSurface(), &surfacePresentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, GetVulkanSurface(), &surfaceFormatCount, nullptr);
+
+		// Exit the function if no present modes or formats are supported
+		if(!surfacePresentModeCount || !surfaceFormatCount)
+			return 0;
+		
 		// Get the current physical device's queue family indices
 		VulkanQueueFamilyIndices families = GetQueueFamilies(physicalDevice);
 
