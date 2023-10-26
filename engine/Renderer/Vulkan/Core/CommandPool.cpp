@@ -33,7 +33,7 @@ namespace wfe {
             transferCommandPool = graphicsCommandPool;
         else {
             // The transfer queue family index is valid and unique; create the transfer command pool
-            createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+            createInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             createInfo.queueFamilyIndex = queueFamilies.transferQueueIndex;
 
             result = vkCreateCommandPool(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &transferCommandPool);
@@ -47,9 +47,11 @@ namespace wfe {
         // Set the compute command pool handle if the compute queue family index is not unique
         if(queueFamilies.computeQueueIndex == queueFamilies.graphicsQueueIndex)
             computeCommandPool = graphicsCommandPool;
+        else if (queueFamilies.computeQueueIndex == queueFamilies.transferQueueIndex)
+            computeCommandPool = transferCommandPool;
         else {
             // The compute queue family index is valid and unique; create the compute command pool
-            createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+            createInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             createInfo.queueFamilyIndex = queueFamilies.computeQueueIndex;
 
             result = vkCreateCommandPool(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &computeCommandPool);
