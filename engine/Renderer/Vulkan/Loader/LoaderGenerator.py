@@ -1,5 +1,6 @@
 # Import the ElementTree XML library
 import re
+import urllib.request
 import xml.etree.ElementTree as ET
 
 class Param:
@@ -73,7 +74,9 @@ def WriteDeviceCommandLoad(command, outFile):
 
 def main():
 	# Open the XML tree and output file
-	tree = ET.parse("vk.xml")
+	vkXmlPath = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/vk.xml"
+
+	tree = ET.parse(urllib.request.urlopen(vkXmlPath))
 	outFile = open("Loader.cpp", "w")
 
 	# Find the Vulkan command definition root

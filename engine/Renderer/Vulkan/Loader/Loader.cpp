@@ -1253,6 +1253,14 @@ static PFN_vkSetBufferCollectionImageConstraintsFUCHSIA pfn_vkSetBufferCollectio
 static PFN_vkDestroyBufferCollectionFUCHSIA pfn_vkDestroyBufferCollectionFUCHSIA;
 static PFN_vkGetBufferCollectionPropertiesFUCHSIA pfn_vkGetBufferCollectionPropertiesFUCHSIA;
 #endif
+#if defined(VK_NV_cuda_kernel_launch)
+static PFN_vkCreateCudaModuleNV pfn_vkCreateCudaModuleNV;
+static PFN_vkGetCudaModuleCacheNV pfn_vkGetCudaModuleCacheNV;
+static PFN_vkCreateCudaFunctionNV pfn_vkCreateCudaFunctionNV;
+static PFN_vkDestroyCudaModuleNV pfn_vkDestroyCudaModuleNV;
+static PFN_vkDestroyCudaFunctionNV pfn_vkDestroyCudaFunctionNV;
+static PFN_vkCmdCudaLaunchKernelNV pfn_vkCmdCudaLaunchKernelNV;
+#endif
 #if defined(VK_VERSION_1_3)
 static PFN_vkCmdBeginRendering pfn_vkCmdBeginRendering;
 #endif
@@ -1348,6 +1356,13 @@ static PFN_vkCmdInitializeGraphScratchMemoryAMDX pfn_vkCmdInitializeGraphScratch
 static PFN_vkCmdDispatchGraphAMDX pfn_vkCmdDispatchGraphAMDX;
 static PFN_vkCmdDispatchGraphIndirectAMDX pfn_vkCmdDispatchGraphIndirectAMDX;
 static PFN_vkCmdDispatchGraphIndirectCountAMDX pfn_vkCmdDispatchGraphIndirectCountAMDX;
+#endif
+#if defined(VK_NV_low_latency2)
+static PFN_vkSetLatencySleepModeNV pfn_vkSetLatencySleepModeNV;
+static PFN_vkLatencySleepNV pfn_vkLatencySleepNV;
+static PFN_vkSetLatencyMarkerNV pfn_vkSetLatencyMarkerNV;
+static PFN_vkGetLatencyTimingsNV pfn_vkGetLatencyTimingsNV;
+static PFN_vkQueueNotifyOutOfBandNV pfn_vkQueueNotifyOutOfBandNV;
 #endif
 
 #if defined(VK_VERSION_1_0)
@@ -3840,6 +3855,26 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetBufferCollectionPropertiesFUCHSIA(VkDevice d
 	return pfn_vkGetBufferCollectionPropertiesFUCHSIA(device, collection, pProperties);
 }
 #endif
+#if defined(VK_NV_cuda_kernel_launch)
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaModuleNV* pModule) {
+	return pfn_vkCreateCudaModuleNV(device, pCreateInfo, pAllocator, pModule);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkGetCudaModuleCacheNV(VkDevice device, VkCudaModuleNV module, size_t* pCacheSize, void* pCacheData) {
+	return pfn_vkGetCudaModuleCacheNV(device, module, pCacheSize, pCacheData);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateCudaFunctionNV(VkDevice device, const VkCudaFunctionCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaFunctionNV* pFunction) {
+	return pfn_vkCreateCudaFunctionNV(device, pCreateInfo, pAllocator, pFunction);
+}
+VKAPI_ATTR void VKAPI_CALL vkDestroyCudaModuleNV(VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks* pAllocator) {
+	pfn_vkDestroyCudaModuleNV(device, module, pAllocator);
+}
+VKAPI_ATTR void VKAPI_CALL vkDestroyCudaFunctionNV(VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks* pAllocator) {
+	pfn_vkDestroyCudaFunctionNV(device, function, pAllocator);
+}
+VKAPI_ATTR void VKAPI_CALL vkCmdCudaLaunchKernelNV(VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV* pLaunchInfo) {
+	pfn_vkCmdCudaLaunchKernelNV(commandBuffer, pLaunchInfo);
+}
+#endif
 #if defined(VK_VERSION_1_3)
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginRendering(VkCommandBuffer commandBuffer, const VkRenderingInfo* pRenderingInfo) {
 	pfn_vkCmdBeginRendering(commandBuffer, pRenderingInfo);
@@ -4038,6 +4073,23 @@ VKAPI_ATTR void VKAPI_CALL vkCmdDispatchGraphIndirectAMDX(VkCommandBuffer comman
 }
 VKAPI_ATTR void VKAPI_CALL vkCmdDispatchGraphIndirectCountAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceAddress countInfo) {
 	pfn_vkCmdDispatchGraphIndirectCountAMDX(commandBuffer, scratch, countInfo);
+}
+#endif
+#if defined(VK_NV_low_latency2)
+VKAPI_ATTR VkResult VKAPI_CALL vkSetLatencySleepModeNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV* pSleepModeInfo) {
+	return pfn_vkSetLatencySleepModeNV(device, swapchain, pSleepModeInfo);
+}
+VKAPI_ATTR VkResult VKAPI_CALL vkLatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV* pSleepInfo) {
+	return pfn_vkLatencySleepNV(device, swapchain, pSleepInfo);
+}
+VKAPI_ATTR void VKAPI_CALL vkSetLatencyMarkerNV(VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV* pLatencyMarkerInfo) {
+	pfn_vkSetLatencyMarkerNV(device, swapchain, pLatencyMarkerInfo);
+}
+VKAPI_ATTR void VKAPI_CALL vkGetLatencyTimingsNV(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pTimingCount, VkGetLatencyMarkerInfoNV* pLatencyMarkerInfo) {
+	pfn_vkGetLatencyTimingsNV(device, swapchain, pTimingCount, pLatencyMarkerInfo);
+}
+VKAPI_ATTR void VKAPI_CALL vkQueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV* pQueueTypeInfo) {
+	pfn_vkQueueNotifyOutOfBandNV(queue, pQueueTypeInfo);
 }
 #endif
 
@@ -6083,6 +6135,14 @@ namespace wfe {
 		pfn_vkDestroyBufferCollectionFUCHSIA = (PFN_vkDestroyBufferCollectionFUCHSIA)vkGetDeviceProcAddr(device, "vkDestroyBufferCollectionFUCHSIA");
 		pfn_vkGetBufferCollectionPropertiesFUCHSIA = (PFN_vkGetBufferCollectionPropertiesFUCHSIA)vkGetDeviceProcAddr(device, "vkGetBufferCollectionPropertiesFUCHSIA");
 #endif
+#if defined(VK_NV_cuda_kernel_launch)
+		pfn_vkCreateCudaModuleNV = (PFN_vkCreateCudaModuleNV)vkGetDeviceProcAddr(device, "vkCreateCudaModuleNV");
+		pfn_vkGetCudaModuleCacheNV = (PFN_vkGetCudaModuleCacheNV)vkGetDeviceProcAddr(device, "vkGetCudaModuleCacheNV");
+		pfn_vkCreateCudaFunctionNV = (PFN_vkCreateCudaFunctionNV)vkGetDeviceProcAddr(device, "vkCreateCudaFunctionNV");
+		pfn_vkDestroyCudaModuleNV = (PFN_vkDestroyCudaModuleNV)vkGetDeviceProcAddr(device, "vkDestroyCudaModuleNV");
+		pfn_vkDestroyCudaFunctionNV = (PFN_vkDestroyCudaFunctionNV)vkGetDeviceProcAddr(device, "vkDestroyCudaFunctionNV");
+		pfn_vkCmdCudaLaunchKernelNV = (PFN_vkCmdCudaLaunchKernelNV)vkGetDeviceProcAddr(device, "vkCmdCudaLaunchKernelNV");
+#endif
 #if defined(VK_VERSION_1_3)
 		pfn_vkCmdBeginRendering = (PFN_vkCmdBeginRendering)vkGetDeviceProcAddr(device, "vkCmdBeginRendering");
 #endif
@@ -6178,6 +6238,13 @@ namespace wfe {
 		pfn_vkCmdDispatchGraphAMDX = (PFN_vkCmdDispatchGraphAMDX)vkGetDeviceProcAddr(device, "vkCmdDispatchGraphAMDX");
 		pfn_vkCmdDispatchGraphIndirectAMDX = (PFN_vkCmdDispatchGraphIndirectAMDX)vkGetDeviceProcAddr(device, "vkCmdDispatchGraphIndirectAMDX");
 		pfn_vkCmdDispatchGraphIndirectCountAMDX = (PFN_vkCmdDispatchGraphIndirectCountAMDX)vkGetDeviceProcAddr(device, "vkCmdDispatchGraphIndirectCountAMDX");
+#endif
+#if defined(VK_NV_low_latency2)
+		pfn_vkSetLatencySleepModeNV = (PFN_vkSetLatencySleepModeNV)vkGetDeviceProcAddr(device, "vkSetLatencySleepModeNV");
+		pfn_vkLatencySleepNV = (PFN_vkLatencySleepNV)vkGetDeviceProcAddr(device, "vkLatencySleepNV");
+		pfn_vkSetLatencyMarkerNV = (PFN_vkSetLatencyMarkerNV)vkGetDeviceProcAddr(device, "vkSetLatencyMarkerNV");
+		pfn_vkGetLatencyTimingsNV = (PFN_vkGetLatencyTimingsNV)vkGetDeviceProcAddr(device, "vkGetLatencyTimingsNV");
+		pfn_vkQueueNotifyOutOfBandNV = (PFN_vkQueueNotifyOutOfBandNV)vkGetDeviceProcAddr(device, "vkQueueNotifyOutOfBandNV");
 #endif
 	}
 	void FreeVulkanFunctions() {
