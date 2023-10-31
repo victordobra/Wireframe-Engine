@@ -2,6 +2,7 @@
 #include "Allocator.hpp"
 #include "Instance.hpp"
 #include "SwapChain.hpp"
+#include "Renderer/Vulkan/Loader/Loader.hpp"
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vk_enum_string_helper.h>
@@ -377,6 +378,9 @@ namespace wfe {
 		VkResult result = vkCreateDevice(physicalDevice, &createInfo, GetVulkanAllocCallbacks(), &device);
 		if(result != VK_SUCCESS)
 			WFE_LOG_FATAL("Failed to create Vulkan logical device! Error code: ", string_VkResult(result));
+		
+		// Load the Vulkan device functions
+		LoadVulkanDeviceFunctions(device);
 		
 		// Retrieve the handles of every supported queue
 		uint32_t graphicsQueueIndex = queueFamilyCounts[queueFamilies.graphicsQueueIndex];

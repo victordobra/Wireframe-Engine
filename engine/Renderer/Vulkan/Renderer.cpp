@@ -11,7 +11,7 @@ namespace wfe {
 	// Public functions
 	bool8_t CreateVulkanRenderer() {
 		// Create every Vulkan component, exiting the function if any of them return false
-		if(!LoadVulkanFunctions()) return false;
+		if(!LoadVulkanCoreFunctions()) return false;
 		if(!CreateVulkanInstance(debugEnabled)) return false;
 		CreateVulkanSurface();
 		if(!CreateVulkanDevice()) {

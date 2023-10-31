@@ -1,5 +1,6 @@
 #include "Instance.hpp"
 #include "Allocator.hpp"
+#include "Renderer/Vulkan/Loader/Loader.hpp"
 #include "ProjectInfo.hpp"
 
 // Include Vulkan with the current platform define
@@ -297,6 +298,9 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			WFE_LOG_FATAL("Failed to create Vulkan instance! Error code: %s", string_VkResult(result));
 		
+		// Load the Vulkan instance functions
+		LoadVulkanInstanceFunctions(instance);
+		
 		WFE_LOG_INFO("Created Vulkan instance.");
 		
 		// Exit the function if debugging is disabled
@@ -306,13 +310,8 @@ namespace wfe {
 		// Reset the debug messenger create info pNext pointer
 		debugCreateInfo.pNext = nullptr;
 		
-		// Get the create debug messenger callback
-		PFN_vkCreateDebugUtilsMessengerEXT createMessenger = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		if(!createMessenger)
-			WFE_LOG_FATAL("Failed to create Vulkan debug messenger! Messenger creation callback not found.");
-		
 		// Create the debug messenger
-		result = createMessenger(instance, &debugCreateInfo, GetVulkanAllocCallbacks(), &debugMessenger);
+		result = vkCreateDebugUtilsMessengerEXT(instance, &debugCreateInfo, GetVulkanAllocCallbacks(), &debugMessenger);
 		if(result != VK_SUCCESS)
 			WFE_LOG_FATAL("Failed to create Vulkan debug messenger! Error code: %s", string_VkResult(result));
 		
@@ -339,13 +338,8 @@ namespace wfe {
 	void DestroyVulkanInstance() {
 		// Destroy the Vulkan debug messenger, if debugging is enabled
 		if(debugEnabled) {
-			// Get the destroy debug messenger callback
-			PFN_vkDestroyDebugUtilsMessengerEXT destroyMessenger = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-			if(!destroyMessenger)
-				WFE_LOG_FATAL("Failed to destroy Vulkan debug messenger! Messenger deletion callback not found.");
-			
 			// Destroy the debug messenger
-			destroyMessenger(instance, debugMessenger, GetVulkanAllocCallbacks());
+			vkDestroyDebugUtilsMessengerEXT(instance, debugMessenger, GetVulkanAllocCallbacks());
 		}
 
 		// Destroy the Vulkan instance
