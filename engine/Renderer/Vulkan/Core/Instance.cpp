@@ -146,7 +146,7 @@ namespace wfe {
 					continue;
 				}
 			}
-		} else {
+		} else if(debugEnabled) {
 			// Disable debugging and warn the user
 			debugEnabled = false;
 			WFE_LOG_WARNING("Vulkan debugging requested, but not supported!");
@@ -221,6 +221,7 @@ namespace wfe {
 		if(debugEnabled && !CheckForLayerSupport()) {
 			// Disable debugging
 			debugEnabled = false;
+			WFE_LOG_WARNING("Vulkan debugging requested, but not supported!");
 
 			// Remove all debug extensions from the instance extension list
 			for(auto mandatoryDebugExtension : MANDATORY_DEBUG_EXTENSIONS)
