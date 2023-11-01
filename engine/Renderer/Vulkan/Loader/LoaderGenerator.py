@@ -4,8 +4,9 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 class Param:
-	def __init__(self, name, fullName):
+	def __init__(self, name, type, fullName):
 		self.name = name
+		self.type = type
 		self.fullName = fullName
 
 class Command:
@@ -17,7 +18,23 @@ class Command:
 		self.core = False
 		self.instance = False
 
-commands = []
+def IsTypeDescendant(types, name, base):
+	# Check if the base was already reached
+	if name == base:
+		return True
+	# Check if the current type does not exist
+	type = types.get("name")
+	if not type:
+		return False
+	# Check if the current type doesn't have any parents
+	parents = type.get("parents")
+	if not parents:
+		return False
+	# Loop through all parents, checking if the given type is the descendant
+	for parent in parents.split(","):
+		if IsTypeDescendant(types, parent, base):
+			return True
+	return False
 
 def FormCommandRequirement(require):
 	return "defined({0})".format(require.group(0))
@@ -81,10 +98,11 @@ def main():
 
 	# Find the Vulkan command definition root
 	root = tree.getroot()
-	commandsRoot = list(root.iter("commands"))[0]
 
 	# Loop through all commands
-	for command in commandsRoot.iter("command"):
+	commands = []
+
+	for command in root.findall("commands/command"):
 		# Skip the current command if it is not from the Vulkan API
 		if command.get("api") and command.get("api") != "vulkan":
 			continue
@@ -109,7 +127,7 @@ def main():
 
 		# Get the current command's parameters
 		commandParams = []
-		for commandParam in command.iter("param"):
+		for commandParam in command.findall("param"):
 			# Skip the param if it has no valid structure
 			if commandParam.find("type") == None or commandParam.find("name") == None:
 				continue
@@ -122,7 +140,7 @@ def main():
 			paramFullName = ET.tostring(commandParam, encoding = "unicode", method = "text")
 			paramFullName = re.sub(r"\s+", " ", paramFullName)
 
-			param = Param(commandParam.find("name").text, paramFullName)
+			param = Param(commandParam.find("name").text, commandParam.find("type").text, paramFullName)
 			param.fullName = param.fullName[:param.fullName.find('\n')]
 			commandParams.append(param)
 		
@@ -130,12 +148,12 @@ def main():
 		commands.append(Command(commandName, commandReturnType, commandParams))
 	
 	# Loop through all Vulkan feature definition roots
-	for featureRoot in root.iter("feature"):
+	for featureRoot in root.findall("feature"):
 		# Remove all commands from the given feature root if it is not from the Vulkan API
 		api = featureRoot.get("api")
 		if "vulkan" not in api.split(","):
-			for requirements in featureRoot.iter("require"):
-				for command in requirements.iter("command"):
+			for requirements in featureRoot.findall("require"):
+				for command in requirements.findall("command"):
 					# Get the current command's name
 					commandName = command.get("name")
 
@@ -150,9 +168,9 @@ def main():
 			continue
 
 		# Loop through all commands
-		for requirements in featureRoot.iter("require"):
+		for requirements in featureRoot.findall("require"):
 			# Get the current requirement's depends
-			for command in requirements.iter("command"):
+			for command in requirements.findall("command"):
 				# Get the current command's name
 				commandName = command.get("name")
 
@@ -203,15 +221,19 @@ def main():
 
 						break
 	
-	# Check for all instance/core commands
+	# Loop through all types and add them to a dictionary
+	types = {}
+
+	for type in root.findall("types/type"):
+		types[type.get("name")] = type
+
+	# Check for all device, instance and core commands
 	for i in range(0, len(commands)):
 		# Check if the current command is a core command
 		if commands[i].requirements == "defined(VK_VERSION_1_0)":
 			commands[i].core = True
-			continue
-		# Check if the current command is an instance command
-		if re.match(r"defined(VK_VERSION_[0-9]+_[0-9]+)", commands[i].requirements):
-			commands[i].instance = True
+		# Check if the current command is an instance or device command
+		commands[i].instance = not IsTypeDescendant(types, commands[i].params[0].type, "VkDevice")
 	
 	# Start writing to the file
 	outFile.write("""#include \"Loader.hpp\"
@@ -331,7 +353,7 @@ def main():
 	prevIndex = 0
 	for i in range(0, len(commands)):
 		# Skip the current command if it is not a device command
-		if commands[i].core or commands[i].instance:
+		if commands[i].instance:
 			continue
 
 		# Check if the current command is the first command
