@@ -1,4 +1,5 @@
 #include "Allocator.hpp"
+#include "Device.hpp"
 
 namespace wfe {
 	// Alloc functions
@@ -28,5 +29,24 @@ namespace wfe {
 	// Public functions
 	const VkAllocationCallbacks* GetVulkanAllocCallbacks() {
 		return &ALLOC_CALLBACKS;
+	}
+
+	VkResult AllocVulkanDeviceMemory(VkMemoryAllocateInfo& allocInfo, uint32_t memoryTypeBits, VkMemoryPropertyFlags memoryProperties, VkDeviceMemory& memory) {
+		// Try to allocate the given memory with every supported memory type until an allocation succeeds
+		allocInfo.memoryTypeIndex = FindVulkanMemoryType(0, memoryTypeBits, memoryProperties);
+		while(allocInfo.memoryTypeIndex != -1) {
+			// Try to allocate the current memory
+			VkResult result = vkAllocateMemory(GetVulkanDevice(), &allocInfo, &ALLOC_CALLBACKS, &memory);
+
+			// Exit the function if the function succeeded or failed with any error except VK_ERROR_OUT_OF_DEVICE_MEMORY
+			if(result != VK_ERROR_OUT_OF_DEVICE_MEMORY)
+				return result;
+			
+			// Find the next memory type index
+			allocInfo.memoryTypeIndex = FindVulkanMemoryType(allocInfo.memoryTypeIndex + 1, memoryTypeBits, memoryProperties);
+		}
+
+		// The device is out of any supported memory; return VK_ERROR_OUT_OF_DEVICE_MEMORY
+		return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 	}
 }

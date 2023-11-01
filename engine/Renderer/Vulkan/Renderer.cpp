@@ -12,7 +12,10 @@ namespace wfe {
 	bool8_t CreateVulkanRenderer() {
 		// Create every Vulkan component, exiting the function if any of them return false
 		if(!LoadVulkanCoreFunctions()) return false;
-		if(!CreateVulkanInstance(debugEnabled)) return false;
+		if(!CreateVulkanInstance(debugEnabled)) {
+			FreeVulkanFunctions();
+			return false;
+		}
 		CreateVulkanSurface();
 		if(!CreateVulkanDevice()) {
 			WFE_LOG_INFO("No suitable Vulkan device found; destroying previously created Vulkan objects.");

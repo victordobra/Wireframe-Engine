@@ -27,7 +27,7 @@ namespace wfe {
 		VK_KHR_PLATFORM_SURFACE_EXTENSION_NAME
 	};
 	static const unordered_set<const char_t*> OPTIONAL_EXTENSIONS = {
-		
+		VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME
 	};
 	static const unordered_set<const char_t*> MANDATORY_DEBUG_EXTENSIONS = {
 		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
@@ -84,7 +84,7 @@ namespace wfe {
 		// Allocate the extension array and get all instance extensions
 		VkExtensionProperties* extensions = (VkExtensionProperties*)malloc(extensionCount * sizeof(VkExtensionProperties), MEMORY_USAGE_ARRAY);
 		if(!extensions)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan instance extension array!");
 
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions);
 
@@ -174,7 +174,7 @@ namespace wfe {
 		// Allocate the layer array and get all instance layers
 		VkLayerProperties* layers = (VkLayerProperties*)malloc(layerCount * sizeof(VkLayerProperties), MEMORY_USAGE_ARRAY);
 		if(!layers)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan instance layer array!");
 
 		vkEnumerateInstanceLayerProperties(&layerCount, layers);
 

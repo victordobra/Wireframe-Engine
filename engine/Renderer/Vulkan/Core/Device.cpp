@@ -22,12 +22,15 @@ namespace wfe {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 	static const unordered_set<const char_t*> OPTIONAL_DEVICE_EXTENSIONS = {
-		
+		VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
+		VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME,
+		VK_KHR_BIND_MEMORY_2_EXTENSION_NAME
 	};
 
 	// Internal variables
 	static VkPhysicalDeviceProperties deviceProperties;
 	static VkPhysicalDeviceFeatures deviceFeatures;
+	static VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
 	static VulkanQueueFamilyIndices queueFamilies;
 	static set<const char_t*> deviceExtensions;
 
@@ -47,7 +50,7 @@ namespace wfe {
 		// Allocate the array of queue families and fill it
 		VkQueueFamilyProperties* queueFamilies = (VkQueueFamilyProperties*)malloc(queueFamilyCount * sizeof(VkQueueFamilyProperties), MEMORY_USAGE_ARRAY);
 		if(!queueFamilies)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan queue family property array!");
 		
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
 
@@ -147,6 +150,23 @@ namespace wfe {
 
 		return families;
 	}
+	static VkFormat FindSupportedFormat(VkPhysicalDevice physicalDevice, const vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+		// Loop through every given candidate
+		for(VkFormat candidate : candidates) {
+			// Get the candidate format's properties
+			VkFormatProperties properties;
+			vkGetPhysicalDeviceFormatProperties(physicalDevice, candidate, &properties);
+
+			// Return the current format if it supports all the requested formats for the requested tiling
+			if(tiling == VK_IMAGE_TILING_LINEAR && properties.linearTilingFeatures & features == features)
+				return candidate;
+			else if(tiling == VK_IMAGE_TILING_OPTIMAL && properties.optimalTilingFeatures & features == features)
+				return candidate;
+		}
+
+		// No supported format was found; return VK_FORMAT_UNDEFINED
+		return VK_FORMAT_UNDEFINED;
+	}
 	static uint32_t CalculateDeviceScore(VkPhysicalDevice physicalDevice) {
 		// Start with the initial score of 1, as 0 means that the current device does not meet all requirements
 		uint32_t score = 1;
@@ -171,7 +191,7 @@ namespace wfe {
 		// Allocate the array of extesnions and fill it
 		VkExtensionProperties* extensions = (VkExtensionProperties*)malloc(extensionCount * sizeof(VkExtensionProperties), MEMORY_USAGE_ARRAY);
 		if(!extensions)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan physical device extension array!");
 		
 		vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, extensions);
 
@@ -212,6 +232,10 @@ namespace wfe {
 		if(!surfacePresentModeCount || !surfaceFormatCount)
 			return 0;
 		
+		// Exit the function if the current physical device doesn't have any supported depth formats
+		if(FindSupportedFormat(physicalDevice, { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_UNDEFINED)
+			return 0;
+		
 		// Get the current physical device's queue family indices
 		VulkanQueueFamilyIndices families = GetQueueFamilies(physicalDevice);
 
@@ -237,7 +261,7 @@ namespace wfe {
 		// Allocate the array of physical devices and fill it
 		VkPhysicalDevice* physicalDevices = (VkPhysicalDevice*)malloc(physicalDeviceCount * sizeof(VkPhysicalDevice), MEMORY_USAGE_ARRAY);
 		if(!physicalDevices)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan physical device array!");
 		
 		vkEnumeratePhysicalDevices(GetVulkanInstance(), &physicalDeviceCount, physicalDevices);
 
@@ -267,6 +291,7 @@ namespace wfe {
 		// Get the phyiscal device's properties, features and queue families
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &deviceMemoryProperties);
 		queueFamilies = GetQueueFamilies(physicalDevice);
 
 		// Load the physical device's extensions count
@@ -276,7 +301,7 @@ namespace wfe {
 		// Allocate the array of extesnions and fill it
 		VkExtensionProperties* extensions = (VkExtensionProperties*)malloc(extensionCount * sizeof(VkExtensionProperties), MEMORY_USAGE_ARRAY);
 		if(!extensions)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_INFO("Failed to allocate Vulkan physical device extension array!");
 		
 		vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, extensions);
 
@@ -316,7 +341,7 @@ namespace wfe {
 		// Allocate the array of queue families and queue family counts
 		VkQueueFamilyProperties* queueFamilyProperties = (VkQueueFamilyProperties*)malloc(queueFamilyCount * sizeof(VkQueueFamilyProperties) + queueFamilyCount * sizeof(uint32_t), MEMORY_USAGE_ARRAY);
 		if(!queueFamilyProperties)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan queue family property array!");
 		uint32_t* queueFamilyCounts = (uint32_t*)(queueFamilyProperties + queueFamilyCount);
 		
 		// Fill the queue family array
@@ -435,11 +460,30 @@ namespace wfe {
 	const VkPhysicalDeviceFeatures& GetVulkanPhysicalDeviceFeatures() {
 		return deviceFeatures;
 	}
+	const VkPhysicalDeviceMemoryProperties& GetVulkanPhysicalDeviceMemoryProperties() {
+		return deviceMemoryProperties;
+	}
 	const VulkanQueueFamilyIndices& GetVulkanDeviceQueueFamilyIndices() {
 		return queueFamilies;
 	}
 	const set<const char_t*>& GetVulkanDeviceExtensions() {
 		return deviceExtensions;
+	}
+
+	uint32_t FindVulkanMemoryType(uint32_t startIndex, uint32_t typeBitmask, VkMemoryPropertyFlags properties) {
+		// Loop through every available memory type, starting at the given index
+		for(uint32_t i = startIndex; i != deviceMemoryProperties.memoryTypeCount; ++i) {
+			// Check if the current memory type supports all the given properties
+			if(typeBitmask & (1 << i) && deviceMemoryProperties.memoryTypes[i].propertyFlags & properties == properties)
+				return i;
+		}
+
+		// No supported memory format exists; return -1
+		return -1;
+	}
+	VkFormat FindVulkanSupportedFormat(const vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+		// Call the internal format function with the current physical device
+		return FindSupportedFormat(physicalDevice, candidates, tiling, features);
 	}
 
 	VkPhysicalDevice GetVulkanPhysicalDevice() {

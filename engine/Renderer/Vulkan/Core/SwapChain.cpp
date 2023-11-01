@@ -24,6 +24,7 @@ namespace wfe {
 	static VulkanSwapChainSettings swapChainSettings;
 	static VkSwapchainKHR swapChain;
 	static vector<VulkanSwapChainImage> swapChainImages;
+	static VkFormat swapChainDepthFormat;
 
 	// Internal functions
 	static void GetSwapChainSupportDetails() {
@@ -42,6 +43,9 @@ namespace wfe {
 		// Shrink the supported surface formats and present modes vectors to fit
 		supportedSurfaceFormats.shrink_to_fit();
 		supportedSurfacePresentModes.shrink_to_fit();
+
+		// Get the swap chain's depth format
+		swapChainDepthFormat = FindVulkanSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 	}
 	static void SetSwapChainDefaultSettings() {
 		// Set the swap chain's surface format based on their scores
@@ -168,7 +172,7 @@ namespace wfe {
 		// Allocate the swap chain image array and fill it
 		VkImage* swapChainImagesArr = (VkImage*)malloc(sizeof(VkImage) * swapChainImageCount, MEMORY_USAGE_ARRAY);
 		if(!swapChainImagesArr)
-			throw BadAllocException("Failed to allocate array!");
+			WFE_LOG_FATAL("Failed to allocate Vulkan swap chain images array!");
 		
 		vkGetSwapchainImagesKHR(GetVulkanDevice(), swapChain, &swapChainImageCount, swapChainImagesArr);
 
@@ -199,21 +203,256 @@ namespace wfe {
 		createInfo.subresourceRange.layerCount = 1;
 
 		// Create the image views
-		for(uint32_t i = 0; i != swapChainImageCount; ++i) {
+		for(auto& swapChainImage : swapChainImages) {
 			// Set the target image in the create info
-			createInfo.image = swapChainImages[i].image;
+			createInfo.image = swapChainImage.image;
 			
 			// Create the image view
-			VkResult result = vkCreateImageView(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &(swapChainImages[i].imageView));
+			VkResult result = vkCreateImageView(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &swapChainImage.imageView);
 			if(result != VK_SUCCESS)
 				WFE_LOG_FATAL("Failed to create Vulkan swap chain image view! Error code: %s", string_VkResult(result));
 		} 
 	}
+	static void CreateDepthImages() {
+		// Exit the function if the swap chain wasn't created due to the window being minimized
+		if(!swapChain)
+			return;
+
+		// Get the window's info and the device's queue family indices
+		WindowInfo windowInfo = GetWindowInfo();
+		VulkanQueueFamilyIndices queueFamilyIndices = GetVulkanDeviceQueueFamilyIndices();
+
+		// Set the depth images create info
+		VkImageCreateInfo imageCreateInfo;
+
+		imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageCreateInfo.pNext = nullptr;
+		imageCreateInfo.flags = 0;
+		imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageCreateInfo.format = swapChainDepthFormat;
+		imageCreateInfo.extent = { windowInfo.width, windowInfo.height, 1 };
+		imageCreateInfo.mipLevels = 1;
+		imageCreateInfo.arrayLayers = 1;
+		imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+
+		uint32_t imageQueueFamilyIndices[]{ queueFamilyIndices.graphicsQueueIndex, queueFamilyIndices.presentQueueIndex };
+		if(queueFamilyIndices.graphicsQueueIndex != queueFamilyIndices.presentQueueIndex) {
+			imageCreateInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
+			imageCreateInfo.queueFamilyIndexCount = 2;
+			imageCreateInfo.pQueueFamilyIndices = imageQueueFamilyIndices;
+		} else {
+			imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+			imageCreateInfo.queueFamilyIndexCount = 1;
+			imageCreateInfo.pQueueFamilyIndices = imageQueueFamilyIndices;
+		}
+
+		imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+		// Create the depth images
+		for(auto& swapChainImage : swapChainImages) {
+			VkResult result = vkCreateImage(GetVulkanDevice(), &imageCreateInfo, GetVulkanAllocCallbacks(), &swapChainImage.depthImage);
+			if(result != VK_SUCCESS)
+				WFE_LOG_FATAL("Failed to create Vulkan swap chain depth image! Error code: %s", string_VkResult(result));
+		}
+
+		// Check if dedicated allocations are supported
+		if(GetVulkanPhysicalDeviceProperties().apiVersion >= VK_API_VERSION_1_1 || GetVulkanDeviceExtensions().find(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME)) {
+			// Add the dedicated memory requirements struct to the memory requirements
+			VkMemoryDedicatedRequirements dedicatedMemoryRequirements;
+
+			dedicatedMemoryRequirements.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS;
+			dedicatedMemoryRequirements.pNext = nullptr;
+
+			VkMemoryRequirements2 memoryRequirements;
+
+			memoryRequirements.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
+			memoryRequirements.pNext = &dedicatedMemoryRequirements;
+
+			// Get the image's memory requirements
+			VkImageMemoryRequirementsInfo2 imageMemoryRequirementsInfo;
+
+			imageMemoryRequirementsInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2;
+			imageMemoryRequirementsInfo.pNext = nullptr;
+			imageMemoryRequirementsInfo.image = swapChainImages[0].depthImage;
+
+			vkGetImageMemoryRequirements2(GetVulkanDevice(), &imageMemoryRequirementsInfo, &memoryRequirements);
+
+			// Check if the depth images preffer or require dedicated allocations
+			if(dedicatedMemoryRequirements.prefersDedicatedAllocation || dedicatedMemoryRequirements.requiresDedicatedAllocation) {
+				// Set the dedicated alloc info
+				VkMemoryDedicatedAllocateInfo dedicatedAllocInfo;
+
+				dedicatedAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO;
+				dedicatedAllocInfo.pNext = nullptr;
+				dedicatedAllocInfo.buffer = VK_NULL_HANDLE;
+
+				// Set the alloc info
+				VkMemoryAllocateInfo allocInfo;
+
+				allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				allocInfo.pNext = nullptr;
+				allocInfo.allocationSize = memoryRequirements.memoryRequirements.size;
+
+				// Allocate the memories for every depth image
+				for(auto& swapChainImage : swapChainImages) {
+					// Allocate the current depth image's memory
+					VkResult result = AllocVulkanDeviceMemory(allocInfo, memoryRequirements.memoryRequirements.memoryTypeBits, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, swapChainImage.depthImageMemory.memory);
+					if(result != VK_SUCCESS)
+						WFE_LOG_FATAL("Failed to allocate Vulkan depth image memory! Error code: %s", string_VkResult(result));
+
+					// Set the current depth image's memory range
+					swapChainImage.depthImageMemory.offset = 0;
+					swapChainImage.depthImageMemory.size = allocInfo.allocationSize;
+				}
+			} else {
+				// Calculate the total required size for every image
+				VkDeviceSize size = memoryRequirements.memoryRequirements.size;
+				VkDeviceSize alignment = memoryRequirements.memoryRequirements.alignment;
+				VkDeviceSize alignedSize = (size + alignment - 1) & ~alignment;
+
+				// Set the alloc info
+				VkMemoryAllocateInfo allocInfo;
+
+				allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				allocInfo.pNext = nullptr;
+				allocInfo.allocationSize = alignedSize * swapChainImages.size();
+
+				// Allocate the depth images's memory
+				VkDeviceMemory depthImageMemory;
+
+				VkResult result = AllocVulkanDeviceMemory(allocInfo, memoryRequirements.memoryRequirements.memoryTypeBits, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, depthImageMemory);
+				if(result != VK_SUCCESS)
+					WFE_LOG_FATAL("Failed to allocate Vulkan depth image memory! Error code: %s", string_VkResult(result));
+				
+				// Set the swap chain depth images' memory ranges
+				for(size_t i = 0; i != swapChainImages.size(); ++i) {
+					swapChainImages[i].depthImageMemory.memory = depthImageMemory;
+					swapChainImages[i].depthImageMemory.offset = alignedSize * i;
+					swapChainImages[i].depthImageMemory.size = size;
+				}
+			}
+		} else {
+			// Get the image's memory requirements
+			VkMemoryRequirements memoryRequirements;
+			vkGetImageMemoryRequirements(GetVulkanDevice(), swapChainImages[0].depthImage, &memoryRequirements);
+
+			// Calculate the total required size for every image
+			VkDeviceSize size = memoryRequirements.size;
+			VkDeviceSize alignment = memoryRequirements.alignment;
+			VkDeviceSize alignedSize = (size + alignment - 1) & ~alignment;
+
+			// Set the alloc info
+			VkMemoryAllocateInfo allocInfo;
+
+			allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			allocInfo.pNext = nullptr;
+			allocInfo.allocationSize = alignedSize * swapChainImages.size();
+
+			// Allocate the depth images's memory
+			VkDeviceMemory depthImageMemory;
+
+			VkResult result = AllocVulkanDeviceMemory(allocInfo, memoryRequirements.memoryTypeBits, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, depthImageMemory);
+			if(result != VK_SUCCESS)
+				WFE_LOG_FATAL("Failed to allocate Vulkan depth image memory! Error code: %s", string_VkResult(result));
+			
+			// Set the swap chain depth images' memory ranges
+			for(size_t i = 0; i != swapChainImages.size(); ++i) {
+				swapChainImages[i].depthImageMemory.memory = depthImageMemory;
+				swapChainImages[i].depthImageMemory.offset = alignedSize * i;
+				swapChainImages[i].depthImageMemory.size = size;
+			}
+		}
+
+		// Check if batched memory binding is supported
+		if(GetVulkanPhysicalDeviceProperties().apiVersion >= VK_API_VERSION_1_1 || GetVulkanDeviceExtensions().count(VK_KHR_BIND_MEMORY_2_EXTENSION_NAME)) {
+			// Allocate the memory bind info array
+			VkBindImageMemoryInfo* memoryBindInfo = (VkBindImageMemoryInfo*)malloc(sizeof(VkBindImageMemoryInfo) * swapChainImages.size(), MEMORY_USAGE_ARRAY);
+			if(!memoryBindInfo)
+				WFE_LOG_FATAL("Failed to allocate Vulkan swap chain depth image memory bind info array!");
+			
+			// Set the memory bind infos
+			for(size_t i = 0; i != swapChainImages.size(); ++i) {
+				memoryBindInfo[i].sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO;
+				memoryBindInfo[i].pNext = nullptr;
+				memoryBindInfo[i].image = swapChainImages[i].depthImage;
+				memoryBindInfo[i].memory = swapChainImages[i].depthImageMemory.memory;
+				memoryBindInfo[i].memoryOffset = swapChainImages[i].depthImageMemory.offset;
+			}
+
+			// Bind the image memories
+			VkResult result = vkBindImageMemory2(GetVulkanDevice(), (uint32_t)swapChainImages.size(), memoryBindInfo);
+			if(result != VK_SUCCESS)
+				WFE_LOG_FATAL("Failed to bind Vulkan swap chain depth image memories! Error code: %s", string_VkResult(result));
+			
+			// Free the memory bind info array
+			free(memoryBindInfo, MEMORY_USAGE_ARRAY);
+		} else {
+			// Bind every image memory
+			for(auto& swapChainImage : swapChainImages) {
+				VkResult result = vkBindImageMemory(GetVulkanDevice(), swapChainImage.depthImage, swapChainImage.depthImageMemory.memory, swapChainImage.depthImageMemory.offset);
+				if(result != VK_SUCCESS)
+					WFE_LOG_FATAL("Failed to bind Vulkan swap chain depth image memories! Error code: %s", string_VkResult(result));
+			}
+		}
+
+		// Set the depth image views create info
+		VkImageViewCreateInfo imageViewCreateInfo;
+
+		imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imageViewCreateInfo.pNext = nullptr;
+		imageViewCreateInfo.flags = 0;
+		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCreateInfo.format = swapChainDepthFormat;
+		imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+		imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+		imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+		imageViewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+		// Check if the stencil aspect flag must be added
+		if(swapChainDepthFormat == VK_FORMAT_D32_SFLOAT_S8_UINT || swapChainDepthFormat == VK_FORMAT_D24_UNORM_S8_UINT)
+			imageViewCreateInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+		// Create the depth image views
+		for(auto& swapChainImage : swapChainImages) {
+			// Set the target image in the create info
+			imageViewCreateInfo.image = swapChainImage.depthImage;
+
+			// Create the image view
+			VkResult result = vkCreateImageView(GetVulkanDevice(), &imageViewCreateInfo, GetVulkanAllocCallbacks(), &swapChainImage.depthImageView);
+			if(result != VK_SUCCESS)
+				WFE_LOG_FATAL("Failed to create Vulkan swap chain depth image view! Error code: %s", string_VkResult(result));
+		}
+	}
 	static void DestroySwapChainImages() {
+		// Exit the function if the swap chain wasn't created due to the window being minimized
+		if(!swapChain)
+			return;
+
 		// Destroy the swap chain's images
 		for(auto& swapChainImage : swapChainImages) {
+			// Destroy the depth image view and image
+			vkDestroyImageView(GetVulkanDevice(), swapChainImage.depthImageView, GetVulkanAllocCallbacks());
+			vkDestroyImage(GetVulkanDevice(), swapChainImage.depthImage, GetVulkanAllocCallbacks());
+
 			// Destroy the image view
 			vkDestroyImageView(GetVulkanDevice(), swapChainImage.imageView, GetVulkanAllocCallbacks());
+		}
+
+		// Check if the depth image memory is common or not
+		if(swapChainImages.size() == 1 || swapChainImages[0].depthImageMemory.memory == swapChainImages[1].depthImageMemory.memory) {
+			// The depth image memory is common; free the singular block
+			vkFreeMemory(GetVulkanDevice(), swapChainImages[0].depthImageMemory.memory, GetVulkanAllocCallbacks());
+		} else {
+			// The depth image memory is not commot; free every memory block
+			for(auto& swapChainImage : swapChainImages)
+				vkFreeMemory(GetVulkanDevice(), swapChainImage.depthImageMemory.memory, GetVulkanAllocCallbacks());
 		}
 
 		// Resize the swap chain image vector to 0
@@ -290,9 +529,12 @@ namespace wfe {
 		// Create the swap chain and its components
 		CreateSwapChain(VK_NULL_HANDLE);
 		GetSwapChainImages();
+		CreateDepthImages();
 
 		// Add the resize event callback
 		GetWindowResizeEvent().AddListener(ResizeEventCallback);
+
+		WFE_LOG_INFO("Created Vulkan swap chain with %u images.", (uint32_t)swapChainImages.size());
 	}
 	/// @brief Destroys the Vulkan swap chain.
 	void DestroyVulkanSwapChain() {
@@ -319,6 +561,7 @@ namespace wfe {
 
 		// Create the swap chain's remaining components
 		GetSwapChainImages();
+		CreateDepthImages();
 	}
 
 	VulkanSwapChainSettings GetVulkanSwapChainSettings() {
@@ -367,5 +610,8 @@ namespace wfe {
 	}
 	const vector<VulkanSwapChainImage>& GetVulkanSwapChainImages() {
 		return swapChainImages;
+	}
+	VkFormat GetVulkanSwapChainDepthFormat() {
+		return swapChainDepthFormat;
 	}
 }

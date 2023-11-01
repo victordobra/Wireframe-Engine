@@ -3,6 +3,7 @@
 #include <Core.hpp>
 #include <vulkan/vulkan_core.h>
 #include <vulkan/vk_platform.h>
+#include "Allocator.hpp"
 
 namespace wfe {
 	/// @brief Creates the Vulkan surface.
@@ -42,6 +43,13 @@ namespace wfe {
 		VkImage image;
 		/// @brief The handle of the color image's view.
 		VkImageView imageView;
+
+		/// @brief The handle of the depth image.
+		VkImage depthImage;
+		/// @brief The handle of the depth image's view.
+		VkImageView depthImageView;
+		/// @brief The memory range of the depth image.
+		VulkanMemoryRange depthImageMemory;
 	};
 
 	/// @brief Creates the Vulkan swap chain.
@@ -65,4 +73,7 @@ namespace wfe {
 	/// @brief Gets the Vulkan swap chain's images.
 	/// @return A const reference to a vector containing all swap chain images.
 	const vector<VulkanSwapChainImage>& GetVulkanSwapChainImages();
+	/// @brief Gets the Vulkan swap chain's depth format.
+	/// @return The format used by the Vulkan swap chain's depth images.
+	VkFormat GetVulkanSwapChainDepthFormat();
 }
