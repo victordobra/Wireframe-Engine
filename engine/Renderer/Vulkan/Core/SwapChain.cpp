@@ -2,59 +2,31 @@
 #include "Allocator.hpp"
 #include "Device.hpp"
 #include "Instance.hpp"
+#include "Surface.hpp"
 #include "Platform/Window.hpp"
 
-// Include Vulkan with the current platform define
-#if defined(WFE_PLATFORM_WINDOWS)
-#define VK_USE_PLATFORM_WIN32_KHR
-#elif defined(WFE_PLATFORM_LINUX)
-#define VK_USE_PLATFORM_XLIB_KHR
-#endif
 #include <vulkan/vulkan.h>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
 	// Internal variables
-	static VkSurfaceKHR surface;
-
 	static VkSurfaceCapabilitiesKHR surfaceCapabilities;
-	static vector<VkSurfaceFormatKHR> supportedSurfaceFormats;
-	static vector<VkPresentModeKHR> supportedSurfacePresentModes;
 
 	static VulkanSwapChainSettings swapChainSettings;
+	static VkExtent2D swapChainExtent;
 	static VkSwapchainKHR swapChain;
 	static vector<VulkanSwapChainImage> swapChainImages;
 	static VkFormat swapChainDepthFormat;
 
 	// Internal functions
-	static void GetSwapChainSupportDetails() {
-		// Get the surface's supported formats
-		uint32_t supportedSurfaceFormatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(GetVulkanPhysicalDevice(), surface, &supportedSurfaceFormatCount, nullptr);
-		supportedSurfaceFormats.resize(supportedSurfaceFormatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(GetVulkanPhysicalDevice(), surface, &supportedSurfaceFormatCount, supportedSurfaceFormats.data());
-
-		// Get the surface's supported present modes
-		uint32_t supportedSurfacePresentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(GetVulkanPhysicalDevice(), surface, &supportedSurfacePresentModeCount, nullptr);
-		supportedSurfacePresentModes.resize(supportedSurfacePresentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(GetVulkanPhysicalDevice(), surface, &supportedSurfacePresentModeCount, supportedSurfacePresentModes.data());
-
-		// Shrink the supported surface formats and present modes vectors to fit
-		supportedSurfaceFormats.shrink_to_fit();
-		supportedSurfacePresentModes.shrink_to_fit();
-
-		// Get the swap chain's depth format
-		swapChainDepthFormat = FindVulkanSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
-	}
 	static void SetSwapChainDefaultSettings() {
 		// Set the swap chain's surface format based on their scores
-		swapChainSettings.imageFormat = supportedSurfaceFormats[0].format;
-		swapChainSettings.imageColorSpace = supportedSurfaceFormats[0].colorSpace;
+		swapChainSettings.imageFormat = GetVulkanSurfaceSupportedFormats()[0].format;
+		swapChainSettings.imageColorSpace = GetVulkanSurfaceSupportedFormats()[0].colorSpace;
 
 		uint32_t maxScore = 0;
 
-		for(const auto& surfaceFormat : supportedSurfaceFormats) {
+		for(const auto& surfaceFormat : GetVulkanSurfaceSupportedFormats()) {
 			// Set the current surface format's score
 			uint32_t score = 0;
 
@@ -79,13 +51,15 @@ namespace wfe {
 		// Set the swap chain's other settings
 		swapChainSettings.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 		swapChainSettings.clipped = VK_TRUE;
+
+		// Get the swap chain's depth format
+		swapChainDepthFormat = FindVulkanSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 	}
 	static void CreateSwapChain(VkSwapchainKHR oldSwapChain) {
 		// Get the surface's capabilities
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(GetVulkanPhysicalDevice(), surface, &surfaceCapabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(GetVulkanPhysicalDevice(), GetVulkanSurface(), &surfaceCapabilities);
 
 		// Set the swap chain's extent
-		VkExtent2D swapChainExtent;
 		if(surfaceCapabilities.currentExtent.width == UINT32_T_MAX || surfaceCapabilities.currentExtent.height == UINT32_T_MAX) {
 			// Set the swap chain extent to the window's size
 			WindowInfo windowInfo = GetWindowInfo();
@@ -128,7 +102,7 @@ namespace wfe {
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		createInfo.pNext = nullptr;
 		createInfo.flags = 0;
-		createInfo.surface = surface;
+		createInfo.surface = GetVulkanSurface();
 		createInfo.minImageCount = swapChainMinImageCount;
 		createInfo.imageFormat = swapChainSettings.imageFormat;
 		createInfo.imageColorSpace = swapChainSettings.imageColorSpace;
@@ -218,8 +192,7 @@ namespace wfe {
 		if(!swapChain)
 			return;
 
-		// Get the window's info and the device's queue family indices
-		WindowInfo windowInfo = GetWindowInfo();
+		// Get the device's queue family indices
 		VulkanQueueFamilyIndices queueFamilyIndices = GetVulkanDeviceQueueFamilyIndices();
 
 		// Set the depth images create info
@@ -230,7 +203,7 @@ namespace wfe {
 		imageCreateInfo.flags = 0;
 		imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
 		imageCreateInfo.format = swapChainDepthFormat;
-		imageCreateInfo.extent = { windowInfo.width, windowInfo.height, 1 };
+		imageCreateInfo.extent = { swapChainExtent.width, swapChainExtent.height, 1 };
 		imageCreateInfo.mipLevels = 1;
 		imageCreateInfo.arrayLayers = 1;
 		imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -468,62 +441,8 @@ namespace wfe {
 	}
 
 	// Public functions
-	void CreateVulkanSurface() {
-		// Get the window platform info
-		WindowPlatformInfo platformInfo = GetWindowPlatformInfo();
-
-#if defined(WFE_PLATFORM_WINDOWS)
-		// Set the Win32 surface create info
-		VkWin32SurfaceCreateInfoKHR createInfo;
-
-		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-		createInfo.pNext = nullptr;
-		createInfo.flags = 0;
-		createInfo.hinstance = platformInfo.hInstance;
-		createInfo.hwnd = platformInfo.hWnd;
-
-		// Create the Win32 surface
-		VkResult result = vkCreateWin32SurfaceKHR(GetVulkanInstance(), &createInfo, GetVulkanAllocCallbacks(), &surface);
-		if(result != VK_SUCCESS)
-			WFE_LOG_FATAL("Failed to create Win32 Vulkan window surface! Error code: %s", string_VkResult(result));
-#elif defined(WFE_PLATFORM_LINUX)
-		// Set the Xlib surface create info
-		VkXlibSurfaceCreateInfoKHR createInfo;
-
-		createInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-		createInfo.pNext = nullptr;
-		createInfo.flags = 0;
-		createInfo.dpy = platformInfo.display;
-		createInfo.window = platformInfo.window;
-
-		// Create the Xlib surface
-		VkResult result = vkCreateXlibSurfaceKHR(GetVulkanInstance(), &createInfo, GetVulkanAllocCallbacks(), &surface);
-		if(result != VK_SUCCESS)
-			WFE_LOG_FATAL("Failed to create Xlib Vulkan window surface! Error code: %s", string_VkResult(result));
-#endif
-	}
-	void DestroyVulkanSurface() {
-		// Destroy the surface
-		vkDestroySurfaceKHR(GetVulkanInstance(), surface, GetVulkanAllocCallbacks());
-	}
-
-	VkSurfaceKHR GetVulkanSurface() {
-		return surface;
-	}
-	VkSurfaceCapabilitiesKHR GetVulkanSurfaceCapabilities() {
-		return surfaceCapabilities;
-	}
-	const vector<VkSurfaceFormatKHR>& GetVulkanSurfaceSupportedFormats() {
-		return supportedSurfaceFormats;
-	}
-	const vector<VkPresentModeKHR>& GetVulkanSurfaceSupportedPresentModes() {
-		return supportedSurfacePresentModes;
-	}
-
-	/// @brief Creates the Vulkan swap chain.
 	void CreateVulkanSwapChain() {
 		// Set the swap chain's default settings
-		GetSwapChainSupportDetails();
 		SetSwapChainDefaultSettings();
 
 		// Create the swap chain and its components
@@ -536,7 +455,6 @@ namespace wfe {
 
 		WFE_LOG_INFO("Created Vulkan swap chain with %u images.", (uint32_t)swapChainImages.size());
 	}
-	/// @brief Destroys the Vulkan swap chain.
 	void DestroyVulkanSwapChain() {
 		// Destroy the swap chain's images
 		DestroySwapChainImages();
@@ -564,13 +482,13 @@ namespace wfe {
 		CreateDepthImages();
 	}
 
-	VulkanSwapChainSettings GetVulkanSwapChainSettings() {
+	const VulkanSwapChainSettings& GetVulkanSwapChainSettings() {
 		return swapChainSettings;
 	}
 	bool8_t SetVulkanSwapChainSettings(const VulkanSwapChainSettings& newSettings) {
 		// Check if the settings' surface format is supported
 		bool8_t surfaceFormatFound = false;
-		for(const auto& surfaceFormat : supportedSurfaceFormats) {
+		for(const auto& surfaceFormat : GetVulkanSurfaceSupportedFormats()) {
 			// Check if the settings' surface format is equal to the current surface format
 			if(surfaceFormat.format == newSettings.imageFormat && surfaceFormat.colorSpace == newSettings.imageColorSpace) {
 				// Save that a surface format was found and exit the loop
@@ -585,7 +503,7 @@ namespace wfe {
 
 		// Check if the settings' present mode is supported
 		bool8_t presentModeFound = false;
-		for(auto presentMode : supportedSurfacePresentModes) {
+		for(auto presentMode : GetVulkanSurfaceSupportedPresentModes()) {
 			// Check if the settings' present mode is equal to the current present mode 
 			if(presentMode == newSettings.presentMode) {
 				// Save that a present mode was found and exit the loop
@@ -605,6 +523,12 @@ namespace wfe {
 		return true;
 	}
 
+	const VkSurfaceCapabilitiesKHR& GetVulkanSurfaceCapabilities() {
+		return surfaceCapabilities;
+	}
+	VkExtent2D GetVulkanSwapChainExtent() {
+		return swapChainExtent;
+	}
 	VkSwapchainKHR GetVulkanSwapChain() {
 		return swapChain;
 	}

@@ -1,6 +1,7 @@
 #include "Device.hpp"
 #include "Allocator.hpp"
 #include "Instance.hpp"
+#include "Surface.hpp"
 #include "SwapChain.hpp"
 #include "Renderer/Vulkan/Loader/Loader.hpp"
 
@@ -288,10 +289,11 @@ namespace wfe {
 		return bestScore;
 	}
 	static void SetupPhysicalDevice() {
-		// Get the phyiscal device's properties, features and queue families
+		// Get the phyiscal device's properties
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &deviceMemoryProperties);
+		GenerateVulkanSurfaceSupportDetails();
 		queueFamilies = GetQueueFamilies(physicalDevice);
 
 		// Load the physical device's extensions count

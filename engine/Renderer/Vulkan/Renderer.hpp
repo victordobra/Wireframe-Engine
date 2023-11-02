@@ -6,6 +6,7 @@
 #include "Core/CommandPool.hpp"
 #include "Core/Device.hpp"
 #include "Core/Instance.hpp"
+#include "Core/Surface.hpp"
 #include "Core/SwapChain.hpp"
 
 #include <vulkan/vulkan.h>
