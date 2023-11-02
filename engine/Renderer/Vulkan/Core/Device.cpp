@@ -9,7 +9,6 @@
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
-	// Structs
 	// Constants
 	static const uint32_t MIN_DEVICE_API_VERSION = VK_API_VERSION_1_0;
 

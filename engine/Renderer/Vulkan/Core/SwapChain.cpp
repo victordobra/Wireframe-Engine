@@ -2,6 +2,7 @@
 #include "Allocator.hpp"
 #include "Device.hpp"
 #include "Instance.hpp"
+#include "RenderPass.hpp"
 #include "Surface.hpp"
 #include "Platform/Window.hpp"
 
@@ -403,6 +404,36 @@ namespace wfe {
 				WFE_LOG_FATAL("Failed to create Vulkan swap chain depth image view! Error code: %s", string_VkResult(result));
 		}
 	}
+	static void CreateFramebuffers() {
+		// Exit the function if the swap chain wasn't created due to the window being minimized
+		if(!swapChain)
+			return;
+
+		// Set the framebuffer create info
+		VkFramebufferCreateInfo createInfo;
+
+		createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		createInfo.pNext = nullptr;
+		createInfo.flags = 0;
+		createInfo.renderPass = GetVulkanRenderPass();
+		createInfo.attachmentCount = 2;
+		createInfo.width = swapChainExtent.width;
+		createInfo.height = swapChainExtent.height;
+		createInfo.layers = 1;
+
+		// Create every framebuffer
+		for(auto& swapChainImage : swapChainImages) {
+			// Set the framebuffer attachments
+			VkImageView attachments[2]{ swapChainImage.imageView, swapChainImage.depthImageView };
+			createInfo.pAttachments = attachments;
+
+			// Create the current framebuffer
+			VkResult result = vkCreateFramebuffer(GetVulkanDevice(), &createInfo, GetVulkanAllocCallbacks(), &swapChainImage.framebuffer);
+			if(result != VK_SUCCESS)
+				WFE_LOG_FATAL("Failed to create Vulkan framebuffer! Error code: %s", string_VkResult(result));
+		}
+	}
+
 	static void DestroySwapChainImages() {
 		// Exit the function if the swap chain wasn't created due to the window being minimized
 		if(!swapChain)
@@ -410,6 +441,9 @@ namespace wfe {
 
 		// Destroy the swap chain's images
 		for(auto& swapChainImage : swapChainImages) {
+			// Destroy the framebuffer
+			vkDestroyFramebuffer(GetVulkanDevice(), swapChainImage.framebuffer, GetVulkanAllocCallbacks());
+
 			// Destroy the depth image view and image
 			vkDestroyImageView(GetVulkanDevice(), swapChainImage.depthImageView, GetVulkanAllocCallbacks());
 			vkDestroyImage(GetVulkanDevice(), swapChainImage.depthImage, GetVulkanAllocCallbacks());
@@ -445,10 +479,14 @@ namespace wfe {
 		// Set the swap chain's default settings
 		SetSwapChainDefaultSettings();
 
+		// Create the render pass
+		CreateVulkanRenderPass();
+
 		// Create the swap chain and its components
 		CreateSwapChain(VK_NULL_HANDLE);
 		GetSwapChainImages();
 		CreateDepthImages();
+		CreateFramebuffers();
 
 		// Add the resize event callback
 		GetWindowResizeEvent().AddListener(ResizeEventCallback);
@@ -456,6 +494,9 @@ namespace wfe {
 		WFE_LOG_INFO("Created Vulkan swap chain with %u images.", (uint32_t)swapChainImages.size());
 	}
 	void DestroyVulkanSwapChain() {
+		// Destroy the render pass
+		DestroyVulkanRenderPass();
+
 		// Destroy the swap chain's images
 		DestroySwapChainImages();
 
@@ -480,6 +521,7 @@ namespace wfe {
 		// Create the swap chain's remaining components
 		GetSwapChainImages();
 		CreateDepthImages();
+		CreateFramebuffers();
 	}
 
 	const VulkanSwapChainSettings& GetVulkanSwapChainSettings() {
@@ -518,6 +560,7 @@ namespace wfe {
 		
 		// The settings are supported; recreate the swap chain and exit the function
 		swapChainSettings = newSettings;
+		RecreateVulkanRenderPass();
 		RecreateVulkanSwapChain();
 
 		return true;

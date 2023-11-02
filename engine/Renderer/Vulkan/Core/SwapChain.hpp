@@ -32,6 +32,9 @@ namespace wfe {
 		VkImageView depthImageView;
 		/// @brief The memory range of the depth image.
 		VulkanMemoryRange depthImageMemory;
+
+		/// @brief The current image's framebuffer.
+		VkFramebuffer framebuffer;
 	};
 
 	/// @brief Creates the Vulkan swap chain.
