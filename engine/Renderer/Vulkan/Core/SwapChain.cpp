@@ -315,7 +315,7 @@ namespace wfe {
 			// Calculate the total required size for every image
 			VkDeviceSize size = memoryRequirements.size;
 			VkDeviceSize alignment = memoryRequirements.alignment;
-			VkDeviceSize alignedSize = (size + alignment - 1) & ~alignment;
+			VkDeviceSize alignedSize = (size + alignment - 1) & ~(alignment - 1);
 
 			// Set the alloc info
 			VkMemoryAllocateInfo allocInfo;
