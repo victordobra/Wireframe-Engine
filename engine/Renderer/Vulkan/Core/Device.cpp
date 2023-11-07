@@ -158,9 +158,9 @@ namespace wfe {
 			vkGetPhysicalDeviceFormatProperties(physicalDevice, candidate, &properties);
 
 			// Return the current format if it supports all the requested formats for the requested tiling
-			if(tiling == VK_IMAGE_TILING_LINEAR && properties.linearTilingFeatures & features == features)
+			if(tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
 				return candidate;
-			else if(tiling == VK_IMAGE_TILING_OPTIMAL && properties.optimalTilingFeatures & features == features)
+			else if(tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features)
 				return candidate;
 		}
 
@@ -475,7 +475,7 @@ namespace wfe {
 		// Loop through every available memory type, starting at the given index
 		for(uint32_t i = startIndex; i != deviceMemoryProperties.memoryTypeCount; ++i) {
 			// Check if the current memory type supports all the given properties
-			if(typeBitmask & (1 << i) && deviceMemoryProperties.memoryTypes[i].propertyFlags & properties == properties)
+			if((typeBitmask & (1 << i)) && (deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
 				return i;
 		}
 
