@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core.hpp>
+#include "KeyCode.hpp"
 
 // Platform includes
 #if defined(WFE_PLATFORM_WINDOWS)

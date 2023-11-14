@@ -3,12 +3,8 @@
 #ifdef WFE_PLATFORM_WINDOWS
 
 #include "Platform/Window.hpp"
+#include "Internal.hpp"
 #include "ProjectInfo.hpp"
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-#undef CreateWindow
 
 namespace wfe {
 	// Constants
@@ -80,6 +76,21 @@ namespace wfe {
 
 	static LRESULT CALLBACK WinProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
 		switch(message) {
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
+		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+		case WM_MOUSEWHEEL:
+		case WM_MOUSEMOVE:
+			return InputWinProc(hWnd, message, wParam, lParam);
 		case WM_SIZE: {
 			// Set the window's new width and height
 			windowInfo.width = (uint32_t)LOWORD(lParam);
