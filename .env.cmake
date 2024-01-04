@@ -1,5 +1,5 @@
 # CMake info
-set(CMAKE_MIN_VERSION 3.0.0)
+set(CMAKE_MIN_VERSION 3.5.0)
 
 # Project info
 set(PROJECT_NAME Unnamed-Project)
