@@ -1,5 +1,6 @@
 #pragma once
 
-#include "General/Engine.hpp"
+#include "General/Program.hpp"
 #include "Platform/Window.hpp"
+#include "Platform/Input.hpp"
 #include "Renderer/Renderer.hpp"
