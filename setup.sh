@@ -11,4 +11,4 @@ echo "--------------------------------------------INSTALLED VULKAN"
 sudo apt install xcb
 sudo apt install xorg-dev
 sudo apt install libxkbcommon-dev
-echo "--------------------------------------------INSTALLED X11 LIBRARIES"
+echo "--------------------------------------------INSTALLED XCB LIBRARIES"

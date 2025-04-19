@@ -1,12 +1,12 @@
 # CMake info
 set(CMAKE_MIN_VERSION 3.5.0)
 
-# Project info
-set(PROJECT_NAME Unnamed-Project)
+# Test project info
+set(TEST_PROJECT_NAME Test-Project)
 
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 0)
+set(TEST_PROJECT_VERSION_MAJOR 1)
+set(TEST_PROJECT_VERSION_MINOR 0)
+set(TEST_PROJECT_VERSION_PATCH 0)
 
 # Engine info
 set(ENGINE_NAME Wireframe-Engine)
