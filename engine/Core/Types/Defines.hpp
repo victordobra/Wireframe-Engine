@@ -32,7 +32,7 @@ namespace wfe {
 	typedef wchar_t charw_t;
 
 	// Architecture specific types
-#ifdef WFE_ARCHITECTURE_X64
+#ifdef WFE_ARCHITECTURE_X86_64
 	typedef uint64_t size_t;
 	typedef  int64_t ptrdiff_t;
 	typedef  int64_t intptr_t;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/BuildInfo.hpp"
-#include "Core/Defines.hpp"
+#include "Core/Types/BuildInfo.hpp"
+#include "Core/Types/Defines.hpp"
 
 #include "Main/Program.hpp"

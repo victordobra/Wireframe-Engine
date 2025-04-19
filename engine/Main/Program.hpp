@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Core/Defines.hpp"
+#include "Core/Types/Defines.hpp"
+
+#include "Platform/Window.hpp"
 
 namespace wfe {
 	/// @brief A class containing an abstraction for the program and its components.
@@ -23,7 +25,6 @@ namespace wfe {
 		/// @brief Destroys the program and its components.
 		~Program();
 	private:
-		atomic_int32_t running;
-		atomic_int32_t returnCode;
+		Window* window;
 	};
 }
