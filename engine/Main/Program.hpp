@@ -25,6 +25,11 @@ namespace wfe {
 		/// @brief Destroys the program and its components.
 		~Program();
 	private:
+		static void* CloseEventListener(void* userData, void* params);
+
+		atomic_uint32_t running = 1;
+		atomic_uint32_t returnCode;
+
 		Window* window;
 	};
 }
