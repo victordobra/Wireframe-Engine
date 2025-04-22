@@ -3,6 +3,7 @@
 #include "Core/Management/Event.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
+#include "Input.hpp"
 #include <string>
 
 #if defined(WFE_PLATFORM_WINDOWS)
@@ -44,9 +45,9 @@ namespace wfe {
 			/// @brief The new height of the window.
 			uint32_t height;
 			/// @brief True if the window is minimized, otherwise false.
-			bool minimized;
+			bool8_t minimized;
 			/// @brief True if the window is maximized, otherwise false.
-			bool maximized;
+			bool8_t maximized;
 		};
 		/// @brief A structure containing the window's rename data, passed as an argument to all listeners of the rename event.
 		struct RenameEventData {
@@ -63,7 +64,7 @@ namespace wfe {
 		/// @param minimized True if the window should be minimized, otherwise false. False by default.
 		/// @param maximized True if the window should be maximized, otherwise false. False by default.
 		/// @param fullscreen True if the window should be fullscreen, otherwise false. False by default.
-		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized = false, bool maximized = false, bool fullscreen = false);
+		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool8_t minimized = false, bool8_t maximized = false, bool8_t fullscreen = false);
 		Window(const Window&) = delete;
 		Window(Window&&) = delete;
 
@@ -92,12 +93,12 @@ namespace wfe {
 		}
 		/// @brief Checks if the window is minimized.
 		/// @return True if the window is minimized, otherwise false.
-		bool IsMinimized() const {
+		bool8_t IsMinimized() const {
 			return this->minimized; 
 		}
 		/// @brief Checks if the window is maximized.
 		/// @return True if the window is maximized, otherwise false.
-		bool IsMaximized() const {
+		bool8_t IsMaximized() const {
 			return this->maximized; 
 		}
 		/// @brief Gets the window's title.
@@ -109,6 +110,12 @@ namespace wfe {
 		/// @return The window's platform-specific data.
 		const PlatformData& GetPlatformData() const {
 			return this->platformData; 
+		}
+
+		/// @brief Gets the window's input manager.
+		/// @return The window's input manager.
+		InputManager* GetInputManager() {
+			return this->inputManager; 
 		}
 
 		/// @brief Gets the window's move event.
@@ -142,13 +149,13 @@ namespace wfe {
 		void SetSize(uint32_t width, uint32_t height);
 		/// @brief Sets if the window is minimized or not.
 		/// @param minimized True if the window should be minimized, otherwise false.
-		void SetMinimized(bool minimized);
+		void SetMinimized(bool8_t minimized);
 		/// @brief Sets if the window is maximized or not.
 		/// @param maximized True if the window should be maximized, otherwise false.
-		void SetMaximized(bool maximized);
+		void SetMaximized(bool8_t maximized);
 		/// @brief Sets if the window is fullscreen or not.
 		/// @param fullscreen True if the window should be fullscreen, otherwise false.
-		void SetFullscreen(bool fullscreen);
+		void SetFullscreen(bool8_t fullscreen);
 		/// @brief Sets the window's title.
 		/// @param title The new title of the window.
 		void SetTitle(const std::string& title);
@@ -166,9 +173,11 @@ namespace wfe {
 
 		int32_t x, y;
 		uint32_t width, height;
-		bool minimized = false, maximized = false, fullscreen = false;
+		bool8_t minimized = false, maximized = false, fullscreen = false;
 		std::string title;
 		PlatformData platformData;
+
+		InputManager* inputManager;
 
 		mutable Event moveEvent;
 		mutable Event resizeEvent;

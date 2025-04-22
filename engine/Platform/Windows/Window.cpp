@@ -57,7 +57,7 @@ namespace wfe {
 				.y = this->y
 			};
 
-			// Call the move event
+			// Trigger the move event
 			this->moveEvent.TriggerEvent(&data);
 
 			break;
@@ -77,7 +77,7 @@ namespace wfe {
 				.maximized = this->maximized
 			};
 
-			// Call the resize event
+			// Trigger the resize event
 			this->resizeEvent.TriggerEvent(&data);
 
 			break;
@@ -91,13 +91,109 @@ namespace wfe {
 				.title = this->title
 			};
 
-			// Call the rename event
+			// Trigger the rename event
 			this->renameEvent.TriggerEvent(&data);
 
 			break;
 		}
+		case WM_KEYDOWN: 
+		case WM_SYSKEYDOWN: {
+			// Call the input manager's internal key down function
+			this->inputManager->InternalKeyDown((uint64_t)wParam);
+
+			return 0;
+		}
+		case WM_KEYUP: 
+		case WM_SYSKEYUP: {
+			// Call the input manager's internal key up function
+			this->inputManager->InternalKeyUp((uint64_t)wParam);
+
+			return 0;
+		}
+		case WM_LBUTTONDOWN: {
+			// Call the input manager's internal key down function
+			this->inputManager->InternalKeyDown((uint64_t)VK_LBUTTON);
+
+			return 0;
+		}
+		case WM_LBUTTONUP: {
+			// Call the input manager's internal key up function
+			this->inputManager->InternalKeyUp((uint64_t)VK_LBUTTON);
+
+			return 0;
+		}
+		case WM_RBUTTONDOWN: {
+			// Call the input manager's internal key down function
+			this->inputManager->InternalKeyDown((uint64_t)VK_RBUTTON);
+
+			return 0;
+		}
+		case WM_RBUTTONUP: {
+			// Call the input manager's internal key up function
+			this->inputManager->InternalKeyUp((uint64_t)VK_RBUTTON);
+
+			return 0;
+		}
+		case WM_MBUTTONDOWN: {
+			// Call the input manager's internal key down function
+			this->inputManager->InternalKeyDown((uint64_t)VK_MBUTTON);
+
+			return 0;
+		}
+		case WM_MBUTTONUP: {
+			// Call the input manager's internal key up function
+			this->inputManager->InternalKeyUp((uint64_t)VK_MBUTTON);
+
+			return 0;
+		}
+		case WM_XBUTTONDOWN: {
+			// Call the input manager's internal key down function for the current X button
+			if(HIWORD(wParam) == XBUTTON1) {
+				this->inputManager->InternalKeyDown((uint64_t)VK_XBUTTON1);
+			} else {
+				this->inputManager->InternalKeyDown((uint64_t)VK_XBUTTON2);
+			}
+
+			return TRUE;
+		}
+		case WM_XBUTTONUP: {
+			// Call the input manager's internal key up function for the current X button
+			if(HIWORD(wParam) == XBUTTON1) {
+				this->inputManager->InternalKeyUp((uint64_t)VK_XBUTTON1);
+			} else {
+				this->inputManager->InternalKeyUp((uint64_t)VK_XBUTTON2);
+			}
+
+			return TRUE;
+		}
+		case WM_MOUSEMOVE: {
+			// Set the mouse movement of the current event
+			InputManager::MouseMovement mouseMovement {
+				.x = (int32_t)(int16_t)LOWORD(lParam),
+				.y = (int32_t)(int16_t)HIWORD(lParam),
+				.scroll = 0
+			};
+
+			// Call the input manager's internal mouse move function
+			this->inputManager->InternalMouseMove(mouseMovement);
+
+			return 0;
+		}
+		case WM_MOUSEWHEEL: {
+			// Set the mouse movement of the current event
+			InputManager::MouseMovement mouseMovement {
+				.x = 0,
+				.y = 0,
+				.scroll = (int32_t)(int16_t)HIWORD(wParam)
+			};
+
+			// Call the input manager's internal mouse move function
+			this->inputManager->InternalMouseMove(mouseMovement);
+
+			return 0;
+		}
 		case WM_CLOSE:
-			// Call the close event
+			// Trigger the close event
 			this->closeEvent.TriggerEvent(nullptr);
 
 			return 0;
@@ -107,7 +203,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized, bool maximized, bool fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
+	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool8_t minimized, bool8_t maximized, bool8_t fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
 		// Lock the window mutex
 		uint32_t lock = 0;
 		while(!windowMutex.compare_exchange_weak(lock, 1))
@@ -187,6 +283,9 @@ namespace wfe {
 		windowMap.insert({ this->platformData.hWnd, this });
 		windowMutex = 0;
 
+		// Create the input manager
+		this->inputManager = new InputManager(this);
+
 		// Show the window
 		if(this->minimized) {
 			// Show the window as minimized
@@ -222,15 +321,15 @@ namespace wfe {
 			ThrowError("Failed to set Win32 window title!");
 		}
 	}
-	void Window::SetMinimized(bool minimized) {
+	void Window::SetMinimized(bool8_t minimized) {
 		// Show the window as minimized or restored
 		ShowWindow(this->platformData.hWnd, minimized ? SW_MINIMIZE : SW_RESTORE);
 	}
-	void Window::SetMaximized(bool maximized) {
+	void Window::SetMaximized(bool8_t maximized) {
 		// Show the window as maximized or restored
 		ShowWindow(this->platformData.hWnd, maximized ? SW_MAXIMIZE : SW_RESTORE);
 	}
-	void Window::SetFullscreen(bool fullscreen) {
+	void Window::SetFullscreen(bool8_t fullscreen) {
 		// Apply or unapply the fullscreen style, if required
 		if(fullscreen && !this->fullscreen) {
 			// Set the new fullscreen state and reset the maximized and minimized states
@@ -289,6 +388,9 @@ namespace wfe {
 	}
 
 	Window::~Window() {
+		// Destroy the input manager
+		delete this->inputManager;
+
 		// Remove the window from the map
 		uint32_t lock = 0;
 		while(!windowMutex.compare_exchange_weak(lock, 1))
