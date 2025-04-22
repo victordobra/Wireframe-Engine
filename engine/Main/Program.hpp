@@ -22,13 +22,23 @@ namespace wfe {
 		/// @return The program's return code.
 		int32_t Run();
 
+		/// @brief Gets the program's window.
+		/// @return The program's window.
+		Window* GetWindow() {
+			return this->window;
+		}
+		/// @brief Gets the program's window.
+		/// @return The program's window.
+		const Window* GetWindow() const {
+			return this->window;
+		}
+
 		/// @brief Destroys the program and its components.
 		~Program();
 	private:
 		static void* CloseEventListener(void* userData, void* params);
 
 		atomic_uint32_t running = 1;
-		atomic_uint32_t returnCode;
 
 		Window* window;
 	};

@@ -107,7 +107,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title) : x(x), y(y), width(width), height(height), title(title) {
+	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized, bool maximized, bool fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
 		// Lock the window mutex
 		uint32_t lock = 0;
 		while(!windowMutex.compare_exchange_weak(lock, 1))
@@ -150,8 +150,34 @@ namespace wfe {
 		this->platformData.hInstance = hInstance;
 		this->platformData.winClassID = winClassID;
 
+		// Set the window's style based on the fullscreen flag
+		DWORD style;
+		if(this->fullscreen) {
+			// Unmaximize the window
+			maximized = false;
+			style = WS_POPUP;
+		} else {
+			style = WS_OVERLAPPEDWINDOW;
+		}
+
+		// Override the window's position and size if the window is fullscreen
+		if(this->fullscreen) {
+			// Get the screen's size
+			RECT screenRect;
+			if(!SystemParametersInfoA(SPI_GETWORKAREA, 0, &screenRect, 0)) {
+				// Throw an error
+				ThrowError("Failed to get Win32 screen size!");
+			}
+
+			// Set the window's position and size to the screen's size
+			this->x = screenRect.left;
+			this->y = screenRect.top;
+			this->width = screenRect.right - screenRect.left;
+			this->height = screenRect.bottom - screenRect.top;
+		}
+
 		// Create the window
-		this->platformData.hWnd = CreateWindowExA(WS_EX_APPWINDOW, (LPCSTR)(size_t)winClassID, this->title.c_str(), WS_OVERLAPPEDWINDOW, this->x, this->y, this->width, this->height, nullptr, nullptr, hInstance, this);
+		this->platformData.hWnd = CreateWindowExA(WS_EX_APPWINDOW, (LPCSTR)(size_t)winClassID, this->title.c_str(), style, this->x, this->y, this->width, this->height, nullptr, nullptr, hInstance, this);
 		if(!this->platformData.hWnd)
 			ThrowError("Failed to create Win32 window!");
 
@@ -162,6 +188,16 @@ namespace wfe {
 		windowMutex = 0;
 
 		// Show the window
+		if(this->minimized) {
+			// Show the window as minimized
+			ShowWindow(this->platformData.hWnd, SW_MINIMIZE);
+		} else if(this->maximized) {
+			// Show the window as maximized
+			ShowWindow(this->platformData.hWnd, SW_MAXIMIZE);
+		} else {
+			// Show the window as normal
+			ShowWindow(this->platformData.hWnd, SW_SHOWNORMAL);
+		}
 		ShowWindow(this->platformData.hWnd, SW_SHOW);
 	}
 
@@ -184,6 +220,54 @@ namespace wfe {
 		if(!SetWindowTextA(this->platformData.hWnd, title.c_str())) {
 			// Throw an error
 			ThrowError("Failed to set Win32 window title!");
+		}
+	}
+	void Window::SetMinimized(bool minimized) {
+		// Show the window as minimized or restored
+		ShowWindow(this->platformData.hWnd, minimized ? SW_MINIMIZE : SW_RESTORE);
+	}
+	void Window::SetMaximized(bool maximized) {
+		// Show the window as maximized or restored
+		ShowWindow(this->platformData.hWnd, maximized ? SW_MAXIMIZE : SW_RESTORE);
+	}
+	void Window::SetFullscreen(bool fullscreen) {
+		// Apply or unapply the fullscreen style, if required
+		if(fullscreen && !this->fullscreen) {
+			// Set the new fullscreen state and reset the maximized and minimized states
+			this->fullscreen = fullscreen;
+
+			// Get the screen's size
+			RECT screenRect;
+			if(!SystemParametersInfoA(SPI_GETWORKAREA, 0, &screenRect, 0)) {
+				// Throw an error
+				ThrowError("Failed to get Win32 screen size!");
+			}
+
+			// Set the window's new position and size
+			this->x = screenRect.left;
+			this->y = screenRect.top;
+			this->width = screenRect.right - screenRect.left;
+			this->height = screenRect.bottom - screenRect.top;
+
+			if(!SetWindowPos(this->platformData.hWnd, nullptr, this->x, this->y, this->width, this->height, SWP_NOZORDER | SWP_NOACTIVATE)) {
+				// Throw an error
+				ThrowError("Failed to set Win32 window info!");
+			}
+
+			// Set the window's style
+			SetWindowLongA(this->platformData.hWnd, GWL_STYLE, WS_POPUP);
+
+			// Show the window as normal
+			ShowWindow(this->platformData.hWnd, SW_SHOWNORMAL);
+		} else if(!fullscreen && this->fullscreen) {
+			// Set the new fullscreen state
+			this->fullscreen = fullscreen;
+
+			// Set the window's style
+			SetWindowLongA(this->platformData.hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+
+			// Show the window as maximized
+			ShowWindow(this->platformData.hWnd, SW_MAXIMIZE);
 		}
 	}
 

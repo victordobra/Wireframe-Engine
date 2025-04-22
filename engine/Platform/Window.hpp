@@ -60,7 +60,10 @@ namespace wfe {
 		/// @param width The width of the window.
 		/// @param height The height of the window.
 		/// @param title The title of the window.
-		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title);
+		/// @param minimized True if the window should be minimized, otherwise false. False by default.
+		/// @param maximized True if the window should be maximized, otherwise false. False by default.
+		/// @param fullscreen True if the window should be fullscreen, otherwise false. False by default.
+		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized = false, bool maximized = false, bool fullscreen = false);
 		Window(const Window&) = delete;
 		Window(Window&&) = delete;
 
@@ -110,22 +113,22 @@ namespace wfe {
 
 		/// @brief Gets the window's move event.
 		/// @return A reference to the window's move event.
-		Event& GetMoveEvent() {	
+		Event& GetMoveEvent() const {	
 			return this->moveEvent; 
 		}
 		/// @brief Gets the window's resize event.
 		/// @return A reference to the window's resize event.
-		Event& GetResizeEvent() {
+		Event& GetResizeEvent() const {
 			return this->resizeEvent; 
 		}
 		/// @brief Gets the window's rename event.
 		/// @return A reference to the window's rename event.
-		Event& GetRenameEvent() {
+		Event& GetRenameEvent() const {
 			return this->renameEvent; 
 		}
 		/// @brief Gets the window's close event.
 		/// @return A reference to the window's close event.
-		Event& GetCloseEvent() {
+		Event& GetCloseEvent() const {
 			return this->closeEvent; 
 		}
 
@@ -137,6 +140,15 @@ namespace wfe {
 		/// @param width The new width of the window.
 		/// @param height The new height of the window.
 		void SetSize(uint32_t width, uint32_t height);
+		/// @brief Sets if the window is minimized or not.
+		/// @param minimized True if the window should be minimized, otherwise false.
+		void SetMinimized(bool minimized);
+		/// @brief Sets if the window is maximized or not.
+		/// @param maximized True if the window should be maximized, otherwise false.
+		void SetMaximized(bool maximized);
+		/// @brief Sets if the window is fullscreen or not.
+		/// @param fullscreen True if the window should be fullscreen, otherwise false.
+		void SetFullscreen(bool fullscreen);
 		/// @brief Sets the window's title.
 		/// @param title The new title of the window.
 		void SetTitle(const std::string& title);
@@ -154,13 +166,13 @@ namespace wfe {
 
 		int32_t x, y;
 		uint32_t width, height;
-		bool minimized = false, maximized = false;
+		bool minimized = false, maximized = false, fullscreen = false;
 		std::string title;
 		PlatformData platformData;
 
-		Event moveEvent;
-		Event resizeEvent;
-		Event renameEvent;
-		Event closeEvent;
+		mutable Event moveEvent;
+		mutable Event resizeEvent;
+		mutable Event renameEvent;
+		mutable Event closeEvent;
 	};  
 }
