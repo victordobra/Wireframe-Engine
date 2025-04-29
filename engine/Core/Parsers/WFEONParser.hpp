@@ -35,10 +35,13 @@ namespace wfe {
 			size_t startIndex;
 		};
 
-		/// @brief Parses a WFEON file and returns the root object.
+		/// @brief Parses a WFEON file and loads its into into this object.
 		/// @param stream The stream to read the WFEON file from.
-		/// @return The root object of the WFEON file.
-		static WFEONObject Parse(std::istream& stream);
+		void Parse(std::istream& stream);
+		/// @brief Write the WFEON object to a stream.
+		/// @param stream The stream to write the WFEON object to.
+		/// @param floatPrecision The number of decimal places to write for floating point values.
+		void Write(std::ostream& stream, size_t floatPrecision = 3) const;
 	
 		/// @brief A map of values stored in the object, keyed by their name.
 		std::map<std::string, WFEONValue> values;
@@ -53,6 +56,7 @@ namespace wfe {
 		/// @brief A vector containing all complex object values stored in the object.
 		std::vector<WFEONObject> objectValues;
 	private:
-		static void InternalParse(const std::vector<std::string>& tokens, size_t& index, WFEONObject& object, bool root);
+		void InternalParse(const std::vector<std::string>& tokens, size_t& index, bool root);
+		void InternalWrite(std::ostream& stream, const std::string& prefix) const;
 	};
 }

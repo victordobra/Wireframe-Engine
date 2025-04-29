@@ -1,9 +1,9 @@
 #include "WFEONParser.hpp"
-#include <iostream>
+#include <iomanip>
 
 namespace wfe {
 	// Internal helper functions
-	void WFEONObject::InternalParse(const std::vector<std::string>& tokens, size_t& index, WFEONObject& object, bool root) {
+	void WFEONObject::InternalParse(const std::vector<std::string>& tokens, size_t& index, bool root) {
 		// Keep loading until the end of the file or the end of the object
 		while(index < tokens.size()) {
 			// Load the variable name
@@ -14,6 +14,7 @@ namespace wfe {
 				if(root) {
 					throw std::runtime_error("Error parsing WFEON file! Expected variable name, but found '}'.");
 				} else {
+					--index;
 					return;
 				}
 			}
@@ -101,7 +102,7 @@ namespace wfe {
 					}
 
 					// Append the string to its array
-					object.stringValues.push_back(str);
+					this->stringValues.push_back(str);
 				} else if(tokens.at(index) == "true" || tokens.at(index) == "false") {
 					// Throw an error if the previous values in the array are not booleans
 					if(valueType != VALUE_TYPE_COUNT && valueType != VALUE_TYPE_BOOL)
@@ -109,7 +110,7 @@ namespace wfe {
 					valueType = VALUE_TYPE_BOOL;
 
 					// Append the boolean to its array
-					object.boolValues.push_back(tokens.at(index) == "true");
+					this->boolValues.push_back(tokens.at(index) == "true");
 				} else if(std::isdigit(tokens.at(index)[0]) || tokens.at(index)[0] == '-') {
 					// Check if the number is a float or an int
 					if(tokens.at(index).find('.') != std::string::npos) {
@@ -119,7 +120,7 @@ namespace wfe {
 						valueType = VALUE_TYPE_FLOAT;
 
 						// Append the float to its array
-						object.floatValues.push_back(std::stof(tokens.at(index)));
+						this->floatValues.push_back(std::stof(tokens.at(index)));
 					} else {
 						// Throw an error if the previous values in the array are not ints
 						if(valueType != VALUE_TYPE_COUNT && valueType != VALUE_TYPE_INT)
@@ -127,7 +128,7 @@ namespace wfe {
 						valueType = VALUE_TYPE_INT;
 
 						// Append the int to its array
-						object.intValues.push_back(std::stoll(tokens.at(index)));
+						this->intValues.push_back(std::stoll(tokens.at(index)));
 					}
 				} else if(tokens.at(index) == "{") {
 					// Throw an error if the previous values in the array are not objects
@@ -140,10 +141,10 @@ namespace wfe {
 
 					// Create a new object and parse it recursively
 					WFEONObject newObject;
-					InternalParse(tokens, index, newObject, false);
+					newObject.InternalParse(tokens, index, false);
 					
 					// Append the object to its array
-					object.objectValues.push_back(newObject);
+					this->objectValues.push_back(newObject);
 				} else {
 					// Throw an error if the value is not a valid type
 					throw std::runtime_error("Error parsing WFEON file! Expected value, but found '" + tokens.at(index) + "'.");
@@ -156,19 +157,19 @@ namespace wfe {
 			size_t totalCount = 0;
 			switch(valueType) {
 			case VALUE_TYPE_INT:
-				totalCount = object.intValues.size();
+				totalCount = this->intValues.size();
 				break;
 			case VALUE_TYPE_FLOAT:
-				totalCount = object.floatValues.size();
+				totalCount = this->floatValues.size();
 				break;
 			case VALUE_TYPE_BOOL:
-				totalCount = object.boolValues.size();
+				totalCount = this->boolValues.size();
 				break;
 			case VALUE_TYPE_STRING:
-				totalCount = object.stringValues.size();
+				totalCount = this->stringValues.size();
 				break;
 			case VALUE_TYPE_OBJECT:
-				totalCount = object.objectValues.size();
+				totalCount = this->objectValues.size();
 				break;
 			}
 
@@ -178,12 +179,117 @@ namespace wfe {
 				.count = count,
 				.startIndex = totalCount - count
 			};
-			object.values[name] = value;
+			if(this->values.insert({name, value}).second == false)
+				throw std::runtime_error("Error parsing WFEON file! Duplicate variable name '" + name + "'.");
+		}
+	}
+	void WFEONObject::InternalWrite(std::ostream& stream, const std::string& prefix) const {
+		// Write all the values in the object
+		for(const auto& value : this->values) {
+			// Write the variable name
+			stream << prefix << value.first << " = ";
+
+			// Begin an array bracket if the value is an array
+			if(value.second.count != 1)
+				stream << "[ ";
+			
+			// Write all values
+			switch(value.second.type) {
+			case VALUE_TYPE_INT:
+				for(size_t i = 0; i != value.second.count; ++i)
+					stream << this->intValues[value.second.startIndex + i] << ' ';
+				break;
+			case VALUE_TYPE_FLOAT:
+				for(size_t i = 0; i != value.second.count; ++i)
+					stream << this->floatValues[value.second.startIndex + i] << ' ';
+				break;
+			case VALUE_TYPE_BOOL:
+				for(size_t i = 0; i != value.second.count; ++i)
+					stream << (this->boolValues[value.second.startIndex + i] ? "true" : "false") << ' ';
+				break;
+			case VALUE_TYPE_STRING:
+				for(size_t i = 0; i != value.second.count; ++i) {
+					// Build the result string
+					std::string str = "";
+
+					for(size_t j = 0; j != this->stringValues[value.second.startIndex + i].size(); ++j) {
+						// Add the following character, with considerations for special characters
+						switch(this->stringValues[value.second.startIndex + i][j]) {
+						case '\'':
+							str += "\\'";
+							break;
+						case '\"':
+							str += "\\\"";
+							break;
+						case '\?':
+							str += "\\?";
+							break;
+						case '\\':
+							str += "\\\\";
+							break;
+						case '\a':
+							str += "\\a";
+							break;
+						case '\b':
+							str += "\\b";
+							break;
+						case '\f':
+							str += "\\f";
+							break;
+						case '\n':
+							str += "\\n";
+							break;
+						case '\r':
+							str += "\\r";
+							break;
+						case '\t':
+							str += "\\t";
+							break;
+						case '\v':
+							str += "\\v";
+							break;
+						default:
+							str += this->stringValues[value.second.startIndex + i][j];
+						}
+					}
+
+					stream << '\"' << str << "\" ";
+				}
+				break;
+			case VALUE_TYPE_OBJECT:
+				// Check if the current value is an array
+				if(value.second.count != 1) {
+					// Move on to the next line
+					stream << '\n';
+
+					// Write all objects
+					for(size_t i = 0; i != value.second.count; ++i) {
+						stream << prefix << "\t{\n";
+						this->objectValues[value.second.startIndex + i].InternalWrite(stream, prefix + "\t\t");
+						stream << prefix << "\t}\n";
+					}
+
+					// Leave space for the closing bracket
+					stream << prefix;
+				} else {
+					// Write the object
+					stream << "{\n";
+					this->objectValues[value.second.startIndex].InternalWrite(stream, prefix + "\t");
+					stream << prefix << "}\n";
+				}
+
+				break;
+			}
+
+			// Write the closing bracket if the value is an array
+			if(value.second.count != 1)
+				stream << ']';
+			stream << '\n';
 		}
 	}
 
 	// Public functions
-	WFEONObject WFEONObject::Parse(std::istream& stream) {
+	void WFEONObject::Parse(std::istream& stream) {
 		// Get all the tokens from the stream
 		std::vector<std::string> tokens;
 		std::string token = "";
@@ -285,10 +391,23 @@ namespace wfe {
 		if(!token.empty())
 			tokens.push_back(token);
 		
-		// Load the root object
-		WFEONObject rootObject;
+		// Load the object
 		size_t index = 0;
-		InternalParse(tokens, index, rootObject, true);
-		return rootObject;
+		this->InternalParse(tokens, index, true);
+	}
+	void WFEONObject::Write(std::ostream& stream, size_t floatPrecision) const {
+		// Get the stream's properties
+		size_t oldPrecision = (size_t)stream.precision();
+		std::ostream::fmtflags oldFlags = stream.flags();
+
+		// Set the stream's properties
+		stream << std::fixed << std::setprecision(floatPrecision);
+
+		// Write the object to the stream
+		this->InternalWrite(stream, "");
+
+		// Restore the stream's properties
+		stream.precision(oldPrecision);
+		stream.flags(oldFlags);
 	}
 }
