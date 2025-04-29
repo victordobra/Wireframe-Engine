@@ -2,6 +2,7 @@
 
 #include "Core/Management/Event.hpp"
 #include "Core/Management/TypeName.hpp"
+#include "Core/Parsers/WFEONParser.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
 

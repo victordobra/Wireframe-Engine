@@ -8,7 +8,7 @@ namespace wfe {
 	/// @brief A class abstracting an event, calling listeners when triggered.
 	class Event {
 	public:
-		/// @brief THe event listener callback type.
+		/// @brief The event listener callback type.
 		/// @param userData The data passed to the listener for every event trigger.
 		/// @param params The parameters to pass to the listener.
 		/// @return The return value of the listener, which can be optionally queried.

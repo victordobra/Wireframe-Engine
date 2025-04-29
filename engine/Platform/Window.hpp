@@ -114,7 +114,7 @@ namespace wfe {
 
 		/// @brief Gets the window's input manager.
 		/// @return The window's input manager.
-		InputManager* GetInputManager() {
+		InputManager* GetInputManager() const {
 			return this->inputManager; 
 		}
 
