@@ -413,7 +413,7 @@ namespace wfe {
 				exportFutures[i] = std::async(std::launch::async | std::launch::deferred, ExportAssetJob, directory.assets[i], path + directory.paths[i]);
 		}
 
-		// Generat the directory's info object
+		// Generate the directory's info object
 		WFEONObject wfeonObject;
 		wfeonObject.values.insert({ "assets", { WFEONObject::VALUE_TYPE_OBJECT, (uint64_t)directory.assets.size(), 0 } });
 		wfeonObject.objectValues.resize(directory.assets.size());
@@ -464,7 +464,6 @@ namespace wfe {
 			for(size_t i = 0; i != exportFutures.size(); ++i)
 				exportFutures[i].wait();
 		}
-
 	}
 	void AssetManager::UnloadDirectory(const std::string& path) {
 		// Get the directory iterator

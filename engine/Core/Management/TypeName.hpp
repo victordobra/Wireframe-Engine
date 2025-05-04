@@ -11,7 +11,7 @@ namespace wfe {
 	/// @tparam T The template type.
 	/// @return The function path of this function.
 	template<class T>
-	WFE_INLINE std::string GetPath() {
+	inline std::string GetPath() {
 		return std::source_location::current().function_name();
 	}
 
@@ -19,7 +19,7 @@ namespace wfe {
 	/// @tparam T The type to get the name of.
 	/// @return The name of the type.
 	template<class T>
-	WFE_INLINE std::string GetTypeName() {
+	inline std::string GetTypeName() {
 		// Get the function path for a dummy type and the dummy type's position
 		std::string dummyPath = GetPath<DummyType>();
 		size_t typePos = dummyPath.rfind("DummyType");

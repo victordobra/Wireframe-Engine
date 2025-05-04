@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Management/TypeName.hpp"
 #include "Core/Types/Defines.hpp"
 #include <set>
 #include <string>
@@ -52,7 +53,7 @@ struct AssetType##type##Constructor { \
 	} \
 	AssetType##type##Constructor() { \
 		wfe::AssetType assetType; \
-		assetType.name = #type; \
+		assetType.name = wfe::GetTypeName<type>(); \
 		assetType.importExtensions = extensions; \
 		assetType.constructor = CreateAsset; \
 		try { \
@@ -60,5 +61,5 @@ struct AssetType##type##Constructor { \
 		} catch (const std::invalid_argument&) { } \
 	} \
 }; \
-static AssetType##type##Constructor assetType##type##ConstructorInstance;
+static inline AssetType##type##Constructor assetType##type##ConstructorInstance{};
 }

@@ -165,19 +165,6 @@ namespace wfe {
 	constexpr int64_t INTPTR_T_MAX = INT32_T_MAX;
 #endif
 
-	// Inlining
-#if defined(_MSC_VER)
-/// @brief Declares the specified function as inline.
-#define WFE_INLINE __forceinline
-/// @brief Declares the specified function as not inline.
-#define WFE_NOINLINE __declspec(noinline)
-#else
-/// @brief Declares the specified function as inline.
-#define WFE_INLINE inline
-/// @brief Declares the specified function as not inline.
-#define WFE_NOINLINE
-#endif
-
 /// @brief Gets the string version of the macro's value. Used for a string conversion workaround.
 /// @param macro The macro whose string value to return.
 #define WFE_MACRO_STRING(macro) #macro
