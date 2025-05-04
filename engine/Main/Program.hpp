@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Core/Assets/AssetManager.hpp"
 #include "Core/Types/Defines.hpp"
-
 #include "Platform/Window.hpp"
 
 namespace wfe {
@@ -24,13 +24,13 @@ namespace wfe {
 
 		/// @brief Gets the program's window.
 		/// @return The program's window.
-		Window* GetWindow() {
+		Window* GetWindow() const {
 			return this->window;
 		}
-		/// @brief Gets the program's window.
-		/// @return The program's window.
-		const Window* GetWindow() const {
-			return this->window;
+		/// @brief Gets the program's asset manager.
+		/// @return The program's asset manager.
+		AssetManager* GetAssetManager() const {
+			return this->assetManager;
 		}
 
 		/// @brief Destroys the program and its components.
@@ -41,5 +41,6 @@ namespace wfe {
 		atomic_uint32_t running = 1;
 
 		Window* window;
+		AssetManager* assetManager;
 	};
 }

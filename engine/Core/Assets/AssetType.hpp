@@ -55,7 +55,9 @@ struct AssetType##type##Constructor { \
 		assetType.name = #type; \
 		assetType.importExtensions = extensions; \
 		assetType.constructor = CreateAsset; \
-		wfe::AssetType::RegisterAssetType(assetType); \
+		try { \
+			wfe::AssetType::RegisterAssetType(assetType); \
+		} catch (const std::invalid_argument&) { } \
 	} \
 }; \
 static AssetType##type##Constructor assetType##type##ConstructorInstance;

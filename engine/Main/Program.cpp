@@ -1,4 +1,5 @@
 #include "Program.hpp"
+#include "ProjectInfo.hpp"
 
 namespace wfe {
     // Close event listener
@@ -15,8 +16,11 @@ namespace wfe {
     // Public functions
 	Program::Program(int32_t argc, char_t** args) {
         // Create the program's window and add the close listener
-        this->window = new Window(200, 200, 1280, 720, "Wireframe Engine");
+        this->window = new Window(200, 200, 1280, 720, WFE_PROJECT_NAME);
         this->window->GetCloseEvent().AddListener({ CloseEventListener, this });
+
+        // Create the program's asset manager
+        this->assetManager = new AssetManager(this);
     }
 
 	int32_t Program::Run() {
@@ -30,7 +34,8 @@ namespace wfe {
     }
 
     Program::~Program() {
-        // Destroy the program's window
+        // Destroy the program's components
+        delete this->assetManager;
         delete this->window;
     }
 }

@@ -335,14 +335,22 @@ namespace wfe {
 				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"id\" value is not a single integer!");
 			ids[i] = (uint64_t)assetObject.intValues[idValue.startIndex];
 
-			// Get the asset's type
-			const WFEONObject::WFEONValue& typeValue = assetObject.values.at("type");
-			if(typeValue.type != WFEONObject::VALUE_TYPE_STRING)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"type\" value is not a string!");
-			if(typeValue.count != 1)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"type\" value is not a single string!");
-			assetTypes[i] = &AssetType::GetAssetTypeName(assetObject.stringValues[typeValue.startIndex]);
+			// Get the file extension
+			size_t fileStart = directory.paths[i].find_last_of("/\\");
+			if(fileStart == std::string::npos) {
+				fileStart = 0;
+			} else {
+				++fileStart;
+			}
+			size_t extensionStart = directory.paths[i].find_last_of('.');
+			if(extensionStart == std::string::npos || extensionStart < fileStart)
+				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value does not contain a file extension!");
+			
+			std::string extension = directory.paths[i].substr(extensionStart + 1);
 
+			// Get the asset's type
+			assetTypes[i] = &AssetType::GetAssetTypeExtension(extension);
+	
 			// Get the asset's dependencies
 			const WFEONObject::WFEONValue& dependenciesValue = assetObject.values.at("dependencies");
 			if(dependenciesValue.type != WFEONObject::VALUE_TYPE_COUNT) {
@@ -429,11 +437,6 @@ namespace wfe {
 			// Create the ID value
 			assetObject.values.insert({ "id", { WFEONObject::VALUE_TYPE_INT, 1, 0 } });
 			assetObject.intValues[0] = (int64_t)directory.assets[i]->GetID();
-
-			// Create the type value
-			std::string typeName = WFE_TYPE_NAME(*(directory.assets[i]));
-			assetObject.values.insert({ "type", { WFEONObject::VALUE_TYPE_STRING, 1, 1 } });
-			assetObject.stringValues[1] = typeName;
 
 			// Create the dependencies value
 			assetObject.values.insert({ "dependencies", { WFEONObject::VALUE_TYPE_INT, (uint64_t)assetDependencies.size(), 1 } });

@@ -16,7 +16,7 @@ namespace wfe {
 	public:
 		/// @brief Creates a new asset manager.
 		/// @param program The program that owns the asset manager.
-		AssetManager(Program* program);
+		AssetManager(Program* program) : program(program) { };
 		AssetManager(const AssetManager&) = delete;
 		AssetManager(AssetManager&&) = delete;
 
@@ -40,6 +40,21 @@ namespace wfe {
 		/// @brief Unloads all assets from a directory.
 		/// @param path The path to the directory to unload assets from.
 		void UnloadDirectory(const std::string& path);
+
+		/// @brief Gets the asset with the given ID.
+		/// @param id The ID of the asset to get.
+		/// @return A pointer to the asset with the given ID, or nullptr if the asset does not exist.
+		Asset* GetAsset(uint64_t id) const {
+			auto it = this->assets.find(id);
+			if (it != this->assets.end())
+				return it->second;
+			return nullptr;
+		}
+		/// @brief Gets the asset manager's owned assets.
+		/// @return The map of the asset manager's owned assets.
+		const std::unordered_map<uint64_t, Asset*>& GetAssets() const {
+			return this->assets;
+		}
 
 		/// @brief Destroys the asset manager.
 		~AssetManager() = default;
