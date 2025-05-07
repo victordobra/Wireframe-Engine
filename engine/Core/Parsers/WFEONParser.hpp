@@ -11,7 +11,7 @@ namespace wfe {
 	struct WFEONObject {
 	public:
 		/// @brief An enum that represents the types of values stored in the object.
-		typedef enum ValueType {
+		enum ValueType {
 			/// @brief Integer value type.
 			VALUE_TYPE_INT,
 			/// @brief Floating point value type.

@@ -32,7 +32,7 @@ namespace wfe {
 	typedef wchar_t charw_t;
 
 	// Architecture specific types
-#ifdef WFE_ARCHITECTURE_X86_64
+#ifdef WFE_ARCHITECTURE_64_BIT
 	typedef uint64_t size_t;
 	typedef  int64_t ptrdiff_t;
 	typedef  int64_t intptr_t;
@@ -137,7 +137,7 @@ namespace wfe {
 	/// @brief The maximum value a float64_t can hold.
 	constexpr float64_t FLOAT64_T_MAX = 1.79769e+308;
 
-#if defined(WFE_ARCHITECTURE_X86_64)
+#if defined(WFE_ARCHITECTURE_64_BIT)
 	/// @brief The minimim value a size_t can hold.
 	constexpr uint64_t SIZE_T_MIN = UINT64_T_MIN;
 	/// @brief The maximim value a size_t can hold.

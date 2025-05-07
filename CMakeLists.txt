@@ -2,10 +2,6 @@
 include(./.env.cmake OPTIONAL RESULT_VARIABLE LOCAL_ENV)
 message(STATUS "Local .env file included successfully.")
 
-# Include the local .build file
-include(./.build.cmake OPTIONAL RESULT_VARIABLE LOCAL_BUILD)
-message(STATUS "Local .build file included successfully.")
-
 # Set the minumum required version
 cmake_minimum_required(VERSION ${CMAKE_MIN_VERSION})
 message(STATUS "CMake minimum required version set to ${CMAKE_MIN_VERSION}.")

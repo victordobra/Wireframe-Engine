@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ProjectInfo.hpp"
 #include <stddef.h>
 
 // Windows
@@ -20,12 +21,12 @@
 #endif
 
 // Architecture
-#if defined(__i386__)
-// Defined when building for a 32-bit architecture
-#define WFE_ARCHITECTURE_I386
-#else
+#if WFE_VOID_POINTER_SIZE == 8
 // Defined when building for a 64-bit architecture
-#define WFE_ARCHITECTURE_X86_64
+#define WFE_ARCHITECTURE_64_BIT
+#else
+// Defined when building for a 32-bit architecture
+#define WFE_ARCHITECTURE_32_BIT
 #endif
 
 // Build mode
