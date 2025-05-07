@@ -15,3 +15,6 @@
 
 #include "Platform/Input.hpp"
 #include "Platform/Window.hpp"
+
+#include "Vulkan/Loader/VulkanLoader.hpp"
+#include "Vulkan/VulkanRenderer.hpp"

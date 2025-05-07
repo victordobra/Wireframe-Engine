@@ -3,6 +3,7 @@
 #include "Core/Assets/AssetManager.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Platform/Window.hpp"
+#include "Vulkan/VulkanRenderer.hpp"
 
 namespace wfe {
 	/// @brief A class containing an abstraction for the program and its components.
@@ -32,6 +33,11 @@ namespace wfe {
 		AssetManager* GetAssetManager() const {
 			return this->assetManager;
 		}
+		/// @brief Gets the program's Vulkan renderer.
+		/// @return The program's Vulkan renderer.
+		VulkanRenderer* GetRenderer() const {
+			return this->renderer;
+		}
 
 		/// @brief Destroys the program and its components.
 		~Program();
@@ -42,5 +48,6 @@ namespace wfe {
 
 		Window* window;
 		AssetManager* assetManager;
+		VulkanRenderer* renderer;
 	};
 }

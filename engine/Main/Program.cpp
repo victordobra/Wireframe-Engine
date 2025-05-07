@@ -19,8 +19,9 @@ namespace wfe {
         this->window = new Window(200, 200, 1280, 720, WFE_PROJECT_NAME);
         this->window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
-        // Create the program's asset manager
+        // Create all other components
         this->assetManager = new AssetManager(this);
+        this->renderer = new VulkanRenderer(this->window);
     }
 
 	int32_t Program::Run() {
@@ -35,6 +36,7 @@ namespace wfe {
 
     Program::~Program() {
         // Destroy the program's components
+        delete this->renderer;
         delete this->assetManager;
         delete this->window;
     }
