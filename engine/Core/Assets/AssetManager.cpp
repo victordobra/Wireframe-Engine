@@ -145,7 +145,7 @@ namespace wfe {
 		
 		// Read the asset count
 		uint64_t assetCount;
-		stream.read((char_t*)assetCount, sizeof(uint64_t));
+		stream.read((char*)assetCount, sizeof(uint64_t));
 
 		// Read every asset
 		Directory directory;
@@ -159,20 +159,20 @@ namespace wfe {
 		for(size_t i = 0; i != assetCount; ++i) {
 			// Read the asset's path
 			uint64_t pathLength;
-			stream.read((char_t*)&pathLength, sizeof(uint64_t));
+			stream.read((char*)&pathLength, sizeof(uint64_t));
 
 			directory.paths[i].resize(pathLength, '\0');
-			stream.read((char_t*)directory.paths[i].data(), pathLength);
+			stream.read((char*)directory.paths[i].data(), pathLength);
 
 			// Read the asset's ID
-			stream.read((char_t*)&ids[i], sizeof(uint64_t));
+			stream.read((char*)&ids[i], sizeof(uint64_t));
 
 			// Read the asset's type
 			uint64_t typeNameLength;
-			stream.read((char_t*)&typeNameLength, sizeof(uint64_t));
+			stream.read((char*)&typeNameLength, sizeof(uint64_t));
 
 			std::string typeName(typeNameLength, '\0');
-			stream.read((char_t*)typeName.data(), typeNameLength);
+			stream.read((char*)typeName.data(), typeNameLength);
 
 			assetTypes[i] = &AssetType::GetAssetTypeName(typeName);
 			if(assetTypes[i] == nullptr)
@@ -180,11 +180,11 @@ namespace wfe {
 
 			// Read the asset's dependencies
 			uint64_t dependencyCount;
-			stream.read((char_t*)&dependencyCount, sizeof(uint64_t));
+			stream.read((char*)&dependencyCount, sizeof(uint64_t));
 			dependencies[i].resize(dependencyCount);
 
 			for(size_t j = 0; j != dependencyCount; ++j)
-				stream.read((char_t*)&dependencies[i][j], sizeof(uint64_t));
+				stream.read((char*)&dependencies[i][j], sizeof(uint64_t));
 		}
 
 		stream.close();
@@ -248,24 +248,24 @@ namespace wfe {
 		
 		// Write the asset count
 		uint64_t assetCount = directory.assets.size();
-		stream.write((char_t*)&assetCount, sizeof(uint64_t));
+		stream.write((char*)&assetCount, sizeof(uint64_t));
 
 		// Write every asset
 		for(size_t i = 0; i != directory.assets.size(); ++i) {
 			// Write the asset's path
 			uint64_t pathLength = directory.paths[i].size();
-			stream.write((char_t*)&pathLength, sizeof(uint64_t));
-			stream.write((char_t*)directory.paths[i].data(), pathLength);
+			stream.write((char*)&pathLength, sizeof(uint64_t));
+			stream.write((char*)directory.paths[i].data(), pathLength);
 
 			// Write the asset's ID
 			uint64_t id = directory.assets[i]->GetID();
-			stream.write((char_t*)&id, sizeof(uint64_t));
+			stream.write((char*)&id, sizeof(uint64_t));
 
 			// Write the asset's type
 			std::string typeName = WFE_TYPE_NAME(*(directory.assets[i]));
 			uint64_t typeNameLength = typeName.size();
-			stream.write((char_t*)&typeNameLength, sizeof(uint64_t));
-			stream.write((char_t*)typeName.data(), typeNameLength);
+			stream.write((char*)&typeNameLength, sizeof(uint64_t));
+			stream.write((char*)typeName.data(), typeNameLength);
 
 			// Write the asset's dependencies
 			std::vector<Asset*> assetDependencies = directory.assets[i]->GetDependencies();
@@ -274,10 +274,10 @@ namespace wfe {
 				dependencyIDs[j] = assetDependencies[j]->GetID();
 
 			uint64_t dependencyCount = assetDependencies.size();
-			stream.write((char_t*)&dependencyCount, sizeof(uint64_t));
+			stream.write((char*)&dependencyCount, sizeof(uint64_t));
 			
 			for(size_t j = 0; j != dependencyCount; ++j)
-				stream.write((char_t*)&dependencyIDs[j], sizeof(uint64_t));
+				stream.write((char*)&dependencyIDs[j], sizeof(uint64_t));
 		}
 
 		stream.close();

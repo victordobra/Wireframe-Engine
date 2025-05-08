@@ -38,12 +38,12 @@ namespace wfe {
 		}
 		/// @brief Gets the text file's data.
 		/// @return A pointer to the text file's data.
-		char_t* GetData() {
+		char* GetData() {
 			return data.data();
 		}
 		/// @brief Gets the text file's data.
 		/// @return A constant pointer to the text file's data.
-		const char_t* GetData() const {
+		const char* GetData() const {
 			return data.data();
 		}
 
@@ -51,6 +51,6 @@ namespace wfe {
 	private:
 		WFE_ASSET_TYPE(TextFile, { "txt" })
 
-		std::vector<char_t> data;
+		std::vector<char> data;
 	};
 }

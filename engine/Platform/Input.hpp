@@ -358,7 +358,7 @@ namespace wfe {
 		/// @brief Checks if the given key is down.
 		/// @param key The key to check.
 		/// @return True if the key is down, otherwise false.
-		bool8_t IsKeyDown(Key key) const {
+		bool IsKeyDown(Key key) const {
 			// Get the key state value and bit indices
 			size_t valueIndex = (size_t)key >> 1;
 			size_t bitIndex = ((size_t)key & 1) << 2;
@@ -369,7 +369,7 @@ namespace wfe {
 		/// @brief Checks if the given key is pressed.
 		/// @param key The key to check.
 		/// @return True if the key is pressed, otherwise false.
-		bool8_t IsKeyPressed(Key key) const {
+		bool IsKeyPressed(Key key) const {
 			// Get the key state value and bit indices
 			size_t valueIndex = (size_t)key >> 1;
 			size_t bitIndex = (((size_t)key & 1) << 2) + 1;
@@ -380,7 +380,7 @@ namespace wfe {
 		/// @brief Checks if the given key is released.
 		/// @param key The key to check.
 		/// @return True if the key is released, otherwise false.
-		bool8_t IsKeyReleased(Key key) const {
+		bool IsKeyReleased(Key key) const {
 			// Get the key state value and bit indices
 			size_t valueIndex = (size_t)key >> 1;
 			size_t bitIndex = (((size_t)key & 1) << 2) + 2;

@@ -45,9 +45,9 @@ namespace wfe {
 			/// @brief The new height of the window.
 			uint32_t height;
 			/// @brief True if the window is minimized, otherwise false.
-			bool8_t minimized;
+			bool minimized;
 			/// @brief True if the window is maximized, otherwise false.
-			bool8_t maximized;
+			bool maximized;
 		};
 		/// @brief A structure containing the window's rename data, passed as an argument to all listeners of the rename event.
 		struct RenameEventData {
@@ -64,7 +64,7 @@ namespace wfe {
 		/// @param minimized True if the window should be minimized, otherwise false. False by default.
 		/// @param maximized True if the window should be maximized, otherwise false. False by default.
 		/// @param fullscreen True if the window should be fullscreen, otherwise false. False by default.
-		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool8_t minimized = false, bool8_t maximized = false, bool8_t fullscreen = false);
+		Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized = false, bool maximized = false, bool fullscreen = false);
 		Window(const Window&) = delete;
 		Window(Window&&) = delete;
 
@@ -93,12 +93,12 @@ namespace wfe {
 		}
 		/// @brief Checks if the window is minimized.
 		/// @return True if the window is minimized, otherwise false.
-		bool8_t IsMinimized() const {
+		bool IsMinimized() const {
 			return this->minimized; 
 		}
 		/// @brief Checks if the window is maximized.
 		/// @return True if the window is maximized, otherwise false.
-		bool8_t IsMaximized() const {
+		bool IsMaximized() const {
 			return this->maximized; 
 		}
 		/// @brief Gets the window's title.
@@ -149,13 +149,13 @@ namespace wfe {
 		void SetSize(uint32_t width, uint32_t height);
 		/// @brief Sets if the window is minimized or not.
 		/// @param minimized True if the window should be minimized, otherwise false.
-		void SetMinimized(bool8_t minimized);
+		void SetMinimized(bool minimized);
 		/// @brief Sets if the window is maximized or not.
 		/// @param maximized True if the window should be maximized, otherwise false.
-		void SetMaximized(bool8_t maximized);
+		void SetMaximized(bool maximized);
 		/// @brief Sets if the window is fullscreen or not.
 		/// @param fullscreen True if the window should be fullscreen, otherwise false.
-		void SetFullscreen(bool8_t fullscreen);
+		void SetFullscreen(bool fullscreen);
 		/// @brief Sets the window's title.
 		/// @param title The new title of the window.
 		void SetTitle(const std::string& title);
@@ -173,7 +173,7 @@ namespace wfe {
 
 		int32_t x, y;
 		uint32_t width, height;
-		bool8_t minimized = false, maximized = false, fullscreen = false;
+		bool minimized = false, maximized = false, fullscreen = false;
 		std::string title;
 		PlatformData platformData;
 

@@ -3,7 +3,7 @@
 
 namespace wfe {
 	// Constants
-	const char_t* const DEFAULT_LOG_FILE = "log.txt";
+	const char* const DEFAULT_LOG_FILE = "log.txt";
 
 #if defined(WFE_BUILD_MODE_DEBUG)
 	const Logger::MessageLevelMask DEFAULT_LOG_MESSAGE_LEVELS = Logger::MESSAGE_LEVEL_ALL;
@@ -26,7 +26,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	Program::Program(int32_t argc, char_t** args) {
+	Program::Program(int32_t argc, char** args) {
 		// Create the program's logger
 		this->logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
 		

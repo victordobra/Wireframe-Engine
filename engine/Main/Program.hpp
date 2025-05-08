@@ -13,7 +13,7 @@ namespace wfe {
 		/// @brief Creates the program and its components.
 		/// @param argc The number for console arguments given. Defaulted to 0.
 		/// @param args The console arguments given, or nullpre if none are present.
-		Program(int32_t argc = 0, char_t** args = nullptr);
+		Program(int32_t argc = 0, char** args = nullptr);
 		Program(const Program&) = delete;
 		Program(Program&&) noexcept = delete;
 

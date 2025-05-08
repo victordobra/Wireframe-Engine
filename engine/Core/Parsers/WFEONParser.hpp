@@ -50,7 +50,7 @@ namespace wfe {
 		/// @brief A vector containing all floating point values stored in the object.
 		std::vector<float32_t> floatValues;
 		/// @brief A vector containing all boolean values stored in the object.
-		std::vector<bool8_t> boolValues;
+		std::vector<bool> boolValues;
 		/// @brief A vector containing all string values stored in the object.
 		std::vector<std::string> stringValues;
 		/// @brief A vector containing all complex object values stored in the object.

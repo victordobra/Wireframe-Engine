@@ -9,7 +9,7 @@
 namespace wfe {
 	// Constants
 	static constexpr size_t ERR_BUFFER_SIZE = 256;
-	static constexpr const char_t* CLASS_NAME = "WFEWindowClass";
+	static constexpr const char* CLASS_NAME = "WFEWindowClass";
 
 	// Internal static variables
 	static std::unordered_map<HWND, Window*> windowMap;
@@ -21,7 +21,7 @@ namespace wfe {
 	// Internal functions
 	static void ThrowError(const std::string& message) {
 		// Format the error message
-		char_t errBuffer[ERR_BUFFER_SIZE] = "Unknown error.";
+		char errBuffer[ERR_BUFFER_SIZE] = "Unknown error.";
 		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, GetLastError(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), errBuffer, ERR_BUFFER_SIZE, nullptr);
 
 		// Throw an error
@@ -84,7 +84,7 @@ namespace wfe {
 		}
 		case WM_SETTEXT: {
 			// Update the window's title
-			this->title = (const char_t*)lParam;
+			this->title = (const char*)lParam;
 
 			// Set the rename event data
 			RenameEventData data {
@@ -203,7 +203,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool8_t minimized, bool8_t maximized, bool8_t fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
+	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized, bool maximized, bool fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
 		// Lock the window mutex
 		uint32_t lock = 0;
 		while(!windowMutex.compare_exchange_weak(lock, 1))
@@ -321,15 +321,15 @@ namespace wfe {
 			ThrowError("Failed to set Win32 window title!");
 		}
 	}
-	void Window::SetMinimized(bool8_t minimized) {
+	void Window::SetMinimized(bool minimized) {
 		// Show the window as minimized or restored
 		ShowWindow(this->platformData.hWnd, minimized ? SW_MINIMIZE : SW_RESTORE);
 	}
-	void Window::SetMaximized(bool8_t maximized) {
+	void Window::SetMaximized(bool maximized) {
 		// Show the window as maximized or restored
 		ShowWindow(this->platformData.hWnd, maximized ? SW_MAXIMIZE : SW_RESTORE);
 	}
-	void Window::SetFullscreen(bool8_t fullscreen) {
+	void Window::SetFullscreen(bool fullscreen) {
 		// Apply or unapply the fullscreen style, if required
 		if(fullscreen && !this->fullscreen) {
 			// Set the new fullscreen state and reset the maximized and minimized states

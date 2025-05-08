@@ -341,9 +341,9 @@ namespace wfe {
 	
 	// Constants
 #if defined(WFE_PLATFORM_WINDOWS)
-	static const char_t* const LIBRARY_NAME = "vulkan-1.dll";
+	static const char* const LIBRARY_NAME = "vulkan-1.dll";
 #elif defined(WFE_PLATFORM_LINUX)
-	static const char_t* const LIBRARY_NAME = "libvulkan.so";
+	static const char* const LIBRARY_NAME = "libvulkan.so";
 #endif
 				  
 	// Internal variables

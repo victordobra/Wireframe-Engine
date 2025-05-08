@@ -34,7 +34,7 @@ namespace wfe {
 		/// @brief Gets a string corresponding to the given message level. Used to output a message's severity level.
 		/// @param level The severity level to convert.
 		/// @return The string containing the level's name.
-		static const char_t* GetMessageLevelString(MessageLevel level) {
+		static const char* GetMessageLevelString(MessageLevel level) {
 			switch(level) {
 			case MESSAGE_LEVEL_FATAL:
 				return "[FATAL]  ";
@@ -57,7 +57,7 @@ namespace wfe {
 		/// @param filePath The math of the file the logger should output to.
 		/// @param messageLevels A bitmask containing the message severity levels the logger shouldn't ignore. Defaulted to include all levels.
 		/// @param logConsole True if the logger should output to the console, otherwise false. True by default.
-		Logger(const char_t* filePath, MessageLevelMask messageLevels = MESSAGE_LEVEL_ALL, bool logConsole = true) : messageLevels(messageLevels), logConsole(logConsole) {
+		Logger(const char* filePath, MessageLevelMask messageLevels = MESSAGE_LEVEL_ALL, bool logConsole = true) : messageLevels(messageLevels), logConsole(logConsole) {
 			// Open the output file stream
 			outStream.open(filePath);
 		}
@@ -76,7 +76,7 @@ namespace wfe {
 				return;
 			
 			// Output the message
-			const char_t* levelStr = GetMessageLevelString(level);
+			const char* levelStr = GetMessageLevelString(level);
 			outStream << levelStr << ' ' << message << '\n';
 			if(logConsole)
 				std::cout << levelStr << ' ' << message << '\n';

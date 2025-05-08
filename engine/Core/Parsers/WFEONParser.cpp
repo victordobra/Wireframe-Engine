@@ -296,7 +296,7 @@ namespace wfe {
 		bool readingString = false, readingLineComment = false, readingBlockComment = false;
 		bool stringSpecial = false;
 
-		for(char_t c, prev = 0; stream.get(c); prev = c) {
+		for(char c, prev = 0; stream.get(c); prev = c) {
 			if(readingString) {
 				// Add the character to the token
 				token += c;
