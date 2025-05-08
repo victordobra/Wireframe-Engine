@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Assets/AssetManager.hpp"
+#include "Core/Debug/Logger.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
@@ -23,20 +24,25 @@ namespace wfe {
 		/// @return The program's return code.
 		int32_t Run();
 
+		/// @brief Gets the program's logger.
+		/// @return The program's logger.
+		Logger* GetLogger() const {
+			return this->logger;
+		}
 		/// @brief Gets the program's window.
 		/// @return The program's window.
 		Window* GetWindow() const {
 			return this->window;
 		}
-		/// @brief Gets the program's asset manager.
-		/// @return The program's asset manager.
-		AssetManager* GetAssetManager() const {
-			return this->assetManager;
-		}
 		/// @brief Gets the program's Vulkan renderer.
 		/// @return The program's Vulkan renderer.
 		VulkanRenderer* GetRenderer() const {
 			return this->renderer;
+		}
+		/// @brief Gets the program's asset manager.
+		/// @return The program's asset manager.
+		AssetManager* GetAssetManager() const {
+			return this->assetManager;
 		}
 
 		/// @brief Destroys the program and its components.
@@ -46,8 +52,9 @@ namespace wfe {
 
 		atomic_uint32_t running = 1;
 
+		Logger* logger;
 		Window* window;
-		AssetManager* assetManager;
 		VulkanRenderer* renderer;
+		AssetManager* assetManager;
 	};
 }
