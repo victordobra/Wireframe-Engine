@@ -83,7 +83,11 @@ namespace wfe {
 		}
 
 		/// @brief Destroys the logger.
-		~Logger();
+		~Logger() {
+			// Close the file, if open
+			if(outStream.is_open())
+				outStream.close();
+		}
 	private:
 		std::ofstream outStream;
 		MessageLevelMask messageLevels;
