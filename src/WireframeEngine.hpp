@@ -20,5 +20,6 @@
 #include "Platform/Window.hpp"
 
 #include "Vulkan/Instance/VulkanInstance.hpp"
+#include "Vulkan/Instance/VulkanSurface.hpp"
 #include "Vulkan/Loader/VulkanLoader.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
