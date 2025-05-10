@@ -75,11 +75,15 @@ namespace wfe {
 			if(!(level & messageLevels))
 				return;
 			
-			// Output the message
+			// Output the message and flush the output streams
 			const char* levelStr = GetMessageLevelString(level);
+
 			outStream << levelStr << ' ' << message << '\n';
-			if(logConsole)
+			outStream.flush();
+			if(logConsole) {
 				std::cout << levelStr << ' ' << message << '\n';
+				std::cout.flush();
+			}
 		}
 
 		/// @brief Destroys the logger.

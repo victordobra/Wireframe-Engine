@@ -29,8 +29,6 @@ namespace wfe {
 	Program::Program(int32_t argc, char** args) {
 		// Create the program's logger
 		this->logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
-		
-		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, "Testing testing");
 
 		// Create the program's window and add the close listener
 		this->window = new Window(200, 200, 1280, 720, WFE_PROJECT_NAME);
