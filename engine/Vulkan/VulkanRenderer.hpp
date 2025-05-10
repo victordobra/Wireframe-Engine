@@ -1,40 +1,43 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
-#include "Platform/Window.hpp"
 
+#include "Instance/VulkanInstance.hpp"
 #include "Loader/VulkanLoader.hpp"
 
 namespace wfe {
-    /// @brief A class containing all Vulkan base classes required for a renderer.
-    class VulkanRenderer {
-    public:
-        /// @brief Creates the Vulkan renderer.
-        /// @param window The window to render to.
-        VulkanRenderer(Window* window);
-        VulkanRenderer(const VulkanRenderer&) = delete;
-        VulkanRenderer(VulkanRenderer&&) = delete;
+	class Program;
 
-        VulkanRenderer& operator=(const VulkanRenderer&) = delete;
-        VulkanRenderer& operator=(VulkanRenderer&&) = delete;
+	/// @brief A class containing all Vulkan base classes required for a renderer.
+	class VulkanRenderer {
+	public:
+		/// @brief Creates the Vulkan renderer.
+		/// @param program The program owning this renderer.
+		VulkanRenderer(Program* program);
+		VulkanRenderer(const VulkanRenderer&) = delete;
+		VulkanRenderer(VulkanRenderer&&) = delete;
 
-        /// @brief Gets the window the Vulkan renderer is displaying to.
-        /// @return The window the Vulkan renderer is displaying to.
-        Window* GetWindow() const {
-            return this->window;
-        }
+		VulkanRenderer& operator=(const VulkanRenderer&) = delete;
+		VulkanRenderer& operator=(VulkanRenderer&&) = delete;
 
-        /// @brief Gets the Vulkan function loader used for the renderer.
-        /// @return The Vulkan function loader used for the renderer.
-        VulkanLoader* GetLoader() const {
-            return this->loader;
-        }
+		/// @brief Gets the program which owns this Vulkan renderer.
+		/// @return The program which owns this Vulkan renderer.
+		Program* GetProgram() const {
+			return this->program;
+		}
 
-        /// @brief Destroys the Vulkan renderer.
-        ~VulkanRenderer();
-    private:
-        Window* window;
+		/// @brief Gets the Vulkan function loader used for the renderer.
+		/// @return The Vulkan function loader used for the renderer.
+		VulkanLoader* GetLoader() const {
+			return this->loader;
+		}
 
-        VulkanLoader* loader;
-    };
+		/// @brief Destroys the Vulkan renderer.
+		~VulkanRenderer();
+	private:
+		Program* program;
+
+		VulkanLoader* loader;
+		VulkanInstance* instance;
+	};
 }

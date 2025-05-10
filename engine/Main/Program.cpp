@@ -35,7 +35,7 @@ namespace wfe {
 		this->window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
 		// Create all other components
-		this->renderer = new VulkanRenderer(this->window);
+		this->renderer = new VulkanRenderer(this);
 		this->assetManager = new AssetManager(this);
 	}
 
