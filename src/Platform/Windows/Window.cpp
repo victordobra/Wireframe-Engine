@@ -48,110 +48,110 @@ namespace wfe {
 		switch(msg) {
 		case WM_MOVE: {
 			// Update the window's position
-			this->x = LOWORD(lParam);
-			this->y = HIWORD(lParam);
+			x = LOWORD(lParam);
+			y = HIWORD(lParam);
 
 			// Set the move event data
 			MoveEventData data {
-				.x = this->x,
-				.y = this->y
+				.x = x,
+				.y = y
 			};
 
 			// Trigger the move event
-			this->moveEvent.TriggerEvent(&data);
+			moveEvent.TriggerEvent(&data);
 
 			break;
 		}
 		case WM_SIZE: {
 			// Update the window's size and minimized/maximized state
-			this->width = LOWORD(lParam);
-			this->height = HIWORD(lParam);
-			this->minimized = (wParam == SIZE_MINIMIZED);
-			this->maximized = (wParam == SIZE_MAXIMIZED);
+			width = LOWORD(lParam);
+			height = HIWORD(lParam);
+			minimized = (wParam == SIZE_MINIMIZED);
+			maximized = (wParam == SIZE_MAXIMIZED);
 
 			// Set the resize event data
 			ResizeEventData data {
-				.width = this->width,
-				.height = this->height,
-				.minimized = this->minimized,
-				.maximized = this->maximized
+				.width = width,
+				.height = height,
+				.minimized = minimized,
+				.maximized = maximized
 			};
 
 			// Trigger the resize event
-			this->resizeEvent.TriggerEvent(&data);
+			resizeEvent.TriggerEvent(&data);
 
 			break;
 		}
 		case WM_SETTEXT: {
 			// Update the window's title
-			this->title = (const char*)lParam;
+			title = (const char*)lParam;
 
 			// Set the rename event data
 			RenameEventData data {
-				.title = this->title
+				.title = title
 			};
 
 			// Trigger the rename event
-			this->renameEvent.TriggerEvent(&data);
+			renameEvent.TriggerEvent(&data);
 
 			break;
 		}
 		case WM_KEYDOWN: 
 		case WM_SYSKEYDOWN: {
 			// Call the input manager's internal key down function
-			this->inputManager->InternalKeyDown((uint64_t)wParam);
+			inputManager->InternalKeyDown((uint64_t)wParam);
 
 			return 0;
 		}
 		case WM_KEYUP: 
 		case WM_SYSKEYUP: {
 			// Call the input manager's internal key up function
-			this->inputManager->InternalKeyUp((uint64_t)wParam);
+			inputManager->InternalKeyUp((uint64_t)wParam);
 
 			return 0;
 		}
 		case WM_LBUTTONDOWN: {
 			// Call the input manager's internal key down function
-			this->inputManager->InternalKeyDown((uint64_t)VK_LBUTTON);
+			inputManager->InternalKeyDown((uint64_t)VK_LBUTTON);
 
 			return 0;
 		}
 		case WM_LBUTTONUP: {
 			// Call the input manager's internal key up function
-			this->inputManager->InternalKeyUp((uint64_t)VK_LBUTTON);
+			inputManager->InternalKeyUp((uint64_t)VK_LBUTTON);
 
 			return 0;
 		}
 		case WM_RBUTTONDOWN: {
 			// Call the input manager's internal key down function
-			this->inputManager->InternalKeyDown((uint64_t)VK_RBUTTON);
+			inputManager->InternalKeyDown((uint64_t)VK_RBUTTON);
 
 			return 0;
 		}
 		case WM_RBUTTONUP: {
 			// Call the input manager's internal key up function
-			this->inputManager->InternalKeyUp((uint64_t)VK_RBUTTON);
+			inputManager->InternalKeyUp((uint64_t)VK_RBUTTON);
 
 			return 0;
 		}
 		case WM_MBUTTONDOWN: {
 			// Call the input manager's internal key down function
-			this->inputManager->InternalKeyDown((uint64_t)VK_MBUTTON);
+			inputManager->InternalKeyDown((uint64_t)VK_MBUTTON);
 
 			return 0;
 		}
 		case WM_MBUTTONUP: {
 			// Call the input manager's internal key up function
-			this->inputManager->InternalKeyUp((uint64_t)VK_MBUTTON);
+			inputManager->InternalKeyUp((uint64_t)VK_MBUTTON);
 
 			return 0;
 		}
 		case WM_XBUTTONDOWN: {
 			// Call the input manager's internal key down function for the current X button
 			if(HIWORD(wParam) == XBUTTON1) {
-				this->inputManager->InternalKeyDown((uint64_t)VK_XBUTTON1);
+				inputManager->InternalKeyDown((uint64_t)VK_XBUTTON1);
 			} else {
-				this->inputManager->InternalKeyDown((uint64_t)VK_XBUTTON2);
+				inputManager->InternalKeyDown((uint64_t)VK_XBUTTON2);
 			}
 
 			return TRUE;
@@ -159,9 +159,9 @@ namespace wfe {
 		case WM_XBUTTONUP: {
 			// Call the input manager's internal key up function for the current X button
 			if(HIWORD(wParam) == XBUTTON1) {
-				this->inputManager->InternalKeyUp((uint64_t)VK_XBUTTON1);
+				inputManager->InternalKeyUp((uint64_t)VK_XBUTTON1);
 			} else {
-				this->inputManager->InternalKeyUp((uint64_t)VK_XBUTTON2);
+				inputManager->InternalKeyUp((uint64_t)VK_XBUTTON2);
 			}
 
 			return TRUE;
@@ -175,7 +175,7 @@ namespace wfe {
 			};
 
 			// Call the input manager's internal mouse move function
-			this->inputManager->InternalMouseMove(mouseMovement);
+			inputManager->InternalMouseMove(mouseMovement);
 
 			return 0;
 		}
@@ -188,13 +188,13 @@ namespace wfe {
 			};
 
 			// Call the input manager's internal mouse move function
-			this->inputManager->InternalMouseMove(mouseMovement);
+			inputManager->InternalMouseMove(mouseMovement);
 
 			return 0;
 		}
 		case WM_CLOSE:
 			// Trigger the close event
-			this->closeEvent.TriggerEvent(nullptr);
+			closeEvent.TriggerEvent(nullptr);
 
 			return 0;
 		};
@@ -243,12 +243,12 @@ namespace wfe {
 		windowMutex = 0;
 
 		// Assign all internal infos to the platform data struct
-		this->platformData.hInstance = hInstance;
-		this->platformData.winClassID = winClassID;
+		platformData.hInstance = hInstance;
+		platformData.winClassID = winClassID;
 
 		// Set the window's style based on the fullscreen flag
 		DWORD style;
-		if(this->fullscreen) {
+		if(fullscreen) {
 			// Unmaximize the window
 			maximized = false;
 			style = WS_POPUP;
@@ -257,7 +257,7 @@ namespace wfe {
 		}
 
 		// Override the window's position and size if the window is fullscreen
-		if(this->fullscreen) {
+		if(fullscreen) {
 			// Get the screen's size
 			RECT screenRect;
 			if(!SystemParametersInfoA(SPI_GETWORKAREA, 0, &screenRect, 0)) {
@@ -266,74 +266,74 @@ namespace wfe {
 			}
 
 			// Set the window's position and size to the screen's size
-			this->x = screenRect.left;
-			this->y = screenRect.top;
-			this->width = screenRect.right - screenRect.left;
-			this->height = screenRect.bottom - screenRect.top;
+			x = screenRect.left;
+			y = screenRect.top;
+			width = screenRect.right - screenRect.left;
+			height = screenRect.bottom - screenRect.top;
 		}
 
 		// Create the window
-		this->platformData.hWnd = CreateWindowExA(WS_EX_APPWINDOW, (LPCSTR)(size_t)winClassID, this->title.c_str(), style, this->x, this->y, this->width, this->height, nullptr, nullptr, hInstance, this);
-		if(!this->platformData.hWnd)
+		platformData.hWnd = CreateWindowExA(WS_EX_APPWINDOW, (LPCSTR)(size_t)winClassID, title.c_str(), style, x, y, width, height, nullptr, nullptr, hInstance, this);
+		if(!platformData.hWnd)
 			ThrowError("Failed to create Win32 window!");
 
 		// Add the window to the map
 		while(!windowMutex.compare_exchange_weak(lock, 1))
 			lock = 0;
-		windowMap.insert({ this->platformData.hWnd, this });
+		windowMap.insert({ platformData.hWnd, this });
 		windowMutex = 0;
 
 		// Create the input manager
-		this->inputManager = new InputManager(this);
+		inputManager = new InputManager(this);
 
 		// Show the window
-		if(this->minimized) {
+		if(minimized) {
 			// Show the window as minimized
-			ShowWindow(this->platformData.hWnd, SW_MINIMIZE);
-		} else if(this->maximized) {
+			ShowWindow(platformData.hWnd, SW_MINIMIZE);
+		} else if(maximized) {
 			// Show the window as maximized
-			ShowWindow(this->platformData.hWnd, SW_MAXIMIZE);
+			ShowWindow(platformData.hWnd, SW_MAXIMIZE);
 		} else {
 			// Show the window as normal
-			ShowWindow(this->platformData.hWnd, SW_SHOWNORMAL);
+			ShowWindow(platformData.hWnd, SW_SHOWNORMAL);
 		}
-		ShowWindow(this->platformData.hWnd, SW_SHOW);
+		ShowWindow(platformData.hWnd, SW_SHOW);
 	}
 
 	void Window::SetPos(int32_t x, int32_t y) {
 		// Set the window's position
-		if(!SetWindowPos(this->platformData.hWnd, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE)) {
+		if(!SetWindowPos(platformData.hWnd, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE)) {
 			// Throw an error
 			ThrowError("Failed to set Win32 window position!");
 		}
 	}
 	void Window::SetSize(uint32_t width, uint32_t height) {
 		// Set the window's size
-		if(!SetWindowPos(this->platformData.hWnd, nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE)) {
+		if(!SetWindowPos(platformData.hWnd, nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE)) {
 			// Throw an error
 			ThrowError("Failed to set Win32 window size!");
 		}
 	}
 	void Window::SetTitle(const std::string& title) {
 		// Set the window's title
-		if(!SetWindowTextA(this->platformData.hWnd, title.c_str())) {
+		if(!SetWindowTextA(platformData.hWnd, title.c_str())) {
 			// Throw an error
 			ThrowError("Failed to set Win32 window title!");
 		}
 	}
 	void Window::SetMinimized(bool minimized) {
 		// Show the window as minimized or restored
-		ShowWindow(this->platformData.hWnd, minimized ? SW_MINIMIZE : SW_RESTORE);
+		ShowWindow(platformData.hWnd, minimized ? SW_MINIMIZE : SW_RESTORE);
 	}
 	void Window::SetMaximized(bool maximized) {
 		// Show the window as maximized or restored
-		ShowWindow(this->platformData.hWnd, maximized ? SW_MAXIMIZE : SW_RESTORE);
+		ShowWindow(platformData.hWnd, maximized ? SW_MAXIMIZE : SW_RESTORE);
 	}
 	void Window::SetFullscreen(bool fullscreen) {
 		// Apply or unapply the fullscreen style, if required
-		if(fullscreen && !this->fullscreen) {
+		if(fullscreen && !fullscreen) {
 			// Set the new fullscreen state and reset the maximized and minimized states
-			this->fullscreen = fullscreen;
+			fullscreen = fullscreen;
 
 			// Get the screen's size
 			RECT screenRect;
@@ -343,37 +343,37 @@ namespace wfe {
 			}
 
 			// Set the window's new position and size
-			this->x = screenRect.left;
-			this->y = screenRect.top;
-			this->width = screenRect.right - screenRect.left;
-			this->height = screenRect.bottom - screenRect.top;
+			x = screenRect.left;
+			y = screenRect.top;
+			width = screenRect.right - screenRect.left;
+			height = screenRect.bottom - screenRect.top;
 
-			if(!SetWindowPos(this->platformData.hWnd, nullptr, this->x, this->y, this->width, this->height, SWP_NOZORDER | SWP_NOACTIVATE)) {
+			if(!SetWindowPos(platformData.hWnd, nullptr, x, y, width, height, SWP_NOZORDER | SWP_NOACTIVATE)) {
 				// Throw an error
 				ThrowError("Failed to set Win32 window info!");
 			}
 
 			// Set the window's style
-			SetWindowLongA(this->platformData.hWnd, GWL_STYLE, WS_POPUP);
+			SetWindowLongA(platformData.hWnd, GWL_STYLE, WS_POPUP);
 
 			// Show the window as normal
-			ShowWindow(this->platformData.hWnd, SW_SHOWNORMAL);
-		} else if(!fullscreen && this->fullscreen) {
+			ShowWindow(platformData.hWnd, SW_SHOWNORMAL);
+		} else if(!fullscreen && fullscreen) {
 			// Set the new fullscreen state
-			this->fullscreen = fullscreen;
+			fullscreen = fullscreen;
 
 			// Set the window's style
-			SetWindowLongA(this->platformData.hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+			SetWindowLongA(platformData.hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 
 			// Show the window as maximized
-			ShowWindow(this->platformData.hWnd, SW_MAXIMIZE);
+			ShowWindow(platformData.hWnd, SW_MAXIMIZE);
 		}
 	}
 
 	void Window::PollEvents() {
 		// Handle the window's events
 		MSG msg;
-		while(PeekMessageA(&msg, this->platformData.hWnd, 0, 0, PM_REMOVE)) {
+		while(PeekMessageA(&msg, platformData.hWnd, 0, 0, PM_REMOVE)) {
 			// Translate and dispatch the message
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
@@ -389,17 +389,17 @@ namespace wfe {
 
 	Window::~Window() {
 		// Destroy the input manager
-		delete this->inputManager;
+		delete inputManager;
 
 		// Remove the window from the map
 		uint32_t lock = 0;
 		while(!windowMutex.compare_exchange_weak(lock, 1))
 			lock = 0;
-		windowMap.erase(this->platformData.hWnd);
+		windowMap.erase(platformData.hWnd);
 		windowMutex = 0;
 
 		// Destroy the window
-		DestroyWindow(this->platformData.hWnd);
+		DestroyWindow(platformData.hWnd);
 
 		// Lock the window mutex
 		while(!windowMutex.compare_exchange_weak(lock, 1))
@@ -407,7 +407,7 @@ namespace wfe {
 
 		// Unregister the window class if there are no more windows
 		if(windowMap.empty()) {
-			UnregisterClassA((LPCSTR)(size_t)this->platformData.winClassID, this->platformData.hInstance);
+			UnregisterClassA((LPCSTR)(size_t)platformData.winClassID, platformData.hInstance);
 			winClassID = 0;
 		}
 

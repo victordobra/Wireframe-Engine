@@ -43,29 +43,29 @@ namespace wfe {
 		/// @brief Gets the list of the event's listeners.
 		/// @return A vector of the event's listeners.
 		const std::vector<Listener>& GetListeners() const {
-			return this->listeners;
+			return listeners;
 		}
 		/// @brief Adds a listener to the event.
 		/// @param listener The listener to add to the event.
 		void AddListener(Listener listener) {
-			this->listeners.push_back(listener);
+			listeners.push_back(listener);
 		}
 		/// @brief Removes the listener at the given index from the event.
 		/// @param index The index of the listener to remove.
 		void RemoveListener(size_t index) {
-			if(index >= this->listeners.size())
+			if(index >= listeners.size())
 				throw std::out_of_range("Index out of range!");
 
-			this->listeners.erase(this->listeners.begin() + index);
+			listeners.erase(listeners.begin() + index);
 		}
 		/// @brief Removes the given listener from the event.
 		/// @param listener The listener to remove from the event.
 		void RemoveListener(Listener listener) {
 			// Search for the listener in the vector
-			for(auto iter = this->listeners.begin(); iter != this->listeners.end(); ++iter) {
+			for(auto iter = listeners.begin(); iter != listeners.end(); ++iter) {
 				// Remove the current listener and exit the function, if found
 				if(iter->callback == listener.callback && iter->userData == listener.userData) {
-					this->listeners.erase(iter);
+					listeners.erase(iter);
 					return;
 				}
 			}
@@ -75,7 +75,7 @@ namespace wfe {
 		}
 		/// @brief Removes all listeners from the event.
 		void ClearListeners() {
-			this->listeners.clear();
+			listeners.clear();
 		}
 
 		/// @brief Triggers the event, calling all listeners.
@@ -83,12 +83,12 @@ namespace wfe {
 		/// @param returns An optional array to store the return values of the listeners. Ignored if null.
 		void TriggerEvent(void* params, void** returns = nullptr) const {
 			// Call each listener in the event
-			for(size_t i = 0; i < this->listeners.size(); ++i) {
+			for(size_t i = 0; i < listeners.size(); ++i) {
 				// Call the listener and store the return value, if requested
 				if(returns != nullptr) {
-					returns[i] = this->listeners[i].callback(this->listeners[i].userData, params);
+					returns[i] = listeners[i].callback(listeners[i].userData, params);
 				} else {
-					this->listeners[i].callback(this->listeners[i].userData, params);
+					listeners[i].callback(listeners[i].userData, params);
 				}
 			}
 		}

@@ -5,7 +5,7 @@ namespace wfe {
 	// Public functions
 	VulkanRenderer::VulkanRenderer(Program* program) : program(program) {
 		// Create the loader
-		this->loader = new VulkanLoader();
+		loader = new VulkanLoader();
 
 		// Set the application info
 		VkApplicationInfo appInfo {
@@ -19,16 +19,16 @@ namespace wfe {
 		};
 
 		// Create the instance
-		this->instance = new VulkanInstance(this->loader, appInfo, program->GetLogger());
+		instance = new VulkanInstance(loader, appInfo, program->GetLogger());
 
 		// Create the surface
-		this->surface = new VulkanSurface(this->instance, program->GetWindow());
+		surface = new VulkanSurface(instance, program->GetWindow());
 	}
 
 	VulkanRenderer::~VulkanRenderer() {
 		// Destroy all renderer components
-		delete this->surface;
-		delete this->instance;
-		delete this->loader;
+		delete surface;
+		delete instance;
+		delete loader;
 	}
 }

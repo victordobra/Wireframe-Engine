@@ -45,15 +45,15 @@ namespace wfe {
 		/// @param id The ID of the asset to get.
 		/// @return A pointer to the asset with the given ID, or nullptr if the asset does not exist.
 		Asset* GetAsset(uint64_t id) const {
-			auto it = this->assets.find(id);
-			if (it != this->assets.end())
+			auto it = assets.find(id);
+			if (it != assets.end())
 				return it->second;
 			return nullptr;
 		}
 		/// @brief Gets the asset manager's owned assets.
 		/// @return The map of the asset manager's owned assets.
 		const std::unordered_map<uint64_t, Asset*>& GetAssets() const {
-			return this->assets;
+			return assets;
 		}
 
 		/// @brief Destroys the asset manager.

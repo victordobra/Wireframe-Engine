@@ -24,23 +24,23 @@ namespace wfe {
 		/// @brief Gets the program which owns this Vulkan renderer.
 		/// @return The program which owns this Vulkan renderer.
 		Program* GetProgram() const {
-			return this->program;
+			return program;
 		}
 
 		/// @brief Gets the Vulkan function loader used for the renderer.
 		/// @return The Vulkan function loader used for the renderer.
 		VulkanLoader* GetLoader() const {
-			return this->loader;
+			return loader;
 		}
 		/// @brief Gets the Vulkan instance of the renderer.
 		/// @return The Vulkan instance of the renderer.
 		VulkanInstance* GetInstance() const {
-			return this->instance;
+			return instance;
 		}
 		/// @brief Gets the Vulkan surface of the renderer.
 		/// @return The Vulkan surface of the renderer.
 		VulkanSurface* GetSurface() const {
-			return this->surface;
+			return surface;
 		}
 
 		/// @brief Destroys the Vulkan renderer.

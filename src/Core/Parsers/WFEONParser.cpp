@@ -102,7 +102,7 @@ namespace wfe {
 					}
 
 					// Append the string to its array
-					this->stringValues.push_back(str);
+					stringValues.push_back(str);
 				} else if(tokens.at(index) == "true" || tokens.at(index) == "false") {
 					// Throw an error if the previous values in the array are not booleans
 					if(valueType != VALUE_TYPE_COUNT && valueType != VALUE_TYPE_BOOL)
@@ -110,7 +110,7 @@ namespace wfe {
 					valueType = VALUE_TYPE_BOOL;
 
 					// Append the boolean to its array
-					this->boolValues.push_back(tokens.at(index) == "true");
+					boolValues.push_back(tokens.at(index) == "true");
 				} else if(std::isdigit(tokens.at(index)[0]) || tokens.at(index)[0] == '-') {
 					// Check if the number is a float or an int
 					if(tokens.at(index).find('.') != std::string::npos) {
@@ -120,7 +120,7 @@ namespace wfe {
 						valueType = VALUE_TYPE_FLOAT;
 
 						// Append the float to its array
-						this->floatValues.push_back(std::stof(tokens.at(index)));
+						floatValues.push_back(std::stof(tokens.at(index)));
 					} else {
 						// Throw an error if the previous values in the array are not ints
 						if(valueType != VALUE_TYPE_COUNT && valueType != VALUE_TYPE_INT)
@@ -128,7 +128,7 @@ namespace wfe {
 						valueType = VALUE_TYPE_INT;
 
 						// Append the int to its array
-						this->intValues.push_back(std::stoll(tokens.at(index)));
+						intValues.push_back(std::stoll(tokens.at(index)));
 					}
 				} else if(tokens.at(index) == "{") {
 					// Throw an error if the previous values in the array are not objects
@@ -144,7 +144,7 @@ namespace wfe {
 					newObject.InternalParse(tokens, index, false);
 					
 					// Append the object to its array
-					this->objectValues.push_back(newObject);
+					objectValues.push_back(newObject);
 				} else {
 					// Throw an error if the value is not a valid type
 					throw std::runtime_error("Error parsing WFEON file! Expected value, but found '" + tokens.at(index) + "'.");
@@ -157,19 +157,19 @@ namespace wfe {
 			size_t totalCount = 0;
 			switch(valueType) {
 			case VALUE_TYPE_INT:
-				totalCount = this->intValues.size();
+				totalCount = intValues.size();
 				break;
 			case VALUE_TYPE_FLOAT:
-				totalCount = this->floatValues.size();
+				totalCount = floatValues.size();
 				break;
 			case VALUE_TYPE_BOOL:
-				totalCount = this->boolValues.size();
+				totalCount = boolValues.size();
 				break;
 			case VALUE_TYPE_STRING:
-				totalCount = this->stringValues.size();
+				totalCount = stringValues.size();
 				break;
 			case VALUE_TYPE_OBJECT:
-				totalCount = this->objectValues.size();
+				totalCount = objectValues.size();
 				break;
 			}
 
@@ -179,13 +179,13 @@ namespace wfe {
 				.count = count,
 				.startIndex = totalCount - count
 			};
-			if(this->values.insert({name, value}).second == false)
+			if(values.insert({name, value}).second == false)
 				throw std::runtime_error("Error parsing WFEON file! Duplicate variable name '" + name + "'.");
 		}
 	}
 	void WFEONObject::InternalWrite(std::ostream& stream, const std::string& prefix) const {
 		// Write all the values in the object
-		for(const auto& value : this->values) {
+		for(const auto& value : values) {
 			// Write the variable name
 			stream << prefix << value.first << " = ";
 
@@ -197,24 +197,24 @@ namespace wfe {
 			switch(value.second.type) {
 			case VALUE_TYPE_INT:
 				for(size_t i = 0; i != value.second.count; ++i)
-					stream << this->intValues[value.second.startIndex + i] << ' ';
+					stream << intValues[value.second.startIndex + i] << ' ';
 				break;
 			case VALUE_TYPE_FLOAT:
 				for(size_t i = 0; i != value.second.count; ++i)
-					stream << this->floatValues[value.second.startIndex + i] << ' ';
+					stream << floatValues[value.second.startIndex + i] << ' ';
 				break;
 			case VALUE_TYPE_BOOL:
 				for(size_t i = 0; i != value.second.count; ++i)
-					stream << (this->boolValues[value.second.startIndex + i] ? "true" : "false") << ' ';
+					stream << (boolValues[value.second.startIndex + i] ? "true" : "false") << ' ';
 				break;
 			case VALUE_TYPE_STRING:
 				for(size_t i = 0; i != value.second.count; ++i) {
 					// Build the result string
 					std::string str = "";
 
-					for(size_t j = 0; j != this->stringValues[value.second.startIndex + i].size(); ++j) {
+					for(size_t j = 0; j != stringValues[value.second.startIndex + i].size(); ++j) {
 						// Add the following character, with considerations for special characters
-						switch(this->stringValues[value.second.startIndex + i][j]) {
+						switch(stringValues[value.second.startIndex + i][j]) {
 						case '\'':
 							str += "\\'";
 							break;
@@ -249,7 +249,7 @@ namespace wfe {
 							str += "\\v";
 							break;
 						default:
-							str += this->stringValues[value.second.startIndex + i][j];
+							str += stringValues[value.second.startIndex + i][j];
 						}
 					}
 
@@ -265,7 +265,7 @@ namespace wfe {
 					// Write all objects
 					for(size_t i = 0; i != value.second.count; ++i) {
 						stream << prefix << "\t{\n";
-						this->objectValues[value.second.startIndex + i].InternalWrite(stream, prefix + "\t\t");
+						objectValues[value.second.startIndex + i].InternalWrite(stream, prefix + "\t\t");
 						stream << prefix << "\t}\n";
 					}
 
@@ -274,7 +274,7 @@ namespace wfe {
 				} else {
 					// Write the object
 					stream << "{\n";
-					this->objectValues[value.second.startIndex].InternalWrite(stream, prefix + "\t");
+					objectValues[value.second.startIndex].InternalWrite(stream, prefix + "\t");
 					stream << prefix << "}\n";
 				}
 
@@ -393,7 +393,7 @@ namespace wfe {
 		
 		// Load the object
 		size_t index = 0;
-		this->InternalParse(tokens, index, true);
+		InternalParse(tokens, index, true);
 	}
 	void WFEONObject::Write(std::ostream& stream, size_t floatPrecision) const {
 		// Get the stream's properties
@@ -404,7 +404,7 @@ namespace wfe {
 		stream << std::fixed << std::setprecision(floatPrecision);
 
 		// Write the object to the stream
-		this->InternalWrite(stream, "");
+		InternalWrite(stream, "");
 
 		// Restore the stream's properties
 		stream.precision(oldPrecision);

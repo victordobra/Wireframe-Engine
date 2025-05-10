@@ -74,69 +74,69 @@ namespace wfe {
 		/// @brief Gets the window's X position.
 		/// @return The window's X position.
 		int32_t GetX() const {
-			return this->x; 
+			return x; 
 		}
 		/// @brief Gets the window's Y position.
 		/// @return The window's Y position.
 		int32_t GetY() const {
-			return this->y; 
+			return y; 
 		}
 		/// @brief Gets the window's width.
 		/// @return The window's width.
 		uint32_t GetWidth() const {
-			return this->width;
+			return width;
 		}
 		/// @brief Gets the window's height.
 		/// @return The window's height.
 		uint32_t GetHeight() const {
-			return this->height; 
+			return height; 
 		}
 		/// @brief Checks if the window is minimized.
 		/// @return True if the window is minimized, otherwise false.
 		bool IsMinimized() const {
-			return this->minimized; 
+			return minimized; 
 		}
 		/// @brief Checks if the window is maximized.
 		/// @return True if the window is maximized, otherwise false.
 		bool IsMaximized() const {
-			return this->maximized; 
+			return maximized; 
 		}
 		/// @brief Gets the window's title.
 		/// @return The window's title.
 		const std::string& GetTitle() const {
-			return this->title; 
+			return title; 
 		}
 		/// @brief Gets the window's platform-specific data.
 		/// @return The window's platform-specific data.
 		const PlatformData& GetPlatformData() const {
-			return this->platformData; 
+			return platformData; 
 		}
 
 		/// @brief Gets the window's input manager.
 		/// @return The window's input manager.
 		InputManager* GetInputManager() const {
-			return this->inputManager; 
+			return inputManager; 
 		}
 
 		/// @brief Gets the window's move event.
 		/// @return A reference to the window's move event.
 		Event& GetMoveEvent() const {	
-			return this->moveEvent; 
+			return moveEvent; 
 		}
 		/// @brief Gets the window's resize event.
 		/// @return A reference to the window's resize event.
 		Event& GetResizeEvent() const {
-			return this->resizeEvent; 
+			return resizeEvent; 
 		}
 		/// @brief Gets the window's rename event.
 		/// @return A reference to the window's rename event.
 		Event& GetRenameEvent() const {
-			return this->renameEvent; 
+			return renameEvent; 
 		}
 		/// @brief Gets the window's close event.
 		/// @return A reference to the window's close event.
 		Event& GetCloseEvent() const {
-			return this->closeEvent; 
+			return closeEvent; 
 		}
 
 		/// @brief Set the window's position.

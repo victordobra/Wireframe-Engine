@@ -27,22 +27,22 @@ namespace wfe {
 	// Public functions
 	Program::Program(const ProgramInfo& info, int32_t argc, char** args) : info(info) {
 		// Create the program's logger
-		this->logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
+		logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
 
 		// Create the program's window and add the close listener
-		this->window = new Window(200, 200, 1280, 720, info.programName);
-		this->window->GetCloseEvent().AddListener({ CloseEventListener, this });
+		window = new Window(200, 200, 1280, 720, info.programName);
+		window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
 		// Create all other components
-		this->renderer = new VulkanRenderer(this);
-		this->assetManager = new AssetManager(this);
+		renderer = new VulkanRenderer(this);
+		assetManager = new AssetManager(this);
 	}
 
 	int32_t Program::Run() {
 		// Run the program as long as the main window is still open
 		while(running) {
 			// Poll the window's events
-			this->window->PollEvents();
+			window->PollEvents();
 		}
 
 		return 0;
@@ -50,9 +50,9 @@ namespace wfe {
 
 	Program::~Program() {
 		// Destroy the program's components
-		delete this->renderer;
-		delete this->assetManager;
-		delete this->window;
-		delete this->logger;
+		delete renderer;
+		delete assetManager;
+		delete window;
+		delete logger;
 	}
 }

@@ -332,28 +332,28 @@ namespace wfe {
 		/// @brief Gets the key down event.
 		/// @return A reference to the key down event.
 		Event& GetKeyDownEvent() {
-			return this->keyDownEvent;
+			return keyDownEvent;
 		}
 		/// @brief Gets the key up event.
 		/// @return A reference to the key up event.
 		Event& GetKeyUpEvent() {
-			return this->keyUpEvent;
+			return keyUpEvent;
 		}
 		/// @brief Gets the mouse move event.
 		/// @return A reference to the mouse move event.
 		Event& GetMouseMoveEvent() {
-			return this->mouseMoveEvent;
+			return mouseMoveEvent;
 		}
 
 		/// @brief Gets the mouse's position.
 		/// @return The mouse's position.
 		MousePosition GetMousePosition() const {
-			return this->mousePos;
+			return mousePos;
 		}
 		/// @brief Gets the mouse's movement between the two latest window event polls.
 		/// @return A struct containing the mouse's movement in the specified time interval.
 		MouseMovement GetMouseMovement() const {
-			return this->mouseMovement;
+			return mouseMovement;
 		}
 		/// @brief Checks if the given key is down.
 		/// @param key The key to check.
@@ -364,7 +364,7 @@ namespace wfe {
 			size_t bitIndex = ((size_t)key & 1) << 2;
 
 			// Check the down bit of the current key
-			return (this->keyStates[valueIndex] >> bitIndex) & 1;
+			return (keyStates[valueIndex] >> bitIndex) & 1;
 		}
 		/// @brief Checks if the given key is pressed.
 		/// @param key The key to check.
@@ -375,7 +375,7 @@ namespace wfe {
 			size_t bitIndex = (((size_t)key & 1) << 2) + 1;
 
 			// Check the pressed bit of the current key
-			return (this->keyStates[valueIndex] >> bitIndex) & 1;
+			return (keyStates[valueIndex] >> bitIndex) & 1;
 		}
 		/// @brief Checks if the given key is released.
 		/// @param key The key to check.
@@ -386,7 +386,7 @@ namespace wfe {
 			size_t bitIndex = (((size_t)key & 1) << 2) + 2;
 
 			// Check the released bit of the current key
-			return (this->keyStates[valueIndex] >> bitIndex) & 1;
+			return (keyStates[valueIndex] >> bitIndex) & 1;
 		}
 	private:
 		friend Window;

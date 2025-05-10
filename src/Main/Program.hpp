@@ -39,28 +39,28 @@ namespace wfe {
 		/// @brief Gets the program's general information.
 		/// @return The program's general information.
 		const ProgramInfo& GetProgramInfo() const {
-			return this->info;
+			return info;
 		}
 
 		/// @brief Gets the program's logger.
 		/// @return The program's logger.
 		Logger* GetLogger() const {
-			return this->logger;
+			return logger;
 		}
 		/// @brief Gets the program's window.
 		/// @return The program's window.
 		Window* GetWindow() const {
-			return this->window;
+			return window;
 		}
 		/// @brief Gets the program's Vulkan renderer.
 		/// @return The program's Vulkan renderer.
 		VulkanRenderer* GetRenderer() const {
-			return this->renderer;
+			return renderer;
 		}
 		/// @brief Gets the program's asset manager.
 		/// @return The program's asset manager.
 		AssetManager* GetAssetManager() const {
-			return this->assetManager;
+			return assetManager;
 		}
 
 		/// @brief Destroys the program and its components.

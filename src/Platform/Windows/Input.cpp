@@ -307,9 +307,9 @@ namespace wfe {
 			keyStates[i] &= 0b10011001;
 		
 		// Reset the mouse movement
-		this->mouseMovement.x = 0;
-		this->mouseMovement.y = 0;
-		this->mouseMovement.scroll = 0.f;
+		mouseMovement.x = 0;
+		mouseMovement.y = 0;
+		mouseMovement.scroll = 0.f;
 	}
 	void InputManager::InternalKeyDown(uint64_t keyCode) {
 		// Convert the virtual key code to a key
@@ -320,7 +320,7 @@ namespace wfe {
 		size_t bitIndex = ((size_t)key & 1) << 2;
 
 		// Set the key down and key pressed flags
-		this->keyStates[valueIndex] |= 0b0010 << bitIndex;
+		keyStates[valueIndex] |= 0b0010 << bitIndex;
 
 		// Set the key event info
 		KeyEventInfo eventInfo { 
@@ -328,7 +328,7 @@ namespace wfe {
 		};
 
 		// Trigger the key down event
-		this->keyDownEvent.TriggerEvent(&eventInfo);
+		keyDownEvent.TriggerEvent(&eventInfo);
 	}
 	void InputManager::InternalKeyUp(uint64_t keyCode) {
 		// Convert the virtual key code to a key
@@ -339,7 +339,7 @@ namespace wfe {
 		size_t bitIndex = ((size_t)key & 1) << 2;
 
 		// Set the key released and reset the key down flags in one XOR operation
-		this->keyStates[valueIndex] ^= 0b0101 << bitIndex;
+		keyStates[valueIndex] ^= 0b0101 << bitIndex;
 
 		// Set the key event info
 		KeyEventInfo eventInfo {
@@ -347,20 +347,20 @@ namespace wfe {
 		};
 
 		// Trigger the key up event
-		this->keyUpEvent.TriggerEvent(&eventInfo);
+		keyUpEvent.TriggerEvent(&eventInfo);
 	}
 	void InputManager::InternalMouseMove(MouseMovement movement) {
 		// Add the movements to the manager's mouse movement
-		this->mouseMovement.x += movement.x;
-		this->mouseMovement.y += movement.y;
-		this->mouseMovement.scroll += movement.scroll;
+		mouseMovement.x += movement.x;
+		mouseMovement.y += movement.y;
+		mouseMovement.scroll += movement.scroll;
 	}
 	void InputManager::EndInputEvents() {
 		// Check if any mouse movement took place
-		if(this->mouseMovement.x || this->mouseMovement.y || this->mouseMovement.scroll) {
+		if(mouseMovement.x || mouseMovement.y || mouseMovement.scroll) {
 			// Set the mouse's new position
-			this->mousePos.x += mouseMovement.x;
-			this->mousePos.y += mouseMovement.y;
+			mousePos.x += mouseMovement.x;
+			mousePos.y += mouseMovement.y;
 
 			// Set the mosue move event info
 			MouseMoveEventInfo mouseMoveInfo {
@@ -369,7 +369,7 @@ namespace wfe {
 			};
 
 			// Trigger the mouse move event
-			this->mouseMoveEvent.TriggerEvent(&mouseMoveInfo);
+			mouseMoveEvent.TriggerEvent(&mouseMoveInfo);
 		}
 	}
 }

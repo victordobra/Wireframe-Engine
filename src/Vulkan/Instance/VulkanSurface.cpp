@@ -14,7 +14,7 @@
 
 namespace wfe {
 	// Public functions
-	VulkanSurface::VulkanSurface(VulkanInstance* instance, Window* window) {
+	VulkanSurface::VulkanSurface(VulkanInstance* instance, Window* window) : instance(instance), window(window) {
 #if defined(WFE_PLATFORM_WINDOWS)
 		// Set the surface create info
 		VkWin32SurfaceCreateInfoKHR createInfo {
@@ -26,7 +26,7 @@ namespace wfe {
 		};
 
 		// Create the surface
-		VkResult result = instance->GetLoader()->vkCreateWin32SurfaceKHR(instance->GetInstance(), &createInfo, nullptr, &this->surface);
+		VkResult result = instance->GetLoader()->vkCreateWin32SurfaceKHR(instance->GetInstance(), &createInfo, nullptr, &surface);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan Win32 window surface! Error code: " + string_VkResult(result));
 #elif defined(WFE_PLATFORM_LINUX)
@@ -35,6 +35,6 @@ namespace wfe {
 
 	VulkanSurface::~VulkanSurface() {
 		// Destroy the surface
-		vkDestroySurfaceKHR(instance->GetInstance(), this->surface, nullptr);
+		vkDestroySurfaceKHR(instance->GetInstance(), surface, nullptr);
 	}
 }
