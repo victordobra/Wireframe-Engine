@@ -1,5 +1,4 @@
 #include "Program.hpp"
-#include "ProjectInfo.hpp"
 
 namespace wfe {
 	// Constants
@@ -26,12 +25,12 @@ namespace wfe {
 	}
 
 	// Public functions
-	Program::Program(int32_t argc, char** args) {
+	Program::Program(const ProgramInfo& info, int32_t argc, char** args) : info(info) {
 		// Create the program's logger
 		this->logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
 
 		// Create the program's window and add the close listener
-		this->window = new Window(200, 200, 1280, 720, WFE_PROJECT_NAME);
+		this->window = new Window(200, 200, 1280, 720, info.programName);
 		this->window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
 		// Create all other components

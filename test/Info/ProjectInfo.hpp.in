@@ -1,0 +1,11 @@
+#pragma once
+
+/// @brief The project's name.
+#define WFE_PROJECT_NAME "@TEST_PROJECT_NAME@"
+
+/// @brief The major component of the project's version.
+#define WFE_PROJECT_VERSION_MAJOR @TEST_PROJECT_VERSION_MAJOR@
+/// @brief The minor component of the project's version.
+#define WFE_PROJECT_VERSION_MINOR @TEST_PROJECT_VERSION_MINOR@
+/// @brief The patch component of the project's version.
+#define WFE_PROJECT_VERSION_PATCH @TEST_PROJECT_VERSION_PATCH@

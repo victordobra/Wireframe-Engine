@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ProjectInfo.hpp"
+#include "Info/EngineInfo.hpp"
 #include <stddef.h>
 
 // Windows

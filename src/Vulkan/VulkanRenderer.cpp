@@ -1,5 +1,5 @@
 #include "VulkanRenderer.hpp"
-#include "ProjectInfo.hpp"
+#include "Info/EngineInfo.hpp"
 
 namespace wfe {
     // Public functions
@@ -11,8 +11,8 @@ namespace wfe {
         VkApplicationInfo appInfo {
             .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
             .pNext = nullptr,
-            .pApplicationName = WFE_PROJECT_NAME,
-            .applicationVersion = VK_MAKE_API_VERSION(0, WFE_PROJECT_VERSION_MAJOR, WFE_PROJECT_VERSION_MINOR, WFE_PROJECT_VERSION_PATCH),
+            .pApplicationName = program->GetProgramInfo().programName,
+            .applicationVersion = VK_MAKE_API_VERSION(0, program->GetProgramInfo().programVersionMajor, program->GetProgramInfo().programVersionMinor, program->GetProgramInfo().programVersionPatch),
             .pEngineName = WFE_ENGINE_NAME,
             .engineVersion = VK_MAKE_API_VERSION(0, WFE_ENGINE_VERSION_MAJOR, WFE_ENGINE_VERSION_MINOR, WFE_ENGINE_VERSION_PATCH),
             .apiVersion = VK_API_VERSION_1_0

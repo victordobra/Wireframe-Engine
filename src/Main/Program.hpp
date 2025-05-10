@@ -10,10 +10,22 @@ namespace wfe {
 	/// @brief A class containing an abstraction for the program and its components.
 	class Program {
 	public:
+		/// @brief A struct containing the program's general info.
+		struct ProgramInfo {
+			/// @brief The program's name.
+			const char* programName;
+			/// @brief The major component of the program's version.
+			uint32_t programVersionMajor;
+			/// @brief The minor component of the program's version.
+			uint32_t programVersionMinor;
+			/// @brief The patch component of the program's version.
+			uint32_t programVersionPatch;
+		};
+
 		/// @brief Creates the program and its components.
 		/// @param argc The number for console arguments given. Defaulted to 0.
 		/// @param args The console arguments given, or nullpre if none are present.
-		Program(int32_t argc = 0, char** args = nullptr);
+		Program(const ProgramInfo& info, int32_t argc = 0, char** args = nullptr);
 		Program(const Program&) = delete;
 		Program(Program&&) noexcept = delete;
 
@@ -23,6 +35,12 @@ namespace wfe {
 		/// @brief Runs the program.
 		/// @return The program's return code.
 		int32_t Run();
+
+		/// @brief Gets the program's general information.
+		/// @return The program's general information.
+		const ProgramInfo& GetProgramInfo() const {
+			return this->info;
+		}
 
 		/// @brief Gets the program's logger.
 		/// @return The program's logger.
@@ -50,6 +68,7 @@ namespace wfe {
 	private:
 		static void* CloseEventListener(void* userData, void* params);
 
+		ProgramInfo info;
 		atomic_uint32_t running = 1;
 
 		Logger* logger;

@@ -11,12 +11,13 @@ project(${ENGINE_NAME} VERSION ${ENGINE_VERSION_MAJOR}.${ENGINE_VERSION_MINOR}.$
 message(STATUS "Engine name set to \"${PROJECT_NAME}\".")
 message(STATUS "Engine version set to ${PROJECT_VERSION}.")
 
-# Configure the info header file
-configure_file(${PROJECT_SOURCE_DIR}/info/ProjectInfo.hpp.in ${PROJECT_SOURCE_DIR}/info/ProjectInfo.hpp)
-message(STATUS "Configured info header file successfully.")
+# Configure the info header files
+configure_file(${PROJECT_SOURCE_DIR}/src/Info/EngineInfo.hpp.in ${PROJECT_SOURCE_DIR}/src/Info/EngineInfo.hpp)
+configure_file(${PROJECT_SOURCE_DIR}/test/Info/ProjectInfo.hpp.in ${PROJECT_SOURCE_DIR}/test/Info/ProjectInfo.hpp)
+message(STATUS "Configured info header files successfully.")
 
 # Find the engine source files
-file(GLOB_RECURSE ENGINE_SOURCES ${PROJECT_SOURCE_DIR}/engine/*.cpp)
+file(GLOB_RECURSE ENGINE_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 list(LENGTH ENGINE_SOURCES ENGINE_SOURCE_COUNT)
 
 if(ENGINE_SOURCE_COUNT EQUAL 0)
@@ -34,11 +35,11 @@ message(STATUS "Engine library created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	# Add the include directories for Windows
-	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info)
+	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info)
 	message(STATUS "Engine include directories added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
-	target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info)
+	target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info)
 	message(STATUS "Engine include directories added.")
 
 	# Add the link libraries for Linux
@@ -47,7 +48,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif()
 
 # Add the main engine precompiled header
-target_precompile_headers(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine/WireframeEngine.hpp)
+target_precompile_headers(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src/WireframeEngine.hpp)
 message(STATUS "Engine precompiled header added.")
 
 # Find the test source files
@@ -69,7 +70,7 @@ message(STATUS "Test project executable created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	# Add the include directories for Windows
-	target_include_directories(${TEST_PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	target_include_directories(${TEST_PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
 	message(STATUS "Test project include directories added.")
 
 	# Add the link libraries for Windows
@@ -77,7 +78,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	message(STATUS "Test project link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
-	target_include_directories(${TEST_PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/engine ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	target_include_directories(${TEST_PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
 	message(STATUS "Test project include directories added.")
 
 	# Add the link libraries for Linux
@@ -86,7 +87,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif()
 
 # Find all shaders in the project
-file(GLOB_RECURSE GLSL_SOURCE_FILES ${PROJECT_SOURCE_DIR}/engine/*.vert ${PROJECT_SOURCE_DIR}/engine/*.frag ${PROJECT_SOURCE_DIR}/test/*.vert ${PROJECT_SOURCE_DIR}/test/*.frag)
+file(GLOB_RECURSE GLSL_SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*.vert ${PROJECT_SOURCE_DIR}/src/*.frag ${PROJECT_SOURCE_DIR}/test/*.vert ${PROJECT_SOURCE_DIR}/test/*.frag)
 set(GLSL_VALIDATOR glslangValidator)
 list(LENGTH GLSL_SOURCE_FILES GLSL_COUNT)
 
