@@ -31,7 +31,7 @@ namespace wfe {
 
 		/// @brief Gets the Vulkan surface's internal handle.
 		/// @return The Vulkan surface's internal handle.
-		VkSurfaceKHR GetSuface() const {
+		VkSurfaceKHR GetSurface() const {
 			return surface;
 		}
 

@@ -2,6 +2,7 @@
 
 #include "Core/Types/Defines.hpp"
 
+#include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
 #include "Instance/VulkanSurface.hpp"
 #include "Loader/VulkanLoader.hpp"
@@ -42,6 +43,11 @@ namespace wfe {
 		VulkanSurface* GetSurface() const {
 			return surface;
 		}
+		/// @brief Gets the Vulkan device of the renderer.
+		/// @return The Vulkan device of the renderer.
+		VulkanDevice* GetDevice() const {
+			return device;
+		}
 
 		/// @brief Destroys the Vulkan renderer.
 		~VulkanRenderer();
@@ -51,5 +57,6 @@ namespace wfe {
 		VulkanLoader* loader;
 		VulkanInstance* instance;
 		VulkanSurface* surface;
+		VulkanDevice* device;
 	};
 }

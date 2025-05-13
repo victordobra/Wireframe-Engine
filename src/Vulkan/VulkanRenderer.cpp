@@ -23,10 +23,14 @@ namespace wfe {
 
 		// Create the surface
 		surface = new VulkanSurface(instance, program->GetWindow());
+
+		// Create the device
+		device = new VulkanDevice(instance, surface);
 	}
 
 	VulkanRenderer::~VulkanRenderer() {
 		// Destroy all renderer components
+		delete device;
 		delete surface;
 		delete instance;
 		delete loader;
