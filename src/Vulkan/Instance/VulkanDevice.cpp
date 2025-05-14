@@ -122,12 +122,8 @@ namespace wfe {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 	const std::vector<const char*> VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS {
-		VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME,
 		VK_EXT_MESH_SHADER_EXTENSION_NAME,
-		VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,
-		VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME,
-		VK_KHR_SPIRV_1_4_EXTENSION_NAME,
-		VK_KHR_SHADER_FLOAT_CONTROLS_EXTENSION_NAME,
+		VK_KHR_INDEX_TYPE_UINT8_EXTENSION_NAME,
 		VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME
 	};
 
@@ -283,6 +279,12 @@ namespace wfe {
 		VkDeviceSize totalMemorySize = 0;
 
 		for(VkPhysicalDevice currentDevice : devices) {
+			// Check if the device's version is high enough
+			VkPhysicalDeviceProperties currentProperties;
+			GetLoader()->vkGetPhysicalDeviceProperties(currentDevice, &currentProperties);
+			if(currentProperties.apiVersion < instance->GetAPIVersion())
+				continue;
+
 			// Get the device's queue family indices
 			uint32_t graphicsIndex, presentIndex, transferIndex, computeIndex;
 			if(!GetQueueFamilyIndices(currentDevice, surface, graphicsIndex, presentIndex, transferIndex, computeIndex))
@@ -309,9 +311,6 @@ namespace wfe {
 			}
 			
 			// If this is the only discrete device or it has the most memory, replace the old device with it
-			VkPhysicalDeviceProperties currentProperties;
-			GetLoader()->vkGetPhysicalDeviceProperties(currentDevice, &currentProperties);
-
 			if((currentProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceProperties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) || currentMemorySize > totalMemorySize) {
 				// Set the physical device and all info structs
 				physicalDevice = currentDevice;

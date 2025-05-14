@@ -15,6 +15,7 @@
 
 namespace wfe {
 	// Constants
+	const uint32_t VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION = VK_API_VERSION_1_2;
 	const std::vector<const char*> VulkanInstance::DEFAULT_REQUIRED_INSTANCE_EXTENSIONS {
 #if defined(WFE_PLATFORM_WINDOWS)
 		VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
@@ -22,9 +23,7 @@ namespace wfe {
 #endif
 		VK_KHR_SURFACE_EXTENSION_NAME
 	};
-	const std::vector<const char*> VulkanInstance::DEFAULT_OPTIONAL_INSTANCE_EXTENSIONS {
-		VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME
-	};
+	const std::vector<const char*> VulkanInstance::DEFAULT_OPTIONAL_INSTANCE_EXTENSIONS { };
 	const std::vector<const char*> VulkanInstance::DEFAULT_VALIDATION_LAYERS {
 		"VK_LAYER_KHRONOS_validation"
 	};
@@ -74,7 +73,7 @@ namespace wfe {
 			
 			// Throw an exception if the extension is not supported
 			if(!supported)
-				throw std::runtime_error("Vulkan implementation does not support " + (std::string)extension + ", which is required by the program!");
+				throw std::runtime_error((std::string)"Vulkan implementation does not support " + extension + ", which is required by the program!");
 		}
 
 		// Add all required extensions to the vector
@@ -176,6 +175,23 @@ namespace wfe {
 
 	// Public functions
 	VulkanInstance::VulkanInstance(VulkanLoader* loader, const VkApplicationInfo& appInfo, Logger* logger, const std::vector<const char*> requiredExtensions, const std::vector<const char*> optionalExtensions, const std::vector<const char*> validationLayers) : loader(loader) {
+		// Set the API version
+		apiVersion = appInfo.apiVersion;
+
+		// Check if the Vulkan version if not 1.0, if a higher version was requested
+		if(apiVersion != VK_API_VERSION_1_0) {
+			// Get the instance getter function
+			PFN_vkEnumerateInstanceVersion pfn_vkEnumerateInstanceVersion = (PFN_vkEnumerateInstanceVersion)loader->vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceVersion");
+			if(!pfn_vkEnumerateInstanceVersion)
+				throw std::runtime_error("Vulkan implementation does not support version " + std::to_string(VK_API_VERSION_VARIANT(apiVersion)) + "." + std::to_string(VK_API_VERSION_MAJOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_MINOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_PATCH(apiVersion)) + "!");
+			
+			// Check if the implemented version is high enough
+			uint32_t apiVersionInstance;
+			VkResult result = pfn_vkEnumerateInstanceVersion(&apiVersionInstance);
+			if(result != VK_SUCCESS || apiVersionInstance < apiVersion)
+				throw std::runtime_error("Vulkan implementation does not support version " + std::to_string(VK_API_VERSION_VARIANT(apiVersion)) + "." + std::to_string(VK_API_VERSION_MAJOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_MINOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_PATCH(apiVersion)) + "!");
+		}
+
 		// Get all supported extensions
 		GetSupportedExtensions(requiredExtensions, optionalExtensions);
 

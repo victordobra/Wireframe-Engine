@@ -15,7 +15,7 @@ namespace wfe {
 			.applicationVersion = VK_MAKE_API_VERSION(0, program->GetProgramInfo().programVersionMajor, program->GetProgramInfo().programVersionMinor, program->GetProgramInfo().programVersionPatch),
 			.pEngineName = WFE_ENGINE_NAME,
 			.engineVersion = VK_MAKE_API_VERSION(0, WFE_ENGINE_VERSION_MAJOR, WFE_ENGINE_VERSION_MINOR, WFE_ENGINE_VERSION_PATCH),
-			.apiVersion = VK_API_VERSION_1_0
+			.apiVersion = VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION
 		};
 
 		// Create the instance

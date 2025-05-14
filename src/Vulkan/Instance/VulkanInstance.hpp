@@ -13,6 +13,8 @@ namespace wfe {
 	/// @brief A class implementing a Vulkan instance.
 	class VulkanInstance {
 	public:
+		/// @brief The required version to be implemented by the Vulkan API.
+		static const uint32_t DEFAULT_REQUIRED_INSTANCE_API_VERSION;
 		/// @brief A vector containing all required extensions for the Vulkan instance.
 		static const std::vector<const char*> DEFAULT_REQUIRED_INSTANCE_EXTENSIONS;
 		/// @brief A vector containing all optional extensions for the Vulkan instance.
@@ -39,6 +41,7 @@ namespace wfe {
 		VulkanLoader* GetLoader() const {
 			return loader;
 		}
+
 		/// @brief Gets the internal handle of the Vulkan instance.
 		/// @return The internal handle of the Vulkan instance.
 		VkInstance GetInstance() const {
@@ -48,6 +51,11 @@ namespace wfe {
 		/// @return The internal handle of the Vulkan debug messenger, or VK_NULL_HANDLE if debugging is not enabled.
 		VkDebugUtilsMessengerEXT GetDebugMessenger() const {
 			return debugMessenger;
+		}
+		/// @brief Gets the enabled API version of the Vulkan instance.
+		/// @return The enabled API version of the Vulkan instance.
+		uint32_t GetAPIVersion() const {
+			return apiVersion;
 		}
 		/// @brief Gets the Vulkan instance's enabled extensions.
 		/// @return A vector containing the names of all extensions.
@@ -72,6 +80,7 @@ namespace wfe {
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
 
+		uint32_t apiVersion;
 		std::vector<const char*> enabledExtensions;
 		std::vector<const char*> enabledLayers;
 	};
