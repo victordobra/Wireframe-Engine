@@ -6261,85 +6261,85 @@ namespace wfe {
 
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkInstance* pInstance) const {
-		if(!this || !pfn_vkCreateInstance) {
+		if(!pfn_vkCreateInstance) {
 			return staticPfn_vkCreateInstance(pCreateInfo, pAllocator, pInstance);
 		}
 		return pfn_vkCreateInstance(pCreateInfo, pAllocator, pInstance);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyInstance(VkInstance instance, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyInstance) {
+		if(!pfn_vkDestroyInstance) {
 			staticPfn_vkDestroyInstance(instance, pAllocator);
 			return;
 		}
 		pfn_vkDestroyInstance(instance, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumeratePhysicalDevices(VkInstance instance, uint32_t* pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const {
-		if(!this || !pfn_vkEnumeratePhysicalDevices) {
+		if(!pfn_vkEnumeratePhysicalDevices) {
 			return staticPfn_vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
 		}
 		return pfn_vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
 	}
 	VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL VulkanLoader::vkGetDeviceProcAddr(VkDevice device, const char* pName) const {
-		if(!this || !pfn_vkGetDeviceProcAddr) {
+		if(!pfn_vkGetDeviceProcAddr) {
 			return staticPfn_vkGetDeviceProcAddr(device, pName);
 		}
 		return pfn_vkGetDeviceProcAddr(device, pName);
 	}
 	VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL VulkanLoader::vkGetInstanceProcAddr(VkInstance instance, const char* pName) const {
-		if(!this || !pfn_vkGetInstanceProcAddr) {
+		if(!pfn_vkGetInstanceProcAddr) {
 			return staticPfn_vkGetInstanceProcAddr(instance, pName);
 		}
 		return pfn_vkGetInstanceProcAddr(instance, pName);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceProperties) {
+		if(!pfn_vkGetPhysicalDeviceProperties) {
 			staticPfn_vkGetPhysicalDeviceProperties(physicalDevice, pProperties);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceProperties(physicalDevice, pProperties);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceQueueFamilyProperties(VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties* pQueueFamilyProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceQueueFamilyProperties) {
+		if(!pfn_vkGetPhysicalDeviceQueueFamilyProperties) {
 			staticPfn_vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceMemoryProperties(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties* pMemoryProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceMemoryProperties) {
+		if(!pfn_vkGetPhysicalDeviceMemoryProperties) {
 			staticPfn_vkGetPhysicalDeviceMemoryProperties(physicalDevice, pMemoryProperties);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceMemoryProperties(physicalDevice, pMemoryProperties);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures* pFeatures) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFeatures) {
+		if(!pfn_vkGetPhysicalDeviceFeatures) {
 			staticPfn_vkGetPhysicalDeviceFeatures(physicalDevice, pFeatures);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceFeatures(physicalDevice, pFeatures);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties* pFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFormatProperties) {
+		if(!pfn_vkGetPhysicalDeviceFormatProperties) {
 			staticPfn_vkGetPhysicalDeviceFormatProperties(physicalDevice, format, pFormatProperties);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceFormatProperties(physicalDevice, format, pFormatProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkImageFormatProperties* pImageFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceImageFormatProperties) {
+		if(!pfn_vkGetPhysicalDeviceImageFormatProperties) {
 			return staticPfn_vkGetPhysicalDeviceImageFormatProperties(physicalDevice, format, type, tiling, usage, flags, pImageFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceImageFormatProperties(physicalDevice, format, type, tiling, usage, flags, pImageFormatProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDevice* pDevice) const {
-		if(!this || !pfn_vkCreateDevice) {
+		if(!pfn_vkCreateDevice) {
 			return staticPfn_vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
 		}
 		return pfn_vkCreateDevice(physicalDevice, pCreateInfo, pAllocator, pDevice);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDevice(VkDevice device, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDevice) {
+		if(!pfn_vkDestroyDevice) {
 			staticPfn_vkDestroyDevice(device, pAllocator);
 			return;
 		}
@@ -6348,7 +6348,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumerateInstanceVersion(uint32_t* pApiVersion) const {
-		if(!this || !pfn_vkEnumerateInstanceVersion) {
+		if(!pfn_vkEnumerateInstanceVersion) {
 			return staticPfn_vkEnumerateInstanceVersion(pApiVersion);
 		}
 		return pfn_vkEnumerateInstanceVersion(pApiVersion);
@@ -6356,235 +6356,235 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumerateInstanceLayerProperties(uint32_t* pPropertyCount, VkLayerProperties* pProperties) const {
-		if(!this || !pfn_vkEnumerateInstanceLayerProperties) {
+		if(!pfn_vkEnumerateInstanceLayerProperties) {
 			return staticPfn_vkEnumerateInstanceLayerProperties(pPropertyCount, pProperties);
 		}
 		return pfn_vkEnumerateInstanceLayerProperties(pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumerateInstanceExtensionProperties(const char* pLayerName, uint32_t* pPropertyCount, VkExtensionProperties* pProperties) const {
-		if(!this || !pfn_vkEnumerateInstanceExtensionProperties) {
+		if(!pfn_vkEnumerateInstanceExtensionProperties) {
 			return staticPfn_vkEnumerateInstanceExtensionProperties(pLayerName, pPropertyCount, pProperties);
 		}
 		return pfn_vkEnumerateInstanceExtensionProperties(pLayerName, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumerateDeviceLayerProperties(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkLayerProperties* pProperties) const {
-		if(!this || !pfn_vkEnumerateDeviceLayerProperties) {
+		if(!pfn_vkEnumerateDeviceLayerProperties) {
 			return staticPfn_vkEnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkEnumerateDeviceLayerProperties(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumerateDeviceExtensionProperties(VkPhysicalDevice physicalDevice, const char* pLayerName, uint32_t* pPropertyCount, VkExtensionProperties* pProperties) const {
-		if(!this || !pfn_vkEnumerateDeviceExtensionProperties) {
+		if(!pfn_vkEnumerateDeviceExtensionProperties) {
 			return staticPfn_vkEnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pPropertyCount, pProperties);
 		}
 		return pfn_vkEnumerateDeviceExtensionProperties(physicalDevice, pLayerName, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceQueue(VkDevice device, uint32_t queueFamilyIndex, uint32_t queueIndex, VkQueue* pQueue) const {
-		if(!this || !pfn_vkGetDeviceQueue) {
+		if(!pfn_vkGetDeviceQueue) {
 			staticPfn_vkGetDeviceQueue(device, queueFamilyIndex, queueIndex, pQueue);
 			return;
 		}
 		pfn_vkGetDeviceQueue(device, queueFamilyIndex, queueIndex, pQueue);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence) const {
-		if(!this || !pfn_vkQueueSubmit) {
+		if(!pfn_vkQueueSubmit) {
 			return staticPfn_vkQueueSubmit(queue, submitCount, pSubmits, fence);
 		}
 		return pfn_vkQueueSubmit(queue, submitCount, pSubmits, fence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueWaitIdle(VkQueue queue) const {
-		if(!this || !pfn_vkQueueWaitIdle) {
+		if(!pfn_vkQueueWaitIdle) {
 			return staticPfn_vkQueueWaitIdle(queue);
 		}
 		return pfn_vkQueueWaitIdle(queue);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkDeviceWaitIdle(VkDevice device) const {
-		if(!this || !pfn_vkDeviceWaitIdle) {
+		if(!pfn_vkDeviceWaitIdle) {
 			return staticPfn_vkDeviceWaitIdle(device);
 		}
 		return pfn_vkDeviceWaitIdle(device);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAllocateMemory(VkDevice device, const VkMemoryAllocateInfo* pAllocateInfo, const VkAllocationCallbacks* pAllocator, VkDeviceMemory* pMemory) const {
-		if(!this || !pfn_vkAllocateMemory) {
+		if(!pfn_vkAllocateMemory) {
 			return staticPfn_vkAllocateMemory(device, pAllocateInfo, pAllocator, pMemory);
 		}
 		return pfn_vkAllocateMemory(device, pAllocateInfo, pAllocator, pMemory);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkFreeMemory(VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkFreeMemory) {
+		if(!pfn_vkFreeMemory) {
 			staticPfn_vkFreeMemory(device, memory, pAllocator);
 			return;
 		}
 		pfn_vkFreeMemory(device, memory, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData) const {
-		if(!this || !pfn_vkMapMemory) {
+		if(!pfn_vkMapMemory) {
 			return staticPfn_vkMapMemory(device, memory, offset, size, flags, ppData);
 		}
 		return pfn_vkMapMemory(device, memory, offset, size, flags, ppData);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUnmapMemory(VkDevice device, VkDeviceMemory memory) const {
-		if(!this || !pfn_vkUnmapMemory) {
+		if(!pfn_vkUnmapMemory) {
 			staticPfn_vkUnmapMemory(device, memory);
 			return;
 		}
 		pfn_vkUnmapMemory(device, memory);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkFlushMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges) const {
-		if(!this || !pfn_vkFlushMappedMemoryRanges) {
+		if(!pfn_vkFlushMappedMemoryRanges) {
 			return staticPfn_vkFlushMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges);
 		}
 		return pfn_vkFlushMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkInvalidateMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges) const {
-		if(!this || !pfn_vkInvalidateMappedMemoryRanges) {
+		if(!pfn_vkInvalidateMappedMemoryRanges) {
 			return staticPfn_vkInvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges);
 		}
 		return pfn_vkInvalidateMappedMemoryRanges(device, memoryRangeCount, pMemoryRanges);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize* pCommittedMemoryInBytes) const {
-		if(!this || !pfn_vkGetDeviceMemoryCommitment) {
+		if(!pfn_vkGetDeviceMemoryCommitment) {
 			staticPfn_vkGetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes);
 			return;
 		}
 		pfn_vkGetDeviceMemoryCommitment(device, memory, pCommittedMemoryInBytes);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetBufferMemoryRequirements(VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetBufferMemoryRequirements) {
+		if(!pfn_vkGetBufferMemoryRequirements) {
 			staticPfn_vkGetBufferMemoryRequirements(device, buffer, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetBufferMemoryRequirements(device, buffer, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindBufferMemory(VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset) const {
-		if(!this || !pfn_vkBindBufferMemory) {
+		if(!pfn_vkBindBufferMemory) {
 			return staticPfn_vkBindBufferMemory(device, buffer, memory, memoryOffset);
 		}
 		return pfn_vkBindBufferMemory(device, buffer, memory, memoryOffset);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageMemoryRequirements(VkDevice device, VkImage image, VkMemoryRequirements* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageMemoryRequirements) {
+		if(!pfn_vkGetImageMemoryRequirements) {
 			staticPfn_vkGetImageMemoryRequirements(device, image, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetImageMemoryRequirements(device, image, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindImageMemory(VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset) const {
-		if(!this || !pfn_vkBindImageMemory) {
+		if(!pfn_vkBindImageMemory) {
 			return staticPfn_vkBindImageMemory(device, image, memory, memoryOffset);
 		}
 		return pfn_vkBindImageMemory(device, image, memory, memoryOffset);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSparseMemoryRequirements(VkDevice device, VkImage image, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageSparseMemoryRequirements) {
+		if(!pfn_vkGetImageSparseMemoryRequirements) {
 			staticPfn_vkGetImageSparseMemoryRequirements(device, image, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 			return;
 		}
 		pfn_vkGetImageSparseMemoryRequirements(device, image, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSparseImageFormatProperties(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, uint32_t* pPropertyCount, VkSparseImageFormatProperties* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSparseImageFormatProperties) {
+		if(!pfn_vkGetPhysicalDeviceSparseImageFormatProperties) {
 			staticPfn_vkGetPhysicalDeviceSparseImageFormatProperties(physicalDevice, format, type, samples, usage, tiling, pPropertyCount, pProperties);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceSparseImageFormatProperties(physicalDevice, format, type, samples, usage, tiling, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueBindSparse(VkQueue queue, uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence) const {
-		if(!this || !pfn_vkQueueBindSparse) {
+		if(!pfn_vkQueueBindSparse) {
 			return staticPfn_vkQueueBindSparse(queue, bindInfoCount, pBindInfo, fence);
 		}
 		return pfn_vkQueueBindSparse(queue, bindInfoCount, pBindInfo, fence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateFence(VkDevice device, const VkFenceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkFence* pFence) const {
-		if(!this || !pfn_vkCreateFence) {
+		if(!pfn_vkCreateFence) {
 			return staticPfn_vkCreateFence(device, pCreateInfo, pAllocator, pFence);
 		}
 		return pfn_vkCreateFence(device, pCreateInfo, pAllocator, pFence);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyFence(VkDevice device, VkFence fence, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyFence) {
+		if(!pfn_vkDestroyFence) {
 			staticPfn_vkDestroyFence(device, fence, pAllocator);
 			return;
 		}
 		pfn_vkDestroyFence(device, fence, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkResetFences(VkDevice device, uint32_t fenceCount, const VkFence* pFences) const {
-		if(!this || !pfn_vkResetFences) {
+		if(!pfn_vkResetFences) {
 			return staticPfn_vkResetFences(device, fenceCount, pFences);
 		}
 		return pfn_vkResetFences(device, fenceCount, pFences);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFenceStatus(VkDevice device, VkFence fence) const {
-		if(!this || !pfn_vkGetFenceStatus) {
+		if(!pfn_vkGetFenceStatus) {
 			return staticPfn_vkGetFenceStatus(device, fence);
 		}
 		return pfn_vkGetFenceStatus(device, fence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWaitForFences(VkDevice device, uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout) const {
-		if(!this || !pfn_vkWaitForFences) {
+		if(!pfn_vkWaitForFences) {
 			return staticPfn_vkWaitForFences(device, fenceCount, pFences, waitAll, timeout);
 		}
 		return pfn_vkWaitForFences(device, fenceCount, pFences, waitAll, timeout);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSemaphore(VkDevice device, const VkSemaphoreCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSemaphore* pSemaphore) const {
-		if(!this || !pfn_vkCreateSemaphore) {
+		if(!pfn_vkCreateSemaphore) {
 			return staticPfn_vkCreateSemaphore(device, pCreateInfo, pAllocator, pSemaphore);
 		}
 		return pfn_vkCreateSemaphore(device, pCreateInfo, pAllocator, pSemaphore);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySemaphore(VkDevice device, VkSemaphore semaphore, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySemaphore) {
+		if(!pfn_vkDestroySemaphore) {
 			staticPfn_vkDestroySemaphore(device, semaphore, pAllocator);
 			return;
 		}
 		pfn_vkDestroySemaphore(device, semaphore, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateEvent(VkDevice device, const VkEventCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkEvent* pEvent) const {
-		if(!this || !pfn_vkCreateEvent) {
+		if(!pfn_vkCreateEvent) {
 			return staticPfn_vkCreateEvent(device, pCreateInfo, pAllocator, pEvent);
 		}
 		return pfn_vkCreateEvent(device, pCreateInfo, pAllocator, pEvent);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyEvent(VkDevice device, VkEvent event, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyEvent) {
+		if(!pfn_vkDestroyEvent) {
 			staticPfn_vkDestroyEvent(device, event, pAllocator);
 			return;
 		}
 		pfn_vkDestroyEvent(device, event, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetEventStatus(VkDevice device, VkEvent event) const {
-		if(!this || !pfn_vkGetEventStatus) {
+		if(!pfn_vkGetEventStatus) {
 			return staticPfn_vkGetEventStatus(device, event);
 		}
 		return pfn_vkGetEventStatus(device, event);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetEvent(VkDevice device, VkEvent event) const {
-		if(!this || !pfn_vkSetEvent) {
+		if(!pfn_vkSetEvent) {
 			return staticPfn_vkSetEvent(device, event);
 		}
 		return pfn_vkSetEvent(device, event);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkResetEvent(VkDevice device, VkEvent event) const {
-		if(!this || !pfn_vkResetEvent) {
+		if(!pfn_vkResetEvent) {
 			return staticPfn_vkResetEvent(device, event);
 		}
 		return pfn_vkResetEvent(device, event);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateQueryPool(VkDevice device, const VkQueryPoolCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkQueryPool* pQueryPool) const {
-		if(!this || !pfn_vkCreateQueryPool) {
+		if(!pfn_vkCreateQueryPool) {
 			return staticPfn_vkCreateQueryPool(device, pCreateInfo, pAllocator, pQueryPool);
 		}
 		return pfn_vkCreateQueryPool(device, pCreateInfo, pAllocator, pQueryPool);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyQueryPool(VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyQueryPool) {
+		if(!pfn_vkDestroyQueryPool) {
 			staticPfn_vkDestroyQueryPool(device, queryPool, pAllocator);
 			return;
 		}
 		pfn_vkDestroyQueryPool(device, queryPool, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetQueryPoolResults(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void* pData, VkDeviceSize stride, VkQueryResultFlags flags) const {
-		if(!this || !pfn_vkGetQueryPoolResults) {
+		if(!pfn_vkGetQueryPoolResults) {
 			return staticPfn_vkGetQueryPoolResults(device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
 		}
 		return pfn_vkGetQueryPoolResults(device, queryPool, firstQuery, queryCount, dataSize, pData, stride, flags);
@@ -6592,7 +6592,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkResetQueryPool(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const {
-		if(!this || !pfn_vkResetQueryPool) {
+		if(!pfn_vkResetQueryPool) {
 			staticPfn_vkResetQueryPool(device, queryPool, firstQuery, queryCount);
 			return;
 		}
@@ -6601,7 +6601,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_host_query_reset) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkResetQueryPoolEXT(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const {
-		if(!this || !pfn_vkResetQueryPoolEXT) {
+		if(!pfn_vkResetQueryPoolEXT) {
 			staticPfn_vkResetQueryPoolEXT(device, queryPool, firstQuery, queryCount);
 			return;
 		}
@@ -6610,98 +6610,98 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateBuffer(VkDevice device, const VkBufferCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBuffer* pBuffer) const {
-		if(!this || !pfn_vkCreateBuffer) {
+		if(!pfn_vkCreateBuffer) {
 			return staticPfn_vkCreateBuffer(device, pCreateInfo, pAllocator, pBuffer);
 		}
 		return pfn_vkCreateBuffer(device, pCreateInfo, pAllocator, pBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyBuffer(VkDevice device, VkBuffer buffer, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyBuffer) {
+		if(!pfn_vkDestroyBuffer) {
 			staticPfn_vkDestroyBuffer(device, buffer, pAllocator);
 			return;
 		}
 		pfn_vkDestroyBuffer(device, buffer, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateBufferView(VkDevice device, const VkBufferViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferView* pView) const {
-		if(!this || !pfn_vkCreateBufferView) {
+		if(!pfn_vkCreateBufferView) {
 			return staticPfn_vkCreateBufferView(device, pCreateInfo, pAllocator, pView);
 		}
 		return pfn_vkCreateBufferView(device, pCreateInfo, pAllocator, pView);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyBufferView(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyBufferView) {
+		if(!pfn_vkDestroyBufferView) {
 			staticPfn_vkDestroyBufferView(device, bufferView, pAllocator);
 			return;
 		}
 		pfn_vkDestroyBufferView(device, bufferView, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateImage(VkDevice device, const VkImageCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImage* pImage) const {
-		if(!this || !pfn_vkCreateImage) {
+		if(!pfn_vkCreateImage) {
 			return staticPfn_vkCreateImage(device, pCreateInfo, pAllocator, pImage);
 		}
 		return pfn_vkCreateImage(device, pCreateInfo, pAllocator, pImage);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyImage(VkDevice device, VkImage image, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyImage) {
+		if(!pfn_vkDestroyImage) {
 			staticPfn_vkDestroyImage(device, image, pAllocator);
 			return;
 		}
 		pfn_vkDestroyImage(device, image, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSubresourceLayout(VkDevice device, VkImage image, const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const {
-		if(!this || !pfn_vkGetImageSubresourceLayout) {
+		if(!pfn_vkGetImageSubresourceLayout) {
 			staticPfn_vkGetImageSubresourceLayout(device, image, pSubresource, pLayout);
 			return;
 		}
 		pfn_vkGetImageSubresourceLayout(device, image, pSubresource, pLayout);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateImageView(VkDevice device, const VkImageViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImageView* pView) const {
-		if(!this || !pfn_vkCreateImageView) {
+		if(!pfn_vkCreateImageView) {
 			return staticPfn_vkCreateImageView(device, pCreateInfo, pAllocator, pView);
 		}
 		return pfn_vkCreateImageView(device, pCreateInfo, pAllocator, pView);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyImageView(VkDevice device, VkImageView imageView, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyImageView) {
+		if(!pfn_vkDestroyImageView) {
 			staticPfn_vkDestroyImageView(device, imageView, pAllocator);
 			return;
 		}
 		pfn_vkDestroyImageView(device, imageView, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateShaderModule(VkDevice device, const VkShaderModuleCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkShaderModule* pShaderModule) const {
-		if(!this || !pfn_vkCreateShaderModule) {
+		if(!pfn_vkCreateShaderModule) {
 			return staticPfn_vkCreateShaderModule(device, pCreateInfo, pAllocator, pShaderModule);
 		}
 		return pfn_vkCreateShaderModule(device, pCreateInfo, pAllocator, pShaderModule);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyShaderModule(VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyShaderModule) {
+		if(!pfn_vkDestroyShaderModule) {
 			staticPfn_vkDestroyShaderModule(device, shaderModule, pAllocator);
 			return;
 		}
 		pfn_vkDestroyShaderModule(device, shaderModule, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreatePipelineCache(VkDevice device, const VkPipelineCacheCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineCache* pPipelineCache) const {
-		if(!this || !pfn_vkCreatePipelineCache) {
+		if(!pfn_vkCreatePipelineCache) {
 			return staticPfn_vkCreatePipelineCache(device, pCreateInfo, pAllocator, pPipelineCache);
 		}
 		return pfn_vkCreatePipelineCache(device, pCreateInfo, pAllocator, pPipelineCache);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPipelineCache(VkDevice device, VkPipelineCache pipelineCache, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPipelineCache) {
+		if(!pfn_vkDestroyPipelineCache) {
 			staticPfn_vkDestroyPipelineCache(device, pipelineCache, pAllocator);
 			return;
 		}
 		pfn_vkDestroyPipelineCache(device, pipelineCache, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineCacheData(VkDevice device, VkPipelineCache pipelineCache, size_t* pDataSize, void* pData) const {
-		if(!this || !pfn_vkGetPipelineCacheData) {
+		if(!pfn_vkGetPipelineCacheData) {
 			return staticPfn_vkGetPipelineCacheData(device, pipelineCache, pDataSize, pData);
 		}
 		return pfn_vkGetPipelineCacheData(device, pipelineCache, pDataSize, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkMergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache* pSrcCaches) const {
-		if(!this || !pfn_vkMergePipelineCaches) {
+		if(!pfn_vkMergePipelineCaches) {
 			return staticPfn_vkMergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches);
 		}
 		return pfn_vkMergePipelineCaches(device, dstCache, srcCacheCount, pSrcCaches);
@@ -6709,32 +6709,32 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_pipeline_binary) && (defined(VK_KHR_maintenance5) || defined(VK_VERSION_1_4))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreatePipelineBinariesKHR(VkDevice device, const VkPipelineBinaryCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineBinaryHandlesInfoKHR* pBinaries) const {
-		if(!this || !pfn_vkCreatePipelineBinariesKHR) {
+		if(!pfn_vkCreatePipelineBinariesKHR) {
 			return staticPfn_vkCreatePipelineBinariesKHR(device, pCreateInfo, pAllocator, pBinaries);
 		}
 		return pfn_vkCreatePipelineBinariesKHR(device, pCreateInfo, pAllocator, pBinaries);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPipelineBinaryKHR(VkDevice device, VkPipelineBinaryKHR pipelineBinary, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPipelineBinaryKHR) {
+		if(!pfn_vkDestroyPipelineBinaryKHR) {
 			staticPfn_vkDestroyPipelineBinaryKHR(device, pipelineBinary, pAllocator);
 			return;
 		}
 		pfn_vkDestroyPipelineBinaryKHR(device, pipelineBinary, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineKeyKHR(VkDevice device, const VkPipelineCreateInfoKHR* pPipelineCreateInfo, VkPipelineBinaryKeyKHR* pPipelineKey) const {
-		if(!this || !pfn_vkGetPipelineKeyKHR) {
+		if(!pfn_vkGetPipelineKeyKHR) {
 			return staticPfn_vkGetPipelineKeyKHR(device, pPipelineCreateInfo, pPipelineKey);
 		}
 		return pfn_vkGetPipelineKeyKHR(device, pPipelineCreateInfo, pPipelineKey);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineBinaryDataKHR(VkDevice device, const VkPipelineBinaryDataInfoKHR* pInfo, VkPipelineBinaryKeyKHR* pPipelineBinaryKey, size_t* pPipelineBinaryDataSize, void* pPipelineBinaryData) const {
-		if(!this || !pfn_vkGetPipelineBinaryDataKHR) {
+		if(!pfn_vkGetPipelineBinaryDataKHR) {
 			return staticPfn_vkGetPipelineBinaryDataKHR(device, pInfo, pPipelineBinaryKey, pPipelineBinaryDataSize, pPipelineBinaryData);
 		}
 		return pfn_vkGetPipelineBinaryDataKHR(device, pInfo, pPipelineBinaryKey, pPipelineBinaryDataSize, pPipelineBinaryData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkReleaseCapturedPipelineDataKHR(VkDevice device, const VkReleaseCapturedPipelineDataInfoKHR* pInfo, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkReleaseCapturedPipelineDataKHR) {
+		if(!pfn_vkReleaseCapturedPipelineDataKHR) {
 			return staticPfn_vkReleaseCapturedPipelineDataKHR(device, pInfo, pAllocator);
 		}
 		return pfn_vkReleaseCapturedPipelineDataKHR(device, pInfo, pAllocator);
@@ -6742,13 +6742,13 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateGraphicsPipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkGraphicsPipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const {
-		if(!this || !pfn_vkCreateGraphicsPipelines) {
+		if(!pfn_vkCreateGraphicsPipelines) {
 			return staticPfn_vkCreateGraphicsPipelines(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 		}
 		return pfn_vkCreateGraphicsPipelines(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const {
-		if(!this || !pfn_vkCreateComputePipelines) {
+		if(!pfn_vkCreateComputePipelines) {
 			return staticPfn_vkCreateComputePipelines(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 		}
 		return pfn_vkCreateComputePipelines(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
@@ -6756,7 +6756,7 @@ namespace wfe {
 #endif
 #if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(VkDevice device, VkRenderPass renderpass, VkExtent2D* pMaxWorkgroupSize) const {
-		if(!this || !pfn_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI) {
+		if(!pfn_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI) {
 			return staticPfn_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(device, renderpass, pMaxWorkgroupSize);
 		}
 		return pfn_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(device, renderpass, pMaxWorkgroupSize);
@@ -6764,117 +6764,117 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPipeline(VkDevice device, VkPipeline pipeline, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPipeline) {
+		if(!pfn_vkDestroyPipeline) {
 			staticPfn_vkDestroyPipeline(device, pipeline, pAllocator);
 			return;
 		}
 		pfn_vkDestroyPipeline(device, pipeline, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreatePipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineLayout* pPipelineLayout) const {
-		if(!this || !pfn_vkCreatePipelineLayout) {
+		if(!pfn_vkCreatePipelineLayout) {
 			return staticPfn_vkCreatePipelineLayout(device, pCreateInfo, pAllocator, pPipelineLayout);
 		}
 		return pfn_vkCreatePipelineLayout(device, pCreateInfo, pAllocator, pPipelineLayout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPipelineLayout) {
+		if(!pfn_vkDestroyPipelineLayout) {
 			staticPfn_vkDestroyPipelineLayout(device, pipelineLayout, pAllocator);
 			return;
 		}
 		pfn_vkDestroyPipelineLayout(device, pipelineLayout, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSampler(VkDevice device, const VkSamplerCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSampler* pSampler) const {
-		if(!this || !pfn_vkCreateSampler) {
+		if(!pfn_vkCreateSampler) {
 			return staticPfn_vkCreateSampler(device, pCreateInfo, pAllocator, pSampler);
 		}
 		return pfn_vkCreateSampler(device, pCreateInfo, pAllocator, pSampler);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySampler) {
+		if(!pfn_vkDestroySampler) {
 			staticPfn_vkDestroySampler(device, sampler, pAllocator);
 			return;
 		}
 		pfn_vkDestroySampler(device, sampler, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDescriptorSetLayout(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorSetLayout* pSetLayout) const {
-		if(!this || !pfn_vkCreateDescriptorSetLayout) {
+		if(!pfn_vkCreateDescriptorSetLayout) {
 			return staticPfn_vkCreateDescriptorSetLayout(device, pCreateInfo, pAllocator, pSetLayout);
 		}
 		return pfn_vkCreateDescriptorSetLayout(device, pCreateInfo, pAllocator, pSetLayout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDescriptorSetLayout) {
+		if(!pfn_vkDestroyDescriptorSetLayout) {
 			staticPfn_vkDestroyDescriptorSetLayout(device, descriptorSetLayout, pAllocator);
 			return;
 		}
 		pfn_vkDestroyDescriptorSetLayout(device, descriptorSetLayout, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDescriptorPool(VkDevice device, const VkDescriptorPoolCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorPool* pDescriptorPool) const {
-		if(!this || !pfn_vkCreateDescriptorPool) {
+		if(!pfn_vkCreateDescriptorPool) {
 			return staticPfn_vkCreateDescriptorPool(device, pCreateInfo, pAllocator, pDescriptorPool);
 		}
 		return pfn_vkCreateDescriptorPool(device, pCreateInfo, pAllocator, pDescriptorPool);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDescriptorPool) {
+		if(!pfn_vkDestroyDescriptorPool) {
 			staticPfn_vkDestroyDescriptorPool(device, descriptorPool, pAllocator);
 			return;
 		}
 		pfn_vkDestroyDescriptorPool(device, descriptorPool, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkResetDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, VkDescriptorPoolResetFlags flags) const {
-		if(!this || !pfn_vkResetDescriptorPool) {
+		if(!pfn_vkResetDescriptorPool) {
 			return staticPfn_vkResetDescriptorPool(device, descriptorPool, flags);
 		}
 		return pfn_vkResetDescriptorPool(device, descriptorPool, flags);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAllocateDescriptorSets(VkDevice device, const VkDescriptorSetAllocateInfo* pAllocateInfo, VkDescriptorSet* pDescriptorSets) const {
-		if(!this || !pfn_vkAllocateDescriptorSets) {
+		if(!pfn_vkAllocateDescriptorSets) {
 			return staticPfn_vkAllocateDescriptorSets(device, pAllocateInfo, pDescriptorSets);
 		}
 		return pfn_vkAllocateDescriptorSets(device, pAllocateInfo, pDescriptorSets);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkFreeDescriptorSets(VkDevice device, VkDescriptorPool descriptorPool, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets) const {
-		if(!this || !pfn_vkFreeDescriptorSets) {
+		if(!pfn_vkFreeDescriptorSets) {
 			return staticPfn_vkFreeDescriptorSets(device, descriptorPool, descriptorSetCount, pDescriptorSets);
 		}
 		return pfn_vkFreeDescriptorSets(device, descriptorPool, descriptorSetCount, pDescriptorSets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUpdateDescriptorSets(VkDevice device, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies) const {
-		if(!this || !pfn_vkUpdateDescriptorSets) {
+		if(!pfn_vkUpdateDescriptorSets) {
 			staticPfn_vkUpdateDescriptorSets(device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
 			return;
 		}
 		pfn_vkUpdateDescriptorSets(device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateFramebuffer(VkDevice device, const VkFramebufferCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkFramebuffer* pFramebuffer) const {
-		if(!this || !pfn_vkCreateFramebuffer) {
+		if(!pfn_vkCreateFramebuffer) {
 			return staticPfn_vkCreateFramebuffer(device, pCreateInfo, pAllocator, pFramebuffer);
 		}
 		return pfn_vkCreateFramebuffer(device, pCreateInfo, pAllocator, pFramebuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyFramebuffer(VkDevice device, VkFramebuffer framebuffer, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyFramebuffer) {
+		if(!pfn_vkDestroyFramebuffer) {
 			staticPfn_vkDestroyFramebuffer(device, framebuffer, pAllocator);
 			return;
 		}
 		pfn_vkDestroyFramebuffer(device, framebuffer, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateRenderPass(VkDevice device, const VkRenderPassCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass) const {
-		if(!this || !pfn_vkCreateRenderPass) {
+		if(!pfn_vkCreateRenderPass) {
 			return staticPfn_vkCreateRenderPass(device, pCreateInfo, pAllocator, pRenderPass);
 		}
 		return pfn_vkCreateRenderPass(device, pCreateInfo, pAllocator, pRenderPass);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyRenderPass(VkDevice device, VkRenderPass renderPass, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyRenderPass) {
+		if(!pfn_vkDestroyRenderPass) {
 			staticPfn_vkDestroyRenderPass(device, renderPass, pAllocator);
 			return;
 		}
 		pfn_vkDestroyRenderPass(device, renderPass, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetRenderAreaGranularity(VkDevice device, VkRenderPass renderPass, VkExtent2D* pGranularity) const {
-		if(!this || !pfn_vkGetRenderAreaGranularity) {
+		if(!pfn_vkGetRenderAreaGranularity) {
 			staticPfn_vkGetRenderAreaGranularity(device, renderPass, pGranularity);
 			return;
 		}
@@ -6883,7 +6883,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfoKHR* pRenderingAreaInfo, VkExtent2D* pGranularity) const {
-		if(!this || !pfn_vkGetRenderingAreaGranularity) {
+		if(!pfn_vkGetRenderingAreaGranularity) {
 			staticPfn_vkGetRenderingAreaGranularity(device, pRenderingAreaInfo, pGranularity);
 			return;
 		}
@@ -6892,7 +6892,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfoKHR* pRenderingAreaInfo, VkExtent2D* pGranularity) const {
-		if(!this || !pfn_vkGetRenderingAreaGranularityKHR) {
+		if(!pfn_vkGetRenderingAreaGranularityKHR) {
 			staticPfn_vkGetRenderingAreaGranularityKHR(device, pRenderingAreaInfo, pGranularity);
 			return;
 		}
@@ -6901,57 +6901,57 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateCommandPool(VkDevice device, const VkCommandPoolCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCommandPool* pCommandPool) const {
-		if(!this || !pfn_vkCreateCommandPool) {
+		if(!pfn_vkCreateCommandPool) {
 			return staticPfn_vkCreateCommandPool(device, pCreateInfo, pAllocator, pCommandPool);
 		}
 		return pfn_vkCreateCommandPool(device, pCreateInfo, pAllocator, pCommandPool);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyCommandPool(VkDevice device, VkCommandPool commandPool, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyCommandPool) {
+		if(!pfn_vkDestroyCommandPool) {
 			staticPfn_vkDestroyCommandPool(device, commandPool, pAllocator);
 			return;
 		}
 		pfn_vkDestroyCommandPool(device, commandPool, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkResetCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolResetFlags flags) const {
-		if(!this || !pfn_vkResetCommandPool) {
+		if(!pfn_vkResetCommandPool) {
 			return staticPfn_vkResetCommandPool(device, commandPool, flags);
 		}
 		return pfn_vkResetCommandPool(device, commandPool, flags);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAllocateCommandBuffers(VkDevice device, const VkCommandBufferAllocateInfo* pAllocateInfo, VkCommandBuffer* pCommandBuffers) const {
-		if(!this || !pfn_vkAllocateCommandBuffers) {
+		if(!pfn_vkAllocateCommandBuffers) {
 			return staticPfn_vkAllocateCommandBuffers(device, pAllocateInfo, pCommandBuffers);
 		}
 		return pfn_vkAllocateCommandBuffers(device, pAllocateInfo, pCommandBuffers);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkFreeCommandBuffers(VkDevice device, VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers) const {
-		if(!this || !pfn_vkFreeCommandBuffers) {
+		if(!pfn_vkFreeCommandBuffers) {
 			staticPfn_vkFreeCommandBuffers(device, commandPool, commandBufferCount, pCommandBuffers);
 			return;
 		}
 		pfn_vkFreeCommandBuffers(device, commandPool, commandBufferCount, pCommandBuffers);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBeginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo* pBeginInfo) const {
-		if(!this || !pfn_vkBeginCommandBuffer) {
+		if(!pfn_vkBeginCommandBuffer) {
 			return staticPfn_vkBeginCommandBuffer(commandBuffer, pBeginInfo);
 		}
 		return pfn_vkBeginCommandBuffer(commandBuffer, pBeginInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEndCommandBuffer(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkEndCommandBuffer) {
+		if(!pfn_vkEndCommandBuffer) {
 			return staticPfn_vkEndCommandBuffer(commandBuffer);
 		}
 		return pfn_vkEndCommandBuffer(commandBuffer);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkResetCommandBuffer(VkCommandBuffer commandBuffer, VkCommandBufferResetFlags flags) const {
-		if(!this || !pfn_vkResetCommandBuffer) {
+		if(!pfn_vkResetCommandBuffer) {
 			return staticPfn_vkResetCommandBuffer(commandBuffer, flags);
 		}
 		return pfn_vkResetCommandBuffer(commandBuffer, flags);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const {
-		if(!this || !pfn_vkCmdBindPipeline) {
+		if(!pfn_vkCmdBindPipeline) {
 			staticPfn_vkCmdBindPipeline(commandBuffer, pipelineBindPoint, pipeline);
 			return;
 		}
@@ -6960,7 +6960,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_attachment_feedback_loop_dynamic_state) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_attachment_feedback_loop_layout))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetAttachmentFeedbackLoopEnableEXT(VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask) const {
-		if(!this || !pfn_vkCmdSetAttachmentFeedbackLoopEnableEXT) {
+		if(!pfn_vkCmdSetAttachmentFeedbackLoopEnableEXT) {
 			staticPfn_vkCmdSetAttachmentFeedbackLoopEnableEXT(commandBuffer, aspectMask);
 			return;
 		}
@@ -6969,98 +6969,98 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewport(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewport* pViewports) const {
-		if(!this || !pfn_vkCmdSetViewport) {
+		if(!pfn_vkCmdSetViewport) {
 			staticPfn_vkCmdSetViewport(commandBuffer, firstViewport, viewportCount, pViewports);
 			return;
 		}
 		pfn_vkCmdSetViewport(commandBuffer, firstViewport, viewportCount, pViewports);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetScissor(VkCommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, const VkRect2D* pScissors) const {
-		if(!this || !pfn_vkCmdSetScissor) {
+		if(!pfn_vkCmdSetScissor) {
 			staticPfn_vkCmdSetScissor(commandBuffer, firstScissor, scissorCount, pScissors);
 			return;
 		}
 		pfn_vkCmdSetScissor(commandBuffer, firstScissor, scissorCount, pScissors);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineWidth(VkCommandBuffer commandBuffer, float lineWidth) const {
-		if(!this || !pfn_vkCmdSetLineWidth) {
+		if(!pfn_vkCmdSetLineWidth) {
 			staticPfn_vkCmdSetLineWidth(commandBuffer, lineWidth);
 			return;
 		}
 		pfn_vkCmdSetLineWidth(commandBuffer, lineWidth);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBias(VkCommandBuffer commandBuffer, float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor) const {
-		if(!this || !pfn_vkCmdSetDepthBias) {
+		if(!pfn_vkCmdSetDepthBias) {
 			staticPfn_vkCmdSetDepthBias(commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
 			return;
 		}
 		pfn_vkCmdSetDepthBias(commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetBlendConstants(VkCommandBuffer commandBuffer, const float blendConstants[4]) const {
-		if(!this || !pfn_vkCmdSetBlendConstants) {
+		if(!pfn_vkCmdSetBlendConstants) {
 			staticPfn_vkCmdSetBlendConstants(commandBuffer, blendConstants);
 			return;
 		}
 		pfn_vkCmdSetBlendConstants(commandBuffer, blendConstants);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBounds(VkCommandBuffer commandBuffer, float minDepthBounds, float maxDepthBounds) const {
-		if(!this || !pfn_vkCmdSetDepthBounds) {
+		if(!pfn_vkCmdSetDepthBounds) {
 			staticPfn_vkCmdSetDepthBounds(commandBuffer, minDepthBounds, maxDepthBounds);
 			return;
 		}
 		pfn_vkCmdSetDepthBounds(commandBuffer, minDepthBounds, maxDepthBounds);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilCompareMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t compareMask) const {
-		if(!this || !pfn_vkCmdSetStencilCompareMask) {
+		if(!pfn_vkCmdSetStencilCompareMask) {
 			staticPfn_vkCmdSetStencilCompareMask(commandBuffer, faceMask, compareMask);
 			return;
 		}
 		pfn_vkCmdSetStencilCompareMask(commandBuffer, faceMask, compareMask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilWriteMask(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t writeMask) const {
-		if(!this || !pfn_vkCmdSetStencilWriteMask) {
+		if(!pfn_vkCmdSetStencilWriteMask) {
 			staticPfn_vkCmdSetStencilWriteMask(commandBuffer, faceMask, writeMask);
 			return;
 		}
 		pfn_vkCmdSetStencilWriteMask(commandBuffer, faceMask, writeMask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilReference(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, uint32_t reference) const {
-		if(!this || !pfn_vkCmdSetStencilReference) {
+		if(!pfn_vkCmdSetStencilReference) {
 			staticPfn_vkCmdSetStencilReference(commandBuffer, faceMask, reference);
 			return;
 		}
 		pfn_vkCmdSetStencilReference(commandBuffer, faceMask, reference);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorSets(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets, uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets) const {
-		if(!this || !pfn_vkCmdBindDescriptorSets) {
+		if(!pfn_vkCmdBindDescriptorSets) {
 			staticPfn_vkCmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
 			return;
 		}
 		pfn_vkCmdBindDescriptorSets(commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindIndexBuffer(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType) const {
-		if(!this || !pfn_vkCmdBindIndexBuffer) {
+		if(!pfn_vkCmdBindIndexBuffer) {
 			staticPfn_vkCmdBindIndexBuffer(commandBuffer, buffer, offset, indexType);
 			return;
 		}
 		pfn_vkCmdBindIndexBuffer(commandBuffer, buffer, offset, indexType);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindVertexBuffers(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets) const {
-		if(!this || !pfn_vkCmdBindVertexBuffers) {
+		if(!pfn_vkCmdBindVertexBuffers) {
 			staticPfn_vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets);
 			return;
 		}
 		pfn_vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDraw(VkCommandBuffer commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) const {
-		if(!this || !pfn_vkCmdDraw) {
+		if(!pfn_vkCmdDraw) {
 			staticPfn_vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
 			return;
 		}
 		pfn_vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndexed(VkCommandBuffer commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance) const {
-		if(!this || !pfn_vkCmdDrawIndexed) {
+		if(!pfn_vkCmdDrawIndexed) {
 			staticPfn_vkCmdDrawIndexed(commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 			return;
 		}
@@ -7069,14 +7069,14 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_multi_draw) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMultiEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawInfoEXT* pVertexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawMultiEXT) {
+		if(!pfn_vkCmdDrawMultiEXT) {
 			staticPfn_vkCmdDrawMultiEXT(commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride);
 			return;
 		}
 		pfn_vkCmdDrawMultiEXT(commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMultiIndexedEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawIndexedInfoEXT* pIndexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride, const int32_t* pVertexOffset) const {
-		if(!this || !pfn_vkCmdDrawMultiIndexedEXT) {
+		if(!pfn_vkCmdDrawMultiIndexedEXT) {
 			staticPfn_vkCmdDrawMultiIndexedEXT(commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset);
 			return;
 		}
@@ -7085,28 +7085,28 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndirect) {
+		if(!pfn_vkCmdDrawIndirect) {
 			staticPfn_vkCmdDrawIndirect(commandBuffer, buffer, offset, drawCount, stride);
 			return;
 		}
 		pfn_vkCmdDrawIndirect(commandBuffer, buffer, offset, drawCount, stride);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndexedIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndexedIndirect) {
+		if(!pfn_vkCmdDrawIndexedIndirect) {
 			staticPfn_vkCmdDrawIndexedIndirect(commandBuffer, buffer, offset, drawCount, stride);
 			return;
 		}
 		pfn_vkCmdDrawIndexedIndirect(commandBuffer, buffer, offset, drawCount, stride);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const {
-		if(!this || !pfn_vkCmdDispatch) {
+		if(!pfn_vkCmdDispatch) {
 			staticPfn_vkCmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ);
 			return;
 		}
 		pfn_vkCmdDispatch(commandBuffer, groupCountX, groupCountY, groupCountZ);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) const {
-		if(!this || !pfn_vkCmdDispatchIndirect) {
+		if(!pfn_vkCmdDispatchIndirect) {
 			staticPfn_vkCmdDispatchIndirect(commandBuffer, buffer, offset);
 			return;
 		}
@@ -7115,7 +7115,7 @@ namespace wfe {
 #endif
 #if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSubpassShadingHUAWEI(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdSubpassShadingHUAWEI) {
+		if(!pfn_vkCmdSubpassShadingHUAWEI) {
 			staticPfn_vkCmdSubpassShadingHUAWEI(commandBuffer);
 			return;
 		}
@@ -7124,14 +7124,14 @@ namespace wfe {
 #endif
 #if defined(VK_HUAWEI_cluster_culling_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawClusterHUAWEI(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const {
-		if(!this || !pfn_vkCmdDrawClusterHUAWEI) {
+		if(!pfn_vkCmdDrawClusterHUAWEI) {
 			staticPfn_vkCmdDrawClusterHUAWEI(commandBuffer, groupCountX, groupCountY, groupCountZ);
 			return;
 		}
 		pfn_vkCmdDrawClusterHUAWEI(commandBuffer, groupCountX, groupCountY, groupCountZ);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawClusterIndirectHUAWEI(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) const {
-		if(!this || !pfn_vkCmdDrawClusterIndirectHUAWEI) {
+		if(!pfn_vkCmdDrawClusterIndirectHUAWEI) {
 			staticPfn_vkCmdDrawClusterIndirectHUAWEI(commandBuffer, buffer, offset);
 			return;
 		}
@@ -7140,7 +7140,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdUpdatePipelineIndirectBufferNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const {
-		if(!this || !pfn_vkCmdUpdatePipelineIndirectBufferNV) {
+		if(!pfn_vkCmdUpdatePipelineIndirectBufferNV) {
 			staticPfn_vkCmdUpdatePipelineIndirectBufferNV(commandBuffer, pipelineBindPoint, pipeline);
 			return;
 		}
@@ -7149,35 +7149,35 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBuffer(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy* pRegions) const {
-		if(!this || !pfn_vkCmdCopyBuffer) {
+		if(!pfn_vkCmdCopyBuffer) {
 			staticPfn_vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
 			return;
 		}
 		pfn_vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageCopy* pRegions) const {
-		if(!this || !pfn_vkCmdCopyImage) {
+		if(!pfn_vkCmdCopyImage) {
 			staticPfn_vkCmdCopyImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
 			return;
 		}
 		pfn_vkCmdCopyImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBlitImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageBlit* pRegions, VkFilter filter) const {
-		if(!this || !pfn_vkCmdBlitImage) {
+		if(!pfn_vkCmdBlitImage) {
 			staticPfn_vkCmdBlitImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
 			return;
 		}
 		pfn_vkCmdBlitImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkBufferImageCopy* pRegions) const {
-		if(!this || !pfn_vkCmdCopyBufferToImage) {
+		if(!pfn_vkCmdCopyBufferToImage) {
 			staticPfn_vkCmdCopyBufferToImage(commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions);
 			return;
 		}
 		pfn_vkCmdCopyBufferToImage(commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy* pRegions) const {
-		if(!this || !pfn_vkCmdCopyImageToBuffer) {
+		if(!pfn_vkCmdCopyImageToBuffer) {
 			staticPfn_vkCmdCopyImageToBuffer(commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions);
 			return;
 		}
@@ -7186,14 +7186,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_copy_memory_indirect) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdCopyMemoryIndirectNV) {
+		if(!pfn_vkCmdCopyMemoryIndirectNV) {
 			staticPfn_vkCmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride);
 			return;
 		}
 		pfn_vkCmdCopyMemoryIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers* pImageSubresources) const {
-		if(!this || !pfn_vkCmdCopyMemoryToImageIndirectNV) {
+		if(!pfn_vkCmdCopyMemoryToImageIndirectNV) {
 			staticPfn_vkCmdCopyMemoryToImageIndirectNV(commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources);
 			return;
 		}
@@ -7202,84 +7202,84 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdUpdateBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData) const {
-		if(!this || !pfn_vkCmdUpdateBuffer) {
+		if(!pfn_vkCmdUpdateBuffer) {
 			staticPfn_vkCmdUpdateBuffer(commandBuffer, dstBuffer, dstOffset, dataSize, pData);
 			return;
 		}
 		pfn_vkCmdUpdateBuffer(commandBuffer, dstBuffer, dstOffset, dataSize, pData);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdFillBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize size, uint32_t data) const {
-		if(!this || !pfn_vkCmdFillBuffer) {
+		if(!pfn_vkCmdFillBuffer) {
 			staticPfn_vkCmdFillBuffer(commandBuffer, dstBuffer, dstOffset, size, data);
 			return;
 		}
 		pfn_vkCmdFillBuffer(commandBuffer, dstBuffer, dstOffset, size, data);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdClearColorImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearColorValue* pColor, uint32_t rangeCount, const VkImageSubresourceRange* pRanges) const {
-		if(!this || !pfn_vkCmdClearColorImage) {
+		if(!pfn_vkCmdClearColorImage) {
 			staticPfn_vkCmdClearColorImage(commandBuffer, image, imageLayout, pColor, rangeCount, pRanges);
 			return;
 		}
 		pfn_vkCmdClearColorImage(commandBuffer, image, imageLayout, pColor, rangeCount, pRanges);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdClearDepthStencilImage(VkCommandBuffer commandBuffer, VkImage image, VkImageLayout imageLayout, const VkClearDepthStencilValue* pDepthStencil, uint32_t rangeCount, const VkImageSubresourceRange* pRanges) const {
-		if(!this || !pfn_vkCmdClearDepthStencilImage) {
+		if(!pfn_vkCmdClearDepthStencilImage) {
 			staticPfn_vkCmdClearDepthStencilImage(commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
 			return;
 		}
 		pfn_vkCmdClearDepthStencilImage(commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdClearAttachments(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkClearAttachment* pAttachments, uint32_t rectCount, const VkClearRect* pRects) const {
-		if(!this || !pfn_vkCmdClearAttachments) {
+		if(!pfn_vkCmdClearAttachments) {
 			staticPfn_vkCmdClearAttachments(commandBuffer, attachmentCount, pAttachments, rectCount, pRects);
 			return;
 		}
 		pfn_vkCmdClearAttachments(commandBuffer, attachmentCount, pAttachments, rectCount, pRects);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResolveImage(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkImageResolve* pRegions) const {
-		if(!this || !pfn_vkCmdResolveImage) {
+		if(!pfn_vkCmdResolveImage) {
 			staticPfn_vkCmdResolveImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
 			return;
 		}
 		pfn_vkCmdResolveImage(commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const {
-		if(!this || !pfn_vkCmdSetEvent) {
+		if(!pfn_vkCmdSetEvent) {
 			staticPfn_vkCmdSetEvent(commandBuffer, event, stageMask);
 			return;
 		}
 		pfn_vkCmdSetEvent(commandBuffer, event, stageMask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResetEvent(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags stageMask) const {
-		if(!this || !pfn_vkCmdResetEvent) {
+		if(!pfn_vkCmdResetEvent) {
 			staticPfn_vkCmdResetEvent(commandBuffer, event, stageMask);
 			return;
 		}
 		pfn_vkCmdResetEvent(commandBuffer, event, stageMask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWaitEvents(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent* pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers) const {
-		if(!this || !pfn_vkCmdWaitEvents) {
+		if(!pfn_vkCmdWaitEvents) {
 			staticPfn_vkCmdWaitEvents(commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 			return;
 		}
 		pfn_vkCmdWaitEvents(commandBuffer, eventCount, pEvents, srcStageMask, dstStageMask, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPipelineBarrier(VkCommandBuffer commandBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers) const {
-		if(!this || !pfn_vkCmdPipelineBarrier) {
+		if(!pfn_vkCmdPipelineBarrier) {
 			staticPfn_vkCmdPipelineBarrier(commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 			return;
 		}
 		pfn_vkCmdPipelineBarrier(commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const {
-		if(!this || !pfn_vkCmdBeginQuery) {
+		if(!pfn_vkCmdBeginQuery) {
 			staticPfn_vkCmdBeginQuery(commandBuffer, queryPool, query, flags);
 			return;
 		}
 		pfn_vkCmdBeginQuery(commandBuffer, queryPool, query, flags);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query) const {
-		if(!this || !pfn_vkCmdEndQuery) {
+		if(!pfn_vkCmdEndQuery) {
 			staticPfn_vkCmdEndQuery(commandBuffer, queryPool, query);
 			return;
 		}
@@ -7288,14 +7288,14 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_conditional_rendering) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT* pConditionalRenderingBegin) const {
-		if(!this || !pfn_vkCmdBeginConditionalRenderingEXT) {
+		if(!pfn_vkCmdBeginConditionalRenderingEXT) {
 			staticPfn_vkCmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin);
 			return;
 		}
 		pfn_vkCmdBeginConditionalRenderingEXT(commandBuffer, pConditionalRenderingBegin);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndConditionalRenderingEXT(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdEndConditionalRenderingEXT) {
+		if(!pfn_vkCmdEndConditionalRenderingEXT) {
 			staticPfn_vkCmdEndConditionalRenderingEXT(commandBuffer);
 			return;
 		}
@@ -7304,56 +7304,56 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_0)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResetQueryPool(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const {
-		if(!this || !pfn_vkCmdResetQueryPool) {
+		if(!pfn_vkCmdResetQueryPool) {
 			staticPfn_vkCmdResetQueryPool(commandBuffer, queryPool, firstQuery, queryCount);
 			return;
 		}
 		pfn_vkCmdResetQueryPool(commandBuffer, queryPool, firstQuery, queryCount);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteTimestamp(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, uint32_t query) const {
-		if(!this || !pfn_vkCmdWriteTimestamp) {
+		if(!pfn_vkCmdWriteTimestamp) {
 			staticPfn_vkCmdWriteTimestamp(commandBuffer, pipelineStage, queryPool, query);
 			return;
 		}
 		pfn_vkCmdWriteTimestamp(commandBuffer, pipelineStage, queryPool, query);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyQueryPoolResults(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize stride, VkQueryResultFlags flags) const {
-		if(!this || !pfn_vkCmdCopyQueryPoolResults) {
+		if(!pfn_vkCmdCopyQueryPoolResults) {
 			staticPfn_vkCmdCopyQueryPoolResults(commandBuffer, queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
 			return;
 		}
 		pfn_vkCmdCopyQueryPoolResults(commandBuffer, queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushConstants(VkCommandBuffer commandBuffer, VkPipelineLayout layout, VkShaderStageFlags stageFlags, uint32_t offset, uint32_t size, const void* pValues) const {
-		if(!this || !pfn_vkCmdPushConstants) {
+		if(!pfn_vkCmdPushConstants) {
 			staticPfn_vkCmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues);
 			return;
 		}
 		pfn_vkCmdPushConstants(commandBuffer, layout, stageFlags, offset, size, pValues);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, VkSubpassContents contents) const {
-		if(!this || !pfn_vkCmdBeginRenderPass) {
+		if(!pfn_vkCmdBeginRenderPass) {
 			staticPfn_vkCmdBeginRenderPass(commandBuffer, pRenderPassBegin, contents);
 			return;
 		}
 		pfn_vkCmdBeginRenderPass(commandBuffer, pRenderPassBegin, contents);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdNextSubpass(VkCommandBuffer commandBuffer, VkSubpassContents contents) const {
-		if(!this || !pfn_vkCmdNextSubpass) {
+		if(!pfn_vkCmdNextSubpass) {
 			staticPfn_vkCmdNextSubpass(commandBuffer, contents);
 			return;
 		}
 		pfn_vkCmdNextSubpass(commandBuffer, contents);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRenderPass(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdEndRenderPass) {
+		if(!pfn_vkCmdEndRenderPass) {
 			staticPfn_vkCmdEndRenderPass(commandBuffer);
 			return;
 		}
 		pfn_vkCmdEndRenderPass(commandBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdExecuteCommands(VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers) const {
-		if(!this || !pfn_vkCmdExecuteCommands) {
+		if(!pfn_vkCmdExecuteCommands) {
 			staticPfn_vkCmdExecuteCommands(commandBuffer, commandBufferCount, pCommandBuffers);
 			return;
 		}
@@ -7362,7 +7362,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_android_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateAndroidSurfaceKHR(VkInstance instance, const VkAndroidSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateAndroidSurfaceKHR) {
+		if(!pfn_vkCreateAndroidSurfaceKHR) {
 			return staticPfn_vkCreateAndroidSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateAndroidSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
@@ -7370,43 +7370,43 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_display) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPropertiesKHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceDisplayPropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceDisplayPropertiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceDisplayPlanePropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPlanePropertiesKHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceDisplayPlanePropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceDisplayPlanePropertiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceDisplayPlanePropertiesKHR(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceDisplayPlanePropertiesKHR(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDisplayPlaneSupportedDisplaysKHR(VkPhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t* pDisplayCount, VkDisplayKHR* pDisplays) const {
-		if(!this || !pfn_vkGetDisplayPlaneSupportedDisplaysKHR) {
+		if(!pfn_vkGetDisplayPlaneSupportedDisplaysKHR) {
 			return staticPfn_vkGetDisplayPlaneSupportedDisplaysKHR(physicalDevice, planeIndex, pDisplayCount, pDisplays);
 		}
 		return pfn_vkGetDisplayPlaneSupportedDisplaysKHR(physicalDevice, planeIndex, pDisplayCount, pDisplays);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDisplayModePropertiesKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t* pPropertyCount, VkDisplayModePropertiesKHR* pProperties) const {
-		if(!this || !pfn_vkGetDisplayModePropertiesKHR) {
+		if(!pfn_vkGetDisplayModePropertiesKHR) {
 			return staticPfn_vkGetDisplayModePropertiesKHR(physicalDevice, display, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetDisplayModePropertiesKHR(physicalDevice, display, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDisplayModeKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, const VkDisplayModeCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDisplayModeKHR* pMode) const {
-		if(!this || !pfn_vkCreateDisplayModeKHR) {
+		if(!pfn_vkCreateDisplayModeKHR) {
 			return staticPfn_vkCreateDisplayModeKHR(physicalDevice, display, pCreateInfo, pAllocator, pMode);
 		}
 		return pfn_vkCreateDisplayModeKHR(physicalDevice, display, pCreateInfo, pAllocator, pMode);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDisplayPlaneCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkDisplayModeKHR mode, uint32_t planeIndex, VkDisplayPlaneCapabilitiesKHR* pCapabilities) const {
-		if(!this || !pfn_vkGetDisplayPlaneCapabilitiesKHR) {
+		if(!pfn_vkGetDisplayPlaneCapabilitiesKHR) {
 			return staticPfn_vkGetDisplayPlaneCapabilitiesKHR(physicalDevice, mode, planeIndex, pCapabilities);
 		}
 		return pfn_vkGetDisplayPlaneCapabilitiesKHR(physicalDevice, mode, planeIndex, pCapabilities);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDisplayPlaneSurfaceKHR(VkInstance instance, const VkDisplaySurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateDisplayPlaneSurfaceKHR) {
+		if(!pfn_vkCreateDisplayPlaneSurfaceKHR) {
 			return staticPfn_vkCreateDisplayPlaneSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateDisplayPlaneSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
@@ -7414,7 +7414,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_display_swapchain) && (defined(VK_KHR_swapchain) && defined(VK_KHR_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSharedSwapchainsKHR(VkDevice device, uint32_t swapchainCount, const VkSwapchainCreateInfoKHR* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchains) const {
-		if(!this || !pfn_vkCreateSharedSwapchainsKHR) {
+		if(!pfn_vkCreateSharedSwapchainsKHR) {
 			return staticPfn_vkCreateSharedSwapchainsKHR(device, swapchainCount, pCreateInfos, pAllocator, pSwapchains);
 		}
 		return pfn_vkCreateSharedSwapchainsKHR(device, swapchainCount, pCreateInfos, pAllocator, pSwapchains);
@@ -7422,32 +7422,32 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_surface)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySurfaceKHR(VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySurfaceKHR) {
+		if(!pfn_vkDestroySurfaceKHR) {
 			staticPfn_vkDestroySurfaceKHR(instance, surface, pAllocator);
 			return;
 		}
 		pfn_vkDestroySurfaceKHR(instance, surface, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, VkSurfaceKHR surface, VkBool32* pSupported) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceSupportKHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceSupportKHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueFamilyIndex, surface, pSupported);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, queueFamilyIndex, surface, pSupported);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilitiesKHR* pSurfaceCapabilities) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, pSurfaceCapabilities);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, pSurfaceCapabilities);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pSurfaceFormatCount, VkSurfaceFormatKHR* pSurfaceFormats) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceFormatsKHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceFormatsKHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pSurfaceFormatCount, pSurfaceFormats);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfacePresentModesKHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfacePresentModesKHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, pPresentModes);
 		}
 		return pfn_vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, pPresentModes);
@@ -7455,32 +7455,32 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain) const {
-		if(!this || !pfn_vkCreateSwapchainKHR) {
+		if(!pfn_vkCreateSwapchainKHR) {
 			return staticPfn_vkCreateSwapchainKHR(device, pCreateInfo, pAllocator, pSwapchain);
 		}
 		return pfn_vkCreateSwapchainKHR(device, pCreateInfo, pAllocator, pSwapchain);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySwapchainKHR) {
+		if(!pfn_vkDestroySwapchainKHR) {
 			staticPfn_vkDestroySwapchainKHR(device, swapchain, pAllocator);
 			return;
 		}
 		pfn_vkDestroySwapchainKHR(device, swapchain, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages) const {
-		if(!this || !pfn_vkGetSwapchainImagesKHR) {
+		if(!pfn_vkGetSwapchainImagesKHR) {
 			return staticPfn_vkGetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages);
 		}
 		return pfn_vkGetSwapchainImagesKHR(device, swapchain, pSwapchainImageCount, pSwapchainImages);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex) const {
-		if(!this || !pfn_vkAcquireNextImageKHR) {
+		if(!pfn_vkAcquireNextImageKHR) {
 			return staticPfn_vkAcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex);
 		}
 		return pfn_vkAcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo) const {
-		if(!this || !pfn_vkQueuePresentKHR) {
+		if(!pfn_vkQueuePresentKHR) {
 			return staticPfn_vkQueuePresentKHR(queue, pPresentInfo);
 		}
 		return pfn_vkQueuePresentKHR(queue, pPresentInfo);
@@ -7488,7 +7488,7 @@ namespace wfe {
 #endif
 #if defined(VK_NN_vi_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateViSurfaceNN(VkInstance instance, const VkViSurfaceCreateInfoNN* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateViSurfaceNN) {
+		if(!pfn_vkCreateViSurfaceNN) {
 			return staticPfn_vkCreateViSurfaceNN(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateViSurfaceNN(instance, pCreateInfo, pAllocator, pSurface);
@@ -7496,13 +7496,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_wayland_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateWaylandSurfaceKHR(VkInstance instance, const VkWaylandSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateWaylandSurfaceKHR) {
+		if(!pfn_vkCreateWaylandSurfaceKHR) {
 			return staticPfn_vkCreateWaylandSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateWaylandSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display* display) const {
-		if(!this || !pfn_vkGetPhysicalDeviceWaylandPresentationSupportKHR) {
+		if(!pfn_vkGetPhysicalDeviceWaylandPresentationSupportKHR) {
 			return staticPfn_vkGetPhysicalDeviceWaylandPresentationSupportKHR(physicalDevice, queueFamilyIndex, display);
 		}
 		return pfn_vkGetPhysicalDeviceWaylandPresentationSupportKHR(physicalDevice, queueFamilyIndex, display);
@@ -7510,13 +7510,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_win32_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateWin32SurfaceKHR(VkInstance instance, const VkWin32SurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateWin32SurfaceKHR) {
+		if(!pfn_vkCreateWin32SurfaceKHR) {
 			return staticPfn_vkCreateWin32SurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateWin32SurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceWin32PresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex) const {
-		if(!this || !pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR) {
+		if(!pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR) {
 			return staticPfn_vkGetPhysicalDeviceWin32PresentationSupportKHR(physicalDevice, queueFamilyIndex);
 		}
 		return pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR(physicalDevice, queueFamilyIndex);
@@ -7524,13 +7524,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_xlib_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateXlibSurfaceKHR) {
+		if(!pfn_vkCreateXlibSurfaceKHR) {
 			return staticPfn_vkCreateXlibSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateXlibSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceXlibPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, Display* dpy, VisualID visualID) const {
-		if(!this || !pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR) {
+		if(!pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR) {
 			return staticPfn_vkGetPhysicalDeviceXlibPresentationSupportKHR(physicalDevice, queueFamilyIndex, dpy, visualID);
 		}
 		return pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR(physicalDevice, queueFamilyIndex, dpy, visualID);
@@ -7538,13 +7538,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_xcb_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateXcbSurfaceKHR) {
+		if(!pfn_vkCreateXcbSurfaceKHR) {
 			return staticPfn_vkCreateXcbSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateXcbSurfaceKHR(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceXcbPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id) const {
-		if(!this || !pfn_vkGetPhysicalDeviceXcbPresentationSupportKHR) {
+		if(!pfn_vkGetPhysicalDeviceXcbPresentationSupportKHR) {
 			return staticPfn_vkGetPhysicalDeviceXcbPresentationSupportKHR(physicalDevice, queueFamilyIndex, connection, visual_id);
 		}
 		return pfn_vkGetPhysicalDeviceXcbPresentationSupportKHR(physicalDevice, queueFamilyIndex, connection, visual_id);
@@ -7552,13 +7552,13 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_directfb_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDirectFBSurfaceEXT(VkInstance instance, const VkDirectFBSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateDirectFBSurfaceEXT) {
+		if(!pfn_vkCreateDirectFBSurfaceEXT) {
 			return staticPfn_vkCreateDirectFBSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateDirectFBSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceDirectFBPresentationSupportEXT(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, IDirectFB* dfb) const {
-		if(!this || !pfn_vkGetPhysicalDeviceDirectFBPresentationSupportEXT) {
+		if(!pfn_vkGetPhysicalDeviceDirectFBPresentationSupportEXT) {
 			return staticPfn_vkGetPhysicalDeviceDirectFBPresentationSupportEXT(physicalDevice, queueFamilyIndex, dfb);
 		}
 		return pfn_vkGetPhysicalDeviceDirectFBPresentationSupportEXT(physicalDevice, queueFamilyIndex, dfb);
@@ -7566,7 +7566,7 @@ namespace wfe {
 #endif
 #if defined(VK_FUCHSIA_imagepipe_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateImagePipeSurfaceFUCHSIA(VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateImagePipeSurfaceFUCHSIA) {
+		if(!pfn_vkCreateImagePipeSurfaceFUCHSIA) {
 			return staticPfn_vkCreateImagePipeSurfaceFUCHSIA(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateImagePipeSurfaceFUCHSIA(instance, pCreateInfo, pAllocator, pSurface);
@@ -7574,7 +7574,7 @@ namespace wfe {
 #endif
 #if defined(VK_GGP_stream_descriptor_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateStreamDescriptorSurfaceGGP(VkInstance instance, const VkStreamDescriptorSurfaceCreateInfoGGP* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateStreamDescriptorSurfaceGGP) {
+		if(!pfn_vkCreateStreamDescriptorSurfaceGGP) {
 			return staticPfn_vkCreateStreamDescriptorSurfaceGGP(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateStreamDescriptorSurfaceGGP(instance, pCreateInfo, pAllocator, pSurface);
@@ -7582,13 +7582,13 @@ namespace wfe {
 #endif
 #if defined(VK_QNX_screen_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateScreenSurfaceQNX(VkInstance instance, const VkScreenSurfaceCreateInfoQNX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateScreenSurfaceQNX) {
+		if(!pfn_vkCreateScreenSurfaceQNX) {
 			return staticPfn_vkCreateScreenSurfaceQNX(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateScreenSurfaceQNX(instance, pCreateInfo, pAllocator, pSurface);
 	}
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceScreenPresentationSupportQNX(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct _screen_window* window) const {
-		if(!this || !pfn_vkGetPhysicalDeviceScreenPresentationSupportQNX) {
+		if(!pfn_vkGetPhysicalDeviceScreenPresentationSupportQNX) {
 			return staticPfn_vkGetPhysicalDeviceScreenPresentationSupportQNX(physicalDevice, queueFamilyIndex, window);
 		}
 		return pfn_vkGetPhysicalDeviceScreenPresentationSupportQNX(physicalDevice, queueFamilyIndex, window);
@@ -7596,20 +7596,20 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_debug_report)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) const {
-		if(!this || !pfn_vkCreateDebugReportCallbackEXT) {
+		if(!pfn_vkCreateDebugReportCallbackEXT) {
 			return staticPfn_vkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
 		}
 		return pfn_vkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDebugReportCallbackEXT) {
+		if(!pfn_vkDestroyDebugReportCallbackEXT) {
 			staticPfn_vkDestroyDebugReportCallbackEXT(instance, callback, pAllocator);
 			return;
 		}
 		pfn_vkDestroyDebugReportCallbackEXT(instance, callback, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDebugReportMessageEXT(VkInstance instance, VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage) const {
-		if(!this || !pfn_vkDebugReportMessageEXT) {
+		if(!pfn_vkDebugReportMessageEXT) {
 			staticPfn_vkDebugReportMessageEXT(instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage);
 			return;
 		}
@@ -7618,33 +7618,33 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_debug_marker) && (defined(VK_EXT_debug_report))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkDebugMarkerSetObjectNameEXT(VkDevice device, const VkDebugMarkerObjectNameInfoEXT* pNameInfo) const {
-		if(!this || !pfn_vkDebugMarkerSetObjectNameEXT) {
+		if(!pfn_vkDebugMarkerSetObjectNameEXT) {
 			return staticPfn_vkDebugMarkerSetObjectNameEXT(device, pNameInfo);
 		}
 		return pfn_vkDebugMarkerSetObjectNameEXT(device, pNameInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkDebugMarkerSetObjectTagEXT(VkDevice device, const VkDebugMarkerObjectTagInfoEXT* pTagInfo) const {
-		if(!this || !pfn_vkDebugMarkerSetObjectTagEXT) {
+		if(!pfn_vkDebugMarkerSetObjectTagEXT) {
 			return staticPfn_vkDebugMarkerSetObjectTagEXT(device, pTagInfo);
 		}
 		return pfn_vkDebugMarkerSetObjectTagEXT(device, pTagInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDebugMarkerBeginEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT* pMarkerInfo) const {
-		if(!this || !pfn_vkCmdDebugMarkerBeginEXT) {
+		if(!pfn_vkCmdDebugMarkerBeginEXT) {
 			staticPfn_vkCmdDebugMarkerBeginEXT(commandBuffer, pMarkerInfo);
 			return;
 		}
 		pfn_vkCmdDebugMarkerBeginEXT(commandBuffer, pMarkerInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDebugMarkerEndEXT(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdDebugMarkerEndEXT) {
+		if(!pfn_vkCmdDebugMarkerEndEXT) {
 			staticPfn_vkCmdDebugMarkerEndEXT(commandBuffer);
 			return;
 		}
 		pfn_vkCmdDebugMarkerEndEXT(commandBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDebugMarkerInsertEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT* pMarkerInfo) const {
-		if(!this || !pfn_vkCmdDebugMarkerInsertEXT) {
+		if(!pfn_vkCmdDebugMarkerInsertEXT) {
 			staticPfn_vkCmdDebugMarkerInsertEXT(commandBuffer, pMarkerInfo);
 			return;
 		}
@@ -7653,7 +7653,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_memory_capabilities)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalImageFormatPropertiesNV(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkExternalMemoryHandleTypeFlagsNV externalHandleType, VkExternalImageFormatPropertiesNV* pExternalImageFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalImageFormatPropertiesNV) {
+		if(!pfn_vkGetPhysicalDeviceExternalImageFormatPropertiesNV) {
 			return staticPfn_vkGetPhysicalDeviceExternalImageFormatPropertiesNV(physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceExternalImageFormatPropertiesNV(physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties);
@@ -7661,7 +7661,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_memory_win32) && (defined(VK_NV_external_memory))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryWin32HandleNV(VkDevice device, VkDeviceMemory memory, VkExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle) const {
-		if(!this || !pfn_vkGetMemoryWin32HandleNV) {
+		if(!pfn_vkGetMemoryWin32HandleNV) {
 			return staticPfn_vkGetMemoryWin32HandleNV(device, memory, handleType, pHandle);
 		}
 		return pfn_vkGetMemoryWin32HandleNV(device, memory, handleType, pHandle);
@@ -7669,41 +7669,41 @@ namespace wfe {
 #endif
 #if defined(VK_NV_device_generated_commands) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdExecuteGeneratedCommandsNV(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoNV* pGeneratedCommandsInfo) const {
-		if(!this || !pfn_vkCmdExecuteGeneratedCommandsNV) {
+		if(!pfn_vkCmdExecuteGeneratedCommandsNV) {
 			staticPfn_vkCmdExecuteGeneratedCommandsNV(commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
 			return;
 		}
 		pfn_vkCmdExecuteGeneratedCommandsNV(commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV* pGeneratedCommandsInfo) const {
-		if(!this || !pfn_vkCmdPreprocessGeneratedCommandsNV) {
+		if(!pfn_vkCmdPreprocessGeneratedCommandsNV) {
 			staticPfn_vkCmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo);
 			return;
 		}
 		pfn_vkCmdPreprocessGeneratedCommandsNV(commandBuffer, pGeneratedCommandsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindPipelineShaderGroupNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline, uint32_t groupIndex) const {
-		if(!this || !pfn_vkCmdBindPipelineShaderGroupNV) {
+		if(!pfn_vkCmdBindPipelineShaderGroupNV) {
 			staticPfn_vkCmdBindPipelineShaderGroupNV(commandBuffer, pipelineBindPoint, pipeline, groupIndex);
 			return;
 		}
 		pfn_vkCmdBindPipelineShaderGroupNV(commandBuffer, pipelineBindPoint, pipeline, groupIndex);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetGeneratedCommandsMemoryRequirementsNV(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoNV* pInfo, VkMemoryRequirements2* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetGeneratedCommandsMemoryRequirementsNV) {
+		if(!pfn_vkGetGeneratedCommandsMemoryRequirementsNV) {
 			staticPfn_vkGetGeneratedCommandsMemoryRequirementsNV(device, pInfo, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetGeneratedCommandsMemoryRequirementsNV(device, pInfo, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateIndirectCommandsLayoutNV(VkDevice device, const VkIndirectCommandsLayoutCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkIndirectCommandsLayoutNV* pIndirectCommandsLayout) const {
-		if(!this || !pfn_vkCreateIndirectCommandsLayoutNV) {
+		if(!pfn_vkCreateIndirectCommandsLayoutNV) {
 			return staticPfn_vkCreateIndirectCommandsLayoutNV(device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
 		}
 		return pfn_vkCreateIndirectCommandsLayoutNV(device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyIndirectCommandsLayoutNV(VkDevice device, VkIndirectCommandsLayoutNV indirectCommandsLayout, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyIndirectCommandsLayoutNV) {
+		if(!pfn_vkDestroyIndirectCommandsLayoutNV) {
 			staticPfn_vkDestroyIndirectCommandsLayoutNV(device, indirectCommandsLayout, pAllocator);
 			return;
 		}
@@ -7712,61 +7712,61 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_device_generated_commands) && (((defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) && defined(VK_KHR_maintenance5)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdExecuteGeneratedCommandsEXT(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoEXT* pGeneratedCommandsInfo) const {
-		if(!this || !pfn_vkCmdExecuteGeneratedCommandsEXT) {
+		if(!pfn_vkCmdExecuteGeneratedCommandsEXT) {
 			staticPfn_vkCmdExecuteGeneratedCommandsEXT(commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
 			return;
 		}
 		pfn_vkCmdExecuteGeneratedCommandsEXT(commandBuffer, isPreprocessed, pGeneratedCommandsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT* pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const {
-		if(!this || !pfn_vkCmdPreprocessGeneratedCommandsEXT) {
+		if(!pfn_vkCmdPreprocessGeneratedCommandsEXT) {
 			staticPfn_vkCmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer);
 			return;
 		}
 		pfn_vkCmdPreprocessGeneratedCommandsEXT(commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetGeneratedCommandsMemoryRequirementsEXT(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoEXT* pInfo, VkMemoryRequirements2* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetGeneratedCommandsMemoryRequirementsEXT) {
+		if(!pfn_vkGetGeneratedCommandsMemoryRequirementsEXT) {
 			staticPfn_vkGetGeneratedCommandsMemoryRequirementsEXT(device, pInfo, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetGeneratedCommandsMemoryRequirementsEXT(device, pInfo, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateIndirectCommandsLayoutEXT(VkDevice device, const VkIndirectCommandsLayoutCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkIndirectCommandsLayoutEXT* pIndirectCommandsLayout) const {
-		if(!this || !pfn_vkCreateIndirectCommandsLayoutEXT) {
+		if(!pfn_vkCreateIndirectCommandsLayoutEXT) {
 			return staticPfn_vkCreateIndirectCommandsLayoutEXT(device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
 		}
 		return pfn_vkCreateIndirectCommandsLayoutEXT(device, pCreateInfo, pAllocator, pIndirectCommandsLayout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyIndirectCommandsLayoutEXT(VkDevice device, VkIndirectCommandsLayoutEXT indirectCommandsLayout, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyIndirectCommandsLayoutEXT) {
+		if(!pfn_vkDestroyIndirectCommandsLayoutEXT) {
 			staticPfn_vkDestroyIndirectCommandsLayoutEXT(device, indirectCommandsLayout, pAllocator);
 			return;
 		}
 		pfn_vkDestroyIndirectCommandsLayoutEXT(device, indirectCommandsLayout, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateIndirectExecutionSetEXT(VkDevice device, const VkIndirectExecutionSetCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkIndirectExecutionSetEXT* pIndirectExecutionSet) const {
-		if(!this || !pfn_vkCreateIndirectExecutionSetEXT) {
+		if(!pfn_vkCreateIndirectExecutionSetEXT) {
 			return staticPfn_vkCreateIndirectExecutionSetEXT(device, pCreateInfo, pAllocator, pIndirectExecutionSet);
 		}
 		return pfn_vkCreateIndirectExecutionSetEXT(device, pCreateInfo, pAllocator, pIndirectExecutionSet);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyIndirectExecutionSetEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyIndirectExecutionSetEXT) {
+		if(!pfn_vkDestroyIndirectExecutionSetEXT) {
 			staticPfn_vkDestroyIndirectExecutionSetEXT(device, indirectExecutionSet, pAllocator);
 			return;
 		}
 		pfn_vkDestroyIndirectExecutionSetEXT(device, indirectExecutionSet, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUpdateIndirectExecutionSetPipelineEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetPipelineEXT* pExecutionSetWrites) const {
-		if(!this || !pfn_vkUpdateIndirectExecutionSetPipelineEXT) {
+		if(!pfn_vkUpdateIndirectExecutionSetPipelineEXT) {
 			staticPfn_vkUpdateIndirectExecutionSetPipelineEXT(device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
 			return;
 		}
 		pfn_vkUpdateIndirectExecutionSetPipelineEXT(device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUpdateIndirectExecutionSetShaderEXT(VkDevice device, VkIndirectExecutionSetEXT indirectExecutionSet, uint32_t executionSetWriteCount, const VkWriteIndirectExecutionSetShaderEXT* pExecutionSetWrites) const {
-		if(!this || !pfn_vkUpdateIndirectExecutionSetShaderEXT) {
+		if(!pfn_vkUpdateIndirectExecutionSetShaderEXT) {
 			staticPfn_vkUpdateIndirectExecutionSetShaderEXT(device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites);
 			return;
 		}
@@ -7775,7 +7775,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2KHR* pFeatures) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFeatures2) {
+		if(!pfn_vkGetPhysicalDeviceFeatures2) {
 			staticPfn_vkGetPhysicalDeviceFeatures2(physicalDevice, pFeatures);
 			return;
 		}
@@ -7784,7 +7784,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFeatures2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2KHR* pFeatures) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFeatures2KHR) {
+		if(!pfn_vkGetPhysicalDeviceFeatures2KHR) {
 			staticPfn_vkGetPhysicalDeviceFeatures2KHR(physicalDevice, pFeatures);
 			return;
 		}
@@ -7793,7 +7793,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceProperties2) {
+		if(!pfn_vkGetPhysicalDeviceProperties2) {
 			staticPfn_vkGetPhysicalDeviceProperties2(physicalDevice, pProperties);
 			return;
 		}
@@ -7802,7 +7802,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceProperties2KHR) {
 			staticPfn_vkGetPhysicalDeviceProperties2KHR(physicalDevice, pProperties);
 			return;
 		}
@@ -7811,7 +7811,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFormatProperties2(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2KHR* pFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFormatProperties2) {
+		if(!pfn_vkGetPhysicalDeviceFormatProperties2) {
 			staticPfn_vkGetPhysicalDeviceFormatProperties2(physicalDevice, format, pFormatProperties);
 			return;
 		}
@@ -7820,7 +7820,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFormatProperties2KHR(VkPhysicalDevice physicalDevice, VkFormat format, VkFormatProperties2KHR* pFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFormatProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceFormatProperties2KHR) {
 			staticPfn_vkGetPhysicalDeviceFormatProperties2KHR(physicalDevice, format, pFormatProperties);
 			return;
 		}
@@ -7829,7 +7829,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2KHR* pImageFormatInfo, VkImageFormatProperties2KHR* pImageFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceImageFormatProperties2) {
+		if(!pfn_vkGetPhysicalDeviceImageFormatProperties2) {
 			return staticPfn_vkGetPhysicalDeviceImageFormatProperties2(physicalDevice, pImageFormatInfo, pImageFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceImageFormatProperties2(physicalDevice, pImageFormatInfo, pImageFormatProperties);
@@ -7837,7 +7837,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceImageFormatInfo2KHR* pImageFormatInfo, VkImageFormatProperties2KHR* pImageFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceImageFormatProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceImageFormatProperties2KHR) {
 			return staticPfn_vkGetPhysicalDeviceImageFormatProperties2KHR(physicalDevice, pImageFormatInfo, pImageFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceImageFormatProperties2KHR(physicalDevice, pImageFormatInfo, pImageFormatProperties);
@@ -7845,7 +7845,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceQueueFamilyProperties2(VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties2KHR* pQueueFamilyProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceQueueFamilyProperties2) {
+		if(!pfn_vkGetPhysicalDeviceQueueFamilyProperties2) {
 			staticPfn_vkGetPhysicalDeviceQueueFamilyProperties2(physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
 			return;
 		}
@@ -7854,7 +7854,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceQueueFamilyProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t* pQueueFamilyPropertyCount, VkQueueFamilyProperties2KHR* pQueueFamilyProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceQueueFamilyProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceQueueFamilyProperties2KHR) {
 			staticPfn_vkGetPhysicalDeviceQueueFamilyProperties2KHR(physicalDevice, pQueueFamilyPropertyCount, pQueueFamilyProperties);
 			return;
 		}
@@ -7863,7 +7863,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceMemoryProperties2(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2KHR* pMemoryProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceMemoryProperties2) {
+		if(!pfn_vkGetPhysicalDeviceMemoryProperties2) {
 			staticPfn_vkGetPhysicalDeviceMemoryProperties2(physicalDevice, pMemoryProperties);
 			return;
 		}
@@ -7872,7 +7872,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceMemoryProperties2KHR(VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties2KHR* pMemoryProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceMemoryProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceMemoryProperties2KHR) {
 			staticPfn_vkGetPhysicalDeviceMemoryProperties2KHR(physicalDevice, pMemoryProperties);
 			return;
 		}
@@ -7881,7 +7881,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSparseImageFormatProperties2(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2KHR* pFormatInfo, uint32_t* pPropertyCount, VkSparseImageFormatProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSparseImageFormatProperties2) {
+		if(!pfn_vkGetPhysicalDeviceSparseImageFormatProperties2) {
 			staticPfn_vkGetPhysicalDeviceSparseImageFormatProperties2(physicalDevice, pFormatInfo, pPropertyCount, pProperties);
 			return;
 		}
@@ -7890,7 +7890,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_physical_device_properties2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSparseImageFormatProperties2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSparseImageFormatInfo2KHR* pFormatInfo, uint32_t* pPropertyCount, VkSparseImageFormatProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSparseImageFormatProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceSparseImageFormatProperties2KHR) {
 			staticPfn_vkGetPhysicalDeviceSparseImageFormatProperties2KHR(physicalDevice, pFormatInfo, pPropertyCount, pProperties);
 			return;
 		}
@@ -7899,7 +7899,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites) const {
-		if(!this || !pfn_vkCmdPushDescriptorSet) {
+		if(!pfn_vkCmdPushDescriptorSet) {
 			staticPfn_vkCmdPushDescriptorSet(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
 			return;
 		}
@@ -7908,7 +7908,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites) const {
-		if(!this || !pfn_vkCmdPushDescriptorSetKHR) {
+		if(!pfn_vkCmdPushDescriptorSetKHR) {
 			staticPfn_vkCmdPushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
 			return;
 		}
@@ -7917,7 +7917,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkTrimCommandPool(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlagsKHR flags) const {
-		if(!this || !pfn_vkTrimCommandPool) {
+		if(!pfn_vkTrimCommandPool) {
 			staticPfn_vkTrimCommandPool(device, commandPool, flags);
 			return;
 		}
@@ -7926,7 +7926,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkTrimCommandPoolKHR(VkDevice device, VkCommandPool commandPool, VkCommandPoolTrimFlagsKHR flags) const {
-		if(!this || !pfn_vkTrimCommandPoolKHR) {
+		if(!pfn_vkTrimCommandPoolKHR) {
 			staticPfn_vkTrimCommandPoolKHR(device, commandPool, flags);
 			return;
 		}
@@ -7935,7 +7935,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, VkExternalBufferPropertiesKHR* pExternalBufferProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalBufferProperties) {
+		if(!pfn_vkGetPhysicalDeviceExternalBufferProperties) {
 			staticPfn_vkGetPhysicalDeviceExternalBufferProperties(physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
 			return;
 		}
@@ -7944,7 +7944,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_memory_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalBufferPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, VkExternalBufferPropertiesKHR* pExternalBufferProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalBufferPropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceExternalBufferPropertiesKHR) {
 			staticPfn_vkGetPhysicalDeviceExternalBufferPropertiesKHR(physicalDevice, pExternalBufferInfo, pExternalBufferProperties);
 			return;
 		}
@@ -7953,13 +7953,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_memory_win32) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryWin32HandleKHR(VkDevice device, const VkMemoryGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const {
-		if(!this || !pfn_vkGetMemoryWin32HandleKHR) {
+		if(!pfn_vkGetMemoryWin32HandleKHR) {
 			return staticPfn_vkGetMemoryWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 		}
 		return pfn_vkGetMemoryWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryWin32HandlePropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, HANDLE handle, VkMemoryWin32HandlePropertiesKHR* pMemoryWin32HandleProperties) const {
-		if(!this || !pfn_vkGetMemoryWin32HandlePropertiesKHR) {
+		if(!pfn_vkGetMemoryWin32HandlePropertiesKHR) {
 			return staticPfn_vkGetMemoryWin32HandlePropertiesKHR(device, handleType, handle, pMemoryWin32HandleProperties);
 		}
 		return pfn_vkGetMemoryWin32HandlePropertiesKHR(device, handleType, handle, pMemoryWin32HandleProperties);
@@ -7967,13 +7967,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_memory_fd) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* pGetFdInfo, int* pFd) const {
-		if(!this || !pfn_vkGetMemoryFdKHR) {
+		if(!pfn_vkGetMemoryFdKHR) {
 			return staticPfn_vkGetMemoryFdKHR(device, pGetFdInfo, pFd);
 		}
 		return pfn_vkGetMemoryFdKHR(device, pGetFdInfo, pFd);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR* pMemoryFdProperties) const {
-		if(!this || !pfn_vkGetMemoryFdPropertiesKHR) {
+		if(!pfn_vkGetMemoryFdPropertiesKHR) {
 			return staticPfn_vkGetMemoryFdPropertiesKHR(device, handleType, fd, pMemoryFdProperties);
 		}
 		return pfn_vkGetMemoryFdPropertiesKHR(device, handleType, fd, pMemoryFdProperties);
@@ -7981,13 +7981,13 @@ namespace wfe {
 #endif
 #if defined(VK_FUCHSIA_external_memory) && ((defined(VK_KHR_external_memory_capabilities) && defined(VK_KHR_external_memory)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryZirconHandleFUCHSIA(VkDevice device, const VkMemoryGetZirconHandleInfoFUCHSIA* pGetZirconHandleInfo, zx_handle_t* pZirconHandle) const {
-		if(!this || !pfn_vkGetMemoryZirconHandleFUCHSIA) {
+		if(!pfn_vkGetMemoryZirconHandleFUCHSIA) {
 			return staticPfn_vkGetMemoryZirconHandleFUCHSIA(device, pGetZirconHandleInfo, pZirconHandle);
 		}
 		return pfn_vkGetMemoryZirconHandleFUCHSIA(device, pGetZirconHandleInfo, pZirconHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA* pMemoryZirconHandleProperties) const {
-		if(!this || !pfn_vkGetMemoryZirconHandlePropertiesFUCHSIA) {
+		if(!pfn_vkGetMemoryZirconHandlePropertiesFUCHSIA) {
 			return staticPfn_vkGetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties);
 		}
 		return pfn_vkGetMemoryZirconHandlePropertiesFUCHSIA(device, handleType, zirconHandle, pMemoryZirconHandleProperties);
@@ -7995,7 +7995,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_memory_rdma) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV* pMemoryGetRemoteAddressInfo, VkRemoteAddressNV* pAddress) const {
-		if(!this || !pfn_vkGetMemoryRemoteAddressNV) {
+		if(!pfn_vkGetMemoryRemoteAddressNV) {
 			return staticPfn_vkGetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress);
 		}
 		return pfn_vkGetMemoryRemoteAddressNV(device, pMemoryGetRemoteAddressInfo, pAddress);
@@ -8003,19 +8003,19 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_memory_sci_buf) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemorySciBufNV(VkDevice device, const VkMemoryGetSciBufInfoNV* pGetSciBufInfo, NvSciBufObj* pHandle) const {
-		if(!this || !pfn_vkGetMemorySciBufNV) {
+		if(!pfn_vkGetMemorySciBufNV) {
 			return staticPfn_vkGetMemorySciBufNV(device, pGetSciBufInfo, pHandle);
 		}
 		return pfn_vkGetMemorySciBufNV(device, pGetSciBufInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV(VkPhysicalDevice physicalDevice, VkExternalMemoryHandleTypeFlagBits handleType, NvSciBufObj handle, VkMemorySciBufPropertiesNV* pMemorySciBufProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV) {
+		if(!pfn_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV) {
 			return staticPfn_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV(physicalDevice, handleType, handle, pMemorySciBufProperties);
 		}
 		return pfn_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV(physicalDevice, handleType, handle, pMemorySciBufProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSciBufAttributesNV(VkPhysicalDevice physicalDevice, NvSciBufAttrList pAttributes) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSciBufAttributesNV) {
+		if(!pfn_vkGetPhysicalDeviceSciBufAttributesNV) {
 			return staticPfn_vkGetPhysicalDeviceSciBufAttributesNV(physicalDevice, pAttributes);
 		}
 		return pfn_vkGetPhysicalDeviceSciBufAttributesNV(physicalDevice, pAttributes);
@@ -8023,7 +8023,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalSemaphoreProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, VkExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalSemaphoreProperties) {
+		if(!pfn_vkGetPhysicalDeviceExternalSemaphoreProperties) {
 			staticPfn_vkGetPhysicalDeviceExternalSemaphoreProperties(physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
 			return;
 		}
@@ -8032,7 +8032,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_semaphore_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, VkExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR) {
 			staticPfn_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties);
 			return;
 		}
@@ -8041,13 +8041,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_semaphore_win32) && (defined(VK_KHR_external_semaphore))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreWin32HandleKHR(VkDevice device, const VkSemaphoreGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const {
-		if(!this || !pfn_vkGetSemaphoreWin32HandleKHR) {
+		if(!pfn_vkGetSemaphoreWin32HandleKHR) {
 			return staticPfn_vkGetSemaphoreWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 		}
 		return pfn_vkGetSemaphoreWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportSemaphoreWin32HandleKHR(VkDevice device, const VkImportSemaphoreWin32HandleInfoKHR* pImportSemaphoreWin32HandleInfo) const {
-		if(!this || !pfn_vkImportSemaphoreWin32HandleKHR) {
+		if(!pfn_vkImportSemaphoreWin32HandleKHR) {
 			return staticPfn_vkImportSemaphoreWin32HandleKHR(device, pImportSemaphoreWin32HandleInfo);
 		}
 		return pfn_vkImportSemaphoreWin32HandleKHR(device, pImportSemaphoreWin32HandleInfo);
@@ -8055,13 +8055,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_semaphore_fd) && (defined(VK_KHR_external_semaphore) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd) const {
-		if(!this || !pfn_vkGetSemaphoreFdKHR) {
+		if(!pfn_vkGetSemaphoreFdKHR) {
 			return staticPfn_vkGetSemaphoreFdKHR(device, pGetFdInfo, pFd);
 		}
 		return pfn_vkGetSemaphoreFdKHR(device, pGetFdInfo, pFd);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportSemaphoreFdKHR(VkDevice device, const VkImportSemaphoreFdInfoKHR* pImportSemaphoreFdInfo) const {
-		if(!this || !pfn_vkImportSemaphoreFdKHR) {
+		if(!pfn_vkImportSemaphoreFdKHR) {
 			return staticPfn_vkImportSemaphoreFdKHR(device, pImportSemaphoreFdInfo);
 		}
 		return pfn_vkImportSemaphoreFdKHR(device, pImportSemaphoreFdInfo);
@@ -8069,13 +8069,13 @@ namespace wfe {
 #endif
 #if defined(VK_FUCHSIA_external_semaphore) && (defined(VK_KHR_external_semaphore_capabilities) && defined(VK_KHR_external_semaphore))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkSemaphoreGetZirconHandleInfoFUCHSIA* pGetZirconHandleInfo, zx_handle_t* pZirconHandle) const {
-		if(!this || !pfn_vkGetSemaphoreZirconHandleFUCHSIA) {
+		if(!pfn_vkGetSemaphoreZirconHandleFUCHSIA) {
 			return staticPfn_vkGetSemaphoreZirconHandleFUCHSIA(device, pGetZirconHandleInfo, pZirconHandle);
 		}
 		return pfn_vkGetSemaphoreZirconHandleFUCHSIA(device, pGetZirconHandleInfo, pZirconHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA* pImportSemaphoreZirconHandleInfo) const {
-		if(!this || !pfn_vkImportSemaphoreZirconHandleFUCHSIA) {
+		if(!pfn_vkImportSemaphoreZirconHandleFUCHSIA) {
 			return staticPfn_vkImportSemaphoreZirconHandleFUCHSIA(device, pImportSemaphoreZirconHandleInfo);
 		}
 		return pfn_vkImportSemaphoreZirconHandleFUCHSIA(device, pImportSemaphoreZirconHandleInfo);
@@ -8083,7 +8083,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalFenceProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, VkExternalFencePropertiesKHR* pExternalFenceProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalFenceProperties) {
+		if(!pfn_vkGetPhysicalDeviceExternalFenceProperties) {
 			staticPfn_vkGetPhysicalDeviceExternalFenceProperties(physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
 			return;
 		}
@@ -8092,7 +8092,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_fence_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceExternalFencePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, VkExternalFencePropertiesKHR* pExternalFenceProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceExternalFencePropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceExternalFencePropertiesKHR) {
 			staticPfn_vkGetPhysicalDeviceExternalFencePropertiesKHR(physicalDevice, pExternalFenceInfo, pExternalFenceProperties);
 			return;
 		}
@@ -8101,13 +8101,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_fence_win32) && (defined(VK_KHR_external_fence))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFenceWin32HandleKHR(VkDevice device, const VkFenceGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const {
-		if(!this || !pfn_vkGetFenceWin32HandleKHR) {
+		if(!pfn_vkGetFenceWin32HandleKHR) {
 			return staticPfn_vkGetFenceWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 		}
 		return pfn_vkGetFenceWin32HandleKHR(device, pGetWin32HandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportFenceWin32HandleKHR(VkDevice device, const VkImportFenceWin32HandleInfoKHR* pImportFenceWin32HandleInfo) const {
-		if(!this || !pfn_vkImportFenceWin32HandleKHR) {
+		if(!pfn_vkImportFenceWin32HandleKHR) {
 			return staticPfn_vkImportFenceWin32HandleKHR(device, pImportFenceWin32HandleInfo);
 		}
 		return pfn_vkImportFenceWin32HandleKHR(device, pImportFenceWin32HandleInfo);
@@ -8115,13 +8115,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_external_fence_fd) && (defined(VK_KHR_external_fence) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFenceFdKHR(VkDevice device, const VkFenceGetFdInfoKHR* pGetFdInfo, int* pFd) const {
-		if(!this || !pfn_vkGetFenceFdKHR) {
+		if(!pfn_vkGetFenceFdKHR) {
 			return staticPfn_vkGetFenceFdKHR(device, pGetFdInfo, pFd);
 		}
 		return pfn_vkGetFenceFdKHR(device, pGetFdInfo, pFd);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportFenceFdKHR(VkDevice device, const VkImportFenceFdInfoKHR* pImportFenceFdInfo) const {
-		if(!this || !pfn_vkImportFenceFdKHR) {
+		if(!pfn_vkImportFenceFdKHR) {
 			return staticPfn_vkImportFenceFdKHR(device, pImportFenceFdInfo);
 		}
 		return pfn_vkImportFenceFdKHR(device, pImportFenceFdInfo);
@@ -8129,25 +8129,25 @@ namespace wfe {
 #endif
 #if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFenceSciSyncFenceNV(VkDevice device, const VkFenceGetSciSyncInfoNV* pGetSciSyncHandleInfo, void* pHandle) const {
-		if(!this || !pfn_vkGetFenceSciSyncFenceNV) {
+		if(!pfn_vkGetFenceSciSyncFenceNV) {
 			return staticPfn_vkGetFenceSciSyncFenceNV(device, pGetSciSyncHandleInfo, pHandle);
 		}
 		return pfn_vkGetFenceSciSyncFenceNV(device, pGetSciSyncHandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFenceSciSyncObjNV(VkDevice device, const VkFenceGetSciSyncInfoNV* pGetSciSyncHandleInfo, void* pHandle) const {
-		if(!this || !pfn_vkGetFenceSciSyncObjNV) {
+		if(!pfn_vkGetFenceSciSyncObjNV) {
 			return staticPfn_vkGetFenceSciSyncObjNV(device, pGetSciSyncHandleInfo, pHandle);
 		}
 		return pfn_vkGetFenceSciSyncObjNV(device, pGetSciSyncHandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportFenceSciSyncFenceNV(VkDevice device, const VkImportFenceSciSyncInfoNV* pImportFenceSciSyncInfo) const {
-		if(!this || !pfn_vkImportFenceSciSyncFenceNV) {
+		if(!pfn_vkImportFenceSciSyncFenceNV) {
 			return staticPfn_vkImportFenceSciSyncFenceNV(device, pImportFenceSciSyncInfo);
 		}
 		return pfn_vkImportFenceSciSyncFenceNV(device, pImportFenceSciSyncInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportFenceSciSyncObjNV(VkDevice device, const VkImportFenceSciSyncInfoNV* pImportFenceSciSyncInfo) const {
-		if(!this || !pfn_vkImportFenceSciSyncObjNV) {
+		if(!pfn_vkImportFenceSciSyncObjNV) {
 			return staticPfn_vkImportFenceSciSyncObjNV(device, pImportFenceSciSyncInfo);
 		}
 		return pfn_vkImportFenceSciSyncObjNV(device, pImportFenceSciSyncInfo);
@@ -8155,13 +8155,13 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreSciSyncObjNV(VkDevice device, const VkSemaphoreGetSciSyncInfoNV* pGetSciSyncInfo, void* pHandle) const {
-		if(!this || !pfn_vkGetSemaphoreSciSyncObjNV) {
+		if(!pfn_vkGetSemaphoreSciSyncObjNV) {
 			return staticPfn_vkGetSemaphoreSciSyncObjNV(device, pGetSciSyncInfo, pHandle);
 		}
 		return pfn_vkGetSemaphoreSciSyncObjNV(device, pGetSciSyncInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkImportSemaphoreSciSyncObjNV(VkDevice device, const VkImportSemaphoreSciSyncInfoNV* pImportSemaphoreSciSyncInfo) const {
-		if(!this || !pfn_vkImportSemaphoreSciSyncObjNV) {
+		if(!pfn_vkImportSemaphoreSciSyncObjNV) {
 			return staticPfn_vkImportSemaphoreSciSyncObjNV(device, pImportSemaphoreSciSyncInfo);
 		}
 		return pfn_vkImportSemaphoreSciSyncObjNV(device, pImportSemaphoreSciSyncInfo);
@@ -8169,7 +8169,7 @@ namespace wfe {
 #endif
 #if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSciSyncAttributesNV(VkPhysicalDevice physicalDevice, const VkSciSyncAttributesInfoNV* pSciSyncAttributesInfo, NvSciSyncAttrList pAttributes) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSciSyncAttributesNV) {
+		if(!pfn_vkGetPhysicalDeviceSciSyncAttributesNV) {
 			return staticPfn_vkGetPhysicalDeviceSciSyncAttributesNV(physicalDevice, pSciSyncAttributesInfo, pAttributes);
 		}
 		return pfn_vkGetPhysicalDeviceSciSyncAttributesNV(physicalDevice, pSciSyncAttributesInfo, pAttributes);
@@ -8177,13 +8177,13 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSemaphoreSciSyncPoolNV(VkDevice device, const VkSemaphoreSciSyncPoolCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSemaphoreSciSyncPoolNV* pSemaphorePool) const {
-		if(!this || !pfn_vkCreateSemaphoreSciSyncPoolNV) {
+		if(!pfn_vkCreateSemaphoreSciSyncPoolNV) {
 			return staticPfn_vkCreateSemaphoreSciSyncPoolNV(device, pCreateInfo, pAllocator, pSemaphorePool);
 		}
 		return pfn_vkCreateSemaphoreSciSyncPoolNV(device, pCreateInfo, pAllocator, pSemaphorePool);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySemaphoreSciSyncPoolNV(VkDevice device, VkSemaphoreSciSyncPoolNV semaphorePool, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySemaphoreSciSyncPoolNV) {
+		if(!pfn_vkDestroySemaphoreSciSyncPoolNV) {
 			staticPfn_vkDestroySemaphoreSciSyncPoolNV(device, semaphorePool, pAllocator);
 			return;
 		}
@@ -8192,7 +8192,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_direct_mode_display) && (defined(VK_KHR_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkReleaseDisplayEXT(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const {
-		if(!this || !pfn_vkReleaseDisplayEXT) {
+		if(!pfn_vkReleaseDisplayEXT) {
 			return staticPfn_vkReleaseDisplayEXT(physicalDevice, display);
 		}
 		return pfn_vkReleaseDisplayEXT(physicalDevice, display);
@@ -8200,13 +8200,13 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_acquire_xlib_display) && (defined(VK_EXT_direct_mode_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireXlibDisplayEXT(VkPhysicalDevice physicalDevice, Display* dpy, VkDisplayKHR display) const {
-		if(!this || !pfn_vkAcquireXlibDisplayEXT) {
+		if(!pfn_vkAcquireXlibDisplayEXT) {
 			return staticPfn_vkAcquireXlibDisplayEXT(physicalDevice, dpy, display);
 		}
 		return pfn_vkAcquireXlibDisplayEXT(physicalDevice, dpy, display);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetRandROutputDisplayEXT(VkPhysicalDevice physicalDevice, Display* dpy, RROutput rrOutput, VkDisplayKHR* pDisplay) const {
-		if(!this || !pfn_vkGetRandROutputDisplayEXT) {
+		if(!pfn_vkGetRandROutputDisplayEXT) {
 			return staticPfn_vkGetRandROutputDisplayEXT(physicalDevice, dpy, rrOutput, pDisplay);
 		}
 		return pfn_vkGetRandROutputDisplayEXT(physicalDevice, dpy, rrOutput, pDisplay);
@@ -8214,13 +8214,13 @@ namespace wfe {
 #endif
 #if defined(VK_NV_acquire_winrt_display) && (defined(VK_EXT_direct_mode_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const {
-		if(!this || !pfn_vkAcquireWinrtDisplayNV) {
+		if(!pfn_vkAcquireWinrtDisplayNV) {
 			return staticPfn_vkAcquireWinrtDisplayNV(physicalDevice, display);
 		}
 		return pfn_vkAcquireWinrtDisplayNV(physicalDevice, display);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetWinrtDisplayNV(VkPhysicalDevice physicalDevice, uint32_t deviceRelativeId, VkDisplayKHR* pDisplay) const {
-		if(!this || !pfn_vkGetWinrtDisplayNV) {
+		if(!pfn_vkGetWinrtDisplayNV) {
 			return staticPfn_vkGetWinrtDisplayNV(physicalDevice, deviceRelativeId, pDisplay);
 		}
 		return pfn_vkGetWinrtDisplayNV(physicalDevice, deviceRelativeId, pDisplay);
@@ -8228,25 +8228,25 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_display_control) && (defined(VK_EXT_display_surface_counter) && defined(VK_KHR_swapchain))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkDisplayPowerControlEXT(VkDevice device, VkDisplayKHR display, const VkDisplayPowerInfoEXT* pDisplayPowerInfo) const {
-		if(!this || !pfn_vkDisplayPowerControlEXT) {
+		if(!pfn_vkDisplayPowerControlEXT) {
 			return staticPfn_vkDisplayPowerControlEXT(device, display, pDisplayPowerInfo);
 		}
 		return pfn_vkDisplayPowerControlEXT(device, display, pDisplayPowerInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkRegisterDeviceEventEXT(VkDevice device, const VkDeviceEventInfoEXT* pDeviceEventInfo, const VkAllocationCallbacks* pAllocator, VkFence* pFence) const {
-		if(!this || !pfn_vkRegisterDeviceEventEXT) {
+		if(!pfn_vkRegisterDeviceEventEXT) {
 			return staticPfn_vkRegisterDeviceEventEXT(device, pDeviceEventInfo, pAllocator, pFence);
 		}
 		return pfn_vkRegisterDeviceEventEXT(device, pDeviceEventInfo, pAllocator, pFence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkRegisterDisplayEventEXT(VkDevice device, VkDisplayKHR display, const VkDisplayEventInfoEXT* pDisplayEventInfo, const VkAllocationCallbacks* pAllocator, VkFence* pFence) const {
-		if(!this || !pfn_vkRegisterDisplayEventEXT) {
+		if(!pfn_vkRegisterDisplayEventEXT) {
 			return staticPfn_vkRegisterDisplayEventEXT(device, display, pDisplayEventInfo, pAllocator, pFence);
 		}
 		return pfn_vkRegisterDisplayEventEXT(device, display, pDisplayEventInfo, pAllocator, pFence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t* pCounterValue) const {
-		if(!this || !pfn_vkGetSwapchainCounterEXT) {
+		if(!pfn_vkGetSwapchainCounterEXT) {
 			return staticPfn_vkGetSwapchainCounterEXT(device, swapchain, counter, pCounterValue);
 		}
 		return pfn_vkGetSwapchainCounterEXT(device, swapchain, counter, pCounterValue);
@@ -8254,7 +8254,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_display_surface_counter) && (defined(VK_KHR_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceCapabilities2EXT(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT* pSurfaceCapabilities) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceCapabilities2EXT) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceCapabilities2EXT) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceCapabilities2EXT(physicalDevice, surface, pSurfaceCapabilities);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceCapabilities2EXT(physicalDevice, surface, pSurfaceCapabilities);
@@ -8262,7 +8262,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumeratePhysicalDeviceGroups(VkInstance instance, uint32_t* pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupPropertiesKHR* pPhysicalDeviceGroupProperties) const {
-		if(!this || !pfn_vkEnumeratePhysicalDeviceGroups) {
+		if(!pfn_vkEnumeratePhysicalDeviceGroups) {
 			return staticPfn_vkEnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
 		}
 		return pfn_vkEnumeratePhysicalDeviceGroups(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
@@ -8270,7 +8270,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_device_group_creation)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumeratePhysicalDeviceGroupsKHR(VkInstance instance, uint32_t* pPhysicalDeviceGroupCount, VkPhysicalDeviceGroupPropertiesKHR* pPhysicalDeviceGroupProperties) const {
-		if(!this || !pfn_vkEnumeratePhysicalDeviceGroupsKHR) {
+		if(!pfn_vkEnumeratePhysicalDeviceGroupsKHR) {
 			return staticPfn_vkEnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
 		}
 		return pfn_vkEnumeratePhysicalDeviceGroupsKHR(instance, pPhysicalDeviceGroupCount, pPhysicalDeviceGroupProperties);
@@ -8278,7 +8278,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlagsKHR* pPeerMemoryFeatures) const {
-		if(!this || !pfn_vkGetDeviceGroupPeerMemoryFeatures) {
+		if(!pfn_vkGetDeviceGroupPeerMemoryFeatures) {
 			staticPfn_vkGetDeviceGroupPeerMemoryFeatures(device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
 			return;
 		}
@@ -8287,7 +8287,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceGroupPeerMemoryFeaturesKHR(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlagsKHR* pPeerMemoryFeatures) const {
-		if(!this || !pfn_vkGetDeviceGroupPeerMemoryFeaturesKHR) {
+		if(!pfn_vkGetDeviceGroupPeerMemoryFeaturesKHR) {
 			staticPfn_vkGetDeviceGroupPeerMemoryFeaturesKHR(device, heapIndex, localDeviceIndex, remoteDeviceIndex, pPeerMemoryFeatures);
 			return;
 		}
@@ -8296,7 +8296,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindBufferMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfoKHR* pBindInfos) const {
-		if(!this || !pfn_vkBindBufferMemory2) {
+		if(!pfn_vkBindBufferMemory2) {
 			return staticPfn_vkBindBufferMemory2(device, bindInfoCount, pBindInfos);
 		}
 		return pfn_vkBindBufferMemory2(device, bindInfoCount, pBindInfos);
@@ -8304,7 +8304,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_bind_memory2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindBufferMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfoKHR* pBindInfos) const {
-		if(!this || !pfn_vkBindBufferMemory2KHR) {
+		if(!pfn_vkBindBufferMemory2KHR) {
 			return staticPfn_vkBindBufferMemory2KHR(device, bindInfoCount, pBindInfos);
 		}
 		return pfn_vkBindBufferMemory2KHR(device, bindInfoCount, pBindInfos);
@@ -8312,7 +8312,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindImageMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfoKHR* pBindInfos) const {
-		if(!this || !pfn_vkBindImageMemory2) {
+		if(!pfn_vkBindImageMemory2) {
 			return staticPfn_vkBindImageMemory2(device, bindInfoCount, pBindInfos);
 		}
 		return pfn_vkBindImageMemory2(device, bindInfoCount, pBindInfos);
@@ -8320,7 +8320,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_bind_memory2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindImageMemory2KHR(VkDevice device, uint32_t bindInfoCount, const VkBindImageMemoryInfoKHR* pBindInfos) const {
-		if(!this || !pfn_vkBindImageMemory2KHR) {
+		if(!pfn_vkBindImageMemory2KHR) {
 			return staticPfn_vkBindImageMemory2KHR(device, bindInfoCount, pBindInfos);
 		}
 		return pfn_vkBindImageMemory2KHR(device, bindInfoCount, pBindInfos);
@@ -8328,7 +8328,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDeviceMask(VkCommandBuffer commandBuffer, uint32_t deviceMask) const {
-		if(!this || !pfn_vkCmdSetDeviceMask) {
+		if(!pfn_vkCmdSetDeviceMask) {
 			staticPfn_vkCmdSetDeviceMask(commandBuffer, deviceMask);
 			return;
 		}
@@ -8337,7 +8337,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDeviceMaskKHR(VkCommandBuffer commandBuffer, uint32_t deviceMask) const {
-		if(!this || !pfn_vkCmdSetDeviceMaskKHR) {
+		if(!pfn_vkCmdSetDeviceMaskKHR) {
 			staticPfn_vkCmdSetDeviceMaskKHR(commandBuffer, deviceMask);
 			return;
 		}
@@ -8346,13 +8346,13 @@ namespace wfe {
 #endif
 #if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeviceGroupPresentCapabilitiesKHR(VkDevice device, VkDeviceGroupPresentCapabilitiesKHR* pDeviceGroupPresentCapabilities) const {
-		if(!this || !pfn_vkGetDeviceGroupPresentCapabilitiesKHR) {
+		if(!pfn_vkGetDeviceGroupPresentCapabilitiesKHR) {
 			return staticPfn_vkGetDeviceGroupPresentCapabilitiesKHR(device, pDeviceGroupPresentCapabilities);
 		}
 		return pfn_vkGetDeviceGroupPresentCapabilitiesKHR(device, pDeviceGroupPresentCapabilities);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeviceGroupSurfacePresentModesKHR(VkDevice device, VkSurfaceKHR surface, VkDeviceGroupPresentModeFlagsKHR* pModes) const {
-		if(!this || !pfn_vkGetDeviceGroupSurfacePresentModesKHR) {
+		if(!pfn_vkGetDeviceGroupSurfacePresentModesKHR) {
 			return staticPfn_vkGetDeviceGroupSurfacePresentModesKHR(device, surface, pModes);
 		}
 		return pfn_vkGetDeviceGroupSurfacePresentModesKHR(device, surface, pModes);
@@ -8360,7 +8360,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_swapchain)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex) const {
-		if(!this || !pfn_vkAcquireNextImage2KHR) {
+		if(!pfn_vkAcquireNextImage2KHR) {
 			return staticPfn_vkAcquireNextImage2KHR(device, pAcquireInfo, pImageIndex);
 		}
 		return pfn_vkAcquireNextImage2KHR(device, pAcquireInfo, pImageIndex);
@@ -8368,7 +8368,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchBase(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const {
-		if(!this || !pfn_vkCmdDispatchBase) {
+		if(!pfn_vkCmdDispatchBase) {
 			staticPfn_vkCmdDispatchBase(commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
 			return;
 		}
@@ -8377,7 +8377,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchBaseKHR(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const {
-		if(!this || !pfn_vkCmdDispatchBaseKHR) {
+		if(!pfn_vkCmdDispatchBaseKHR) {
 			staticPfn_vkCmdDispatchBaseKHR(commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ);
 			return;
 		}
@@ -8386,7 +8386,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDevicePresentRectanglesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pRectCount, VkRect2D* pRects) const {
-		if(!this || !pfn_vkGetPhysicalDevicePresentRectanglesKHR) {
+		if(!pfn_vkGetPhysicalDevicePresentRectanglesKHR) {
 			return staticPfn_vkGetPhysicalDevicePresentRectanglesKHR(physicalDevice, surface, pRectCount, pRects);
 		}
 		return pfn_vkGetPhysicalDevicePresentRectanglesKHR(physicalDevice, surface, pRectCount, pRects);
@@ -8394,7 +8394,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDescriptorUpdateTemplate(VkDevice device, const VkDescriptorUpdateTemplateCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorUpdateTemplateKHR* pDescriptorUpdateTemplate) const {
-		if(!this || !pfn_vkCreateDescriptorUpdateTemplate) {
+		if(!pfn_vkCreateDescriptorUpdateTemplate) {
 			return staticPfn_vkCreateDescriptorUpdateTemplate(device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
 		}
 		return pfn_vkCreateDescriptorUpdateTemplate(device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
@@ -8402,7 +8402,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_descriptor_update_template)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDescriptorUpdateTemplateKHR(VkDevice device, const VkDescriptorUpdateTemplateCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorUpdateTemplateKHR* pDescriptorUpdateTemplate) const {
-		if(!this || !pfn_vkCreateDescriptorUpdateTemplateKHR) {
+		if(!pfn_vkCreateDescriptorUpdateTemplateKHR) {
 			return staticPfn_vkCreateDescriptorUpdateTemplateKHR(device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
 		}
 		return pfn_vkCreateDescriptorUpdateTemplateKHR(device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate);
@@ -8410,7 +8410,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDescriptorUpdateTemplate(VkDevice device, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDescriptorUpdateTemplate) {
+		if(!pfn_vkDestroyDescriptorUpdateTemplate) {
 			staticPfn_vkDestroyDescriptorUpdateTemplate(device, descriptorUpdateTemplate, pAllocator);
 			return;
 		}
@@ -8419,7 +8419,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_descriptor_update_template)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDescriptorUpdateTemplateKHR(VkDevice device, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDescriptorUpdateTemplateKHR) {
+		if(!pfn_vkDestroyDescriptorUpdateTemplateKHR) {
 			staticPfn_vkDestroyDescriptorUpdateTemplateKHR(device, descriptorUpdateTemplate, pAllocator);
 			return;
 		}
@@ -8428,7 +8428,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, const void* pData) const {
-		if(!this || !pfn_vkUpdateDescriptorSetWithTemplate) {
+		if(!pfn_vkUpdateDescriptorSetWithTemplate) {
 			staticPfn_vkUpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData);
 			return;
 		}
@@ -8437,7 +8437,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_descriptor_update_template)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet descriptorSet, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, const void* pData) const {
-		if(!this || !pfn_vkUpdateDescriptorSetWithTemplateKHR) {
+		if(!pfn_vkUpdateDescriptorSetWithTemplateKHR) {
 			staticPfn_vkUpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData);
 			return;
 		}
@@ -8446,7 +8446,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void* pData) const {
-		if(!this || !pfn_vkCmdPushDescriptorSetWithTemplate) {
+		if(!pfn_vkCmdPushDescriptorSetWithTemplate) {
 			staticPfn_vkCmdPushDescriptorSetWithTemplate(commandBuffer, descriptorUpdateTemplate, layout, set, pData);
 			return;
 		}
@@ -8455,7 +8455,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_1) || defined(VK_KHR_descriptor_update_template))) || ((defined(VK_KHR_descriptor_update_template)) && (defined(VK_KHR_push_descriptor)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void* pData) const {
-		if(!this || !pfn_vkCmdPushDescriptorSetWithTemplateKHR) {
+		if(!pfn_vkCmdPushDescriptorSetWithTemplateKHR) {
 			staticPfn_vkCmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set, pData);
 			return;
 		}
@@ -8464,7 +8464,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_hdr_metadata) && (defined(VK_KHR_swapchain))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkSetHdrMetadataEXT(VkDevice device, uint32_t swapchainCount, const VkSwapchainKHR* pSwapchains, const VkHdrMetadataEXT* pMetadata) const {
-		if(!this || !pfn_vkSetHdrMetadataEXT) {
+		if(!pfn_vkSetHdrMetadataEXT) {
 			staticPfn_vkSetHdrMetadataEXT(device, swapchainCount, pSwapchains, pMetadata);
 			return;
 		}
@@ -8473,7 +8473,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_shared_presentable_image) && (defined(VK_KHR_swapchain) && defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const {
-		if(!this || !pfn_vkGetSwapchainStatusKHR) {
+		if(!pfn_vkGetSwapchainStatusKHR) {
 			return staticPfn_vkGetSwapchainStatusKHR(device, swapchain);
 		}
 		return pfn_vkGetSwapchainStatusKHR(device, swapchain);
@@ -8481,13 +8481,13 @@ namespace wfe {
 #endif
 #if defined(VK_GOOGLE_display_timing) && (defined(VK_KHR_swapchain))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE* pDisplayTimingProperties) const {
-		if(!this || !pfn_vkGetRefreshCycleDurationGOOGLE) {
+		if(!pfn_vkGetRefreshCycleDurationGOOGLE) {
 			return staticPfn_vkGetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties);
 		}
 		return pfn_vkGetRefreshCycleDurationGOOGLE(device, swapchain, pDisplayTimingProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pPresentationTimingCount, VkPastPresentationTimingGOOGLE* pPresentationTimings) const {
-		if(!this || !pfn_vkGetPastPresentationTimingGOOGLE) {
+		if(!pfn_vkGetPastPresentationTimingGOOGLE) {
 			return staticPfn_vkGetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings);
 		}
 		return pfn_vkGetPastPresentationTimingGOOGLE(device, swapchain, pPresentationTimingCount, pPresentationTimings);
@@ -8495,7 +8495,7 @@ namespace wfe {
 #endif
 #if defined(VK_MVK_ios_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateIOSSurfaceMVK(VkInstance instance, const VkIOSSurfaceCreateInfoMVK* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateIOSSurfaceMVK) {
+		if(!pfn_vkCreateIOSSurfaceMVK) {
 			return staticPfn_vkCreateIOSSurfaceMVK(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateIOSSurfaceMVK(instance, pCreateInfo, pAllocator, pSurface);
@@ -8503,7 +8503,7 @@ namespace wfe {
 #endif
 #if defined(VK_MVK_macos_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateMacOSSurfaceMVK(VkInstance instance, const VkMacOSSurfaceCreateInfoMVK* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateMacOSSurfaceMVK) {
+		if(!pfn_vkCreateMacOSSurfaceMVK) {
 			return staticPfn_vkCreateMacOSSurfaceMVK(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateMacOSSurfaceMVK(instance, pCreateInfo, pAllocator, pSurface);
@@ -8511,7 +8511,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_metal_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateMetalSurfaceEXT(VkInstance instance, const VkMetalSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateMetalSurfaceEXT) {
+		if(!pfn_vkCreateMetalSurfaceEXT) {
 			return staticPfn_vkCreateMetalSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateMetalSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
@@ -8519,7 +8519,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_clip_space_w_scaling)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportWScalingNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportWScalingNV* pViewportWScalings) const {
-		if(!this || !pfn_vkCmdSetViewportWScalingNV) {
+		if(!pfn_vkCmdSetViewportWScalingNV) {
 			staticPfn_vkCmdSetViewportWScalingNV(commandBuffer, firstViewport, viewportCount, pViewportWScalings);
 			return;
 		}
@@ -8528,21 +8528,21 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_discard_rectangles) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDiscardRectangleEXT(VkCommandBuffer commandBuffer, uint32_t firstDiscardRectangle, uint32_t discardRectangleCount, const VkRect2D* pDiscardRectangles) const {
-		if(!this || !pfn_vkCmdSetDiscardRectangleEXT) {
+		if(!pfn_vkCmdSetDiscardRectangleEXT) {
 			staticPfn_vkCmdSetDiscardRectangleEXT(commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles);
 			return;
 		}
 		pfn_vkCmdSetDiscardRectangleEXT(commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDiscardRectangleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 discardRectangleEnable) const {
-		if(!this || !pfn_vkCmdSetDiscardRectangleEnableEXT) {
+		if(!pfn_vkCmdSetDiscardRectangleEnableEXT) {
 			staticPfn_vkCmdSetDiscardRectangleEnableEXT(commandBuffer, discardRectangleEnable);
 			return;
 		}
 		pfn_vkCmdSetDiscardRectangleEnableEXT(commandBuffer, discardRectangleEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDiscardRectangleModeEXT(VkCommandBuffer commandBuffer, VkDiscardRectangleModeEXT discardRectangleMode) const {
-		if(!this || !pfn_vkCmdSetDiscardRectangleModeEXT) {
+		if(!pfn_vkCmdSetDiscardRectangleModeEXT) {
 			staticPfn_vkCmdSetDiscardRectangleModeEXT(commandBuffer, discardRectangleMode);
 			return;
 		}
@@ -8551,14 +8551,14 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_sample_locations) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT* pSampleLocationsInfo) const {
-		if(!this || !pfn_vkCmdSetSampleLocationsEXT) {
+		if(!pfn_vkCmdSetSampleLocationsEXT) {
 			staticPfn_vkCmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo);
 			return;
 		}
 		pfn_vkCmdSetSampleLocationsEXT(commandBuffer, pSampleLocationsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceMultisamplePropertiesEXT(VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT* pMultisampleProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceMultisamplePropertiesEXT) {
+		if(!pfn_vkGetPhysicalDeviceMultisamplePropertiesEXT) {
 			staticPfn_vkGetPhysicalDeviceMultisamplePropertiesEXT(physicalDevice, samples, pMultisampleProperties);
 			return;
 		}
@@ -8567,13 +8567,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, VkSurfaceCapabilities2KHR* pSurfaceCapabilities) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceCapabilities2KHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceCapabilities2KHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceCapabilities2KHR(physicalDevice, pSurfaceInfo, pSurfaceCapabilities);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceCapabilities2KHR(physicalDevice, pSurfaceInfo, pSurfaceCapabilities);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfaceFormats2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pSurfaceFormatCount, VkSurfaceFormat2KHR* pSurfaceFormats) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfaceFormats2KHR) {
+		if(!pfn_vkGetPhysicalDeviceSurfaceFormats2KHR) {
 			return staticPfn_vkGetPhysicalDeviceSurfaceFormats2KHR(physicalDevice, pSurfaceInfo, pSurfaceFormatCount, pSurfaceFormats);
 		}
 		return pfn_vkGetPhysicalDeviceSurfaceFormats2KHR(physicalDevice, pSurfaceInfo, pSurfaceFormatCount, pSurfaceFormats);
@@ -8581,25 +8581,25 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_display_properties2) && (defined(VK_KHR_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceDisplayProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceDisplayProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceDisplayProperties2KHR) {
 			return staticPfn_vkGetPhysicalDeviceDisplayProperties2KHR(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceDisplayProperties2KHR(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceDisplayPlaneProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPlaneProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceDisplayPlaneProperties2KHR) {
+		if(!pfn_vkGetPhysicalDeviceDisplayPlaneProperties2KHR) {
 			return staticPfn_vkGetPhysicalDeviceDisplayPlaneProperties2KHR(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceDisplayPlaneProperties2KHR(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t* pPropertyCount, VkDisplayModeProperties2KHR* pProperties) const {
-		if(!this || !pfn_vkGetDisplayModeProperties2KHR) {
+		if(!pfn_vkGetDisplayModeProperties2KHR) {
 			return staticPfn_vkGetDisplayModeProperties2KHR(physicalDevice, display, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetDisplayModeProperties2KHR(physicalDevice, display, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDisplayPlaneCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkDisplayPlaneInfo2KHR* pDisplayPlaneInfo, VkDisplayPlaneCapabilities2KHR* pCapabilities) const {
-		if(!this || !pfn_vkGetDisplayPlaneCapabilities2KHR) {
+		if(!pfn_vkGetDisplayPlaneCapabilities2KHR) {
 			return staticPfn_vkGetDisplayPlaneCapabilities2KHR(physicalDevice, pDisplayPlaneInfo, pCapabilities);
 		}
 		return pfn_vkGetDisplayPlaneCapabilities2KHR(physicalDevice, pDisplayPlaneInfo, pCapabilities);
@@ -8607,7 +8607,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetBufferMemoryRequirements2(VkDevice device, const VkBufferMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetBufferMemoryRequirements2) {
+		if(!pfn_vkGetBufferMemoryRequirements2) {
 			staticPfn_vkGetBufferMemoryRequirements2(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8616,7 +8616,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_memory_requirements2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetBufferMemoryRequirements2KHR(VkDevice device, const VkBufferMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetBufferMemoryRequirements2KHR) {
+		if(!pfn_vkGetBufferMemoryRequirements2KHR) {
 			staticPfn_vkGetBufferMemoryRequirements2KHR(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8625,7 +8625,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageMemoryRequirements2(VkDevice device, const VkImageMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageMemoryRequirements2) {
+		if(!pfn_vkGetImageMemoryRequirements2) {
 			staticPfn_vkGetImageMemoryRequirements2(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8634,7 +8634,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_memory_requirements2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageMemoryRequirements2KHR(VkDevice device, const VkImageMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageMemoryRequirements2KHR) {
+		if(!pfn_vkGetImageMemoryRequirements2KHR) {
 			staticPfn_vkGetImageMemoryRequirements2KHR(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8643,7 +8643,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSparseMemoryRequirements2(VkDevice device, const VkImageSparseMemoryRequirementsInfo2KHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageSparseMemoryRequirements2) {
+		if(!pfn_vkGetImageSparseMemoryRequirements2) {
 			staticPfn_vkGetImageSparseMemoryRequirements2(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 			return;
 		}
@@ -8652,7 +8652,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_get_memory_requirements2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSparseMemoryRequirements2KHR(VkDevice device, const VkImageSparseMemoryRequirementsInfo2KHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const {
-		if(!this || !pfn_vkGetImageSparseMemoryRequirements2KHR) {
+		if(!pfn_vkGetImageSparseMemoryRequirements2KHR) {
 			staticPfn_vkGetImageSparseMemoryRequirements2KHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 			return;
 		}
@@ -8661,7 +8661,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceBufferMemoryRequirements(VkDevice device, const VkDeviceBufferMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceBufferMemoryRequirements) {
+		if(!pfn_vkGetDeviceBufferMemoryRequirements) {
 			staticPfn_vkGetDeviceBufferMemoryRequirements(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8670,7 +8670,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceBufferMemoryRequirementsKHR(VkDevice device, const VkDeviceBufferMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceBufferMemoryRequirementsKHR) {
+		if(!pfn_vkGetDeviceBufferMemoryRequirementsKHR) {
 			staticPfn_vkGetDeviceBufferMemoryRequirementsKHR(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8679,7 +8679,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceImageMemoryRequirements) {
+		if(!pfn_vkGetDeviceImageMemoryRequirements) {
 			staticPfn_vkGetDeviceImageMemoryRequirements(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8688,7 +8688,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceImageMemoryRequirementsKHR) {
+		if(!pfn_vkGetDeviceImageMemoryRequirementsKHR) {
 			staticPfn_vkGetDeviceImageMemoryRequirementsKHR(device, pInfo, pMemoryRequirements);
 			return;
 		}
@@ -8697,7 +8697,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceImageSparseMemoryRequirements) {
+		if(!pfn_vkGetDeviceImageSparseMemoryRequirements) {
 			staticPfn_vkGetDeviceImageSparseMemoryRequirements(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 			return;
 		}
@@ -8706,7 +8706,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const {
-		if(!this || !pfn_vkGetDeviceImageSparseMemoryRequirementsKHR) {
+		if(!pfn_vkGetDeviceImageSparseMemoryRequirementsKHR) {
 			staticPfn_vkGetDeviceImageSparseMemoryRequirementsKHR(device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements);
 			return;
 		}
@@ -8715,7 +8715,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversionKHR* pYcbcrConversion) const {
-		if(!this || !pfn_vkCreateSamplerYcbcrConversion) {
+		if(!pfn_vkCreateSamplerYcbcrConversion) {
 			return staticPfn_vkCreateSamplerYcbcrConversion(device, pCreateInfo, pAllocator, pYcbcrConversion);
 		}
 		return pfn_vkCreateSamplerYcbcrConversion(device, pCreateInfo, pAllocator, pYcbcrConversion);
@@ -8723,7 +8723,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateSamplerYcbcrConversionKHR(VkDevice device, const VkSamplerYcbcrConversionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversionKHR* pYcbcrConversion) const {
-		if(!this || !pfn_vkCreateSamplerYcbcrConversionKHR) {
+		if(!pfn_vkCreateSamplerYcbcrConversionKHR) {
 			return staticPfn_vkCreateSamplerYcbcrConversionKHR(device, pCreateInfo, pAllocator, pYcbcrConversion);
 		}
 		return pfn_vkCreateSamplerYcbcrConversionKHR(device, pCreateInfo, pAllocator, pYcbcrConversion);
@@ -8731,7 +8731,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversionKHR ycbcrConversion, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySamplerYcbcrConversion) {
+		if(!pfn_vkDestroySamplerYcbcrConversion) {
 			staticPfn_vkDestroySamplerYcbcrConversion(device, ycbcrConversion, pAllocator);
 			return;
 		}
@@ -8740,7 +8740,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroySamplerYcbcrConversionKHR(VkDevice device, VkSamplerYcbcrConversionKHR ycbcrConversion, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroySamplerYcbcrConversionKHR) {
+		if(!pfn_vkDestroySamplerYcbcrConversionKHR) {
 			staticPfn_vkDestroySamplerYcbcrConversionKHR(device, ycbcrConversion, pAllocator);
 			return;
 		}
@@ -8749,7 +8749,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceQueue2(VkDevice device, const VkDeviceQueueInfo2* pQueueInfo, VkQueue* pQueue) const {
-		if(!this || !pfn_vkGetDeviceQueue2) {
+		if(!pfn_vkGetDeviceQueue2) {
 			staticPfn_vkGetDeviceQueue2(device, pQueueInfo, pQueue);
 			return;
 		}
@@ -8758,26 +8758,26 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_validation_cache)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateValidationCacheEXT(VkDevice device, const VkValidationCacheCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkValidationCacheEXT* pValidationCache) const {
-		if(!this || !pfn_vkCreateValidationCacheEXT) {
+		if(!pfn_vkCreateValidationCacheEXT) {
 			return staticPfn_vkCreateValidationCacheEXT(device, pCreateInfo, pAllocator, pValidationCache);
 		}
 		return pfn_vkCreateValidationCacheEXT(device, pCreateInfo, pAllocator, pValidationCache);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyValidationCacheEXT(VkDevice device, VkValidationCacheEXT validationCache, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyValidationCacheEXT) {
+		if(!pfn_vkDestroyValidationCacheEXT) {
 			staticPfn_vkDestroyValidationCacheEXT(device, validationCache, pAllocator);
 			return;
 		}
 		pfn_vkDestroyValidationCacheEXT(device, validationCache, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetValidationCacheDataEXT(VkDevice device, VkValidationCacheEXT validationCache, size_t* pDataSize, void* pData) const {
-		if(!this || !pfn_vkGetValidationCacheDataEXT) {
+		if(!pfn_vkGetValidationCacheDataEXT) {
 			return staticPfn_vkGetValidationCacheDataEXT(device, validationCache, pDataSize, pData);
 		}
 		return pfn_vkGetValidationCacheDataEXT(device, validationCache, pDataSize, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkMergeValidationCachesEXT(VkDevice device, VkValidationCacheEXT dstCache, uint32_t srcCacheCount, const VkValidationCacheEXT* pSrcCaches) const {
-		if(!this || !pfn_vkMergeValidationCachesEXT) {
+		if(!pfn_vkMergeValidationCachesEXT) {
 			return staticPfn_vkMergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches);
 		}
 		return pfn_vkMergeValidationCachesEXT(device, dstCache, srcCacheCount, pSrcCaches);
@@ -8785,7 +8785,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_1)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetLayoutSupport(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, VkDescriptorSetLayoutSupportKHR* pSupport) const {
-		if(!this || !pfn_vkGetDescriptorSetLayoutSupport) {
+		if(!pfn_vkGetDescriptorSetLayoutSupport) {
 			staticPfn_vkGetDescriptorSetLayoutSupport(device, pCreateInfo, pSupport);
 			return;
 		}
@@ -8794,7 +8794,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetLayoutSupportKHR(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, VkDescriptorSetLayoutSupportKHR* pSupport) const {
-		if(!this || !pfn_vkGetDescriptorSetLayoutSupportKHR) {
+		if(!pfn_vkGetDescriptorSetLayoutSupportKHR) {
 			staticPfn_vkGetDescriptorSetLayoutSupportKHR(device, pCreateInfo, pSupport);
 			return;
 		}
@@ -8803,25 +8803,25 @@ namespace wfe {
 #endif
 #if defined(VK_ANDROID_native_buffer)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSwapchainGrallocUsageANDROID(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, int* grallocUsage) const {
-		if(!this || !pfn_vkGetSwapchainGrallocUsageANDROID) {
+		if(!pfn_vkGetSwapchainGrallocUsageANDROID) {
 			return staticPfn_vkGetSwapchainGrallocUsageANDROID(device, format, imageUsage, grallocUsage);
 		}
 		return pfn_vkGetSwapchainGrallocUsageANDROID(device, format, imageUsage, grallocUsage);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSwapchainGrallocUsage2ANDROID(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, VkSwapchainImageUsageFlagsANDROID swapchainImageUsage, uint64_t* grallocConsumerUsage, uint64_t* grallocProducerUsage) const {
-		if(!this || !pfn_vkGetSwapchainGrallocUsage2ANDROID) {
+		if(!pfn_vkGetSwapchainGrallocUsage2ANDROID) {
 			return staticPfn_vkGetSwapchainGrallocUsage2ANDROID(device, format, imageUsage, swapchainImageUsage, grallocConsumerUsage, grallocProducerUsage);
 		}
 		return pfn_vkGetSwapchainGrallocUsage2ANDROID(device, format, imageUsage, swapchainImageUsage, grallocConsumerUsage, grallocProducerUsage);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireImageANDROID(VkDevice device, VkImage image, int nativeFenceFd, VkSemaphore semaphore, VkFence fence) const {
-		if(!this || !pfn_vkAcquireImageANDROID) {
+		if(!pfn_vkAcquireImageANDROID) {
 			return staticPfn_vkAcquireImageANDROID(device, image, nativeFenceFd, semaphore, fence);
 		}
 		return pfn_vkAcquireImageANDROID(device, image, nativeFenceFd, semaphore, fence);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueSignalReleaseImageANDROID(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore* pWaitSemaphores, VkImage image, int* pNativeFenceFd) const {
-		if(!this || !pfn_vkQueueSignalReleaseImageANDROID) {
+		if(!pfn_vkQueueSignalReleaseImageANDROID) {
 			return staticPfn_vkQueueSignalReleaseImageANDROID(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd);
 		}
 		return pfn_vkQueueSignalReleaseImageANDROID(queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd);
@@ -8829,7 +8829,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_shader_info)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetShaderInfoAMD(VkDevice device, VkPipeline pipeline, VkShaderStageFlagBits shaderStage, VkShaderInfoTypeAMD infoType, size_t* pInfoSize, void* pInfo) const {
-		if(!this || !pfn_vkGetShaderInfoAMD) {
+		if(!pfn_vkGetShaderInfoAMD) {
 			return staticPfn_vkGetShaderInfoAMD(device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
 		}
 		return pfn_vkGetShaderInfoAMD(device, pipeline, shaderStage, infoType, pInfoSize, pInfo);
@@ -8837,7 +8837,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_display_native_hdr) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkSetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const {
-		if(!this || !pfn_vkSetLocalDimmingAMD) {
+		if(!pfn_vkSetLocalDimmingAMD) {
 			staticPfn_vkSetLocalDimmingAMD(device, swapChain, localDimmingEnable);
 			return;
 		}
@@ -8846,7 +8846,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCalibrateableTimeDomainsKHR(VkPhysicalDevice physicalDevice, uint32_t* pTimeDomainCount, VkTimeDomainEXT* pTimeDomains) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR) {
+		if(!pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR) {
 			return staticPfn_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR(physicalDevice, pTimeDomainCount, pTimeDomains);
 		}
 		return pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR(physicalDevice, pTimeDomainCount, pTimeDomains);
@@ -8854,7 +8854,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t* pTimeDomainCount, VkTimeDomainEXT* pTimeDomains) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT) {
+		if(!pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT) {
 			return staticPfn_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains);
 		}
 		return pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(physicalDevice, pTimeDomainCount, pTimeDomains);
@@ -8862,7 +8862,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetCalibratedTimestampsKHR(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoEXT* pTimestampInfos, uint64_t* pTimestamps, uint64_t* pMaxDeviation) const {
-		if(!this || !pfn_vkGetCalibratedTimestampsKHR) {
+		if(!pfn_vkGetCalibratedTimestampsKHR) {
 			return staticPfn_vkGetCalibratedTimestampsKHR(device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
 		}
 		return pfn_vkGetCalibratedTimestampsKHR(device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
@@ -8870,7 +8870,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetCalibratedTimestampsEXT(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoEXT* pTimestampInfos, uint64_t* pTimestamps, uint64_t* pMaxDeviation) const {
-		if(!this || !pfn_vkGetCalibratedTimestampsEXT) {
+		if(!pfn_vkGetCalibratedTimestampsEXT) {
 			return staticPfn_vkGetCalibratedTimestampsEXT(device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
 		}
 		return pfn_vkGetCalibratedTimestampsEXT(device, timestampCount, pTimestampInfos, pTimestamps, pMaxDeviation);
@@ -8878,74 +8878,74 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_debug_utils)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetDebugUtilsObjectNameEXT(VkDevice device, const VkDebugUtilsObjectNameInfoEXT* pNameInfo) const {
-		if(!this || !pfn_vkSetDebugUtilsObjectNameEXT) {
+		if(!pfn_vkSetDebugUtilsObjectNameEXT) {
 			return staticPfn_vkSetDebugUtilsObjectNameEXT(device, pNameInfo);
 		}
 		return pfn_vkSetDebugUtilsObjectNameEXT(device, pNameInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetDebugUtilsObjectTagEXT(VkDevice device, const VkDebugUtilsObjectTagInfoEXT* pTagInfo) const {
-		if(!this || !pfn_vkSetDebugUtilsObjectTagEXT) {
+		if(!pfn_vkSetDebugUtilsObjectTagEXT) {
 			return staticPfn_vkSetDebugUtilsObjectTagEXT(device, pTagInfo);
 		}
 		return pfn_vkSetDebugUtilsObjectTagEXT(device, pTagInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkQueueBeginDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT* pLabelInfo) const {
-		if(!this || !pfn_vkQueueBeginDebugUtilsLabelEXT) {
+		if(!pfn_vkQueueBeginDebugUtilsLabelEXT) {
 			staticPfn_vkQueueBeginDebugUtilsLabelEXT(queue, pLabelInfo);
 			return;
 		}
 		pfn_vkQueueBeginDebugUtilsLabelEXT(queue, pLabelInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkQueueEndDebugUtilsLabelEXT(VkQueue queue) const {
-		if(!this || !pfn_vkQueueEndDebugUtilsLabelEXT) {
+		if(!pfn_vkQueueEndDebugUtilsLabelEXT) {
 			staticPfn_vkQueueEndDebugUtilsLabelEXT(queue);
 			return;
 		}
 		pfn_vkQueueEndDebugUtilsLabelEXT(queue);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkQueueInsertDebugUtilsLabelEXT(VkQueue queue, const VkDebugUtilsLabelEXT* pLabelInfo) const {
-		if(!this || !pfn_vkQueueInsertDebugUtilsLabelEXT) {
+		if(!pfn_vkQueueInsertDebugUtilsLabelEXT) {
 			staticPfn_vkQueueInsertDebugUtilsLabelEXT(queue, pLabelInfo);
 			return;
 		}
 		pfn_vkQueueInsertDebugUtilsLabelEXT(queue, pLabelInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT* pLabelInfo) const {
-		if(!this || !pfn_vkCmdBeginDebugUtilsLabelEXT) {
+		if(!pfn_vkCmdBeginDebugUtilsLabelEXT) {
 			staticPfn_vkCmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo);
 			return;
 		}
 		pfn_vkCmdBeginDebugUtilsLabelEXT(commandBuffer, pLabelInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndDebugUtilsLabelEXT(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdEndDebugUtilsLabelEXT) {
+		if(!pfn_vkCmdEndDebugUtilsLabelEXT) {
 			staticPfn_vkCmdEndDebugUtilsLabelEXT(commandBuffer);
 			return;
 		}
 		pfn_vkCmdEndDebugUtilsLabelEXT(commandBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdInsertDebugUtilsLabelEXT(VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT* pLabelInfo) const {
-		if(!this || !pfn_vkCmdInsertDebugUtilsLabelEXT) {
+		if(!pfn_vkCmdInsertDebugUtilsLabelEXT) {
 			staticPfn_vkCmdInsertDebugUtilsLabelEXT(commandBuffer, pLabelInfo);
 			return;
 		}
 		pfn_vkCmdInsertDebugUtilsLabelEXT(commandBuffer, pLabelInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pMessenger) const {
-		if(!this || !pfn_vkCreateDebugUtilsMessengerEXT) {
+		if(!pfn_vkCreateDebugUtilsMessengerEXT) {
 			return staticPfn_vkCreateDebugUtilsMessengerEXT(instance, pCreateInfo, pAllocator, pMessenger);
 		}
 		return pfn_vkCreateDebugUtilsMessengerEXT(instance, pCreateInfo, pAllocator, pMessenger);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDebugUtilsMessengerEXT) {
+		if(!pfn_vkDestroyDebugUtilsMessengerEXT) {
 			staticPfn_vkDestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator);
 			return;
 		}
 		pfn_vkDestroyDebugUtilsMessengerEXT(instance, messenger, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkSubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData) const {
-		if(!this || !pfn_vkSubmitDebugUtilsMessageEXT) {
+		if(!pfn_vkSubmitDebugUtilsMessageEXT) {
 			staticPfn_vkSubmitDebugUtilsMessageEXT(instance, messageSeverity, messageTypes, pCallbackData);
 			return;
 		}
@@ -8954,7 +8954,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_external_memory_host) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryHostPointerPropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void* pHostPointer, VkMemoryHostPointerPropertiesEXT* pMemoryHostPointerProperties) const {
-		if(!this || !pfn_vkGetMemoryHostPointerPropertiesEXT) {
+		if(!pfn_vkGetMemoryHostPointerPropertiesEXT) {
 			return staticPfn_vkGetMemoryHostPointerPropertiesEXT(device, handleType, pHostPointer, pMemoryHostPointerProperties);
 		}
 		return pfn_vkGetMemoryHostPointerPropertiesEXT(device, handleType, pHostPointer, pMemoryHostPointerProperties);
@@ -8962,7 +8962,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_buffer_marker)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteBufferMarkerAMD(VkCommandBuffer commandBuffer, VkPipelineStageFlagBits pipelineStage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) const {
-		if(!this || !pfn_vkCmdWriteBufferMarkerAMD) {
+		if(!pfn_vkCmdWriteBufferMarkerAMD) {
 			staticPfn_vkCmdWriteBufferMarkerAMD(commandBuffer, pipelineStage, dstBuffer, dstOffset, marker);
 			return;
 		}
@@ -8971,7 +8971,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateRenderPass2(VkDevice device, const VkRenderPassCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass) const {
-		if(!this || !pfn_vkCreateRenderPass2) {
+		if(!pfn_vkCreateRenderPass2) {
 			return staticPfn_vkCreateRenderPass2(device, pCreateInfo, pAllocator, pRenderPass);
 		}
 		return pfn_vkCreateRenderPass2(device, pCreateInfo, pAllocator, pRenderPass);
@@ -8979,7 +8979,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateRenderPass2KHR(VkDevice device, const VkRenderPassCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass) const {
-		if(!this || !pfn_vkCreateRenderPass2KHR) {
+		if(!pfn_vkCreateRenderPass2KHR) {
 			return staticPfn_vkCreateRenderPass2KHR(device, pCreateInfo, pAllocator, pRenderPass);
 		}
 		return pfn_vkCreateRenderPass2KHR(device, pCreateInfo, pAllocator, pRenderPass);
@@ -8987,7 +8987,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginRenderPass2(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, const VkSubpassBeginInfoKHR* pSubpassBeginInfo) const {
-		if(!this || !pfn_vkCmdBeginRenderPass2) {
+		if(!pfn_vkCmdBeginRenderPass2) {
 			staticPfn_vkCmdBeginRenderPass2(commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
 			return;
 		}
@@ -8996,7 +8996,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginRenderPass2KHR(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, const VkSubpassBeginInfoKHR* pSubpassBeginInfo) const {
-		if(!this || !pfn_vkCmdBeginRenderPass2KHR) {
+		if(!pfn_vkCmdBeginRenderPass2KHR) {
 			staticPfn_vkCmdBeginRenderPass2KHR(commandBuffer, pRenderPassBegin, pSubpassBeginInfo);
 			return;
 		}
@@ -9005,7 +9005,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdNextSubpass2(VkCommandBuffer commandBuffer, const VkSubpassBeginInfoKHR* pSubpassBeginInfo, const VkSubpassEndInfoKHR* pSubpassEndInfo) const {
-		if(!this || !pfn_vkCmdNextSubpass2) {
+		if(!pfn_vkCmdNextSubpass2) {
 			staticPfn_vkCmdNextSubpass2(commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
 			return;
 		}
@@ -9014,7 +9014,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdNextSubpass2KHR(VkCommandBuffer commandBuffer, const VkSubpassBeginInfoKHR* pSubpassBeginInfo, const VkSubpassEndInfoKHR* pSubpassEndInfo) const {
-		if(!this || !pfn_vkCmdNextSubpass2KHR) {
+		if(!pfn_vkCmdNextSubpass2KHR) {
 			staticPfn_vkCmdNextSubpass2KHR(commandBuffer, pSubpassBeginInfo, pSubpassEndInfo);
 			return;
 		}
@@ -9023,7 +9023,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfoKHR* pSubpassEndInfo) const {
-		if(!this || !pfn_vkCmdEndRenderPass2) {
+		if(!pfn_vkCmdEndRenderPass2) {
 			staticPfn_vkCmdEndRenderPass2(commandBuffer, pSubpassEndInfo);
 			return;
 		}
@@ -9032,7 +9032,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfoKHR* pSubpassEndInfo) const {
-		if(!this || !pfn_vkCmdEndRenderPass2KHR) {
+		if(!pfn_vkCmdEndRenderPass2KHR) {
 			staticPfn_vkCmdEndRenderPass2KHR(commandBuffer, pSubpassEndInfo);
 			return;
 		}
@@ -9041,7 +9041,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreCounterValue(VkDevice device, VkSemaphore semaphore, uint64_t* pValue) const {
-		if(!this || !pfn_vkGetSemaphoreCounterValue) {
+		if(!pfn_vkGetSemaphoreCounterValue) {
 			return staticPfn_vkGetSemaphoreCounterValue(device, semaphore, pValue);
 		}
 		return pfn_vkGetSemaphoreCounterValue(device, semaphore, pValue);
@@ -9049,7 +9049,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSemaphoreCounterValueKHR(VkDevice device, VkSemaphore semaphore, uint64_t* pValue) const {
-		if(!this || !pfn_vkGetSemaphoreCounterValueKHR) {
+		if(!pfn_vkGetSemaphoreCounterValueKHR) {
 			return staticPfn_vkGetSemaphoreCounterValueKHR(device, semaphore, pValue);
 		}
 		return pfn_vkGetSemaphoreCounterValueKHR(device, semaphore, pValue);
@@ -9057,7 +9057,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWaitSemaphores(VkDevice device, const VkSemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout) const {
-		if(!this || !pfn_vkWaitSemaphores) {
+		if(!pfn_vkWaitSemaphores) {
 			return staticPfn_vkWaitSemaphores(device, pWaitInfo, timeout);
 		}
 		return pfn_vkWaitSemaphores(device, pWaitInfo, timeout);
@@ -9065,7 +9065,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWaitSemaphoresKHR(VkDevice device, const VkSemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout) const {
-		if(!this || !pfn_vkWaitSemaphoresKHR) {
+		if(!pfn_vkWaitSemaphoresKHR) {
 			return staticPfn_vkWaitSemaphoresKHR(device, pWaitInfo, timeout);
 		}
 		return pfn_vkWaitSemaphoresKHR(device, pWaitInfo, timeout);
@@ -9073,7 +9073,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSignalSemaphore(VkDevice device, const VkSemaphoreSignalInfoKHR* pSignalInfo) const {
-		if(!this || !pfn_vkSignalSemaphore) {
+		if(!pfn_vkSignalSemaphore) {
 			return staticPfn_vkSignalSemaphore(device, pSignalInfo);
 		}
 		return pfn_vkSignalSemaphore(device, pSignalInfo);
@@ -9081,7 +9081,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfoKHR* pSignalInfo) const {
-		if(!this || !pfn_vkSignalSemaphoreKHR) {
+		if(!pfn_vkSignalSemaphoreKHR) {
 			return staticPfn_vkSignalSemaphoreKHR(device, pSignalInfo);
 		}
 		return pfn_vkSignalSemaphoreKHR(device, pSignalInfo);
@@ -9089,13 +9089,13 @@ namespace wfe {
 #endif
 #if defined(VK_ANDROID_external_memory_android_hardware_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetAndroidHardwareBufferPropertiesANDROID(VkDevice device, const struct AHardwareBuffer* buffer, VkAndroidHardwareBufferPropertiesANDROID* pProperties) const {
-		if(!this || !pfn_vkGetAndroidHardwareBufferPropertiesANDROID) {
+		if(!pfn_vkGetAndroidHardwareBufferPropertiesANDROID) {
 			return staticPfn_vkGetAndroidHardwareBufferPropertiesANDROID(device, buffer, pProperties);
 		}
 		return pfn_vkGetAndroidHardwareBufferPropertiesANDROID(device, buffer, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryAndroidHardwareBufferANDROID(VkDevice device, const VkMemoryGetAndroidHardwareBufferInfoANDROID* pInfo, struct AHardwareBuffer** pBuffer) const {
-		if(!this || !pfn_vkGetMemoryAndroidHardwareBufferANDROID) {
+		if(!pfn_vkGetMemoryAndroidHardwareBufferANDROID) {
 			return staticPfn_vkGetMemoryAndroidHardwareBufferANDROID(device, pInfo, pBuffer);
 		}
 		return pfn_vkGetMemoryAndroidHardwareBufferANDROID(device, pInfo, pBuffer);
@@ -9103,7 +9103,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndirectCount) {
+		if(!pfn_vkCmdDrawIndirectCount) {
 			staticPfn_vkCmdDrawIndirectCount(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9112,7 +9112,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_draw_indirect_count)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndirectCountKHR) {
+		if(!pfn_vkCmdDrawIndirectCountKHR) {
 			staticPfn_vkCmdDrawIndirectCountKHR(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9121,7 +9121,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_draw_indirect_count)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndirectCountAMD) {
+		if(!pfn_vkCmdDrawIndirectCountAMD) {
 			staticPfn_vkCmdDrawIndirectCountAMD(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9130,7 +9130,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndexedIndirectCount(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndexedIndirectCount) {
+		if(!pfn_vkCmdDrawIndexedIndirectCount) {
 			staticPfn_vkCmdDrawIndexedIndirectCount(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9139,7 +9139,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_draw_indirect_count)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndexedIndirectCountKHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndexedIndirectCountKHR) {
+		if(!pfn_vkCmdDrawIndexedIndirectCountKHR) {
 			staticPfn_vkCmdDrawIndexedIndirectCountKHR(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9148,7 +9148,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_draw_indirect_count)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndexedIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawIndexedIndirectCountAMD) {
+		if(!pfn_vkCmdDrawIndexedIndirectCountAMD) {
 			staticPfn_vkCmdDrawIndexedIndirectCountAMD(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9157,14 +9157,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCheckpointNV(VkCommandBuffer commandBuffer, const void* pCheckpointMarker) const {
-		if(!this || !pfn_vkCmdSetCheckpointNV) {
+		if(!pfn_vkCmdSetCheckpointNV) {
 			staticPfn_vkCmdSetCheckpointNV(commandBuffer, pCheckpointMarker);
 			return;
 		}
 		pfn_vkCmdSetCheckpointNV(commandBuffer, pCheckpointMarker);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetQueueCheckpointDataNV(VkQueue queue, uint32_t* pCheckpointDataCount, VkCheckpointDataNV* pCheckpointData) const {
-		if(!this || !pfn_vkGetQueueCheckpointDataNV) {
+		if(!pfn_vkGetQueueCheckpointDataNV) {
 			staticPfn_vkGetQueueCheckpointDataNV(queue, pCheckpointDataCount, pCheckpointData);
 			return;
 		}
@@ -9173,42 +9173,42 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_transform_feedback) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes) const {
-		if(!this || !pfn_vkCmdBindTransformFeedbackBuffersEXT) {
+		if(!pfn_vkCmdBindTransformFeedbackBuffersEXT) {
 			staticPfn_vkCmdBindTransformFeedbackBuffersEXT(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes);
 			return;
 		}
 		pfn_vkCmdBindTransformFeedbackBuffersEXT(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer* pCounterBuffers, const VkDeviceSize* pCounterBufferOffsets) const {
-		if(!this || !pfn_vkCmdBeginTransformFeedbackEXT) {
+		if(!pfn_vkCmdBeginTransformFeedbackEXT) {
 			staticPfn_vkCmdBeginTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
 			return;
 		}
 		pfn_vkCmdBeginTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer* pCounterBuffers, const VkDeviceSize* pCounterBufferOffsets) const {
-		if(!this || !pfn_vkCmdEndTransformFeedbackEXT) {
+		if(!pfn_vkCmdEndTransformFeedbackEXT) {
 			staticPfn_vkCmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
 			return;
 		}
 		pfn_vkCmdEndTransformFeedbackEXT(commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags, uint32_t index) const {
-		if(!this || !pfn_vkCmdBeginQueryIndexedEXT) {
+		if(!pfn_vkCmdBeginQueryIndexedEXT) {
 			staticPfn_vkCmdBeginQueryIndexedEXT(commandBuffer, queryPool, query, flags, index);
 			return;
 		}
 		pfn_vkCmdBeginQueryIndexedEXT(commandBuffer, queryPool, query, flags, index);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, uint32_t index) const {
-		if(!this || !pfn_vkCmdEndQueryIndexedEXT) {
+		if(!pfn_vkCmdEndQueryIndexedEXT) {
 			staticPfn_vkCmdEndQueryIndexedEXT(commandBuffer, queryPool, query, index);
 			return;
 		}
 		pfn_vkCmdEndQueryIndexedEXT(commandBuffer, queryPool, query, index);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawIndirectByteCountEXT(VkCommandBuffer commandBuffer, uint32_t instanceCount, uint32_t firstInstance, VkBuffer counterBuffer, VkDeviceSize counterBufferOffset, uint32_t counterOffset, uint32_t vertexStride) const {
-		if(!this || !pfn_vkCmdDrawIndirectByteCountEXT) {
+		if(!pfn_vkCmdDrawIndirectByteCountEXT) {
 			staticPfn_vkCmdDrawIndirectByteCountEXT(commandBuffer, instanceCount, firstInstance, counterBuffer, counterBufferOffset, counterOffset, vertexStride);
 			return;
 		}
@@ -9217,14 +9217,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_scissor_exclusive) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetExclusiveScissorNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkRect2D* pExclusiveScissors) const {
-		if(!this || !pfn_vkCmdSetExclusiveScissorNV) {
+		if(!pfn_vkCmdSetExclusiveScissorNV) {
 			staticPfn_vkCmdSetExclusiveScissorNV(commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors);
 			return;
 		}
 		pfn_vkCmdSetExclusiveScissorNV(commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetExclusiveScissorEnableNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkBool32* pExclusiveScissorEnables) const {
-		if(!this || !pfn_vkCmdSetExclusiveScissorEnableNV) {
+		if(!pfn_vkCmdSetExclusiveScissorEnableNV) {
 			staticPfn_vkCmdSetExclusiveScissorEnableNV(commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissorEnables);
 			return;
 		}
@@ -9233,21 +9233,21 @@ namespace wfe {
 #endif
 #if defined(VK_NV_shading_rate_image) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindShadingRateImageNV(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const {
-		if(!this || !pfn_vkCmdBindShadingRateImageNV) {
+		if(!pfn_vkCmdBindShadingRateImageNV) {
 			staticPfn_vkCmdBindShadingRateImageNV(commandBuffer, imageView, imageLayout);
 			return;
 		}
 		pfn_vkCmdBindShadingRateImageNV(commandBuffer, imageView, imageLayout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportShadingRatePaletteNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkShadingRatePaletteNV* pShadingRatePalettes) const {
-		if(!this || !pfn_vkCmdSetViewportShadingRatePaletteNV) {
+		if(!pfn_vkCmdSetViewportShadingRatePaletteNV) {
 			staticPfn_vkCmdSetViewportShadingRatePaletteNV(commandBuffer, firstViewport, viewportCount, pShadingRatePalettes);
 			return;
 		}
 		pfn_vkCmdSetViewportShadingRatePaletteNV(commandBuffer, firstViewport, viewportCount, pShadingRatePalettes);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoarseSampleOrderNV(VkCommandBuffer commandBuffer, VkCoarseSampleOrderTypeNV sampleOrderType, uint32_t customSampleOrderCount, const VkCoarseSampleOrderCustomNV* pCustomSampleOrders) const {
-		if(!this || !pfn_vkCmdSetCoarseSampleOrderNV) {
+		if(!pfn_vkCmdSetCoarseSampleOrderNV) {
 			staticPfn_vkCmdSetCoarseSampleOrderNV(commandBuffer, sampleOrderType, customSampleOrderCount, pCustomSampleOrders);
 			return;
 		}
@@ -9256,14 +9256,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksNV(VkCommandBuffer commandBuffer, uint32_t taskCount, uint32_t firstTask) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksNV) {
+		if(!pfn_vkCmdDrawMeshTasksNV) {
 			staticPfn_vkCmdDrawMeshTasksNV(commandBuffer, taskCount, firstTask);
 			return;
 		}
 		pfn_vkCmdDrawMeshTasksNV(commandBuffer, taskCount, firstTask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksIndirectNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksIndirectNV) {
+		if(!pfn_vkCmdDrawMeshTasksIndirectNV) {
 			staticPfn_vkCmdDrawMeshTasksIndirectNV(commandBuffer, buffer, offset, drawCount, stride);
 			return;
 		}
@@ -9272,7 +9272,7 @@ namespace wfe {
 #endif
 #if (defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksIndirectCountNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksIndirectCountNV) {
+		if(!pfn_vkCmdDrawMeshTasksIndirectCountNV) {
 			staticPfn_vkCmdDrawMeshTasksIndirectCountNV(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9281,14 +9281,14 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksEXT(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksEXT) {
+		if(!pfn_vkCmdDrawMeshTasksEXT) {
 			staticPfn_vkCmdDrawMeshTasksEXT(commandBuffer, groupCountX, groupCountY, groupCountZ);
 			return;
 		}
 		pfn_vkCmdDrawMeshTasksEXT(commandBuffer, groupCountX, groupCountY, groupCountZ);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksIndirectEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksIndirectEXT) {
+		if(!pfn_vkCmdDrawMeshTasksIndirectEXT) {
 			staticPfn_vkCmdDrawMeshTasksIndirectEXT(commandBuffer, buffer, offset, drawCount, stride);
 			return;
 		}
@@ -9297,7 +9297,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDrawMeshTasksIndirectCountEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDrawMeshTasksIndirectCountEXT) {
+		if(!pfn_vkCmdDrawMeshTasksIndirectCountEXT) {
 			staticPfn_vkCmdDrawMeshTasksIndirectCountEXT(commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride);
 			return;
 		}
@@ -9306,13 +9306,13 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCompileDeferredNV(VkDevice device, VkPipeline pipeline, uint32_t shader) const {
-		if(!this || !pfn_vkCompileDeferredNV) {
+		if(!pfn_vkCompileDeferredNV) {
 			return staticPfn_vkCompileDeferredNV(device, pipeline, shader);
 		}
 		return pfn_vkCompileDeferredNV(device, pipeline, shader);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateAccelerationStructureNV(VkDevice device, const VkAccelerationStructureCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureNV* pAccelerationStructure) const {
-		if(!this || !pfn_vkCreateAccelerationStructureNV) {
+		if(!pfn_vkCreateAccelerationStructureNV) {
 			return staticPfn_vkCreateAccelerationStructureNV(device, pCreateInfo, pAllocator, pAccelerationStructure);
 		}
 		return pfn_vkCreateAccelerationStructureNV(device, pCreateInfo, pAllocator, pAccelerationStructure);
@@ -9320,7 +9320,7 @@ namespace wfe {
 #endif
 #if defined(VK_HUAWEI_invocation_mask) && (defined(VK_KHR_ray_tracing_pipeline) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const {
-		if(!this || !pfn_vkCmdBindInvocationMaskHUAWEI) {
+		if(!pfn_vkCmdBindInvocationMaskHUAWEI) {
 			staticPfn_vkCmdBindInvocationMaskHUAWEI(commandBuffer, imageView, imageLayout);
 			return;
 		}
@@ -9329,7 +9329,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyAccelerationStructureKHR(VkDevice device, VkAccelerationStructureKHR accelerationStructure, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyAccelerationStructureKHR) {
+		if(!pfn_vkDestroyAccelerationStructureKHR) {
 			staticPfn_vkDestroyAccelerationStructureKHR(device, accelerationStructure, pAllocator);
 			return;
 		}
@@ -9338,27 +9338,27 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyAccelerationStructureNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyAccelerationStructureNV) {
+		if(!pfn_vkDestroyAccelerationStructureNV) {
 			staticPfn_vkDestroyAccelerationStructureNV(device, accelerationStructure, pAllocator);
 			return;
 		}
 		pfn_vkDestroyAccelerationStructureNV(device, accelerationStructure, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetAccelerationStructureMemoryRequirementsNV(VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetAccelerationStructureMemoryRequirementsNV) {
+		if(!pfn_vkGetAccelerationStructureMemoryRequirementsNV) {
 			staticPfn_vkGetAccelerationStructureMemoryRequirementsNV(device, pInfo, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetAccelerationStructureMemoryRequirementsNV(device, pInfo, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindAccelerationStructureMemoryNV(VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNV* pBindInfos) const {
-		if(!this || !pfn_vkBindAccelerationStructureMemoryNV) {
+		if(!pfn_vkBindAccelerationStructureMemoryNV) {
 			return staticPfn_vkBindAccelerationStructureMemoryNV(device, bindInfoCount, pBindInfos);
 		}
 		return pfn_vkBindAccelerationStructureMemoryNV(device, bindInfoCount, pBindInfos);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyAccelerationStructureNV(VkCommandBuffer commandBuffer, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkCopyAccelerationStructureModeKHR mode) const {
-		if(!this || !pfn_vkCmdCopyAccelerationStructureNV) {
+		if(!pfn_vkCmdCopyAccelerationStructureNV) {
 			staticPfn_vkCmdCopyAccelerationStructureNV(commandBuffer, dst, src, mode);
 			return;
 		}
@@ -9367,46 +9367,46 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCmdCopyAccelerationStructureKHR) {
+		if(!pfn_vkCmdCopyAccelerationStructureKHR) {
 			staticPfn_vkCmdCopyAccelerationStructureKHR(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyAccelerationStructureKHR(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCopyAccelerationStructureKHR) {
+		if(!pfn_vkCopyAccelerationStructureKHR) {
 			return staticPfn_vkCopyAccelerationStructureKHR(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyAccelerationStructureKHR(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyAccelerationStructureToMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureToMemoryInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCmdCopyAccelerationStructureToMemoryKHR) {
+		if(!pfn_vkCmdCopyAccelerationStructureToMemoryKHR) {
 			staticPfn_vkCmdCopyAccelerationStructureToMemoryKHR(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyAccelerationStructureToMemoryKHR(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyAccelerationStructureToMemoryKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureToMemoryInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCopyAccelerationStructureToMemoryKHR) {
+		if(!pfn_vkCopyAccelerationStructureToMemoryKHR) {
 			return staticPfn_vkCopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyAccelerationStructureToMemoryKHR(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMemoryToAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCmdCopyMemoryToAccelerationStructureKHR) {
+		if(!pfn_vkCmdCopyMemoryToAccelerationStructureKHR) {
 			staticPfn_vkCmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyMemoryToAccelerationStructureKHR(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR* pInfo) const {
-		if(!this || !pfn_vkCopyMemoryToAccelerationStructureKHR) {
+		if(!pfn_vkCopyMemoryToAccelerationStructureKHR) {
 			return staticPfn_vkCopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyMemoryToAccelerationStructureKHR(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteAccelerationStructuresPropertiesKHR(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR* pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) const {
-		if(!this || !pfn_vkCmdWriteAccelerationStructuresPropertiesKHR) {
+		if(!pfn_vkCmdWriteAccelerationStructuresPropertiesKHR) {
 			staticPfn_vkCmdWriteAccelerationStructuresPropertiesKHR(commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
 			return;
 		}
@@ -9415,14 +9415,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteAccelerationStructuresPropertiesNV(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureNV* pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) const {
-		if(!this || !pfn_vkCmdWriteAccelerationStructuresPropertiesNV) {
+		if(!pfn_vkCmdWriteAccelerationStructuresPropertiesNV) {
 			staticPfn_vkCmdWriteAccelerationStructuresPropertiesNV(commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
 			return;
 		}
 		pfn_vkCmdWriteAccelerationStructuresPropertiesNV(commandBuffer, accelerationStructureCount, pAccelerationStructures, queryType, queryPool, firstQuery);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildAccelerationStructureNV(VkCommandBuffer commandBuffer, const VkAccelerationStructureInfoNV* pInfo, VkBuffer instanceData, VkDeviceSize instanceOffset, VkBool32 update, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkBuffer scratch, VkDeviceSize scratchOffset) const {
-		if(!this || !pfn_vkCmdBuildAccelerationStructureNV) {
+		if(!pfn_vkCmdBuildAccelerationStructureNV) {
 			staticPfn_vkCmdBuildAccelerationStructureNV(commandBuffer, pInfo, instanceData, instanceOffset, update, dst, src, scratch, scratchOffset);
 			return;
 		}
@@ -9431,7 +9431,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWriteAccelerationStructuresPropertiesKHR(VkDevice device, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR* pAccelerationStructures, VkQueryType queryType, size_t dataSize, void* pData, size_t stride) const {
-		if(!this || !pfn_vkWriteAccelerationStructuresPropertiesKHR) {
+		if(!pfn_vkWriteAccelerationStructuresPropertiesKHR) {
 			return staticPfn_vkWriteAccelerationStructuresPropertiesKHR(device, accelerationStructureCount, pAccelerationStructures, queryType, dataSize, pData, stride);
 		}
 		return pfn_vkWriteAccelerationStructuresPropertiesKHR(device, accelerationStructureCount, pAccelerationStructures, queryType, dataSize, pData, stride);
@@ -9439,7 +9439,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdTraceRaysKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR* pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pCallableShaderBindingTable, uint32_t width, uint32_t height, uint32_t depth) const {
-		if(!this || !pfn_vkCmdTraceRaysKHR) {
+		if(!pfn_vkCmdTraceRaysKHR) {
 			staticPfn_vkCmdTraceRaysKHR(commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, width, height, depth);
 			return;
 		}
@@ -9448,7 +9448,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdTraceRaysNV(VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, VkBuffer callableShaderBindingTableBuffer, VkDeviceSize callableShaderBindingOffset, VkDeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth) const {
-		if(!this || !pfn_vkCmdTraceRaysNV) {
+		if(!pfn_vkCmdTraceRaysNV) {
 			staticPfn_vkCmdTraceRaysNV(commandBuffer, raygenShaderBindingTableBuffer, raygenShaderBindingOffset, missShaderBindingTableBuffer, missShaderBindingOffset, missShaderBindingStride, hitShaderBindingTableBuffer, hitShaderBindingOffset, hitShaderBindingStride, callableShaderBindingTableBuffer, callableShaderBindingOffset, callableShaderBindingStride, width, height, depth);
 			return;
 		}
@@ -9457,7 +9457,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetRayTracingShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const {
-		if(!this || !pfn_vkGetRayTracingShaderGroupHandlesKHR) {
+		if(!pfn_vkGetRayTracingShaderGroupHandlesKHR) {
 			return staticPfn_vkGetRayTracingShaderGroupHandlesKHR(device, pipeline, firstGroup, groupCount, dataSize, pData);
 		}
 		return pfn_vkGetRayTracingShaderGroupHandlesKHR(device, pipeline, firstGroup, groupCount, dataSize, pData);
@@ -9465,7 +9465,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetRayTracingShaderGroupHandlesNV(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const {
-		if(!this || !pfn_vkGetRayTracingShaderGroupHandlesNV) {
+		if(!pfn_vkGetRayTracingShaderGroupHandlesNV) {
 			return staticPfn_vkGetRayTracingShaderGroupHandlesNV(device, pipeline, firstGroup, groupCount, dataSize, pData);
 		}
 		return pfn_vkGetRayTracingShaderGroupHandlesNV(device, pipeline, firstGroup, groupCount, dataSize, pData);
@@ -9473,7 +9473,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const {
-		if(!this || !pfn_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR) {
+		if(!pfn_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR) {
 			return staticPfn_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(device, pipeline, firstGroup, groupCount, dataSize, pData);
 		}
 		return pfn_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(device, pipeline, firstGroup, groupCount, dataSize, pData);
@@ -9481,13 +9481,13 @@ namespace wfe {
 #endif
 #if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetAccelerationStructureHandleNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, size_t dataSize, void* pData) const {
-		if(!this || !pfn_vkGetAccelerationStructureHandleNV) {
+		if(!pfn_vkGetAccelerationStructureHandleNV) {
 			return staticPfn_vkGetAccelerationStructureHandleNV(device, accelerationStructure, dataSize, pData);
 		}
 		return pfn_vkGetAccelerationStructureHandleNV(device, accelerationStructure, dataSize, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateRayTracingPipelinesNV(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoNV* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const {
-		if(!this || !pfn_vkCreateRayTracingPipelinesNV) {
+		if(!pfn_vkCreateRayTracingPipelinesNV) {
 			return staticPfn_vkCreateRayTracingPipelinesNV(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 		}
 		return pfn_vkCreateRayTracingPipelinesNV(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
@@ -9495,7 +9495,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateRayTracingPipelinesKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoKHR* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const {
-		if(!this || !pfn_vkCreateRayTracingPipelinesKHR) {
+		if(!pfn_vkCreateRayTracingPipelinesKHR) {
 			return staticPfn_vkCreateRayTracingPipelinesKHR(device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 		}
 		return pfn_vkCreateRayTracingPipelinesKHR(device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
@@ -9503,7 +9503,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCooperativeMatrixPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixPropertiesNV* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV) {
+		if(!pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV) {
 			return staticPfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV(physicalDevice, pPropertyCount, pProperties);
@@ -9511,7 +9511,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdTraceRaysIndirectKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR* pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pCallableShaderBindingTable, VkDeviceAddress indirectDeviceAddress) const {
-		if(!this || !pfn_vkCmdTraceRaysIndirectKHR) {
+		if(!pfn_vkCmdTraceRaysIndirectKHR) {
 			staticPfn_vkCmdTraceRaysIndirectKHR(commandBuffer, pRaygenShaderBindingTable, pMissShaderBindingTable, pHitShaderBindingTable, pCallableShaderBindingTable, indirectDeviceAddress);
 			return;
 		}
@@ -9520,7 +9520,7 @@ namespace wfe {
 #endif
 #if (defined(VK_KHR_ray_tracing_maintenance1) && (defined(VK_KHR_acceleration_structure))) && (defined(VK_KHR_ray_tracing_pipeline))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdTraceRaysIndirect2KHR(VkCommandBuffer commandBuffer, VkDeviceAddress indirectDeviceAddress) const {
-		if(!this || !pfn_vkCmdTraceRaysIndirect2KHR) {
+		if(!pfn_vkCmdTraceRaysIndirect2KHR) {
 			staticPfn_vkCmdTraceRaysIndirect2KHR(commandBuffer, indirectDeviceAddress);
 			return;
 		}
@@ -9529,14 +9529,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_cluster_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetClusterAccelerationStructureBuildSizesNV(VkDevice device, const VkClusterAccelerationStructureInputInfoNV* pInfo, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const {
-		if(!this || !pfn_vkGetClusterAccelerationStructureBuildSizesNV) {
+		if(!pfn_vkGetClusterAccelerationStructureBuildSizesNV) {
 			staticPfn_vkGetClusterAccelerationStructureBuildSizesNV(device, pInfo, pSizeInfo);
 			return;
 		}
 		pfn_vkGetClusterAccelerationStructureBuildSizesNV(device, pInfo, pSizeInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildClusterAccelerationStructureIndirectNV(VkCommandBuffer commandBuffer, const VkClusterAccelerationStructureCommandsInfoNV* pCommandInfos) const {
-		if(!this || !pfn_vkCmdBuildClusterAccelerationStructureIndirectNV) {
+		if(!pfn_vkCmdBuildClusterAccelerationStructureIndirectNV) {
 			staticPfn_vkCmdBuildClusterAccelerationStructureIndirectNV(commandBuffer, pCommandInfos);
 			return;
 		}
@@ -9545,7 +9545,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceAccelerationStructureCompatibilityKHR(VkDevice device, const VkAccelerationStructureVersionInfoKHR* pVersionInfo, VkAccelerationStructureCompatibilityKHR* pCompatibility) const {
-		if(!this || !pfn_vkGetDeviceAccelerationStructureCompatibilityKHR) {
+		if(!pfn_vkGetDeviceAccelerationStructureCompatibilityKHR) {
 			staticPfn_vkGetDeviceAccelerationStructureCompatibilityKHR(device, pVersionInfo, pCompatibility);
 			return;
 		}
@@ -9554,13 +9554,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR VkDeviceSize VKAPI_CALL VulkanLoader::vkGetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const {
-		if(!this || !pfn_vkGetRayTracingShaderGroupStackSizeKHR) {
+		if(!pfn_vkGetRayTracingShaderGroupStackSizeKHR) {
 			return staticPfn_vkGetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader);
 		}
 		return pfn_vkGetRayTracingShaderGroupStackSizeKHR(device, pipeline, group, groupShader);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const {
-		if(!this || !pfn_vkCmdSetRayTracingPipelineStackSizeKHR) {
+		if(!pfn_vkCmdSetRayTracingPipelineStackSizeKHR) {
 			staticPfn_vkCmdSetRayTracingPipelineStackSizeKHR(commandBuffer, pipelineStackSize);
 			return;
 		}
@@ -9569,19 +9569,19 @@ namespace wfe {
 #endif
 #if defined(VK_NVX_image_view_handle)
 	VKAPI_ATTR uint32_t VKAPI_CALL VulkanLoader::vkGetImageViewHandleNVX(VkDevice device, const VkImageViewHandleInfoNVX* pInfo) const {
-		if(!this || !pfn_vkGetImageViewHandleNVX) {
+		if(!pfn_vkGetImageViewHandleNVX) {
 			return staticPfn_vkGetImageViewHandleNVX(device, pInfo);
 		}
 		return pfn_vkGetImageViewHandleNVX(device, pInfo);
 	}
 	VKAPI_ATTR uint64_t VKAPI_CALL VulkanLoader::vkGetImageViewHandle64NVX(VkDevice device, const VkImageViewHandleInfoNVX* pInfo) const {
-		if(!this || !pfn_vkGetImageViewHandle64NVX) {
+		if(!pfn_vkGetImageViewHandle64NVX) {
 			return staticPfn_vkGetImageViewHandle64NVX(device, pInfo);
 		}
 		return pfn_vkGetImageViewHandle64NVX(device, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetImageViewAddressNVX(VkDevice device, VkImageView imageView, VkImageViewAddressPropertiesNVX* pProperties) const {
-		if(!this || !pfn_vkGetImageViewAddressNVX) {
+		if(!pfn_vkGetImageViewAddressNVX) {
 			return staticPfn_vkGetImageViewAddressNVX(device, imageView, pProperties);
 		}
 		return pfn_vkGetImageViewAddressNVX(device, imageView, pProperties);
@@ -9589,7 +9589,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSurfacePresentModes2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSurfacePresentModes2EXT) {
+		if(!pfn_vkGetPhysicalDeviceSurfacePresentModes2EXT) {
 			return staticPfn_vkGetPhysicalDeviceSurfacePresentModes2EXT(physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
 		}
 		return pfn_vkGetPhysicalDeviceSurfacePresentModes2EXT(physicalDevice, pSurfaceInfo, pPresentModeCount, pPresentModes);
@@ -9597,7 +9597,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))) && (defined(VK_KHR_device_group) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeviceGroupSurfacePresentModes2EXT(VkDevice device, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, VkDeviceGroupPresentModeFlagsKHR* pModes) const {
-		if(!this || !pfn_vkGetDeviceGroupSurfacePresentModes2EXT) {
+		if(!pfn_vkGetDeviceGroupSurfacePresentModes2EXT) {
 			return staticPfn_vkGetDeviceGroupSurfacePresentModes2EXT(device, pSurfaceInfo, pModes);
 		}
 		return pfn_vkGetDeviceGroupSurfacePresentModes2EXT(device, pSurfaceInfo, pModes);
@@ -9605,13 +9605,13 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const {
-		if(!this || !pfn_vkAcquireFullScreenExclusiveModeEXT) {
+		if(!pfn_vkAcquireFullScreenExclusiveModeEXT) {
 			return staticPfn_vkAcquireFullScreenExclusiveModeEXT(device, swapchain);
 		}
 		return pfn_vkAcquireFullScreenExclusiveModeEXT(device, swapchain);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkReleaseFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const {
-		if(!this || !pfn_vkReleaseFullScreenExclusiveModeEXT) {
+		if(!pfn_vkReleaseFullScreenExclusiveModeEXT) {
 			return staticPfn_vkReleaseFullScreenExclusiveModeEXT(device, swapchain);
 		}
 		return pfn_vkReleaseFullScreenExclusiveModeEXT(device, swapchain);
@@ -9619,26 +9619,26 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_performance_query) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t* pCounterCount, VkPerformanceCounterKHR* pCounters, VkPerformanceCounterDescriptionKHR* pCounterDescriptions) const {
-		if(!this || !pfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) {
+		if(!pfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR) {
 			return staticPfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
 		}
 		return pfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR* pPerformanceQueryCreateInfo, uint32_t* pNumPasses) const {
-		if(!this || !pfn_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) {
+		if(!pfn_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR) {
 			staticPfn_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
 			return;
 		}
 		pfn_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(physicalDevice, pPerformanceQueryCreateInfo, pNumPasses);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireProfilingLockKHR(VkDevice device, const VkAcquireProfilingLockInfoKHR* pInfo) const {
-		if(!this || !pfn_vkAcquireProfilingLockKHR) {
+		if(!pfn_vkAcquireProfilingLockKHR) {
 			return staticPfn_vkAcquireProfilingLockKHR(device, pInfo);
 		}
 		return pfn_vkAcquireProfilingLockKHR(device, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkReleaseProfilingLockKHR(VkDevice device) const {
-		if(!this || !pfn_vkReleaseProfilingLockKHR) {
+		if(!pfn_vkReleaseProfilingLockKHR) {
 			staticPfn_vkReleaseProfilingLockKHR(device);
 			return;
 		}
@@ -9647,7 +9647,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_image_drm_format_modifier) && ((((defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_sampler_ycbcr_conversion)) || defined(VK_VERSION_1_1)) && defined(VK_KHR_image_format_list)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT* pProperties) const {
-		if(!this || !pfn_vkGetImageDrmFormatModifierPropertiesEXT) {
+		if(!pfn_vkGetImageDrmFormatModifierPropertiesEXT) {
 			return staticPfn_vkGetImageDrmFormatModifierPropertiesEXT(device, image, pProperties);
 		}
 		return pfn_vkGetImageDrmFormatModifierPropertiesEXT(device, image, pProperties);
@@ -9655,7 +9655,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR uint64_t VKAPI_CALL VulkanLoader::vkGetBufferOpaqueCaptureAddress(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetBufferOpaqueCaptureAddress) {
+		if(!pfn_vkGetBufferOpaqueCaptureAddress) {
 			return staticPfn_vkGetBufferOpaqueCaptureAddress(device, pInfo);
 		}
 		return pfn_vkGetBufferOpaqueCaptureAddress(device, pInfo);
@@ -9663,7 +9663,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR uint64_t VKAPI_CALL VulkanLoader::vkGetBufferOpaqueCaptureAddressKHR(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetBufferOpaqueCaptureAddressKHR) {
+		if(!pfn_vkGetBufferOpaqueCaptureAddressKHR) {
 			return staticPfn_vkGetBufferOpaqueCaptureAddressKHR(device, pInfo);
 		}
 		return pfn_vkGetBufferOpaqueCaptureAddressKHR(device, pInfo);
@@ -9671,7 +9671,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR VkDeviceAddress VKAPI_CALL VulkanLoader::vkGetBufferDeviceAddress(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetBufferDeviceAddress) {
+		if(!pfn_vkGetBufferDeviceAddress) {
 			return staticPfn_vkGetBufferDeviceAddress(device, pInfo);
 		}
 		return pfn_vkGetBufferDeviceAddress(device, pInfo);
@@ -9679,7 +9679,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkDeviceAddress VKAPI_CALL VulkanLoader::vkGetBufferDeviceAddressKHR(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetBufferDeviceAddressKHR) {
+		if(!pfn_vkGetBufferDeviceAddressKHR) {
 			return staticPfn_vkGetBufferDeviceAddressKHR(device, pInfo);
 		}
 		return pfn_vkGetBufferDeviceAddressKHR(device, pInfo);
@@ -9687,7 +9687,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_buffer_device_address) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkDeviceAddress VKAPI_CALL VulkanLoader::vkGetBufferDeviceAddressEXT(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetBufferDeviceAddressEXT) {
+		if(!pfn_vkGetBufferDeviceAddressEXT) {
 			return staticPfn_vkGetBufferDeviceAddressEXT(device, pInfo);
 		}
 		return pfn_vkGetBufferDeviceAddressEXT(device, pInfo);
@@ -9695,7 +9695,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_headless_surface) && (defined(VK_KHR_surface))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateHeadlessSurfaceEXT(VkInstance instance, const VkHeadlessSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const {
-		if(!this || !pfn_vkCreateHeadlessSurfaceEXT) {
+		if(!pfn_vkCreateHeadlessSurfaceEXT) {
 			return staticPfn_vkCreateHeadlessSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
 		}
 		return pfn_vkCreateHeadlessSurfaceEXT(instance, pCreateInfo, pAllocator, pSurface);
@@ -9703,7 +9703,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_coverage_reduction_mode) && (defined(VK_NV_framebuffer_mixed_samples) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(VkPhysicalDevice physicalDevice, uint32_t* pCombinationCount, VkFramebufferMixedSamplesCombinationNV* pCombinations) const {
-		if(!this || !pfn_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) {
+		if(!pfn_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV) {
 			return staticPfn_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(physicalDevice, pCombinationCount, pCombinations);
 		}
 		return pfn_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(physicalDevice, pCombinationCount, pCombinations);
@@ -9711,56 +9711,56 @@ namespace wfe {
 #endif
 #if defined(VK_INTEL_performance_query)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkInitializePerformanceApiINTEL(VkDevice device, const VkInitializePerformanceApiInfoINTEL* pInitializeInfo) const {
-		if(!this || !pfn_vkInitializePerformanceApiINTEL) {
+		if(!pfn_vkInitializePerformanceApiINTEL) {
 			return staticPfn_vkInitializePerformanceApiINTEL(device, pInitializeInfo);
 		}
 		return pfn_vkInitializePerformanceApiINTEL(device, pInitializeInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkUninitializePerformanceApiINTEL(VkDevice device) const {
-		if(!this || !pfn_vkUninitializePerformanceApiINTEL) {
+		if(!pfn_vkUninitializePerformanceApiINTEL) {
 			staticPfn_vkUninitializePerformanceApiINTEL(device);
 			return;
 		}
 		pfn_vkUninitializePerformanceApiINTEL(device);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCmdSetPerformanceMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceMarkerInfoINTEL* pMarkerInfo) const {
-		if(!this || !pfn_vkCmdSetPerformanceMarkerINTEL) {
+		if(!pfn_vkCmdSetPerformanceMarkerINTEL) {
 			return staticPfn_vkCmdSetPerformanceMarkerINTEL(commandBuffer, pMarkerInfo);
 		}
 		return pfn_vkCmdSetPerformanceMarkerINTEL(commandBuffer, pMarkerInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCmdSetPerformanceStreamMarkerINTEL(VkCommandBuffer commandBuffer, const VkPerformanceStreamMarkerInfoINTEL* pMarkerInfo) const {
-		if(!this || !pfn_vkCmdSetPerformanceStreamMarkerINTEL) {
+		if(!pfn_vkCmdSetPerformanceStreamMarkerINTEL) {
 			return staticPfn_vkCmdSetPerformanceStreamMarkerINTEL(commandBuffer, pMarkerInfo);
 		}
 		return pfn_vkCmdSetPerformanceStreamMarkerINTEL(commandBuffer, pMarkerInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCmdSetPerformanceOverrideINTEL(VkCommandBuffer commandBuffer, const VkPerformanceOverrideInfoINTEL* pOverrideInfo) const {
-		if(!this || !pfn_vkCmdSetPerformanceOverrideINTEL) {
+		if(!pfn_vkCmdSetPerformanceOverrideINTEL) {
 			return staticPfn_vkCmdSetPerformanceOverrideINTEL(commandBuffer, pOverrideInfo);
 		}
 		return pfn_vkCmdSetPerformanceOverrideINTEL(commandBuffer, pOverrideInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquirePerformanceConfigurationINTEL(VkDevice device, const VkPerformanceConfigurationAcquireInfoINTEL* pAcquireInfo, VkPerformanceConfigurationINTEL* pConfiguration) const {
-		if(!this || !pfn_vkAcquirePerformanceConfigurationINTEL) {
+		if(!pfn_vkAcquirePerformanceConfigurationINTEL) {
 			return staticPfn_vkAcquirePerformanceConfigurationINTEL(device, pAcquireInfo, pConfiguration);
 		}
 		return pfn_vkAcquirePerformanceConfigurationINTEL(device, pAcquireInfo, pConfiguration);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkReleasePerformanceConfigurationINTEL(VkDevice device, VkPerformanceConfigurationINTEL configuration) const {
-		if(!this || !pfn_vkReleasePerformanceConfigurationINTEL) {
+		if(!pfn_vkReleasePerformanceConfigurationINTEL) {
 			return staticPfn_vkReleasePerformanceConfigurationINTEL(device, configuration);
 		}
 		return pfn_vkReleasePerformanceConfigurationINTEL(device, configuration);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueSetPerformanceConfigurationINTEL(VkQueue queue, VkPerformanceConfigurationINTEL configuration) const {
-		if(!this || !pfn_vkQueueSetPerformanceConfigurationINTEL) {
+		if(!pfn_vkQueueSetPerformanceConfigurationINTEL) {
 			return staticPfn_vkQueueSetPerformanceConfigurationINTEL(queue, configuration);
 		}
 		return pfn_vkQueueSetPerformanceConfigurationINTEL(queue, configuration);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPerformanceParameterINTEL(VkDevice device, VkPerformanceParameterTypeINTEL parameter, VkPerformanceValueINTEL* pValue) const {
-		if(!this || !pfn_vkGetPerformanceParameterINTEL) {
+		if(!pfn_vkGetPerformanceParameterINTEL) {
 			return staticPfn_vkGetPerformanceParameterINTEL(device, parameter, pValue);
 		}
 		return pfn_vkGetPerformanceParameterINTEL(device, parameter, pValue);
@@ -9768,7 +9768,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_2)
 	VKAPI_ATTR uint64_t VKAPI_CALL VulkanLoader::vkGetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetDeviceMemoryOpaqueCaptureAddress) {
+		if(!pfn_vkGetDeviceMemoryOpaqueCaptureAddress) {
 			return staticPfn_vkGetDeviceMemoryOpaqueCaptureAddress(device, pInfo);
 		}
 		return pfn_vkGetDeviceMemoryOpaqueCaptureAddress(device, pInfo);
@@ -9776,7 +9776,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR uint64_t VKAPI_CALL VulkanLoader::vkGetDeviceMemoryOpaqueCaptureAddressKHR(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetDeviceMemoryOpaqueCaptureAddressKHR) {
+		if(!pfn_vkGetDeviceMemoryOpaqueCaptureAddressKHR) {
 			return staticPfn_vkGetDeviceMemoryOpaqueCaptureAddressKHR(device, pInfo);
 		}
 		return pfn_vkGetDeviceMemoryOpaqueCaptureAddressKHR(device, pInfo);
@@ -9784,19 +9784,19 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_pipeline_executable_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineExecutablePropertiesKHR(VkDevice device, const VkPipelineInfoKHR* pPipelineInfo, uint32_t* pExecutableCount, VkPipelineExecutablePropertiesKHR* pProperties) const {
-		if(!this || !pfn_vkGetPipelineExecutablePropertiesKHR) {
+		if(!pfn_vkGetPipelineExecutablePropertiesKHR) {
 			return staticPfn_vkGetPipelineExecutablePropertiesKHR(device, pPipelineInfo, pExecutableCount, pProperties);
 		}
 		return pfn_vkGetPipelineExecutablePropertiesKHR(device, pPipelineInfo, pExecutableCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineExecutableStatisticsKHR(VkDevice device, const VkPipelineExecutableInfoKHR* pExecutableInfo, uint32_t* pStatisticCount, VkPipelineExecutableStatisticKHR* pStatistics) const {
-		if(!this || !pfn_vkGetPipelineExecutableStatisticsKHR) {
+		if(!pfn_vkGetPipelineExecutableStatisticsKHR) {
 			return staticPfn_vkGetPipelineExecutableStatisticsKHR(device, pExecutableInfo, pStatisticCount, pStatistics);
 		}
 		return pfn_vkGetPipelineExecutableStatisticsKHR(device, pExecutableInfo, pStatisticCount, pStatistics);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelineExecutableInternalRepresentationsKHR(VkDevice device, const VkPipelineExecutableInfoKHR* pExecutableInfo, uint32_t* pInternalRepresentationCount, VkPipelineExecutableInternalRepresentationKHR* pInternalRepresentations) const {
-		if(!this || !pfn_vkGetPipelineExecutableInternalRepresentationsKHR) {
+		if(!pfn_vkGetPipelineExecutableInternalRepresentationsKHR) {
 			return staticPfn_vkGetPipelineExecutableInternalRepresentationsKHR(device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations);
 		}
 		return pfn_vkGetPipelineExecutableInternalRepresentationsKHR(device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations);
@@ -9804,7 +9804,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const {
-		if(!this || !pfn_vkCmdSetLineStipple) {
+		if(!pfn_vkCmdSetLineStipple) {
 			staticPfn_vkCmdSetLineStipple(commandBuffer, lineStippleFactor, lineStipplePattern);
 			return;
 		}
@@ -9813,7 +9813,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const {
-		if(!this || !pfn_vkCmdSetLineStippleKHR) {
+		if(!pfn_vkCmdSetLineStippleKHR) {
 			staticPfn_vkCmdSetLineStippleKHR(commandBuffer, lineStippleFactor, lineStipplePattern);
 			return;
 		}
@@ -9822,7 +9822,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const {
-		if(!this || !pfn_vkCmdSetLineStippleEXT) {
+		if(!pfn_vkCmdSetLineStippleEXT) {
 			staticPfn_vkCmdSetLineStippleEXT(commandBuffer, lineStippleFactor, lineStipplePattern);
 			return;
 		}
@@ -9831,7 +9831,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceToolProperties(VkPhysicalDevice physicalDevice, uint32_t* pToolCount, VkPhysicalDeviceToolPropertiesEXT* pToolProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceToolProperties) {
+		if(!pfn_vkGetPhysicalDeviceToolProperties) {
 			return staticPfn_vkGetPhysicalDeviceToolProperties(physicalDevice, pToolCount, pToolProperties);
 		}
 		return pfn_vkGetPhysicalDeviceToolProperties(physicalDevice, pToolCount, pToolProperties);
@@ -9839,7 +9839,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_tooling_info)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t* pToolCount, VkPhysicalDeviceToolPropertiesEXT* pToolProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceToolPropertiesEXT) {
+		if(!pfn_vkGetPhysicalDeviceToolPropertiesEXT) {
 			return staticPfn_vkGetPhysicalDeviceToolPropertiesEXT(physicalDevice, pToolCount, pToolProperties);
 		}
 		return pfn_vkGetPhysicalDeviceToolPropertiesEXT(physicalDevice, pToolCount, pToolProperties);
@@ -9847,33 +9847,33 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateAccelerationStructureKHR(VkDevice device, const VkAccelerationStructureCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureKHR* pAccelerationStructure) const {
-		if(!this || !pfn_vkCreateAccelerationStructureKHR) {
+		if(!pfn_vkCreateAccelerationStructureKHR) {
 			return staticPfn_vkCreateAccelerationStructureKHR(device, pCreateInfo, pAllocator, pAccelerationStructure);
 		}
 		return pfn_vkCreateAccelerationStructureKHR(device, pCreateInfo, pAllocator, pAccelerationStructure);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildAccelerationStructuresKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR* pInfos, const VkAccelerationStructureBuildRangeInfoKHR* const* ppBuildRangeInfos) const {
-		if(!this || !pfn_vkCmdBuildAccelerationStructuresKHR) {
+		if(!pfn_vkCmdBuildAccelerationStructuresKHR) {
 			staticPfn_vkCmdBuildAccelerationStructuresKHR(commandBuffer, infoCount, pInfos, ppBuildRangeInfos);
 			return;
 		}
 		pfn_vkCmdBuildAccelerationStructuresKHR(commandBuffer, infoCount, pInfos, ppBuildRangeInfos);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildAccelerationStructuresIndirectKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR* pInfos, const VkDeviceAddress* pIndirectDeviceAddresses, const uint32_t* pIndirectStrides, const uint32_t* const* ppMaxPrimitiveCounts) const {
-		if(!this || !pfn_vkCmdBuildAccelerationStructuresIndirectKHR) {
+		if(!pfn_vkCmdBuildAccelerationStructuresIndirectKHR) {
 			staticPfn_vkCmdBuildAccelerationStructuresIndirectKHR(commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts);
 			return;
 		}
 		pfn_vkCmdBuildAccelerationStructuresIndirectKHR(commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBuildAccelerationStructuresKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR* pInfos, const VkAccelerationStructureBuildRangeInfoKHR* const* ppBuildRangeInfos) const {
-		if(!this || !pfn_vkBuildAccelerationStructuresKHR) {
+		if(!pfn_vkBuildAccelerationStructuresKHR) {
 			return staticPfn_vkBuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos);
 		}
 		return pfn_vkBuildAccelerationStructuresKHR(device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos);
 	}
 	VKAPI_ATTR VkDeviceAddress VKAPI_CALL VulkanLoader::vkGetAccelerationStructureDeviceAddressKHR(VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR* pInfo) const {
-		if(!this || !pfn_vkGetAccelerationStructureDeviceAddressKHR) {
+		if(!pfn_vkGetAccelerationStructureDeviceAddressKHR) {
 			return staticPfn_vkGetAccelerationStructureDeviceAddressKHR(device, pInfo);
 		}
 		return pfn_vkGetAccelerationStructureDeviceAddressKHR(device, pInfo);
@@ -9881,32 +9881,32 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_deferred_host_operations)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateDeferredOperationKHR(VkDevice device, const VkAllocationCallbacks* pAllocator, VkDeferredOperationKHR* pDeferredOperation) const {
-		if(!this || !pfn_vkCreateDeferredOperationKHR) {
+		if(!pfn_vkCreateDeferredOperationKHR) {
 			return staticPfn_vkCreateDeferredOperationKHR(device, pAllocator, pDeferredOperation);
 		}
 		return pfn_vkCreateDeferredOperationKHR(device, pAllocator, pDeferredOperation);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyDeferredOperationKHR(VkDevice device, VkDeferredOperationKHR operation, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyDeferredOperationKHR) {
+		if(!pfn_vkDestroyDeferredOperationKHR) {
 			staticPfn_vkDestroyDeferredOperationKHR(device, operation, pAllocator);
 			return;
 		}
 		pfn_vkDestroyDeferredOperationKHR(device, operation, pAllocator);
 	}
 	VKAPI_ATTR uint32_t VKAPI_CALL VulkanLoader::vkGetDeferredOperationMaxConcurrencyKHR(VkDevice device, VkDeferredOperationKHR operation) const {
-		if(!this || !pfn_vkGetDeferredOperationMaxConcurrencyKHR) {
+		if(!pfn_vkGetDeferredOperationMaxConcurrencyKHR) {
 			return staticPfn_vkGetDeferredOperationMaxConcurrencyKHR(device, operation);
 		}
 		return pfn_vkGetDeferredOperationMaxConcurrencyKHR(device, operation);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeferredOperationResultKHR(VkDevice device, VkDeferredOperationKHR operation) const {
-		if(!this || !pfn_vkGetDeferredOperationResultKHR) {
+		if(!pfn_vkGetDeferredOperationResultKHR) {
 			return staticPfn_vkGetDeferredOperationResultKHR(device, operation);
 		}
 		return pfn_vkGetDeferredOperationResultKHR(device, operation);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkDeferredOperationJoinKHR(VkDevice device, VkDeferredOperationKHR operation) const {
-		if(!this || !pfn_vkDeferredOperationJoinKHR) {
+		if(!pfn_vkDeferredOperationJoinKHR) {
 			return staticPfn_vkDeferredOperationJoinKHR(device, operation);
 		}
 		return pfn_vkDeferredOperationJoinKHR(device, operation);
@@ -9914,14 +9914,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPipelineIndirectMemoryRequirementsNV(VkDevice device, const VkComputePipelineCreateInfo* pCreateInfo, VkMemoryRequirements2* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetPipelineIndirectMemoryRequirementsNV) {
+		if(!pfn_vkGetPipelineIndirectMemoryRequirementsNV) {
 			staticPfn_vkGetPipelineIndirectMemoryRequirementsNV(device, pCreateInfo, pMemoryRequirements);
 			return;
 		}
 		pfn_vkGetPipelineIndirectMemoryRequirementsNV(device, pCreateInfo, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkDeviceAddress VKAPI_CALL VulkanLoader::vkGetPipelineIndirectDeviceAddressNV(VkDevice device, const VkPipelineIndirectDeviceAddressInfoNV* pInfo) const {
-		if(!this || !pfn_vkGetPipelineIndirectDeviceAddressNV) {
+		if(!pfn_vkGetPipelineIndirectDeviceAddressNV) {
 			return staticPfn_vkGetPipelineIndirectDeviceAddressNV(device, pInfo);
 		}
 		return pfn_vkGetPipelineIndirectDeviceAddressNV(device, pInfo);
@@ -9929,7 +9929,7 @@ namespace wfe {
 #endif
 #if defined(VK_AMD_anti_lag)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkAntiLagUpdateAMD(VkDevice device, const VkAntiLagDataAMD* pData) const {
-		if(!this || !pfn_vkAntiLagUpdateAMD) {
+		if(!pfn_vkAntiLagUpdateAMD) {
 			staticPfn_vkAntiLagUpdateAMD(device, pData);
 			return;
 		}
@@ -9938,7 +9938,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCullMode(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) const {
-		if(!this || !pfn_vkCmdSetCullMode) {
+		if(!pfn_vkCmdSetCullMode) {
 			staticPfn_vkCmdSetCullMode(commandBuffer, cullMode);
 			return;
 		}
@@ -9947,7 +9947,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCullModeEXT(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) const {
-		if(!this || !pfn_vkCmdSetCullModeEXT) {
+		if(!pfn_vkCmdSetCullModeEXT) {
 			staticPfn_vkCmdSetCullModeEXT(commandBuffer, cullMode);
 			return;
 		}
@@ -9956,7 +9956,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const {
-		if(!this || !pfn_vkCmdSetFrontFace) {
+		if(!pfn_vkCmdSetFrontFace) {
 			staticPfn_vkCmdSetFrontFace(commandBuffer, frontFace);
 			return;
 		}
@@ -9965,7 +9965,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const {
-		if(!this || !pfn_vkCmdSetFrontFaceEXT) {
+		if(!pfn_vkCmdSetFrontFaceEXT) {
 			staticPfn_vkCmdSetFrontFaceEXT(commandBuffer, frontFace);
 			return;
 		}
@@ -9974,7 +9974,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPrimitiveTopology(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) const {
-		if(!this || !pfn_vkCmdSetPrimitiveTopology) {
+		if(!pfn_vkCmdSetPrimitiveTopology) {
 			staticPfn_vkCmdSetPrimitiveTopology(commandBuffer, primitiveTopology);
 			return;
 		}
@@ -9983,7 +9983,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPrimitiveTopologyEXT(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) const {
-		if(!this || !pfn_vkCmdSetPrimitiveTopologyEXT) {
+		if(!pfn_vkCmdSetPrimitiveTopologyEXT) {
 			staticPfn_vkCmdSetPrimitiveTopologyEXT(commandBuffer, primitiveTopology);
 			return;
 		}
@@ -9992,7 +9992,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportWithCount(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport* pViewports) const {
-		if(!this || !pfn_vkCmdSetViewportWithCount) {
+		if(!pfn_vkCmdSetViewportWithCount) {
 			staticPfn_vkCmdSetViewportWithCount(commandBuffer, viewportCount, pViewports);
 			return;
 		}
@@ -10001,7 +10001,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportWithCountEXT(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport* pViewports) const {
-		if(!this || !pfn_vkCmdSetViewportWithCountEXT) {
+		if(!pfn_vkCmdSetViewportWithCountEXT) {
 			staticPfn_vkCmdSetViewportWithCountEXT(commandBuffer, viewportCount, pViewports);
 			return;
 		}
@@ -10010,7 +10010,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetScissorWithCount(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D* pScissors) const {
-		if(!this || !pfn_vkCmdSetScissorWithCount) {
+		if(!pfn_vkCmdSetScissorWithCount) {
 			staticPfn_vkCmdSetScissorWithCount(commandBuffer, scissorCount, pScissors);
 			return;
 		}
@@ -10019,7 +10019,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetScissorWithCountEXT(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D* pScissors) const {
-		if(!this || !pfn_vkCmdSetScissorWithCountEXT) {
+		if(!pfn_vkCmdSetScissorWithCountEXT) {
 			staticPfn_vkCmdSetScissorWithCountEXT(commandBuffer, scissorCount, pScissors);
 			return;
 		}
@@ -10028,7 +10028,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const {
-		if(!this || !pfn_vkCmdBindIndexBuffer2) {
+		if(!pfn_vkCmdBindIndexBuffer2) {
 			staticPfn_vkCmdBindIndexBuffer2(commandBuffer, buffer, offset, size, indexType);
 			return;
 		}
@@ -10037,7 +10037,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const {
-		if(!this || !pfn_vkCmdBindIndexBuffer2KHR) {
+		if(!pfn_vkCmdBindIndexBuffer2KHR) {
 			staticPfn_vkCmdBindIndexBuffer2KHR(commandBuffer, buffer, offset, size, indexType);
 			return;
 		}
@@ -10046,7 +10046,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindVertexBuffers2(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes, const VkDeviceSize* pStrides) const {
-		if(!this || !pfn_vkCmdBindVertexBuffers2) {
+		if(!pfn_vkCmdBindVertexBuffers2) {
 			staticPfn_vkCmdBindVertexBuffers2(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
 			return;
 		}
@@ -10055,7 +10055,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindVertexBuffers2EXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes, const VkDeviceSize* pStrides) const {
-		if(!this || !pfn_vkCmdBindVertexBuffers2EXT) {
+		if(!pfn_vkCmdBindVertexBuffers2EXT) {
 			staticPfn_vkCmdBindVertexBuffers2EXT(commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides);
 			return;
 		}
@@ -10064,7 +10064,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) const {
-		if(!this || !pfn_vkCmdSetDepthTestEnable) {
+		if(!pfn_vkCmdSetDepthTestEnable) {
 			staticPfn_vkCmdSetDepthTestEnable(commandBuffer, depthTestEnable);
 			return;
 		}
@@ -10073,7 +10073,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) const {
-		if(!this || !pfn_vkCmdSetDepthTestEnableEXT) {
+		if(!pfn_vkCmdSetDepthTestEnableEXT) {
 			staticPfn_vkCmdSetDepthTestEnableEXT(commandBuffer, depthTestEnable);
 			return;
 		}
@@ -10082,7 +10082,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthWriteEnable(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) const {
-		if(!this || !pfn_vkCmdSetDepthWriteEnable) {
+		if(!pfn_vkCmdSetDepthWriteEnable) {
 			staticPfn_vkCmdSetDepthWriteEnable(commandBuffer, depthWriteEnable);
 			return;
 		}
@@ -10091,7 +10091,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthWriteEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) const {
-		if(!this || !pfn_vkCmdSetDepthWriteEnableEXT) {
+		if(!pfn_vkCmdSetDepthWriteEnableEXT) {
 			staticPfn_vkCmdSetDepthWriteEnableEXT(commandBuffer, depthWriteEnable);
 			return;
 		}
@@ -10100,7 +10100,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthCompareOp(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) const {
-		if(!this || !pfn_vkCmdSetDepthCompareOp) {
+		if(!pfn_vkCmdSetDepthCompareOp) {
 			staticPfn_vkCmdSetDepthCompareOp(commandBuffer, depthCompareOp);
 			return;
 		}
@@ -10109,7 +10109,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthCompareOpEXT(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) const {
-		if(!this || !pfn_vkCmdSetDepthCompareOpEXT) {
+		if(!pfn_vkCmdSetDepthCompareOpEXT) {
 			staticPfn_vkCmdSetDepthCompareOpEXT(commandBuffer, depthCompareOp);
 			return;
 		}
@@ -10118,7 +10118,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBoundsTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) const {
-		if(!this || !pfn_vkCmdSetDepthBoundsTestEnable) {
+		if(!pfn_vkCmdSetDepthBoundsTestEnable) {
 			staticPfn_vkCmdSetDepthBoundsTestEnable(commandBuffer, depthBoundsTestEnable);
 			return;
 		}
@@ -10127,7 +10127,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBoundsTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) const {
-		if(!this || !pfn_vkCmdSetDepthBoundsTestEnableEXT) {
+		if(!pfn_vkCmdSetDepthBoundsTestEnableEXT) {
 			staticPfn_vkCmdSetDepthBoundsTestEnableEXT(commandBuffer, depthBoundsTestEnable);
 			return;
 		}
@@ -10136,7 +10136,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilTestEnable(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) const {
-		if(!this || !pfn_vkCmdSetStencilTestEnable) {
+		if(!pfn_vkCmdSetStencilTestEnable) {
 			staticPfn_vkCmdSetStencilTestEnable(commandBuffer, stencilTestEnable);
 			return;
 		}
@@ -10145,7 +10145,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) const {
-		if(!this || !pfn_vkCmdSetStencilTestEnableEXT) {
+		if(!pfn_vkCmdSetStencilTestEnableEXT) {
 			staticPfn_vkCmdSetStencilTestEnableEXT(commandBuffer, stencilTestEnable);
 			return;
 		}
@@ -10154,7 +10154,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilOp(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) const {
-		if(!this || !pfn_vkCmdSetStencilOp) {
+		if(!pfn_vkCmdSetStencilOp) {
 			staticPfn_vkCmdSetStencilOp(commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
 			return;
 		}
@@ -10163,7 +10163,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetStencilOpEXT(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) const {
-		if(!this || !pfn_vkCmdSetStencilOpEXT) {
+		if(!pfn_vkCmdSetStencilOpEXT) {
 			staticPfn_vkCmdSetStencilOpEXT(commandBuffer, faceMask, failOp, passOp, depthFailOp, compareOp);
 			return;
 		}
@@ -10172,7 +10172,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPatchControlPointsEXT(VkCommandBuffer commandBuffer, uint32_t patchControlPoints) const {
-		if(!this || !pfn_vkCmdSetPatchControlPointsEXT) {
+		if(!pfn_vkCmdSetPatchControlPointsEXT) {
 			staticPfn_vkCmdSetPatchControlPointsEXT(commandBuffer, patchControlPoints);
 			return;
 		}
@@ -10181,7 +10181,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const {
-		if(!this || !pfn_vkCmdSetRasterizerDiscardEnable) {
+		if(!pfn_vkCmdSetRasterizerDiscardEnable) {
 			staticPfn_vkCmdSetRasterizerDiscardEnable(commandBuffer, rasterizerDiscardEnable);
 			return;
 		}
@@ -10190,7 +10190,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const {
-		if(!this || !pfn_vkCmdSetRasterizerDiscardEnableEXT) {
+		if(!pfn_vkCmdSetRasterizerDiscardEnableEXT) {
 			staticPfn_vkCmdSetRasterizerDiscardEnableEXT(commandBuffer, rasterizerDiscardEnable);
 			return;
 		}
@@ -10199,7 +10199,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBiasEnable(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) const {
-		if(!this || !pfn_vkCmdSetDepthBiasEnable) {
+		if(!pfn_vkCmdSetDepthBiasEnable) {
 			staticPfn_vkCmdSetDepthBiasEnable(commandBuffer, depthBiasEnable);
 			return;
 		}
@@ -10208,14 +10208,14 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBiasEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) const {
-		if(!this || !pfn_vkCmdSetDepthBiasEnableEXT) {
+		if(!pfn_vkCmdSetDepthBiasEnableEXT) {
 			staticPfn_vkCmdSetDepthBiasEnableEXT(commandBuffer, depthBiasEnable);
 			return;
 		}
 		pfn_vkCmdSetDepthBiasEnableEXT(commandBuffer, depthBiasEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLogicOpEXT(VkCommandBuffer commandBuffer, VkLogicOp logicOp) const {
-		if(!this || !pfn_vkCmdSetLogicOpEXT) {
+		if(!pfn_vkCmdSetLogicOpEXT) {
 			staticPfn_vkCmdSetLogicOpEXT(commandBuffer, logicOp);
 			return;
 		}
@@ -10224,7 +10224,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPrimitiveRestartEnable(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) const {
-		if(!this || !pfn_vkCmdSetPrimitiveRestartEnable) {
+		if(!pfn_vkCmdSetPrimitiveRestartEnable) {
 			staticPfn_vkCmdSetPrimitiveRestartEnable(commandBuffer, primitiveRestartEnable);
 			return;
 		}
@@ -10233,7 +10233,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPrimitiveRestartEnableEXT(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) const {
-		if(!this || !pfn_vkCmdSetPrimitiveRestartEnableEXT) {
+		if(!pfn_vkCmdSetPrimitiveRestartEnableEXT) {
 			staticPfn_vkCmdSetPrimitiveRestartEnableEXT(commandBuffer, primitiveRestartEnable);
 			return;
 		}
@@ -10242,7 +10242,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetTessellationDomainOriginEXT(VkCommandBuffer commandBuffer, VkTessellationDomainOrigin domainOrigin) const {
-		if(!this || !pfn_vkCmdSetTessellationDomainOriginEXT) {
+		if(!pfn_vkCmdSetTessellationDomainOriginEXT) {
 			staticPfn_vkCmdSetTessellationDomainOriginEXT(commandBuffer, domainOrigin);
 			return;
 		}
@@ -10251,70 +10251,70 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthClampEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClampEnable) const {
-		if(!this || !pfn_vkCmdSetDepthClampEnableEXT) {
+		if(!pfn_vkCmdSetDepthClampEnableEXT) {
 			staticPfn_vkCmdSetDepthClampEnableEXT(commandBuffer, depthClampEnable);
 			return;
 		}
 		pfn_vkCmdSetDepthClampEnableEXT(commandBuffer, depthClampEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetPolygonModeEXT(VkCommandBuffer commandBuffer, VkPolygonMode polygonMode) const {
-		if(!this || !pfn_vkCmdSetPolygonModeEXT) {
+		if(!pfn_vkCmdSetPolygonModeEXT) {
 			staticPfn_vkCmdSetPolygonModeEXT(commandBuffer, polygonMode);
 			return;
 		}
 		pfn_vkCmdSetPolygonModeEXT(commandBuffer, polygonMode);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRasterizationSamplesEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits rasterizationSamples) const {
-		if(!this || !pfn_vkCmdSetRasterizationSamplesEXT) {
+		if(!pfn_vkCmdSetRasterizationSamplesEXT) {
 			staticPfn_vkCmdSetRasterizationSamplesEXT(commandBuffer, rasterizationSamples);
 			return;
 		}
 		pfn_vkCmdSetRasterizationSamplesEXT(commandBuffer, rasterizationSamples);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetSampleMaskEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, const VkSampleMask* pSampleMask) const {
-		if(!this || !pfn_vkCmdSetSampleMaskEXT) {
+		if(!pfn_vkCmdSetSampleMaskEXT) {
 			staticPfn_vkCmdSetSampleMaskEXT(commandBuffer, samples, pSampleMask);
 			return;
 		}
 		pfn_vkCmdSetSampleMaskEXT(commandBuffer, samples, pSampleMask);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetAlphaToCoverageEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToCoverageEnable) const {
-		if(!this || !pfn_vkCmdSetAlphaToCoverageEnableEXT) {
+		if(!pfn_vkCmdSetAlphaToCoverageEnableEXT) {
 			staticPfn_vkCmdSetAlphaToCoverageEnableEXT(commandBuffer, alphaToCoverageEnable);
 			return;
 		}
 		pfn_vkCmdSetAlphaToCoverageEnableEXT(commandBuffer, alphaToCoverageEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetAlphaToOneEnableEXT(VkCommandBuffer commandBuffer, VkBool32 alphaToOneEnable) const {
-		if(!this || !pfn_vkCmdSetAlphaToOneEnableEXT) {
+		if(!pfn_vkCmdSetAlphaToOneEnableEXT) {
 			staticPfn_vkCmdSetAlphaToOneEnableEXT(commandBuffer, alphaToOneEnable);
 			return;
 		}
 		pfn_vkCmdSetAlphaToOneEnableEXT(commandBuffer, alphaToOneEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLogicOpEnableEXT(VkCommandBuffer commandBuffer, VkBool32 logicOpEnable) const {
-		if(!this || !pfn_vkCmdSetLogicOpEnableEXT) {
+		if(!pfn_vkCmdSetLogicOpEnableEXT) {
 			staticPfn_vkCmdSetLogicOpEnableEXT(commandBuffer, logicOpEnable);
 			return;
 		}
 		pfn_vkCmdSetLogicOpEnableEXT(commandBuffer, logicOpEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetColorBlendEnableEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkBool32* pColorBlendEnables) const {
-		if(!this || !pfn_vkCmdSetColorBlendEnableEXT) {
+		if(!pfn_vkCmdSetColorBlendEnableEXT) {
 			staticPfn_vkCmdSetColorBlendEnableEXT(commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables);
 			return;
 		}
 		pfn_vkCmdSetColorBlendEnableEXT(commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetColorBlendEquationEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendEquationEXT* pColorBlendEquations) const {
-		if(!this || !pfn_vkCmdSetColorBlendEquationEXT) {
+		if(!pfn_vkCmdSetColorBlendEquationEXT) {
 			staticPfn_vkCmdSetColorBlendEquationEXT(commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations);
 			return;
 		}
 		pfn_vkCmdSetColorBlendEquationEXT(commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetColorWriteMaskEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorComponentFlags* pColorWriteMasks) const {
-		if(!this || !pfn_vkCmdSetColorWriteMaskEXT) {
+		if(!pfn_vkCmdSetColorWriteMaskEXT) {
 			staticPfn_vkCmdSetColorWriteMaskEXT(commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks);
 			return;
 		}
@@ -10323,7 +10323,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_transform_feedback))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRasterizationStreamEXT(VkCommandBuffer commandBuffer, uint32_t rasterizationStream) const {
-		if(!this || !pfn_vkCmdSetRasterizationStreamEXT) {
+		if(!pfn_vkCmdSetRasterizationStreamEXT) {
 			staticPfn_vkCmdSetRasterizationStreamEXT(commandBuffer, rasterizationStream);
 			return;
 		}
@@ -10332,14 +10332,14 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_conservative_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conservative_rasterization)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetConservativeRasterizationModeEXT(VkCommandBuffer commandBuffer, VkConservativeRasterizationModeEXT conservativeRasterizationMode) const {
-		if(!this || !pfn_vkCmdSetConservativeRasterizationModeEXT) {
+		if(!pfn_vkCmdSetConservativeRasterizationModeEXT) {
 			staticPfn_vkCmdSetConservativeRasterizationModeEXT(commandBuffer, conservativeRasterizationMode);
 			return;
 		}
 		pfn_vkCmdSetConservativeRasterizationModeEXT(commandBuffer, conservativeRasterizationMode);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetExtraPrimitiveOverestimationSizeEXT(VkCommandBuffer commandBuffer, float extraPrimitiveOverestimationSize) const {
-		if(!this || !pfn_vkCmdSetExtraPrimitiveOverestimationSizeEXT) {
+		if(!pfn_vkCmdSetExtraPrimitiveOverestimationSizeEXT) {
 			staticPfn_vkCmdSetExtraPrimitiveOverestimationSizeEXT(commandBuffer, extraPrimitiveOverestimationSize);
 			return;
 		}
@@ -10348,7 +10348,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_enable))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_enable)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthClipEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClipEnable) const {
-		if(!this || !pfn_vkCmdSetDepthClipEnableEXT) {
+		if(!pfn_vkCmdSetDepthClipEnableEXT) {
 			staticPfn_vkCmdSetDepthClipEnableEXT(commandBuffer, depthClipEnable);
 			return;
 		}
@@ -10357,7 +10357,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_sample_locations))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_sample_locations)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetSampleLocationsEnableEXT(VkCommandBuffer commandBuffer, VkBool32 sampleLocationsEnable) const {
-		if(!this || !pfn_vkCmdSetSampleLocationsEnableEXT) {
+		if(!pfn_vkCmdSetSampleLocationsEnableEXT) {
 			staticPfn_vkCmdSetSampleLocationsEnableEXT(commandBuffer, sampleLocationsEnable);
 			return;
 		}
@@ -10366,7 +10366,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_blend_operation_advanced))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_blend_operation_advanced)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetColorBlendAdvancedEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendAdvancedEXT* pColorBlendAdvanced) const {
-		if(!this || !pfn_vkCmdSetColorBlendAdvancedEXT) {
+		if(!pfn_vkCmdSetColorBlendAdvancedEXT) {
 			staticPfn_vkCmdSetColorBlendAdvancedEXT(commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced);
 			return;
 		}
@@ -10375,7 +10375,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_provoking_vertex))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_provoking_vertex)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetProvokingVertexModeEXT(VkCommandBuffer commandBuffer, VkProvokingVertexModeEXT provokingVertexMode) const {
-		if(!this || !pfn_vkCmdSetProvokingVertexModeEXT) {
+		if(!pfn_vkCmdSetProvokingVertexModeEXT) {
 			staticPfn_vkCmdSetProvokingVertexModeEXT(commandBuffer, provokingVertexMode);
 			return;
 		}
@@ -10384,14 +10384,14 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_line_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_line_rasterization)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const {
-		if(!this || !pfn_vkCmdSetLineRasterizationModeEXT) {
+		if(!pfn_vkCmdSetLineRasterizationModeEXT) {
 			staticPfn_vkCmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode);
 			return;
 		}
 		pfn_vkCmdSetLineRasterizationModeEXT(commandBuffer, lineRasterizationMode);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const {
-		if(!this || !pfn_vkCmdSetLineStippleEnableEXT) {
+		if(!pfn_vkCmdSetLineStippleEnableEXT) {
 			staticPfn_vkCmdSetLineStippleEnableEXT(commandBuffer, stippledLineEnable);
 			return;
 		}
@@ -10400,7 +10400,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_control))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_control)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthClipNegativeOneToOneEXT(VkCommandBuffer commandBuffer, VkBool32 negativeOneToOne) const {
-		if(!this || !pfn_vkCmdSetDepthClipNegativeOneToOneEXT) {
+		if(!pfn_vkCmdSetDepthClipNegativeOneToOneEXT) {
 			staticPfn_vkCmdSetDepthClipNegativeOneToOneEXT(commandBuffer, negativeOneToOne);
 			return;
 		}
@@ -10409,7 +10409,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_clip_space_w_scaling))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_clip_space_w_scaling)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportWScalingEnableNV(VkCommandBuffer commandBuffer, VkBool32 viewportWScalingEnable) const {
-		if(!this || !pfn_vkCmdSetViewportWScalingEnableNV) {
+		if(!pfn_vkCmdSetViewportWScalingEnableNV) {
 			staticPfn_vkCmdSetViewportWScalingEnableNV(commandBuffer, viewportWScalingEnable);
 			return;
 		}
@@ -10418,7 +10418,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_viewport_swizzle))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_viewport_swizzle)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetViewportSwizzleNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportSwizzleNV* pViewportSwizzles) const {
-		if(!this || !pfn_vkCmdSetViewportSwizzleNV) {
+		if(!pfn_vkCmdSetViewportSwizzleNV) {
 			staticPfn_vkCmdSetViewportSwizzleNV(commandBuffer, firstViewport, viewportCount, pViewportSwizzles);
 			return;
 		}
@@ -10427,14 +10427,14 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_fragment_coverage_to_color))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_fragment_coverage_to_color)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageToColorEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageToColorEnable) const {
-		if(!this || !pfn_vkCmdSetCoverageToColorEnableNV) {
+		if(!pfn_vkCmdSetCoverageToColorEnableNV) {
 			staticPfn_vkCmdSetCoverageToColorEnableNV(commandBuffer, coverageToColorEnable);
 			return;
 		}
 		pfn_vkCmdSetCoverageToColorEnableNV(commandBuffer, coverageToColorEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageToColorLocationNV(VkCommandBuffer commandBuffer, uint32_t coverageToColorLocation) const {
-		if(!this || !pfn_vkCmdSetCoverageToColorLocationNV) {
+		if(!pfn_vkCmdSetCoverageToColorLocationNV) {
 			staticPfn_vkCmdSetCoverageToColorLocationNV(commandBuffer, coverageToColorLocation);
 			return;
 		}
@@ -10443,21 +10443,21 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_framebuffer_mixed_samples))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_framebuffer_mixed_samples)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageModulationModeNV(VkCommandBuffer commandBuffer, VkCoverageModulationModeNV coverageModulationMode) const {
-		if(!this || !pfn_vkCmdSetCoverageModulationModeNV) {
+		if(!pfn_vkCmdSetCoverageModulationModeNV) {
 			staticPfn_vkCmdSetCoverageModulationModeNV(commandBuffer, coverageModulationMode);
 			return;
 		}
 		pfn_vkCmdSetCoverageModulationModeNV(commandBuffer, coverageModulationMode);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageModulationTableEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageModulationTableEnable) const {
-		if(!this || !pfn_vkCmdSetCoverageModulationTableEnableNV) {
+		if(!pfn_vkCmdSetCoverageModulationTableEnableNV) {
 			staticPfn_vkCmdSetCoverageModulationTableEnableNV(commandBuffer, coverageModulationTableEnable);
 			return;
 		}
 		pfn_vkCmdSetCoverageModulationTableEnableNV(commandBuffer, coverageModulationTableEnable);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageModulationTableNV(VkCommandBuffer commandBuffer, uint32_t coverageModulationTableCount, const float* pCoverageModulationTable) const {
-		if(!this || !pfn_vkCmdSetCoverageModulationTableNV) {
+		if(!pfn_vkCmdSetCoverageModulationTableNV) {
 			staticPfn_vkCmdSetCoverageModulationTableNV(commandBuffer, coverageModulationTableCount, pCoverageModulationTable);
 			return;
 		}
@@ -10466,7 +10466,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_shading_rate_image))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_shading_rate_image)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetShadingRateImageEnableNV(VkCommandBuffer commandBuffer, VkBool32 shadingRateImageEnable) const {
-		if(!this || !pfn_vkCmdSetShadingRateImageEnableNV) {
+		if(!pfn_vkCmdSetShadingRateImageEnableNV) {
 			staticPfn_vkCmdSetShadingRateImageEnableNV(commandBuffer, shadingRateImageEnable);
 			return;
 		}
@@ -10475,7 +10475,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_coverage_reduction_mode))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_coverage_reduction_mode)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetCoverageReductionModeNV(VkCommandBuffer commandBuffer, VkCoverageReductionModeNV coverageReductionMode) const {
-		if(!this || !pfn_vkCmdSetCoverageReductionModeNV) {
+		if(!pfn_vkCmdSetCoverageReductionModeNV) {
 			staticPfn_vkCmdSetCoverageReductionModeNV(commandBuffer, coverageReductionMode);
 			return;
 		}
@@ -10484,7 +10484,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_representative_fragment_test))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_representative_fragment_test)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const {
-		if(!this || !pfn_vkCmdSetRepresentativeFragmentTestEnableNV) {
+		if(!pfn_vkCmdSetRepresentativeFragmentTestEnableNV) {
 			staticPfn_vkCmdSetRepresentativeFragmentTestEnableNV(commandBuffer, representativeFragmentTestEnable);
 			return;
 		}
@@ -10493,7 +10493,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlotCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPrivateDataSlotEXT* pPrivateDataSlot) const {
-		if(!this || !pfn_vkCreatePrivateDataSlot) {
+		if(!pfn_vkCreatePrivateDataSlot) {
 			return staticPfn_vkCreatePrivateDataSlot(device, pCreateInfo, pAllocator, pPrivateDataSlot);
 		}
 		return pfn_vkCreatePrivateDataSlot(device, pCreateInfo, pAllocator, pPrivateDataSlot);
@@ -10501,7 +10501,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPrivateDataSlotEXT* pPrivateDataSlot) const {
-		if(!this || !pfn_vkCreatePrivateDataSlotEXT) {
+		if(!pfn_vkCreatePrivateDataSlotEXT) {
 			return staticPfn_vkCreatePrivateDataSlotEXT(device, pCreateInfo, pAllocator, pPrivateDataSlot);
 		}
 		return pfn_vkCreatePrivateDataSlotEXT(device, pCreateInfo, pAllocator, pPrivateDataSlot);
@@ -10509,7 +10509,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlotEXT privateDataSlot, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPrivateDataSlot) {
+		if(!pfn_vkDestroyPrivateDataSlot) {
 			staticPfn_vkDestroyPrivateDataSlot(device, privateDataSlot, pAllocator);
 			return;
 		}
@@ -10518,7 +10518,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlotEXT privateDataSlot, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyPrivateDataSlotEXT) {
+		if(!pfn_vkDestroyPrivateDataSlotEXT) {
 			staticPfn_vkDestroyPrivateDataSlotEXT(device, privateDataSlot, pAllocator);
 			return;
 		}
@@ -10527,7 +10527,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t data) const {
-		if(!this || !pfn_vkSetPrivateData) {
+		if(!pfn_vkSetPrivateData) {
 			return staticPfn_vkSetPrivateData(device, objectType, objectHandle, privateDataSlot, data);
 		}
 		return pfn_vkSetPrivateData(device, objectType, objectHandle, privateDataSlot, data);
@@ -10535,7 +10535,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t data) const {
-		if(!this || !pfn_vkSetPrivateDataEXT) {
+		if(!pfn_vkSetPrivateDataEXT) {
 			return staticPfn_vkSetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data);
 		}
 		return pfn_vkSetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data);
@@ -10543,7 +10543,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t* pData) const {
-		if(!this || !pfn_vkGetPrivateData) {
+		if(!pfn_vkGetPrivateData) {
 			staticPfn_vkGetPrivateData(device, objectType, objectHandle, privateDataSlot, pData);
 			return;
 		}
@@ -10552,7 +10552,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t* pData) const {
-		if(!this || !pfn_vkGetPrivateDataEXT) {
+		if(!pfn_vkGetPrivateDataEXT) {
 			staticPfn_vkGetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, pData);
 			return;
 		}
@@ -10561,7 +10561,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBuffer2(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2KHR* pCopyBufferInfo) const {
-		if(!this || !pfn_vkCmdCopyBuffer2) {
+		if(!pfn_vkCmdCopyBuffer2) {
 			staticPfn_vkCmdCopyBuffer2(commandBuffer, pCopyBufferInfo);
 			return;
 		}
@@ -10570,7 +10570,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2KHR* pCopyBufferInfo) const {
-		if(!this || !pfn_vkCmdCopyBuffer2KHR) {
+		if(!pfn_vkCmdCopyBuffer2KHR) {
 			staticPfn_vkCmdCopyBuffer2KHR(commandBuffer, pCopyBufferInfo);
 			return;
 		}
@@ -10579,7 +10579,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImage2(VkCommandBuffer commandBuffer, const VkCopyImageInfo2KHR* pCopyImageInfo) const {
-		if(!this || !pfn_vkCmdCopyImage2) {
+		if(!pfn_vkCmdCopyImage2) {
 			staticPfn_vkCmdCopyImage2(commandBuffer, pCopyImageInfo);
 			return;
 		}
@@ -10588,7 +10588,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImage2KHR(VkCommandBuffer commandBuffer, const VkCopyImageInfo2KHR* pCopyImageInfo) const {
-		if(!this || !pfn_vkCmdCopyImage2KHR) {
+		if(!pfn_vkCmdCopyImage2KHR) {
 			staticPfn_vkCmdCopyImage2KHR(commandBuffer, pCopyImageInfo);
 			return;
 		}
@@ -10597,7 +10597,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBlitImage2(VkCommandBuffer commandBuffer, const VkBlitImageInfo2KHR* pBlitImageInfo) const {
-		if(!this || !pfn_vkCmdBlitImage2) {
+		if(!pfn_vkCmdBlitImage2) {
 			staticPfn_vkCmdBlitImage2(commandBuffer, pBlitImageInfo);
 			return;
 		}
@@ -10606,7 +10606,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBlitImage2KHR(VkCommandBuffer commandBuffer, const VkBlitImageInfo2KHR* pBlitImageInfo) const {
-		if(!this || !pfn_vkCmdBlitImage2KHR) {
+		if(!pfn_vkCmdBlitImage2KHR) {
 			staticPfn_vkCmdBlitImage2KHR(commandBuffer, pBlitImageInfo);
 			return;
 		}
@@ -10615,7 +10615,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBufferToImage2(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2KHR* pCopyBufferToImageInfo) const {
-		if(!this || !pfn_vkCmdCopyBufferToImage2) {
+		if(!pfn_vkCmdCopyBufferToImage2) {
 			staticPfn_vkCmdCopyBufferToImage2(commandBuffer, pCopyBufferToImageInfo);
 			return;
 		}
@@ -10624,7 +10624,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyBufferToImage2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2KHR* pCopyBufferToImageInfo) const {
-		if(!this || !pfn_vkCmdCopyBufferToImage2KHR) {
+		if(!pfn_vkCmdCopyBufferToImage2KHR) {
 			staticPfn_vkCmdCopyBufferToImage2KHR(commandBuffer, pCopyBufferToImageInfo);
 			return;
 		}
@@ -10633,7 +10633,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2KHR* pCopyImageToBufferInfo) const {
-		if(!this || !pfn_vkCmdCopyImageToBuffer2) {
+		if(!pfn_vkCmdCopyImageToBuffer2) {
 			staticPfn_vkCmdCopyImageToBuffer2(commandBuffer, pCopyImageToBufferInfo);
 			return;
 		}
@@ -10642,7 +10642,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2KHR* pCopyImageToBufferInfo) const {
-		if(!this || !pfn_vkCmdCopyImageToBuffer2KHR) {
+		if(!pfn_vkCmdCopyImageToBuffer2KHR) {
 			staticPfn_vkCmdCopyImageToBuffer2KHR(commandBuffer, pCopyImageToBufferInfo);
 			return;
 		}
@@ -10651,7 +10651,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResolveImage2(VkCommandBuffer commandBuffer, const VkResolveImageInfo2KHR* pResolveImageInfo) const {
-		if(!this || !pfn_vkCmdResolveImage2) {
+		if(!pfn_vkCmdResolveImage2) {
 			staticPfn_vkCmdResolveImage2(commandBuffer, pResolveImageInfo);
 			return;
 		}
@@ -10660,7 +10660,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResolveImage2KHR(VkCommandBuffer commandBuffer, const VkResolveImageInfo2KHR* pResolveImageInfo) const {
-		if(!this || !pfn_vkCmdResolveImage2KHR) {
+		if(!pfn_vkCmdResolveImage2KHR) {
 			staticPfn_vkCmdResolveImage2KHR(commandBuffer, pResolveImageInfo);
 			return;
 		}
@@ -10669,14 +10669,14 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_object_refresh)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdRefreshObjectsKHR(VkCommandBuffer commandBuffer, const VkRefreshObjectListKHR* pRefreshObjects) const {
-		if(!this || !pfn_vkCmdRefreshObjectsKHR) {
+		if(!pfn_vkCmdRefreshObjectsKHR) {
 			staticPfn_vkCmdRefreshObjectsKHR(commandBuffer, pRefreshObjects);
 			return;
 		}
 		pfn_vkCmdRefreshObjectsKHR(commandBuffer, pRefreshObjects);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceRefreshableObjectTypesKHR(VkPhysicalDevice physicalDevice, uint32_t* pRefreshableObjectTypeCount, VkObjectType* pRefreshableObjectTypes) const {
-		if(!this || !pfn_vkGetPhysicalDeviceRefreshableObjectTypesKHR) {
+		if(!pfn_vkGetPhysicalDeviceRefreshableObjectTypesKHR) {
 			return staticPfn_vkGetPhysicalDeviceRefreshableObjectTypesKHR(physicalDevice, pRefreshableObjectTypeCount, pRefreshableObjectTypes);
 		}
 		return pfn_vkGetPhysicalDeviceRefreshableObjectTypesKHR(physicalDevice, pRefreshableObjectTypeCount, pRefreshableObjectTypes);
@@ -10684,14 +10684,14 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_fragment_shading_rate) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_create_renderpass2)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetFragmentShadingRateKHR(VkCommandBuffer commandBuffer, const VkExtent2D* pFragmentSize, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) const {
-		if(!this || !pfn_vkCmdSetFragmentShadingRateKHR) {
+		if(!pfn_vkCmdSetFragmentShadingRateKHR) {
 			staticPfn_vkCmdSetFragmentShadingRateKHR(commandBuffer, pFragmentSize, combinerOps);
 			return;
 		}
 		pfn_vkCmdSetFragmentShadingRateKHR(commandBuffer, pFragmentSize, combinerOps);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceFragmentShadingRatesKHR(VkPhysicalDevice physicalDevice, uint32_t* pFragmentShadingRateCount, VkPhysicalDeviceFragmentShadingRateKHR* pFragmentShadingRates) const {
-		if(!this || !pfn_vkGetPhysicalDeviceFragmentShadingRatesKHR) {
+		if(!pfn_vkGetPhysicalDeviceFragmentShadingRatesKHR) {
 			return staticPfn_vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
 		}
 		return pfn_vkGetPhysicalDeviceFragmentShadingRatesKHR(physicalDevice, pFragmentShadingRateCount, pFragmentShadingRates);
@@ -10699,7 +10699,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_fragment_shading_rate_enums) && (defined(VK_KHR_fragment_shading_rate))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetFragmentShadingRateEnumNV(VkCommandBuffer commandBuffer, VkFragmentShadingRateNV shadingRate, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) const {
-		if(!this || !pfn_vkCmdSetFragmentShadingRateEnumNV) {
+		if(!pfn_vkCmdSetFragmentShadingRateEnumNV) {
 			staticPfn_vkCmdSetFragmentShadingRateEnumNV(commandBuffer, shadingRate, combinerOps);
 			return;
 		}
@@ -10708,7 +10708,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetAccelerationStructureBuildSizesKHR(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkAccelerationStructureBuildGeometryInfoKHR* pBuildInfo, const uint32_t* pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const {
-		if(!this || !pfn_vkGetAccelerationStructureBuildSizesKHR) {
+		if(!pfn_vkGetAccelerationStructureBuildSizesKHR) {
 			staticPfn_vkGetAccelerationStructureBuildSizesKHR(device, buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo);
 			return;
 		}
@@ -10717,7 +10717,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_vertex_input_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetVertexInputEXT(VkCommandBuffer commandBuffer, uint32_t vertexBindingDescriptionCount, const VkVertexInputBindingDescription2EXT* pVertexBindingDescriptions, uint32_t vertexAttributeDescriptionCount, const VkVertexInputAttributeDescription2EXT* pVertexAttributeDescriptions) const {
-		if(!this || !pfn_vkCmdSetVertexInputEXT) {
+		if(!pfn_vkCmdSetVertexInputEXT) {
 			staticPfn_vkCmdSetVertexInputEXT(commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions);
 			return;
 		}
@@ -10726,7 +10726,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_color_write_enable) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetColorWriteEnableEXT(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkBool32* pColorWriteEnables) const {
-		if(!this || !pfn_vkCmdSetColorWriteEnableEXT) {
+		if(!pfn_vkCmdSetColorWriteEnableEXT) {
 			staticPfn_vkCmdSetColorWriteEnableEXT(commandBuffer, attachmentCount, pColorWriteEnables);
 			return;
 		}
@@ -10735,7 +10735,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetEvent2(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfoKHR* pDependencyInfo) const {
-		if(!this || !pfn_vkCmdSetEvent2) {
+		if(!pfn_vkCmdSetEvent2) {
 			staticPfn_vkCmdSetEvent2(commandBuffer, event, pDependencyInfo);
 			return;
 		}
@@ -10744,7 +10744,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfoKHR* pDependencyInfo) const {
-		if(!this || !pfn_vkCmdSetEvent2KHR) {
+		if(!pfn_vkCmdSetEvent2KHR) {
 			staticPfn_vkCmdSetEvent2KHR(commandBuffer, event, pDependencyInfo);
 			return;
 		}
@@ -10753,7 +10753,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResetEvent2(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2KHR stageMask) const {
-		if(!this || !pfn_vkCmdResetEvent2) {
+		if(!pfn_vkCmdResetEvent2) {
 			staticPfn_vkCmdResetEvent2(commandBuffer, event, stageMask);
 			return;
 		}
@@ -10762,7 +10762,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdResetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2KHR stageMask) const {
-		if(!this || !pfn_vkCmdResetEvent2KHR) {
+		if(!pfn_vkCmdResetEvent2KHR) {
 			staticPfn_vkCmdResetEvent2KHR(commandBuffer, event, stageMask);
 			return;
 		}
@@ -10771,7 +10771,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWaitEvents2(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent* pEvents, const VkDependencyInfoKHR* pDependencyInfos) const {
-		if(!this || !pfn_vkCmdWaitEvents2) {
+		if(!pfn_vkCmdWaitEvents2) {
 			staticPfn_vkCmdWaitEvents2(commandBuffer, eventCount, pEvents, pDependencyInfos);
 			return;
 		}
@@ -10780,7 +10780,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWaitEvents2KHR(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent* pEvents, const VkDependencyInfoKHR* pDependencyInfos) const {
-		if(!this || !pfn_vkCmdWaitEvents2KHR) {
+		if(!pfn_vkCmdWaitEvents2KHR) {
 			staticPfn_vkCmdWaitEvents2KHR(commandBuffer, eventCount, pEvents, pDependencyInfos);
 			return;
 		}
@@ -10789,7 +10789,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfoKHR* pDependencyInfo) const {
-		if(!this || !pfn_vkCmdPipelineBarrier2) {
+		if(!pfn_vkCmdPipelineBarrier2) {
 			staticPfn_vkCmdPipelineBarrier2(commandBuffer, pDependencyInfo);
 			return;
 		}
@@ -10798,7 +10798,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPipelineBarrier2KHR(VkCommandBuffer commandBuffer, const VkDependencyInfoKHR* pDependencyInfo) const {
-		if(!this || !pfn_vkCmdPipelineBarrier2KHR) {
+		if(!pfn_vkCmdPipelineBarrier2KHR) {
 			staticPfn_vkCmdPipelineBarrier2KHR(commandBuffer, pDependencyInfo);
 			return;
 		}
@@ -10807,7 +10807,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2KHR* pSubmits, VkFence fence) const {
-		if(!this || !pfn_vkQueueSubmit2) {
+		if(!pfn_vkQueueSubmit2) {
 			return staticPfn_vkQueueSubmit2(queue, submitCount, pSubmits, fence);
 		}
 		return pfn_vkQueueSubmit2(queue, submitCount, pSubmits, fence);
@@ -10815,7 +10815,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkQueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2KHR* pSubmits, VkFence fence) const {
-		if(!this || !pfn_vkQueueSubmit2KHR) {
+		if(!pfn_vkQueueSubmit2KHR) {
 			return staticPfn_vkQueueSubmit2KHR(queue, submitCount, pSubmits, fence);
 		}
 		return pfn_vkQueueSubmit2KHR(queue, submitCount, pSubmits, fence);
@@ -10823,7 +10823,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2KHR stage, VkQueryPool queryPool, uint32_t query) const {
-		if(!this || !pfn_vkCmdWriteTimestamp2) {
+		if(!pfn_vkCmdWriteTimestamp2) {
 			staticPfn_vkCmdWriteTimestamp2(commandBuffer, stage, queryPool, query);
 			return;
 		}
@@ -10832,7 +10832,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteTimestamp2KHR(VkCommandBuffer commandBuffer, VkPipelineStageFlags2KHR stage, VkQueryPool queryPool, uint32_t query) const {
-		if(!this || !pfn_vkCmdWriteTimestamp2KHR) {
+		if(!pfn_vkCmdWriteTimestamp2KHR) {
 			staticPfn_vkCmdWriteTimestamp2KHR(commandBuffer, stage, queryPool, query);
 			return;
 		}
@@ -10841,7 +10841,7 @@ namespace wfe {
 #endif
 #if (defined(VK_AMD_buffer_marker)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteBufferMarker2AMD(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) const {
-		if(!this || !pfn_vkCmdWriteBufferMarker2AMD) {
+		if(!pfn_vkCmdWriteBufferMarker2AMD) {
 			staticPfn_vkCmdWriteBufferMarker2AMD(commandBuffer, stage, dstBuffer, dstOffset, marker);
 			return;
 		}
@@ -10850,7 +10850,7 @@ namespace wfe {
 #endif
 #if (defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetQueueCheckpointData2NV(VkQueue queue, uint32_t* pCheckpointDataCount, VkCheckpointData2NV* pCheckpointData) const {
-		if(!this || !pfn_vkGetQueueCheckpointData2NV) {
+		if(!pfn_vkGetQueueCheckpointData2NV) {
 			staticPfn_vkGetQueueCheckpointData2NV(queue, pCheckpointDataCount, pCheckpointData);
 			return;
 		}
@@ -10859,7 +10859,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfoEXT* pCopyMemoryToImageInfo) const {
-		if(!this || !pfn_vkCopyMemoryToImage) {
+		if(!pfn_vkCopyMemoryToImage) {
 			return staticPfn_vkCopyMemoryToImage(device, pCopyMemoryToImageInfo);
 		}
 		return pfn_vkCopyMemoryToImage(device, pCopyMemoryToImageInfo);
@@ -10867,7 +10867,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfoEXT* pCopyMemoryToImageInfo) const {
-		if(!this || !pfn_vkCopyMemoryToImageEXT) {
+		if(!pfn_vkCopyMemoryToImageEXT) {
 			return staticPfn_vkCopyMemoryToImageEXT(device, pCopyMemoryToImageInfo);
 		}
 		return pfn_vkCopyMemoryToImageEXT(device, pCopyMemoryToImageInfo);
@@ -10875,7 +10875,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfoEXT* pCopyImageToMemoryInfo) const {
-		if(!this || !pfn_vkCopyImageToMemory) {
+		if(!pfn_vkCopyImageToMemory) {
 			return staticPfn_vkCopyImageToMemory(device, pCopyImageToMemoryInfo);
 		}
 		return pfn_vkCopyImageToMemory(device, pCopyImageToMemoryInfo);
@@ -10883,7 +10883,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfoEXT* pCopyImageToMemoryInfo) const {
-		if(!this || !pfn_vkCopyImageToMemoryEXT) {
+		if(!pfn_vkCopyImageToMemoryEXT) {
 			return staticPfn_vkCopyImageToMemoryEXT(device, pCopyImageToMemoryInfo);
 		}
 		return pfn_vkCopyImageToMemoryEXT(device, pCopyImageToMemoryInfo);
@@ -10891,7 +10891,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyImageToImage(VkDevice device, const VkCopyImageToImageInfoEXT* pCopyImageToImageInfo) const {
-		if(!this || !pfn_vkCopyImageToImage) {
+		if(!pfn_vkCopyImageToImage) {
 			return staticPfn_vkCopyImageToImage(device, pCopyImageToImageInfo);
 		}
 		return pfn_vkCopyImageToImage(device, pCopyImageToImageInfo);
@@ -10899,7 +10899,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfoEXT* pCopyImageToImageInfo) const {
-		if(!this || !pfn_vkCopyImageToImageEXT) {
+		if(!pfn_vkCopyImageToImageEXT) {
 			return staticPfn_vkCopyImageToImageEXT(device, pCopyImageToImageInfo);
 		}
 		return pfn_vkCopyImageToImageEXT(device, pCopyImageToImageInfo);
@@ -10907,7 +10907,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkTransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfoEXT* pTransitions) const {
-		if(!this || !pfn_vkTransitionImageLayout) {
+		if(!pfn_vkTransitionImageLayout) {
 			return staticPfn_vkTransitionImageLayout(device, transitionCount, pTransitions);
 		}
 		return pfn_vkTransitionImageLayout(device, transitionCount, pTransitions);
@@ -10915,7 +10915,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkTransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfoEXT* pTransitions) const {
-		if(!this || !pfn_vkTransitionImageLayoutEXT) {
+		if(!pfn_vkTransitionImageLayoutEXT) {
 			return staticPfn_vkTransitionImageLayoutEXT(device, transitionCount, pTransitions);
 		}
 		return pfn_vkTransitionImageLayoutEXT(device, transitionCount, pTransitions);
@@ -10923,13 +10923,13 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceVideoCapabilitiesKHR(VkPhysicalDevice physicalDevice, const VkVideoProfileInfoKHR* pVideoProfile, VkVideoCapabilitiesKHR* pCapabilities) const {
-		if(!this || !pfn_vkGetPhysicalDeviceVideoCapabilitiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceVideoCapabilitiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceVideoCapabilitiesKHR(physicalDevice, pVideoProfile, pCapabilities);
 		}
 		return pfn_vkGetPhysicalDeviceVideoCapabilitiesKHR(physicalDevice, pVideoProfile, pCapabilities);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceVideoFormatPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoFormatInfoKHR* pVideoFormatInfo, uint32_t* pVideoFormatPropertyCount, VkVideoFormatPropertiesKHR* pVideoFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceVideoFormatPropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceVideoFormatPropertiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceVideoFormatPropertiesKHR(physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceVideoFormatPropertiesKHR(physicalDevice, pVideoFormatInfo, pVideoFormatPropertyCount, pVideoFormatProperties);
@@ -10937,7 +10937,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR* pQualityLevelInfo, VkVideoEncodeQualityLevelPropertiesKHR* pQualityLevelProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
 		}
 		return pfn_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(physicalDevice, pQualityLevelInfo, pQualityLevelProperties);
@@ -10945,26 +10945,26 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateVideoSessionKHR(VkDevice device, const VkVideoSessionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkVideoSessionKHR* pVideoSession) const {
-		if(!this || !pfn_vkCreateVideoSessionKHR) {
+		if(!pfn_vkCreateVideoSessionKHR) {
 			return staticPfn_vkCreateVideoSessionKHR(device, pCreateInfo, pAllocator, pVideoSession);
 		}
 		return pfn_vkCreateVideoSessionKHR(device, pCreateInfo, pAllocator, pVideoSession);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyVideoSessionKHR(VkDevice device, VkVideoSessionKHR videoSession, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyVideoSessionKHR) {
+		if(!pfn_vkDestroyVideoSessionKHR) {
 			staticPfn_vkDestroyVideoSessionKHR(device, videoSession, pAllocator);
 			return;
 		}
 		pfn_vkDestroyVideoSessionKHR(device, videoSession, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateVideoSessionParametersKHR(VkDevice device, const VkVideoSessionParametersCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkVideoSessionParametersKHR* pVideoSessionParameters) const {
-		if(!this || !pfn_vkCreateVideoSessionParametersKHR) {
+		if(!pfn_vkCreateVideoSessionParametersKHR) {
 			return staticPfn_vkCreateVideoSessionParametersKHR(device, pCreateInfo, pAllocator, pVideoSessionParameters);
 		}
 		return pfn_vkCreateVideoSessionParametersKHR(device, pCreateInfo, pAllocator, pVideoSessionParameters);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkUpdateVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkVideoSessionParametersUpdateInfoKHR* pUpdateInfo) const {
-		if(!this || !pfn_vkUpdateVideoSessionParametersKHR) {
+		if(!pfn_vkUpdateVideoSessionParametersKHR) {
 			return staticPfn_vkUpdateVideoSessionParametersKHR(device, videoSessionParameters, pUpdateInfo);
 		}
 		return pfn_vkUpdateVideoSessionParametersKHR(device, videoSessionParameters, pUpdateInfo);
@@ -10972,7 +10972,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetEncodedVideoSessionParametersKHR(VkDevice device, const VkVideoEncodeSessionParametersGetInfoKHR* pVideoSessionParametersInfo, VkVideoEncodeSessionParametersFeedbackInfoKHR* pFeedbackInfo, size_t* pDataSize, void* pData) const {
-		if(!this || !pfn_vkGetEncodedVideoSessionParametersKHR) {
+		if(!pfn_vkGetEncodedVideoSessionParametersKHR) {
 			return staticPfn_vkGetEncodedVideoSessionParametersKHR(device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData);
 		}
 		return pfn_vkGetEncodedVideoSessionParametersKHR(device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData);
@@ -10980,20 +10980,20 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyVideoSessionParametersKHR) {
+		if(!pfn_vkDestroyVideoSessionParametersKHR) {
 			staticPfn_vkDestroyVideoSessionParametersKHR(device, videoSessionParameters, pAllocator);
 			return;
 		}
 		pfn_vkDestroyVideoSessionParametersKHR(device, videoSessionParameters, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetVideoSessionMemoryRequirementsKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t* pMemoryRequirementsCount, VkVideoSessionMemoryRequirementsKHR* pMemoryRequirements) const {
-		if(!this || !pfn_vkGetVideoSessionMemoryRequirementsKHR) {
+		if(!pfn_vkGetVideoSessionMemoryRequirementsKHR) {
 			return staticPfn_vkGetVideoSessionMemoryRequirementsKHR(device, videoSession, pMemoryRequirementsCount, pMemoryRequirements);
 		}
 		return pfn_vkGetVideoSessionMemoryRequirementsKHR(device, videoSession, pMemoryRequirementsCount, pMemoryRequirements);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindVideoSessionMemoryKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t bindSessionMemoryInfoCount, const VkBindVideoSessionMemoryInfoKHR* pBindSessionMemoryInfos) const {
-		if(!this || !pfn_vkBindVideoSessionMemoryKHR) {
+		if(!pfn_vkBindVideoSessionMemoryKHR) {
 			return staticPfn_vkBindVideoSessionMemoryKHR(device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos);
 		}
 		return pfn_vkBindVideoSessionMemoryKHR(device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos);
@@ -11001,7 +11001,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_decode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR* pDecodeInfo) const {
-		if(!this || !pfn_vkCmdDecodeVideoKHR) {
+		if(!pfn_vkCmdDecodeVideoKHR) {
 			staticPfn_vkCmdDecodeVideoKHR(commandBuffer, pDecodeInfo);
 			return;
 		}
@@ -11010,21 +11010,21 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoBeginCodingInfoKHR* pBeginInfo) const {
-		if(!this || !pfn_vkCmdBeginVideoCodingKHR) {
+		if(!pfn_vkCmdBeginVideoCodingKHR) {
 			staticPfn_vkCmdBeginVideoCodingKHR(commandBuffer, pBeginInfo);
 			return;
 		}
 		pfn_vkCmdBeginVideoCodingKHR(commandBuffer, pBeginInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdControlVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoCodingControlInfoKHR* pCodingControlInfo) const {
-		if(!this || !pfn_vkCmdControlVideoCodingKHR) {
+		if(!pfn_vkCmdControlVideoCodingKHR) {
 			staticPfn_vkCmdControlVideoCodingKHR(commandBuffer, pCodingControlInfo);
 			return;
 		}
 		pfn_vkCmdControlVideoCodingKHR(commandBuffer, pCodingControlInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR* pEndCodingInfo) const {
-		if(!this || !pfn_vkCmdEndVideoCodingKHR) {
+		if(!pfn_vkCmdEndVideoCodingKHR) {
 			staticPfn_vkCmdEndVideoCodingKHR(commandBuffer, pEndCodingInfo);
 			return;
 		}
@@ -11033,7 +11033,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEncodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR* pEncodeInfo) const {
-		if(!this || !pfn_vkCmdEncodeVideoKHR) {
+		if(!pfn_vkCmdEncodeVideoKHR) {
 			staticPfn_vkCmdEncodeVideoKHR(commandBuffer, pEncodeInfo);
 			return;
 		}
@@ -11042,14 +11042,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_memory_decompression) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV* pDecompressMemoryRegions) const {
-		if(!this || !pfn_vkCmdDecompressMemoryNV) {
+		if(!pfn_vkCmdDecompressMemoryNV) {
 			staticPfn_vkCmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions);
 			return;
 		}
 		pfn_vkCmdDecompressMemoryNV(commandBuffer, decompressRegionCount, pDecompressMemoryRegions);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const {
-		if(!this || !pfn_vkCmdDecompressMemoryIndirectCountNV) {
+		if(!pfn_vkCmdDecompressMemoryIndirectCountNV) {
 			staticPfn_vkCmdDecompressMemoryIndirectCountNV(commandBuffer, indirectCommandsAddress, indirectCommandsCountAddress, stride);
 			return;
 		}
@@ -11058,14 +11058,14 @@ namespace wfe {
 #endif
 #if defined(VK_NV_partitioned_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV* pInfo, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const {
-		if(!this || !pfn_vkGetPartitionedAccelerationStructuresBuildSizesNV) {
+		if(!pfn_vkGetPartitionedAccelerationStructuresBuildSizesNV) {
 			staticPfn_vkGetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo);
 			return;
 		}
 		pfn_vkGetPartitionedAccelerationStructuresBuildSizesNV(device, pInfo, pSizeInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildPartitionedAccelerationStructuresNV(VkCommandBuffer commandBuffer, const VkBuildPartitionedAccelerationStructureInfoNV* pBuildInfo) const {
-		if(!this || !pfn_vkCmdBuildPartitionedAccelerationStructuresNV) {
+		if(!pfn_vkCmdBuildPartitionedAccelerationStructuresNV) {
 			staticPfn_vkCmdBuildPartitionedAccelerationStructuresNV(commandBuffer, pBuildInfo);
 			return;
 		}
@@ -11074,33 +11074,33 @@ namespace wfe {
 #endif
 #if defined(VK_NVX_binary_import)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateCuModuleNVX(VkDevice device, const VkCuModuleCreateInfoNVX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCuModuleNVX* pModule) const {
-		if(!this || !pfn_vkCreateCuModuleNVX) {
+		if(!pfn_vkCreateCuModuleNVX) {
 			return staticPfn_vkCreateCuModuleNVX(device, pCreateInfo, pAllocator, pModule);
 		}
 		return pfn_vkCreateCuModuleNVX(device, pCreateInfo, pAllocator, pModule);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateCuFunctionNVX(VkDevice device, const VkCuFunctionCreateInfoNVX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCuFunctionNVX* pFunction) const {
-		if(!this || !pfn_vkCreateCuFunctionNVX) {
+		if(!pfn_vkCreateCuFunctionNVX) {
 			return staticPfn_vkCreateCuFunctionNVX(device, pCreateInfo, pAllocator, pFunction);
 		}
 		return pfn_vkCreateCuFunctionNVX(device, pCreateInfo, pAllocator, pFunction);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyCuModuleNVX(VkDevice device, VkCuModuleNVX module, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyCuModuleNVX) {
+		if(!pfn_vkDestroyCuModuleNVX) {
 			staticPfn_vkDestroyCuModuleNVX(device, module, pAllocator);
 			return;
 		}
 		pfn_vkDestroyCuModuleNVX(device, module, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyCuFunctionNVX(VkDevice device, VkCuFunctionNVX function, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyCuFunctionNVX) {
+		if(!pfn_vkDestroyCuFunctionNVX) {
 			staticPfn_vkDestroyCuFunctionNVX(device, function, pAllocator);
 			return;
 		}
 		pfn_vkDestroyCuFunctionNVX(device, function, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCuLaunchKernelNVX(VkCommandBuffer commandBuffer, const VkCuLaunchInfoNVX* pLaunchInfo) const {
-		if(!this || !pfn_vkCmdCuLaunchKernelNVX) {
+		if(!pfn_vkCmdCuLaunchKernelNVX) {
 			staticPfn_vkCmdCuLaunchKernelNVX(commandBuffer, pLaunchInfo);
 			return;
 		}
@@ -11109,67 +11109,67 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetLayoutSizeEXT(VkDevice device, VkDescriptorSetLayout layout, VkDeviceSize* pLayoutSizeInBytes) const {
-		if(!this || !pfn_vkGetDescriptorSetLayoutSizeEXT) {
+		if(!pfn_vkGetDescriptorSetLayoutSizeEXT) {
 			staticPfn_vkGetDescriptorSetLayoutSizeEXT(device, layout, pLayoutSizeInBytes);
 			return;
 		}
 		pfn_vkGetDescriptorSetLayoutSizeEXT(device, layout, pLayoutSizeInBytes);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetLayoutBindingOffsetEXT(VkDevice device, VkDescriptorSetLayout layout, uint32_t binding, VkDeviceSize* pOffset) const {
-		if(!this || !pfn_vkGetDescriptorSetLayoutBindingOffsetEXT) {
+		if(!pfn_vkGetDescriptorSetLayoutBindingOffsetEXT) {
 			staticPfn_vkGetDescriptorSetLayoutBindingOffsetEXT(device, layout, binding, pOffset);
 			return;
 		}
 		pfn_vkGetDescriptorSetLayoutBindingOffsetEXT(device, layout, binding, pOffset);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorEXT(VkDevice device, const VkDescriptorGetInfoEXT* pDescriptorInfo, size_t dataSize, void* pDescriptor) const {
-		if(!this || !pfn_vkGetDescriptorEXT) {
+		if(!pfn_vkGetDescriptorEXT) {
 			staticPfn_vkGetDescriptorEXT(device, pDescriptorInfo, dataSize, pDescriptor);
 			return;
 		}
 		pfn_vkGetDescriptorEXT(device, pDescriptorInfo, dataSize, pDescriptor);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorBuffersEXT(VkCommandBuffer commandBuffer, uint32_t bufferCount, const VkDescriptorBufferBindingInfoEXT* pBindingInfos) const {
-		if(!this || !pfn_vkCmdBindDescriptorBuffersEXT) {
+		if(!pfn_vkCmdBindDescriptorBuffersEXT) {
 			staticPfn_vkCmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos);
 			return;
 		}
 		pfn_vkCmdBindDescriptorBuffersEXT(commandBuffer, bufferCount, pBindingInfos);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDescriptorBufferOffsetsEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t firstSet, uint32_t setCount, const uint32_t* pBufferIndices, const VkDeviceSize* pOffsets) const {
-		if(!this || !pfn_vkCmdSetDescriptorBufferOffsetsEXT) {
+		if(!pfn_vkCmdSetDescriptorBufferOffsetsEXT) {
 			staticPfn_vkCmdSetDescriptorBufferOffsetsEXT(commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets);
 			return;
 		}
 		pfn_vkCmdSetDescriptorBufferOffsetsEXT(commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorBufferEmbeddedSamplersEXT(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set) const {
-		if(!this || !pfn_vkCmdBindDescriptorBufferEmbeddedSamplersEXT) {
+		if(!pfn_vkCmdBindDescriptorBufferEmbeddedSamplersEXT) {
 			staticPfn_vkCmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set);
 			return;
 		}
 		pfn_vkCmdBindDescriptorBufferEmbeddedSamplersEXT(commandBuffer, pipelineBindPoint, layout, set);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetBufferOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkBufferCaptureDescriptorDataInfoEXT* pInfo, void* pData) const {
-		if(!this || !pfn_vkGetBufferOpaqueCaptureDescriptorDataEXT) {
+		if(!pfn_vkGetBufferOpaqueCaptureDescriptorDataEXT) {
 			return staticPfn_vkGetBufferOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 		}
 		return pfn_vkGetBufferOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetImageOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageCaptureDescriptorDataInfoEXT* pInfo, void* pData) const {
-		if(!this || !pfn_vkGetImageOpaqueCaptureDescriptorDataEXT) {
+		if(!pfn_vkGetImageOpaqueCaptureDescriptorDataEXT) {
 			return staticPfn_vkGetImageOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 		}
 		return pfn_vkGetImageOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT* pInfo, void* pData) const {
-		if(!this || !pfn_vkGetImageViewOpaqueCaptureDescriptorDataEXT) {
+		if(!pfn_vkGetImageViewOpaqueCaptureDescriptorDataEXT) {
 			return staticPfn_vkGetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 		}
 		return pfn_vkGetImageViewOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT* pInfo, void* pData) const {
-		if(!this || !pfn_vkGetSamplerOpaqueCaptureDescriptorDataEXT) {
+		if(!pfn_vkGetSamplerOpaqueCaptureDescriptorDataEXT) {
 			return staticPfn_vkGetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 		}
 		return pfn_vkGetSamplerOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
@@ -11177,7 +11177,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure) || defined(VK_NV_ray_tracing))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkAccelerationStructureCaptureDescriptorDataInfoEXT* pInfo, void* pData) const {
-		if(!this || !pfn_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT) {
+		if(!pfn_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT) {
 			return staticPfn_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
 		}
 		return pfn_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT(device, pInfo, pData);
@@ -11185,7 +11185,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_pageable_device_local_memory) && (defined(VK_EXT_memory_priority))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkSetDeviceMemoryPriorityEXT(VkDevice device, VkDeviceMemory memory, float priority) const {
-		if(!this || !pfn_vkSetDeviceMemoryPriorityEXT) {
+		if(!pfn_vkSetDeviceMemoryPriorityEXT) {
 			staticPfn_vkSetDeviceMemoryPriorityEXT(device, memory, priority);
 			return;
 		}
@@ -11194,13 +11194,13 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_acquire_drm_display) && (defined(VK_EXT_direct_mode_display))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkAcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const {
-		if(!this || !pfn_vkAcquireDrmDisplayEXT) {
+		if(!pfn_vkAcquireDrmDisplayEXT) {
 			return staticPfn_vkAcquireDrmDisplayEXT(physicalDevice, drmFd, display);
 		}
 		return pfn_vkAcquireDrmDisplayEXT(physicalDevice, drmFd, display);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, uint32_t connectorId, VkDisplayKHR* display) const {
-		if(!this || !pfn_vkGetDrmDisplayEXT) {
+		if(!pfn_vkGetDrmDisplayEXT) {
 			return staticPfn_vkGetDrmDisplayEXT(physicalDevice, drmFd, connectorId, display);
 		}
 		return pfn_vkGetDrmDisplayEXT(physicalDevice, drmFd, connectorId, display);
@@ -11208,7 +11208,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_present_wait) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWaitForPresentKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t presentId, uint64_t timeout) const {
-		if(!this || !pfn_vkWaitForPresentKHR) {
+		if(!pfn_vkWaitForPresentKHR) {
 			return staticPfn_vkWaitForPresentKHR(device, swapchain, presentId, timeout);
 		}
 		return pfn_vkWaitForPresentKHR(device, swapchain, presentId, timeout);
@@ -11216,32 +11216,32 @@ namespace wfe {
 #endif
 #if defined(VK_FUCHSIA_buffer_collection) && (defined(VK_FUCHSIA_external_memory) && (defined(VK_KHR_sampler_ycbcr_conversion) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateBufferCollectionFUCHSIA(VkDevice device, const VkBufferCollectionCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferCollectionFUCHSIA* pCollection) const {
-		if(!this || !pfn_vkCreateBufferCollectionFUCHSIA) {
+		if(!pfn_vkCreateBufferCollectionFUCHSIA) {
 			return staticPfn_vkCreateBufferCollectionFUCHSIA(device, pCreateInfo, pAllocator, pCollection);
 		}
 		return pfn_vkCreateBufferCollectionFUCHSIA(device, pCreateInfo, pAllocator, pCollection);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetBufferCollectionBufferConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkBufferConstraintsInfoFUCHSIA* pBufferConstraintsInfo) const {
-		if(!this || !pfn_vkSetBufferCollectionBufferConstraintsFUCHSIA) {
+		if(!pfn_vkSetBufferCollectionBufferConstraintsFUCHSIA) {
 			return staticPfn_vkSetBufferCollectionBufferConstraintsFUCHSIA(device, collection, pBufferConstraintsInfo);
 		}
 		return pfn_vkSetBufferCollectionBufferConstraintsFUCHSIA(device, collection, pBufferConstraintsInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetBufferCollectionImageConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkImageConstraintsInfoFUCHSIA* pImageConstraintsInfo) const {
-		if(!this || !pfn_vkSetBufferCollectionImageConstraintsFUCHSIA) {
+		if(!pfn_vkSetBufferCollectionImageConstraintsFUCHSIA) {
 			return staticPfn_vkSetBufferCollectionImageConstraintsFUCHSIA(device, collection, pImageConstraintsInfo);
 		}
 		return pfn_vkSetBufferCollectionImageConstraintsFUCHSIA(device, collection, pImageConstraintsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyBufferCollectionFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyBufferCollectionFUCHSIA) {
+		if(!pfn_vkDestroyBufferCollectionFUCHSIA) {
 			staticPfn_vkDestroyBufferCollectionFUCHSIA(device, collection, pAllocator);
 			return;
 		}
 		pfn_vkDestroyBufferCollectionFUCHSIA(device, collection, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetBufferCollectionPropertiesFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, VkBufferCollectionPropertiesFUCHSIA* pProperties) const {
-		if(!this || !pfn_vkGetBufferCollectionPropertiesFUCHSIA) {
+		if(!pfn_vkGetBufferCollectionPropertiesFUCHSIA) {
 			return staticPfn_vkGetBufferCollectionPropertiesFUCHSIA(device, collection, pProperties);
 		}
 		return pfn_vkGetBufferCollectionPropertiesFUCHSIA(device, collection, pProperties);
@@ -11249,39 +11249,39 @@ namespace wfe {
 #endif
 #if defined(VK_NV_cuda_kernel_launch)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaModuleNV* pModule) const {
-		if(!this || !pfn_vkCreateCudaModuleNV) {
+		if(!pfn_vkCreateCudaModuleNV) {
 			return staticPfn_vkCreateCudaModuleNV(device, pCreateInfo, pAllocator, pModule);
 		}
 		return pfn_vkCreateCudaModuleNV(device, pCreateInfo, pAllocator, pModule);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetCudaModuleCacheNV(VkDevice device, VkCudaModuleNV module, size_t* pCacheSize, void* pCacheData) const {
-		if(!this || !pfn_vkGetCudaModuleCacheNV) {
+		if(!pfn_vkGetCudaModuleCacheNV) {
 			return staticPfn_vkGetCudaModuleCacheNV(device, module, pCacheSize, pCacheData);
 		}
 		return pfn_vkGetCudaModuleCacheNV(device, module, pCacheSize, pCacheData);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateCudaFunctionNV(VkDevice device, const VkCudaFunctionCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaFunctionNV* pFunction) const {
-		if(!this || !pfn_vkCreateCudaFunctionNV) {
+		if(!pfn_vkCreateCudaFunctionNV) {
 			return staticPfn_vkCreateCudaFunctionNV(device, pCreateInfo, pAllocator, pFunction);
 		}
 		return pfn_vkCreateCudaFunctionNV(device, pCreateInfo, pAllocator, pFunction);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyCudaModuleNV(VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyCudaModuleNV) {
+		if(!pfn_vkDestroyCudaModuleNV) {
 			staticPfn_vkDestroyCudaModuleNV(device, module, pAllocator);
 			return;
 		}
 		pfn_vkDestroyCudaModuleNV(device, module, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyCudaFunctionNV(VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyCudaFunctionNV) {
+		if(!pfn_vkDestroyCudaFunctionNV) {
 			staticPfn_vkDestroyCudaFunctionNV(device, function, pAllocator);
 			return;
 		}
 		pfn_vkDestroyCudaFunctionNV(device, function, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCudaLaunchKernelNV(VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV* pLaunchInfo) const {
-		if(!this || !pfn_vkCmdCudaLaunchKernelNV) {
+		if(!pfn_vkCmdCudaLaunchKernelNV) {
 			staticPfn_vkCmdCudaLaunchKernelNV(commandBuffer, pLaunchInfo);
 			return;
 		}
@@ -11290,7 +11290,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginRendering(VkCommandBuffer commandBuffer, const VkRenderingInfoKHR* pRenderingInfo) const {
-		if(!this || !pfn_vkCmdBeginRendering) {
+		if(!pfn_vkCmdBeginRendering) {
 			staticPfn_vkCmdBeginRendering(commandBuffer, pRenderingInfo);
 			return;
 		}
@@ -11299,7 +11299,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginRenderingKHR(VkCommandBuffer commandBuffer, const VkRenderingInfoKHR* pRenderingInfo) const {
-		if(!this || !pfn_vkCmdBeginRenderingKHR) {
+		if(!pfn_vkCmdBeginRenderingKHR) {
 			staticPfn_vkCmdBeginRenderingKHR(commandBuffer, pRenderingInfo);
 			return;
 		}
@@ -11308,7 +11308,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_3)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRendering(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdEndRendering) {
+		if(!pfn_vkCmdEndRendering) {
 			staticPfn_vkCmdEndRendering(commandBuffer);
 			return;
 		}
@@ -11317,7 +11317,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_fragment_density_map_offset) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_fragment_density_map) && (defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_dynamic_rendering)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT* pRenderingEndInfo) const {
-		if(!this || !pfn_vkCmdEndRendering2EXT) {
+		if(!pfn_vkCmdEndRendering2EXT) {
 			staticPfn_vkCmdEndRendering2EXT(commandBuffer, pRenderingEndInfo);
 			return;
 		}
@@ -11326,7 +11326,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndRenderingKHR(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdEndRenderingKHR) {
+		if(!pfn_vkCmdEndRenderingKHR) {
 			staticPfn_vkCmdEndRenderingKHR(commandBuffer);
 			return;
 		}
@@ -11335,14 +11335,14 @@ namespace wfe {
 #endif
 #if defined(VK_VALVE_descriptor_set_host_mapping) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetLayoutHostMappingInfoVALVE(VkDevice device, const VkDescriptorSetBindingReferenceVALVE* pBindingReference, VkDescriptorSetLayoutHostMappingInfoVALVE* pHostMapping) const {
-		if(!this || !pfn_vkGetDescriptorSetLayoutHostMappingInfoVALVE) {
+		if(!pfn_vkGetDescriptorSetLayoutHostMappingInfoVALVE) {
 			staticPfn_vkGetDescriptorSetLayoutHostMappingInfoVALVE(device, pBindingReference, pHostMapping);
 			return;
 		}
 		pfn_vkGetDescriptorSetLayoutHostMappingInfoVALVE(device, pBindingReference, pHostMapping);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDescriptorSetHostMappingVALVE(VkDevice device, VkDescriptorSet descriptorSet, void** ppData) const {
-		if(!this || !pfn_vkGetDescriptorSetHostMappingVALVE) {
+		if(!pfn_vkGetDescriptorSetHostMappingVALVE) {
 			staticPfn_vkGetDescriptorSetHostMappingVALVE(device, descriptorSet, ppData);
 			return;
 		}
@@ -11351,92 +11351,92 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_opacity_micromap) && (defined(VK_KHR_acceleration_structure) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateMicromapEXT(VkDevice device, const VkMicromapCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkMicromapEXT* pMicromap) const {
-		if(!this || !pfn_vkCreateMicromapEXT) {
+		if(!pfn_vkCreateMicromapEXT) {
 			return staticPfn_vkCreateMicromapEXT(device, pCreateInfo, pAllocator, pMicromap);
 		}
 		return pfn_vkCreateMicromapEXT(device, pCreateInfo, pAllocator, pMicromap);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBuildMicromapsEXT(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT* pInfos) const {
-		if(!this || !pfn_vkCmdBuildMicromapsEXT) {
+		if(!pfn_vkCmdBuildMicromapsEXT) {
 			staticPfn_vkCmdBuildMicromapsEXT(commandBuffer, infoCount, pInfos);
 			return;
 		}
 		pfn_vkCmdBuildMicromapsEXT(commandBuffer, infoCount, pInfos);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT* pInfos) const {
-		if(!this || !pfn_vkBuildMicromapsEXT) {
+		if(!pfn_vkBuildMicromapsEXT) {
 			return staticPfn_vkBuildMicromapsEXT(device, deferredOperation, infoCount, pInfos);
 		}
 		return pfn_vkBuildMicromapsEXT(device, deferredOperation, infoCount, pInfos);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyMicromapEXT(VkDevice device, VkMicromapEXT micromap, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyMicromapEXT) {
+		if(!pfn_vkDestroyMicromapEXT) {
 			staticPfn_vkDestroyMicromapEXT(device, micromap, pAllocator);
 			return;
 		}
 		pfn_vkDestroyMicromapEXT(device, micromap, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCmdCopyMicromapEXT) {
+		if(!pfn_vkCmdCopyMicromapEXT) {
 			staticPfn_vkCmdCopyMicromapEXT(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyMicromapEXT(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCopyMicromapEXT) {
+		if(!pfn_vkCopyMicromapEXT) {
 			return staticPfn_vkCopyMicromapEXT(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyMicromapEXT(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMicromapToMemoryEXT(VkCommandBuffer commandBuffer, const VkCopyMicromapToMemoryInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCmdCopyMicromapToMemoryEXT) {
+		if(!pfn_vkCmdCopyMicromapToMemoryEXT) {
 			staticPfn_vkCmdCopyMicromapToMemoryEXT(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyMicromapToMemoryEXT(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMicromapToMemoryEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapToMemoryInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCopyMicromapToMemoryEXT) {
+		if(!pfn_vkCopyMicromapToMemoryEXT) {
 			return staticPfn_vkCopyMicromapToMemoryEXT(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyMicromapToMemoryEXT(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdCopyMemoryToMicromapEXT(VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCmdCopyMemoryToMicromapEXT) {
+		if(!pfn_vkCmdCopyMemoryToMicromapEXT) {
 			staticPfn_vkCmdCopyMemoryToMicromapEXT(commandBuffer, pInfo);
 			return;
 		}
 		pfn_vkCmdCopyMemoryToMicromapEXT(commandBuffer, pInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCopyMemoryToMicromapEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToMicromapInfoEXT* pInfo) const {
-		if(!this || !pfn_vkCopyMemoryToMicromapEXT) {
+		if(!pfn_vkCopyMemoryToMicromapEXT) {
 			return staticPfn_vkCopyMemoryToMicromapEXT(device, deferredOperation, pInfo);
 		}
 		return pfn_vkCopyMemoryToMicromapEXT(device, deferredOperation, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdWriteMicromapsPropertiesEXT(VkCommandBuffer commandBuffer, uint32_t micromapCount, const VkMicromapEXT* pMicromaps, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) const {
-		if(!this || !pfn_vkCmdWriteMicromapsPropertiesEXT) {
+		if(!pfn_vkCmdWriteMicromapsPropertiesEXT) {
 			staticPfn_vkCmdWriteMicromapsPropertiesEXT(commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery);
 			return;
 		}
 		pfn_vkCmdWriteMicromapsPropertiesEXT(commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkWriteMicromapsPropertiesEXT(VkDevice device, uint32_t micromapCount, const VkMicromapEXT* pMicromaps, VkQueryType queryType, size_t dataSize, void* pData, size_t stride) const {
-		if(!this || !pfn_vkWriteMicromapsPropertiesEXT) {
+		if(!pfn_vkWriteMicromapsPropertiesEXT) {
 			return staticPfn_vkWriteMicromapsPropertiesEXT(device, micromapCount, pMicromaps, queryType, dataSize, pData, stride);
 		}
 		return pfn_vkWriteMicromapsPropertiesEXT(device, micromapCount, pMicromaps, queryType, dataSize, pData, stride);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceMicromapCompatibilityEXT(VkDevice device, const VkMicromapVersionInfoEXT* pVersionInfo, VkAccelerationStructureCompatibilityKHR* pCompatibility) const {
-		if(!this || !pfn_vkGetDeviceMicromapCompatibilityEXT) {
+		if(!pfn_vkGetDeviceMicromapCompatibilityEXT) {
 			staticPfn_vkGetDeviceMicromapCompatibilityEXT(device, pVersionInfo, pCompatibility);
 			return;
 		}
 		pfn_vkGetDeviceMicromapCompatibilityEXT(device, pVersionInfo, pCompatibility);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT* pBuildInfo, VkMicromapBuildSizesInfoEXT* pSizeInfo) const {
-		if(!this || !pfn_vkGetMicromapBuildSizesEXT) {
+		if(!pfn_vkGetMicromapBuildSizesEXT) {
 			staticPfn_vkGetMicromapBuildSizesEXT(device, buildType, pBuildInfo, pSizeInfo);
 			return;
 		}
@@ -11445,14 +11445,14 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_shader_module_identifier) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_pipeline_creation_cache_control)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT* pIdentifier) const {
-		if(!this || !pfn_vkGetShaderModuleIdentifierEXT) {
+		if(!pfn_vkGetShaderModuleIdentifierEXT) {
 			staticPfn_vkGetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier);
 			return;
 		}
 		pfn_vkGetShaderModuleIdentifierEXT(device, shaderModule, pIdentifier);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo* pCreateInfo, VkShaderModuleIdentifierEXT* pIdentifier) const {
-		if(!this || !pfn_vkGetShaderModuleCreateInfoIdentifierEXT) {
+		if(!pfn_vkGetShaderModuleCreateInfoIdentifierEXT) {
 			staticPfn_vkGetShaderModuleCreateInfoIdentifierEXT(device, pCreateInfo, pIdentifier);
 			return;
 		}
@@ -11461,7 +11461,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const {
-		if(!this || !pfn_vkGetImageSubresourceLayout2) {
+		if(!pfn_vkGetImageSubresourceLayout2) {
 			staticPfn_vkGetImageSubresourceLayout2(device, image, pSubresource, pLayout);
 			return;
 		}
@@ -11470,7 +11470,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const {
-		if(!this || !pfn_vkGetImageSubresourceLayout2KHR) {
+		if(!pfn_vkGetImageSubresourceLayout2KHR) {
 			staticPfn_vkGetImageSubresourceLayout2KHR(device, image, pSubresource, pLayout);
 			return;
 		}
@@ -11479,7 +11479,7 @@ namespace wfe {
 #endif
 #if (defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))) || (defined(VK_EXT_image_compression_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const {
-		if(!this || !pfn_vkGetImageSubresourceLayout2EXT) {
+		if(!pfn_vkGetImageSubresourceLayout2EXT) {
 			staticPfn_vkGetImageSubresourceLayout2EXT(device, image, pSubresource, pLayout);
 			return;
 		}
@@ -11488,7 +11488,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_pipeline_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoEXT* pPipelineInfo, VkBaseOutStructure* pPipelineProperties) const {
-		if(!this || !pfn_vkGetPipelinePropertiesEXT) {
+		if(!pfn_vkGetPipelinePropertiesEXT) {
 			return staticPfn_vkGetPipelinePropertiesEXT(device, pPipelineInfo, pPipelineProperties);
 		}
 		return pfn_vkGetPipelinePropertiesEXT(device, pPipelineInfo, pPipelineProperties);
@@ -11496,7 +11496,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_metal_objects)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkExportMetalObjectsEXT(VkDevice device, VkExportMetalObjectsInfoEXT* pMetalObjectsInfo) const {
-		if(!this || !pfn_vkExportMetalObjectsEXT) {
+		if(!pfn_vkExportMetalObjectsEXT) {
 			staticPfn_vkExportMetalObjectsEXT(device, pMetalObjectsInfo);
 			return;
 		}
@@ -11505,7 +11505,7 @@ namespace wfe {
 #endif
 #if defined(VK_QCOM_tile_memory_heap) && ((defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindTileMemoryQCOM(VkCommandBuffer commandBuffer, const VkTileMemoryBindInfoQCOM* pTileMemoryBindInfo) const {
-		if(!this || !pfn_vkCmdBindTileMemoryQCOM) {
+		if(!pfn_vkCmdBindTileMemoryQCOM) {
 			staticPfn_vkCmdBindTileMemoryQCOM(commandBuffer, pTileMemoryBindInfo);
 			return;
 		}
@@ -11514,13 +11514,13 @@ namespace wfe {
 #endif
 #if defined(VK_QCOM_tile_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetFramebufferTilePropertiesQCOM(VkDevice device, VkFramebuffer framebuffer, uint32_t* pPropertiesCount, VkTilePropertiesQCOM* pProperties) const {
-		if(!this || !pfn_vkGetFramebufferTilePropertiesQCOM) {
+		if(!pfn_vkGetFramebufferTilePropertiesQCOM) {
 			return staticPfn_vkGetFramebufferTilePropertiesQCOM(device, framebuffer, pPropertiesCount, pProperties);
 		}
 		return pfn_vkGetFramebufferTilePropertiesQCOM(device, framebuffer, pPropertiesCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDynamicRenderingTilePropertiesQCOM(VkDevice device, const VkRenderingInfo* pRenderingInfo, VkTilePropertiesQCOM* pProperties) const {
-		if(!this || !pfn_vkGetDynamicRenderingTilePropertiesQCOM) {
+		if(!pfn_vkGetDynamicRenderingTilePropertiesQCOM) {
 			return staticPfn_vkGetDynamicRenderingTilePropertiesQCOM(device, pRenderingInfo, pProperties);
 		}
 		return pfn_vkGetDynamicRenderingTilePropertiesQCOM(device, pRenderingInfo, pProperties);
@@ -11528,32 +11528,32 @@ namespace wfe {
 #endif
 #if defined(VK_NV_optical_flow) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_format_feature_flags2) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceOpticalFlowImageFormatsNV(VkPhysicalDevice physicalDevice, const VkOpticalFlowImageFormatInfoNV* pOpticalFlowImageFormatInfo, uint32_t* pFormatCount, VkOpticalFlowImageFormatPropertiesNV* pImageFormatProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceOpticalFlowImageFormatsNV) {
+		if(!pfn_vkGetPhysicalDeviceOpticalFlowImageFormatsNV) {
 			return staticPfn_vkGetPhysicalDeviceOpticalFlowImageFormatsNV(physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
 		}
 		return pfn_vkGetPhysicalDeviceOpticalFlowImageFormatsNV(physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateOpticalFlowSessionNV(VkDevice device, const VkOpticalFlowSessionCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkOpticalFlowSessionNV* pSession) const {
-		if(!this || !pfn_vkCreateOpticalFlowSessionNV) {
+		if(!pfn_vkCreateOpticalFlowSessionNV) {
 			return staticPfn_vkCreateOpticalFlowSessionNV(device, pCreateInfo, pAllocator, pSession);
 		}
 		return pfn_vkCreateOpticalFlowSessionNV(device, pCreateInfo, pAllocator, pSession);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyOpticalFlowSessionNV(VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyOpticalFlowSessionNV) {
+		if(!pfn_vkDestroyOpticalFlowSessionNV) {
 			staticPfn_vkDestroyOpticalFlowSessionNV(device, session, pAllocator);
 			return;
 		}
 		pfn_vkDestroyOpticalFlowSessionNV(device, session, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkBindOpticalFlowSessionImageNV(VkDevice device, VkOpticalFlowSessionNV session, VkOpticalFlowSessionBindingPointNV bindingPoint, VkImageView view, VkImageLayout layout) const {
-		if(!this || !pfn_vkBindOpticalFlowSessionImageNV) {
+		if(!pfn_vkBindOpticalFlowSessionImageNV) {
 			return staticPfn_vkBindOpticalFlowSessionImageNV(device, session, bindingPoint, view, layout);
 		}
 		return pfn_vkBindOpticalFlowSessionImageNV(device, session, bindingPoint, view, layout);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdOpticalFlowExecuteNV(VkCommandBuffer commandBuffer, VkOpticalFlowSessionNV session, const VkOpticalFlowExecuteInfoNV* pExecuteInfo) const {
-		if(!this || !pfn_vkCmdOpticalFlowExecuteNV) {
+		if(!pfn_vkCmdOpticalFlowExecuteNV) {
 			staticPfn_vkCmdOpticalFlowExecuteNV(commandBuffer, session, pExecuteInfo);
 			return;
 		}
@@ -11562,7 +11562,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_device_fault) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetDeviceFaultInfoEXT(VkDevice device, VkDeviceFaultCountsEXT* pFaultCounts, VkDeviceFaultInfoEXT* pFaultInfo) const {
-		if(!this || !pfn_vkGetDeviceFaultInfoEXT) {
+		if(!pfn_vkGetDeviceFaultInfoEXT) {
 			return staticPfn_vkGetDeviceFaultInfoEXT(device, pFaultCounts, pFaultInfo);
 		}
 		return pfn_vkGetDeviceFaultInfoEXT(device, pFaultCounts, pFaultInfo);
@@ -11570,7 +11570,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_depth_bias_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthBias2EXT(VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT* pDepthBiasInfo) const {
-		if(!this || !pfn_vkCmdSetDepthBias2EXT) {
+		if(!pfn_vkCmdSetDepthBias2EXT) {
 			staticPfn_vkCmdSetDepthBias2EXT(commandBuffer, pDepthBiasInfo);
 			return;
 		}
@@ -11579,7 +11579,7 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_swapchain_maintenance1) && (defined(VK_KHR_swapchain) && defined(VK_EXT_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkReleaseSwapchainImagesEXT(VkDevice device, const VkReleaseSwapchainImagesInfoEXT* pReleaseInfo) const {
-		if(!this || !pfn_vkReleaseSwapchainImagesEXT) {
+		if(!pfn_vkReleaseSwapchainImagesEXT) {
 			return staticPfn_vkReleaseSwapchainImagesEXT(device, pReleaseInfo);
 		}
 		return pfn_vkReleaseSwapchainImagesEXT(device, pReleaseInfo);
@@ -11587,7 +11587,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfoKHR* pInfo, VkSubresourceLayout2KHR* pLayout) const {
-		if(!this || !pfn_vkGetDeviceImageSubresourceLayout) {
+		if(!pfn_vkGetDeviceImageSubresourceLayout) {
 			staticPfn_vkGetDeviceImageSubresourceLayout(device, pInfo, pLayout);
 			return;
 		}
@@ -11596,7 +11596,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfoKHR* pInfo, VkSubresourceLayout2KHR* pLayout) const {
-		if(!this || !pfn_vkGetDeviceImageSubresourceLayoutKHR) {
+		if(!pfn_vkGetDeviceImageSubresourceLayoutKHR) {
 			staticPfn_vkGetDeviceImageSubresourceLayoutKHR(device, pInfo, pLayout);
 			return;
 		}
@@ -11605,7 +11605,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkMapMemory2(VkDevice device, const VkMemoryMapInfoKHR* pMemoryMapInfo, void** ppData) const {
-		if(!this || !pfn_vkMapMemory2) {
+		if(!pfn_vkMapMemory2) {
 			return staticPfn_vkMapMemory2(device, pMemoryMapInfo, ppData);
 		}
 		return pfn_vkMapMemory2(device, pMemoryMapInfo, ppData);
@@ -11613,7 +11613,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_map_memory2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkMapMemory2KHR(VkDevice device, const VkMemoryMapInfoKHR* pMemoryMapInfo, void** ppData) const {
-		if(!this || !pfn_vkMapMemory2KHR) {
+		if(!pfn_vkMapMemory2KHR) {
 			return staticPfn_vkMapMemory2KHR(device, pMemoryMapInfo, ppData);
 		}
 		return pfn_vkMapMemory2KHR(device, pMemoryMapInfo, ppData);
@@ -11621,7 +11621,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkUnmapMemory2(VkDevice device, const VkMemoryUnmapInfoKHR* pMemoryUnmapInfo) const {
-		if(!this || !pfn_vkUnmapMemory2) {
+		if(!pfn_vkUnmapMemory2) {
 			return staticPfn_vkUnmapMemory2(device, pMemoryUnmapInfo);
 		}
 		return pfn_vkUnmapMemory2(device, pMemoryUnmapInfo);
@@ -11629,7 +11629,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_map_memory2)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkUnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfoKHR* pMemoryUnmapInfo) const {
-		if(!this || !pfn_vkUnmapMemory2KHR) {
+		if(!pfn_vkUnmapMemory2KHR) {
 			return staticPfn_vkUnmapMemory2KHR(device, pMemoryUnmapInfo);
 		}
 		return pfn_vkUnmapMemory2KHR(device, pMemoryUnmapInfo);
@@ -11637,26 +11637,26 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateShadersEXT(VkDevice device, uint32_t createInfoCount, const VkShaderCreateInfoEXT* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkShaderEXT* pShaders) const {
-		if(!this || !pfn_vkCreateShadersEXT) {
+		if(!pfn_vkCreateShadersEXT) {
 			return staticPfn_vkCreateShadersEXT(device, createInfoCount, pCreateInfos, pAllocator, pShaders);
 		}
 		return pfn_vkCreateShadersEXT(device, createInfoCount, pCreateInfos, pAllocator, pShaders);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyShaderEXT(VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyShaderEXT) {
+		if(!pfn_vkDestroyShaderEXT) {
 			staticPfn_vkDestroyShaderEXT(device, shader, pAllocator);
 			return;
 		}
 		pfn_vkDestroyShaderEXT(device, shader, pAllocator);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetShaderBinaryDataEXT(VkDevice device, VkShaderEXT shader, size_t* pDataSize, void* pData) const {
-		if(!this || !pfn_vkGetShaderBinaryDataEXT) {
+		if(!pfn_vkGetShaderBinaryDataEXT) {
 			return staticPfn_vkGetShaderBinaryDataEXT(device, shader, pDataSize, pData);
 		}
 		return pfn_vkGetShaderBinaryDataEXT(device, shader, pDataSize, pData);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindShadersEXT(VkCommandBuffer commandBuffer, uint32_t stageCount, const VkShaderStageFlagBits* pStages, const VkShaderEXT* pShaders) const {
-		if(!this || !pfn_vkCmdBindShadersEXT) {
+		if(!pfn_vkCmdBindShadersEXT) {
 			staticPfn_vkCmdBindShadersEXT(commandBuffer, stageCount, pStages, pShaders);
 			return;
 		}
@@ -11665,7 +11665,7 @@ namespace wfe {
 #endif
 #if defined(VK_QNX_external_memory_screen_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetScreenBufferPropertiesQNX(VkDevice device, const struct _screen_buffer* buffer, VkScreenBufferPropertiesQNX* pProperties) const {
-		if(!this || !pfn_vkGetScreenBufferPropertiesQNX) {
+		if(!pfn_vkGetScreenBufferPropertiesQNX) {
 			return staticPfn_vkGetScreenBufferPropertiesQNX(device, buffer, pProperties);
 		}
 		return pfn_vkGetScreenBufferPropertiesQNX(device, buffer, pProperties);
@@ -11673,7 +11673,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixPropertiesKHR* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR) {
+		if(!pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR) {
 			return staticPfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR(physicalDevice, pPropertyCount, pProperties);
@@ -11681,46 +11681,46 @@ namespace wfe {
 #endif
 #if defined(VK_AMDX_shader_enqueue) && (((defined(VK_KHR_synchronization2) && defined(VK_KHR_spirv_1_4) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3)) && defined(VK_KHR_maintenance5) && defined(VK_KHR_pipeline_library))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetExecutionGraphPipelineScratchSizeAMDX(VkDevice device, VkPipeline executionGraph, VkExecutionGraphPipelineScratchSizeAMDX* pSizeInfo) const {
-		if(!this || !pfn_vkGetExecutionGraphPipelineScratchSizeAMDX) {
+		if(!pfn_vkGetExecutionGraphPipelineScratchSizeAMDX) {
 			return staticPfn_vkGetExecutionGraphPipelineScratchSizeAMDX(device, executionGraph, pSizeInfo);
 		}
 		return pfn_vkGetExecutionGraphPipelineScratchSizeAMDX(device, executionGraph, pSizeInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetExecutionGraphPipelineNodeIndexAMDX(VkDevice device, VkPipeline executionGraph, const VkPipelineShaderStageNodeCreateInfoAMDX* pNodeInfo, uint32_t* pNodeIndex) const {
-		if(!this || !pfn_vkGetExecutionGraphPipelineNodeIndexAMDX) {
+		if(!pfn_vkGetExecutionGraphPipelineNodeIndexAMDX) {
 			return staticPfn_vkGetExecutionGraphPipelineNodeIndexAMDX(device, executionGraph, pNodeInfo, pNodeIndex);
 		}
 		return pfn_vkGetExecutionGraphPipelineNodeIndexAMDX(device, executionGraph, pNodeInfo, pNodeIndex);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateExecutionGraphPipelinesAMDX(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkExecutionGraphPipelineCreateInfoAMDX* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const {
-		if(!this || !pfn_vkCreateExecutionGraphPipelinesAMDX) {
+		if(!pfn_vkCreateExecutionGraphPipelinesAMDX) {
 			return staticPfn_vkCreateExecutionGraphPipelinesAMDX(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 		}
 		return pfn_vkCreateExecutionGraphPipelinesAMDX(device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdInitializeGraphScratchMemoryAMDX(VkCommandBuffer commandBuffer, VkPipeline executionGraph, VkDeviceAddress scratch, VkDeviceSize scratchSize) const {
-		if(!this || !pfn_vkCmdInitializeGraphScratchMemoryAMDX) {
+		if(!pfn_vkCmdInitializeGraphScratchMemoryAMDX) {
 			staticPfn_vkCmdInitializeGraphScratchMemoryAMDX(commandBuffer, executionGraph, scratch, scratchSize);
 			return;
 		}
 		pfn_vkCmdInitializeGraphScratchMemoryAMDX(commandBuffer, executionGraph, scratch, scratchSize);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchGraphAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX* pCountInfo) const {
-		if(!this || !pfn_vkCmdDispatchGraphAMDX) {
+		if(!pfn_vkCmdDispatchGraphAMDX) {
 			staticPfn_vkCmdDispatchGraphAMDX(commandBuffer, scratch, scratchSize, pCountInfo);
 			return;
 		}
 		pfn_vkCmdDispatchGraphAMDX(commandBuffer, scratch, scratchSize, pCountInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchGraphIndirectAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX* pCountInfo) const {
-		if(!this || !pfn_vkCmdDispatchGraphIndirectAMDX) {
+		if(!pfn_vkCmdDispatchGraphIndirectAMDX) {
 			staticPfn_vkCmdDispatchGraphIndirectAMDX(commandBuffer, scratch, scratchSize, pCountInfo);
 			return;
 		}
 		pfn_vkCmdDispatchGraphIndirectAMDX(commandBuffer, scratch, scratchSize, pCountInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchGraphIndirectCountAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, VkDeviceAddress countInfo) const {
-		if(!this || !pfn_vkCmdDispatchGraphIndirectCountAMDX) {
+		if(!pfn_vkCmdDispatchGraphIndirectCountAMDX) {
 			staticPfn_vkCmdDispatchGraphIndirectCountAMDX(commandBuffer, scratch, scratchSize, countInfo);
 			return;
 		}
@@ -11729,7 +11729,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfoKHR* pBindDescriptorSetsInfo) const {
-		if(!this || !pfn_vkCmdBindDescriptorSets2) {
+		if(!pfn_vkCmdBindDescriptorSets2) {
 			staticPfn_vkCmdBindDescriptorSets2(commandBuffer, pBindDescriptorSetsInfo);
 			return;
 		}
@@ -11738,7 +11738,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfoKHR* pBindDescriptorSetsInfo) const {
-		if(!this || !pfn_vkCmdBindDescriptorSets2KHR) {
+		if(!pfn_vkCmdBindDescriptorSets2KHR) {
 			staticPfn_vkCmdBindDescriptorSets2KHR(commandBuffer, pBindDescriptorSetsInfo);
 			return;
 		}
@@ -11747,7 +11747,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfoKHR* pPushConstantsInfo) const {
-		if(!this || !pfn_vkCmdPushConstants2) {
+		if(!pfn_vkCmdPushConstants2) {
 			staticPfn_vkCmdPushConstants2(commandBuffer, pPushConstantsInfo);
 			return;
 		}
@@ -11756,7 +11756,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfoKHR* pPushConstantsInfo) const {
-		if(!this || !pfn_vkCmdPushConstants2KHR) {
+		if(!pfn_vkCmdPushConstants2KHR) {
 			staticPfn_vkCmdPushConstants2KHR(commandBuffer, pPushConstantsInfo);
 			return;
 		}
@@ -11765,7 +11765,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfoKHR* pPushDescriptorSetInfo) const {
-		if(!this || !pfn_vkCmdPushDescriptorSet2) {
+		if(!pfn_vkCmdPushDescriptorSet2) {
 			staticPfn_vkCmdPushDescriptorSet2(commandBuffer, pPushDescriptorSetInfo);
 			return;
 		}
@@ -11774,7 +11774,7 @@ namespace wfe {
 #endif
 #if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfoKHR* pPushDescriptorSetInfo) const {
-		if(!this || !pfn_vkCmdPushDescriptorSet2KHR) {
+		if(!pfn_vkCmdPushDescriptorSet2KHR) {
 			staticPfn_vkCmdPushDescriptorSet2KHR(commandBuffer, pPushDescriptorSetInfo);
 			return;
 		}
@@ -11783,7 +11783,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfoKHR* pPushDescriptorSetWithTemplateInfo) const {
-		if(!this || !pfn_vkCmdPushDescriptorSetWithTemplate2) {
+		if(!pfn_vkCmdPushDescriptorSetWithTemplate2) {
 			staticPfn_vkCmdPushDescriptorSetWithTemplate2(commandBuffer, pPushDescriptorSetWithTemplateInfo);
 			return;
 		}
@@ -11792,7 +11792,7 @@ namespace wfe {
 #endif
 #if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfoKHR* pPushDescriptorSetWithTemplateInfo) const {
-		if(!this || !pfn_vkCmdPushDescriptorSetWithTemplate2KHR) {
+		if(!pfn_vkCmdPushDescriptorSetWithTemplate2KHR) {
 			staticPfn_vkCmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo);
 			return;
 		}
@@ -11801,14 +11801,14 @@ namespace wfe {
 #endif
 #if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_EXT_descriptor_buffer))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDescriptorBufferOffsets2EXT(VkCommandBuffer commandBuffer, const VkSetDescriptorBufferOffsetsInfoEXT* pSetDescriptorBufferOffsetsInfo) const {
-		if(!this || !pfn_vkCmdSetDescriptorBufferOffsets2EXT) {
+		if(!pfn_vkCmdSetDescriptorBufferOffsets2EXT) {
 			staticPfn_vkCmdSetDescriptorBufferOffsets2EXT(commandBuffer, pSetDescriptorBufferOffsetsInfo);
 			return;
 		}
 		pfn_vkCmdSetDescriptorBufferOffsets2EXT(commandBuffer, pSetDescriptorBufferOffsetsInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(VkCommandBuffer commandBuffer, const VkBindDescriptorBufferEmbeddedSamplersInfoEXT* pBindDescriptorBufferEmbeddedSamplersInfo) const {
-		if(!this || !pfn_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT) {
+		if(!pfn_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT) {
 			staticPfn_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo);
 			return;
 		}
@@ -11817,33 +11817,33 @@ namespace wfe {
 #endif
 #if defined(VK_NV_low_latency2) && (defined(VK_VERSION_1_2) || defined(VK_KHR_timeline_semaphore))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkSetLatencySleepModeNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV* pSleepModeInfo) const {
-		if(!this || !pfn_vkSetLatencySleepModeNV) {
+		if(!pfn_vkSetLatencySleepModeNV) {
 			return staticPfn_vkSetLatencySleepModeNV(device, swapchain, pSleepModeInfo);
 		}
 		return pfn_vkSetLatencySleepModeNV(device, swapchain, pSleepModeInfo);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkLatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV* pSleepInfo) const {
-		if(!this || !pfn_vkLatencySleepNV) {
+		if(!pfn_vkLatencySleepNV) {
 			return staticPfn_vkLatencySleepNV(device, swapchain, pSleepInfo);
 		}
 		return pfn_vkLatencySleepNV(device, swapchain, pSleepInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkSetLatencyMarkerNV(VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV* pLatencyMarkerInfo) const {
-		if(!this || !pfn_vkSetLatencyMarkerNV) {
+		if(!pfn_vkSetLatencyMarkerNV) {
 			staticPfn_vkSetLatencyMarkerNV(device, swapchain, pLatencyMarkerInfo);
 			return;
 		}
 		pfn_vkSetLatencyMarkerNV(device, swapchain, pLatencyMarkerInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetLatencyTimingsNV(VkDevice device, VkSwapchainKHR swapchain, VkGetLatencyMarkerInfoNV* pLatencyMarkerInfo) const {
-		if(!this || !pfn_vkGetLatencyTimingsNV) {
+		if(!pfn_vkGetLatencyTimingsNV) {
 			staticPfn_vkGetLatencyTimingsNV(device, swapchain, pLatencyMarkerInfo);
 			return;
 		}
 		pfn_vkGetLatencyTimingsNV(device, swapchain, pLatencyMarkerInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkQueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV* pQueueTypeInfo) const {
-		if(!this || !pfn_vkQueueNotifyOutOfBandNV) {
+		if(!pfn_vkQueueNotifyOutOfBandNV) {
 			staticPfn_vkQueueNotifyOutOfBandNV(queue, pQueueTypeInfo);
 			return;
 		}
@@ -11852,7 +11852,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfoKHR* pLocationInfo) const {
-		if(!this || !pfn_vkCmdSetRenderingAttachmentLocations) {
+		if(!pfn_vkCmdSetRenderingAttachmentLocations) {
 			staticPfn_vkCmdSetRenderingAttachmentLocations(commandBuffer, pLocationInfo);
 			return;
 		}
@@ -11861,7 +11861,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfoKHR* pLocationInfo) const {
-		if(!this || !pfn_vkCmdSetRenderingAttachmentLocationsKHR) {
+		if(!pfn_vkCmdSetRenderingAttachmentLocationsKHR) {
 			staticPfn_vkCmdSetRenderingAttachmentLocationsKHR(commandBuffer, pLocationInfo);
 			return;
 		}
@@ -11870,7 +11870,7 @@ namespace wfe {
 #endif
 #if defined(VK_VERSION_1_4)
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfoKHR* pInputAttachmentIndexInfo) const {
-		if(!this || !pfn_vkCmdSetRenderingInputAttachmentIndices) {
+		if(!pfn_vkCmdSetRenderingInputAttachmentIndices) {
 			staticPfn_vkCmdSetRenderingInputAttachmentIndices(commandBuffer, pInputAttachmentIndexInfo);
 			return;
 		}
@@ -11879,7 +11879,7 @@ namespace wfe {
 #endif
 #if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfoKHR* pInputAttachmentIndexInfo) const {
-		if(!this || !pfn_vkCmdSetRenderingInputAttachmentIndicesKHR) {
+		if(!pfn_vkCmdSetRenderingInputAttachmentIndicesKHR) {
 			staticPfn_vkCmdSetRenderingInputAttachmentIndicesKHR(commandBuffer, pInputAttachmentIndexInfo);
 			return;
 		}
@@ -11888,7 +11888,7 @@ namespace wfe {
 #endif
 #if ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clamp_control))) || (defined(VK_EXT_depth_clamp_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdSetDepthClampRangeEXT(VkCommandBuffer commandBuffer, VkDepthClampModeEXT depthClampMode, const VkDepthClampRangeEXT* pDepthClampRange) const {
-		if(!this || !pfn_vkCmdSetDepthClampRangeEXT) {
+		if(!pfn_vkCmdSetDepthClampRangeEXT) {
 			staticPfn_vkCmdSetDepthClampRangeEXT(commandBuffer, depthClampMode, pDepthClampRange);
 			return;
 		}
@@ -11897,7 +11897,7 @@ namespace wfe {
 #endif
 #if defined(VK_NV_cooperative_matrix2) && (defined(VK_KHR_cooperative_matrix))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixFlexibleDimensionsPropertiesNV* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) {
+		if(!pfn_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV) {
 			return staticPfn_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(physicalDevice, pPropertyCount, pProperties);
@@ -11905,13 +11905,13 @@ namespace wfe {
 #endif
 #if defined(VK_EXT_external_memory_metal) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryMetalHandleEXT(VkDevice device, const VkMemoryGetMetalHandleInfoEXT* pGetMetalHandleInfo, void** pHandle) const {
-		if(!this || !pfn_vkGetMemoryMetalHandleEXT) {
+		if(!pfn_vkGetMemoryMetalHandleEXT) {
 			return staticPfn_vkGetMemoryMetalHandleEXT(device, pGetMetalHandleInfo, pHandle);
 		}
 		return pfn_vkGetMemoryMetalHandleEXT(device, pGetMetalHandleInfo, pHandle);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void* pHandle, VkMemoryMetalHandlePropertiesEXT* pMemoryMetalHandleProperties) const {
-		if(!this || !pfn_vkGetMemoryMetalHandlePropertiesEXT) {
+		if(!pfn_vkGetMemoryMetalHandlePropertiesEXT) {
 			return staticPfn_vkGetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties);
 		}
 		return pfn_vkGetMemoryMetalHandlePropertiesEXT(device, handleType, pHandle, pMemoryMetalHandleProperties);
@@ -11919,19 +11919,19 @@ namespace wfe {
 #endif
 #if defined(VK_NV_cooperative_vector)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkGetPhysicalDeviceCooperativeVectorPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeVectorPropertiesNV* pProperties) const {
-		if(!this || !pfn_vkGetPhysicalDeviceCooperativeVectorPropertiesNV) {
+		if(!pfn_vkGetPhysicalDeviceCooperativeVectorPropertiesNV) {
 			return staticPfn_vkGetPhysicalDeviceCooperativeVectorPropertiesNV(physicalDevice, pPropertyCount, pProperties);
 		}
 		return pfn_vkGetPhysicalDeviceCooperativeVectorPropertiesNV(physicalDevice, pPropertyCount, pProperties);
 	}
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV* pInfo) const {
-		if(!this || !pfn_vkConvertCooperativeVectorMatrixNV) {
+		if(!pfn_vkConvertCooperativeVectorMatrixNV) {
 			return staticPfn_vkConvertCooperativeVectorMatrixNV(device, pInfo);
 		}
 		return pfn_vkConvertCooperativeVectorMatrixNV(device, pInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdConvertCooperativeVectorMatrixNV(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkConvertCooperativeVectorMatrixInfoNV* pInfos) const {
-		if(!this || !pfn_vkCmdConvertCooperativeVectorMatrixNV) {
+		if(!pfn_vkCmdConvertCooperativeVectorMatrixNV) {
 			staticPfn_vkCmdConvertCooperativeVectorMatrixNV(commandBuffer, infoCount, pInfos);
 			return;
 		}
@@ -11940,21 +11940,21 @@ namespace wfe {
 #endif
 #if defined(VK_QCOM_tile_shading) && (defined(VK_QCOM_tile_properties) || defined(VK_KHR_get_physical_device_properties2))
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdDispatchTileQCOM(VkCommandBuffer commandBuffer) const {
-		if(!this || !pfn_vkCmdDispatchTileQCOM) {
+		if(!pfn_vkCmdDispatchTileQCOM) {
 			staticPfn_vkCmdDispatchTileQCOM(commandBuffer);
 			return;
 		}
 		pfn_vkCmdDispatchTileQCOM(commandBuffer);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM* pPerTileBeginInfo) const {
-		if(!this || !pfn_vkCmdBeginPerTileExecutionQCOM) {
+		if(!pfn_vkCmdBeginPerTileExecutionQCOM) {
 			staticPfn_vkCmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo);
 			return;
 		}
 		pfn_vkCmdBeginPerTileExecutionQCOM(commandBuffer, pPerTileBeginInfo);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkCmdEndPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileEndInfoQCOM* pPerTileEndInfo) const {
-		if(!this || !pfn_vkCmdEndPerTileExecutionQCOM) {
+		if(!pfn_vkCmdEndPerTileExecutionQCOM) {
 			staticPfn_vkCmdEndPerTileExecutionQCOM(commandBuffer, pPerTileEndInfo);
 			return;
 		}
@@ -11963,20 +11963,20 @@ namespace wfe {
 #endif
 #if defined(VK_NV_external_compute_queue)
 	VKAPI_ATTR VkResult VKAPI_CALL VulkanLoader::vkCreateExternalComputeQueueNV(VkDevice device, const VkExternalComputeQueueCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkExternalComputeQueueNV* pExternalQueue) const {
-		if(!this || !pfn_vkCreateExternalComputeQueueNV) {
+		if(!pfn_vkCreateExternalComputeQueueNV) {
 			return staticPfn_vkCreateExternalComputeQueueNV(device, pCreateInfo, pAllocator, pExternalQueue);
 		}
 		return pfn_vkCreateExternalComputeQueueNV(device, pCreateInfo, pAllocator, pExternalQueue);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkDestroyExternalComputeQueueNV(VkDevice device, VkExternalComputeQueueNV externalQueue, const VkAllocationCallbacks* pAllocator) const {
-		if(!this || !pfn_vkDestroyExternalComputeQueueNV) {
+		if(!pfn_vkDestroyExternalComputeQueueNV) {
 			staticPfn_vkDestroyExternalComputeQueueNV(device, externalQueue, pAllocator);
 			return;
 		}
 		pfn_vkDestroyExternalComputeQueueNV(device, externalQueue, pAllocator);
 	}
 	VKAPI_ATTR void VKAPI_CALL VulkanLoader::vkGetExternalComputeQueueDataNV(VkExternalComputeQueueNV externalQueue, VkExternalComputeQueueDataParamsNV* params, void* pData) const {
-		if(!this || !pfn_vkGetExternalComputeQueueDataNV) {
+		if(!pfn_vkGetExternalComputeQueueDataNV) {
 			staticPfn_vkGetExternalComputeQueueDataNV(externalQueue, params, pData);
 			return;
 		}

@@ -514,7 +514,7 @@ namespace wfe {
 		sourceFile.write(") const {\n\t\t")
 
 		# Write the static function pointer call
-		sourceFile.write("if(!this || !pfn_{0})".format(command.name) + " {\n\t\t\t")
+		sourceFile.write("if(!pfn_{0})".format(command.name) + " {\n\t\t\t")
 		if command.returnType != "void":
 			sourceFile.write("return ")
 		sourceFile.write("staticPfn_{0}(".format(command.name))

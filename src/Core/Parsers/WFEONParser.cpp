@@ -154,7 +154,7 @@ namespace wfe {
 			}
 
 			// Get the total number of values in the array
-			size_t totalCount = 0;
+			size_t totalCount;
 			switch(valueType) {
 			case VALUE_TYPE_INT:
 				totalCount = intValues.size();
@@ -170,6 +170,9 @@ namespace wfe {
 				break;
 			case VALUE_TYPE_OBJECT:
 				totalCount = objectValues.size();
+				break;
+			default:
+				totalCount = count;
 				break;
 			}
 
@@ -278,6 +281,8 @@ namespace wfe {
 					stream << prefix << "}\n";
 				}
 
+				break;
+			default:
 				break;
 			}
 
