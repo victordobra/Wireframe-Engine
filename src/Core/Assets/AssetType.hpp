@@ -13,12 +13,26 @@ namespace wfe {
 	/// @brief A structure that defines an asset type.
 	struct AssetType {
 	public:
+		/// @brief The maximum possible total number of asset types
+		static inline const size_t MAX_ASSET_TYPE_COUNT = 128;
+		/// @brief The maximum length of an asset type, including the null termination character.
+		static inline const size_t MAX_TYPE_NAME_LENGTH = 64;
+		/// @brief The maximum number of import file extensions for the asset.
+		static inline const size_t MAX_EXTENSION_COUNT = 8;
+		/// @brief The maximum length of an import file extension, including the null termination character.
+		static inline const size_t MAX_EXTENSION_LENGTH = 8;
+
 		/// @brief The asset constructor function type.
 		typedef Asset*(*Constructor)(Program* program, uint64_t id);
 
+		/// @brief Gets the number of registered asset types.
+		/// @return The number of registered asset types.
+		static const size_t GetAssetTypeCount() {
+			return assetTypeCount;
+		}
 		/// @brief Gets all registered asset types.
-		/// @return A vector of all registered asset types.
-		static const std::vector<AssetType>& GetAssetTypes() {
+		/// @return A pointer to the array of all registered asset types.
+		static const AssetType* GetAssetTypes() {
 			return assetTypes;
 		}
 		/// @brief Gets the asset type with the given name.
@@ -33,14 +47,26 @@ namespace wfe {
 		/// @param assetType The asset type to register.
 		static void RegisterAssetType(const AssetType& assetType);
 
+		constexpr AssetType() = default;
+		constexpr AssetType(const AssetType& other) = default;
+		constexpr AssetType(AssetType&& other) noexcept = default;
+
+		AssetType& operator=(const AssetType& other) = default;
+		AssetType& operator=(AssetType&& other) noexcept = default;
+
+		~AssetType() = default;
+
 		/// @brief The type's name.
-		std::string name;
-		/// @brief The file extension(s) associated with this asset type.
-		std::set<std::string> importExtensions;
+		char name[MAX_TYPE_NAME_LENGTH] { };
+		/// @brief The number of file extensions associated with this asset type.
+		size_t importExtensionCount = 0;
+		/// @brief The file extensions associated with this asset type.
+		char importExtensions[MAX_EXTENSION_COUNT][MAX_EXTENSION_LENGTH] { };
 		/// @brief The asset's constructor.
-		Constructor constructor;
+		Constructor constructor = nullptr;
 	private:
-		static std::vector<AssetType> assetTypes;
+		static size_t assetTypeCount;
+		static AssetType assetTypes[MAX_ASSET_TYPE_COUNT];
 	};
 
 /// @brief A macro to register an asset type.
@@ -53,13 +79,20 @@ struct AssetType##type##Constructor { \
 	} \
 	AssetType##type##Constructor() { \
 		wfe::AssetType assetType; \
-		assetType.name = wfe::GetTypeName<type>(); \
-		assetType.importExtensions = extensions; \
+		\
+		strncpy(assetType.name, wfe::GetTypeName<type>().c_str(), wfe::AssetType::MAX_TYPE_NAME_LENGTH); \
+		\
+		const char* const EXT_ARRAY[] ## extensions; \
+		assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
+		for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
+			strncpy(assetType.importExtensions[i], EXT_ARRAY[i], wfe::AssetType::MAX_EXTENSION_LENGTH); \
+		\
 		assetType.constructor = CreateAsset; \
+		\
 		try { \
 			wfe::AssetType::RegisterAssetType(assetType); \
 		} catch (const std::invalid_argument&) { } \
 	} \
 }; \
-static inline AssetType##type##Constructor assetType##type##ConstructorInstance{};
+static inline AssetType##type##Constructor assetType##type##ConstructorInstance { };
 }
