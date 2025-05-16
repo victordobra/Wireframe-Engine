@@ -58,10 +58,10 @@ def ParseXML():
 
 	# Loop through all Vulkan types
 	for type in root.findall("types/type"):
-		if (not type.get("api")) or type.get("api") == "vulkan":
-			if type.get("name"):
+		if type.get("api") is None or type.get("api") == "vulkan":
+			if type.get("name") is not None:
 				types[type.get("name")] = Type(type.get("name"), type.get("parents"))
-			elif type.find("name"):
+			elif type.find("name") is not None:
 				types[type.find("name").text] = Type(type.find("name").text, type.get("parents"))
 	
 	# Add all Vulkan tags to an array
@@ -71,11 +71,11 @@ def ParseXML():
 	# Loop through all commands
 	for command in root.findall("commands/command"):
 		# Skip the current command variant if it is not from the Vulkan API
-		if command.get("api") and command.get("api") != "vulkan":
+		if command.get("api") is not None and command.get("api") != "vulkan":
 			continue
 
 		# Check if the current command is an alias
-		if command.get("alias"):
+		if command.get("alias") is not None:
 			# Get the command's name and its alias' name
 			commandName = command.get("name")
 			commandAlias = command.get("alias")
@@ -102,12 +102,12 @@ def ParseXML():
 				command = Command(commandName, originalCommand.returnType, originalCommand.params.copy())
 
 				# Try to add the tag to the command's return type
-				if types.get(command.returnType + commandTag):
+				if types.get(command.returnType + commandTag) is not None:
 					command.returnType += commandTag
 				
 				# Try to add the tag to every parameter of the command
 				for i in range(0, len(command.params)):
-					if types.get(command.params[i].type + commandTag):
+					if types.get(command.params[i].type + commandTag) is not None:
 						# Add the tag to the type and the full name
 						newType = command.params[i].type + commandTag
 						command.params[i].fullName = command.params[i].fullName.replace(command.params[i].type, newType, 1)
@@ -143,7 +143,7 @@ def ParseXML():
 		commandParams = []
 		for commandParam in command.findall("param"):
 			# Skip the param if it has to valid structure or if it is not from the Vulkan API
-			if commandParam.find("type") == None or commandParam.find("name") == None or (commandParam.get("api") and commandParam.get("api") != "vulkan"):
+			if commandParam.find("type") is None or commandParam.find("name") is None or (commandParam.get("api") is not None and commandParam.get("api") != "vulkan"):
 				continue
 
 			# Add the current parameter to the array
@@ -178,7 +178,7 @@ def ParseXML():
 	for extension in root.findall("extensions/extension"):
 		# Get the current extension's dependencies
 		extDependencies = extension.get("depends")
-		if extDependencies:
+		if extDependencies is not None:
 			extDependencies = "defined({0}) && ({1})".format(extension.get("name"), FormatCommandRequirements(extDependencies))
 		else:
 			extDependencies = "defined({0})".format(extension.get("name"))
@@ -187,7 +187,7 @@ def ParseXML():
 		for requirements in extension.findall("require"):
 			# Get the current requirement's dependencies
 			dependencies = requirements.get("depends")
-			if dependencies:
+			if dependencies is not None:
 				dependencies = "({0}) && ({1})".format(extDependencies, FormatCommandRequirements(dependencies))
 			else:
 				dependencies = extDependencies
@@ -256,7 +256,7 @@ namespace wfe {
 	# Write all command function declarations
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			headerFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -287,7 +287,7 @@ namespace wfe {
 	# Write all command function pointer variables
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			headerFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -356,7 +356,7 @@ namespace wfe {
 	# Write the static function pointers
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -383,7 +383,7 @@ namespace wfe {
 
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -411,7 +411,7 @@ namespace wfe {
 
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -436,7 +436,7 @@ namespace wfe {
 		if command.deviceCommand:
 			continue
 
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -461,7 +461,7 @@ namespace wfe {
 		if not command.deviceCommand:
 			continue
 
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -489,7 +489,7 @@ namespace wfe {
 	# Write all loader command definitions
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
@@ -552,7 +552,7 @@ namespace wfe {
 	# Write the static function definitions
 	prevCommand = None
 	for command in commands.values():
-		if prevCommand == None:
+		if prevCommand is None:
 			# Write the first command's requirements
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
