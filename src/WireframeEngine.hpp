@@ -19,6 +19,7 @@
 #include "Platform/Input.hpp"
 #include "Platform/Window.hpp"
 
+#include "Vulkan/API/VulkanStructSize.hpp"
 #include "Vulkan/Instance/VulkanDevice.hpp"
 #include "Vulkan/Instance/VulkanInstance.hpp"
 #include "Vulkan/Instance/VulkanSurface.hpp"

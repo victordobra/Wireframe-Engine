@@ -261,8 +261,7 @@ namespace wfe {
 			headerFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			headerFile.write("#endif\n")
-			headerFile.write("#if {0}\n".format(command.requirements))
+			headerFile.write("#endif\n#if {0}\n".format(command.requirements))
 		
 		# Set the new previous command
 		prevCommand = command
@@ -292,8 +291,7 @@ namespace wfe {
 			headerFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			headerFile.write("#endif\n")
-			headerFile.write("#if {0}\n".format(command.requirements))
+			headerFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -361,8 +359,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -388,8 +385,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -416,8 +412,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -441,8 +436,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -466,8 +460,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 
 		# Set the new previous command
 		prevCommand = command
@@ -494,8 +487,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 		
 		# Set the new previous command
 		prevCommand = command
@@ -557,8 +549,7 @@ namespace wfe {
 			sourceFile.write("#if {0}\n".format(command.requirements))
 		elif command.requirements != prevCommand.requirements:
 			# Write the current command's requirements
-			sourceFile.write("#endif\n")
-			sourceFile.write("#if {0}\n".format(command.requirements))
+			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
 		
 		# Set the new previous command
 		prevCommand = command
