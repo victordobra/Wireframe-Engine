@@ -33,9 +33,9 @@ namespace wfe {
 		};
 
 		/// @brief A struct chain containing all required features for the Vulkan device.
-		static const VkPhysicalDeviceFeatures DEFAULT_REQUIRED_DEVICE_FEATURES;
+		static const VkPhysicalDeviceFeatures2 DEFAULT_REQUIRED_DEVICE_FEATURES;
 		/// @brief A struct chain containing all optional features for the Vulkan device.
-		static const VkPhysicalDeviceFeatures DEFAULT_OPTIONAL_DEVICE_FEATURES;
+		static const VkPhysicalDeviceFeatures2 DEFAULT_OPTIONAL_DEVICE_FEATURES;
 		/// @brief A vector containing all required extensions for the Vulkan device.
 		static const std::vector<const char*> DEFAULT_REQUIRED_DEVICE_EXTENSIONS;
 		/// @brief A vector containing all optional extensions for the Vulkan device.
@@ -48,7 +48,7 @@ namespace wfe {
 		/// @param optionalFeatures All features which can be enabled on device creation. Some features might not be enabled, if not supported by the implementation.
 		/// @param requiredExtensions All extensions which must be enabled on device creation. An exception will be thrown if any of the extensions are not present.
 		/// @param optionalExtensions All extensions which can be enabled on device creation. Some extensions might not be enabled, if not supported by the implementation.
-		VulkanDevice(VulkanInstance* instance, VulkanSurface* surface, const VkPhysicalDeviceFeatures& requiredFeatures = DEFAULT_REQUIRED_DEVICE_FEATURES, const VkPhysicalDeviceFeatures& optionalFeatures = DEFAULT_OPTIONAL_DEVICE_FEATURES, const std::vector<const char*>& requiredExtensions = DEFAULT_REQUIRED_DEVICE_EXTENSIONS, const std::vector<const char*>& optionalExtensions = DEFAULT_OPTIONAL_DEVICE_EXTENSIONS);
+		VulkanDevice(VulkanInstance* instance, VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures = DEFAULT_REQUIRED_DEVICE_FEATURES, const VkPhysicalDeviceFeatures2& optionalFeatures = DEFAULT_OPTIONAL_DEVICE_FEATURES, const std::vector<const char*>& requiredExtensions = DEFAULT_REQUIRED_DEVICE_EXTENSIONS, const std::vector<const char*>& optionalExtensions = DEFAULT_OPTIONAL_DEVICE_EXTENSIONS);
 		VulkanDevice(const VulkanDevice&) = delete;
 		VulkanDevice(VulkanDevice&&) = delete;
 
@@ -93,7 +93,7 @@ namespace wfe {
 		}
 		/// @brief Gets the Vulkan device's features.
 		/// @return A struct containing the Vulkan device's features.
-		const VkPhysicalDeviceFeatures& GetDeviceFeatures() const {
+		const VkPhysicalDeviceFeatures2& GetDeviceFeatures() const {
 			return deviceFeatures;
 		}
 		/// @brief Gets the Vulkan device's enabled extensions.
@@ -106,9 +106,9 @@ namespace wfe {
 		~VulkanDevice();
 	private:
 		bool GetQueueFamilyIndices(VkPhysicalDevice physicalDevice, VulkanSurface* surface, uint32_t& graphicsIndex, uint32_t& presentIndex, uint32_t& transferIndex, uint32_t& computeIndex);
-		bool GetDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures& supportedFeatures, const VkPhysicalDeviceFeatures& requiredFeatures, const VkPhysicalDeviceFeatures& optionalFeatures);
+		bool GetDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2& supportedFeatures, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures);
 		bool GetDeviceExtensions(VkPhysicalDevice physicalDevice, std::vector<const char*>& supportedExtensions, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions);
-		void SetBestDevice(VulkanSurface* surface, const VkPhysicalDeviceFeatures& requiredFeatures, const VkPhysicalDeviceFeatures& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions);
+		void SetBestDevice(VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions);
 		void CreateLogicalDevice();
 
 		VulkanInstance* instance;
@@ -119,7 +119,7 @@ namespace wfe {
 
 		VkPhysicalDeviceProperties deviceProperties;
 		VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-		VkPhysicalDeviceFeatures deviceFeatures;
+		VkPhysicalDeviceFeatures2 deviceFeatures;
 		std::vector<const char*> enabledExtensions;
 	};
 }

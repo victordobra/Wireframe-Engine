@@ -1,129 +1,159 @@
 #include "VulkanDevice.hpp"
+#include "Vulkan/API/VulkanStructSize.hpp"
+#include <unordered_map>
 #include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
 	// Constants
-	const VkPhysicalDeviceFeatures VulkanDevice::DEFAULT_REQUIRED_DEVICE_FEATURES {
-		.robustBufferAccess = VK_FALSE,
-		.fullDrawIndexUint32 = VK_FALSE,
-		.imageCubeArray = VK_FALSE,
-		.independentBlend = VK_FALSE,
-		.geometryShader = VK_FALSE,
-		.tessellationShader = VK_FALSE,
-		.sampleRateShading = VK_FALSE,
-		.dualSrcBlend = VK_FALSE,
-		.logicOp = VK_FALSE,
-		.multiDrawIndirect = VK_TRUE,
-		.drawIndirectFirstInstance = VK_FALSE,
-		.depthClamp = VK_TRUE,
-		.depthBiasClamp = VK_FALSE,
-		.fillModeNonSolid = VK_TRUE,
-		.depthBounds = VK_FALSE,
-		.wideLines = VK_FALSE,
-		.largePoints = VK_FALSE,
-		.alphaToOne = VK_FALSE,
-		.multiViewport = VK_FALSE,
-		.samplerAnisotropy = VK_FALSE,
-		.textureCompressionETC2 = VK_FALSE,
-		.textureCompressionASTC_LDR = VK_FALSE,
-		.textureCompressionBC = VK_FALSE,
-		.occlusionQueryPrecise = VK_FALSE,
-		.pipelineStatisticsQuery = VK_FALSE,
-		.vertexPipelineStoresAndAtomics = VK_FALSE,
-		.fragmentStoresAndAtomics = VK_FALSE,
-		.shaderTessellationAndGeometryPointSize = VK_FALSE,
-		.shaderImageGatherExtended = VK_FALSE,
-		.shaderStorageImageExtendedFormats = VK_FALSE,
-		.shaderStorageImageMultisample = VK_FALSE,
-		.shaderStorageImageReadWithoutFormat = VK_FALSE,
-		.shaderStorageImageWriteWithoutFormat = VK_FALSE,
-		.shaderUniformBufferArrayDynamicIndexing = VK_TRUE,
-		.shaderSampledImageArrayDynamicIndexing = VK_TRUE,
-		.shaderStorageBufferArrayDynamicIndexing = VK_TRUE,
-		.shaderStorageImageArrayDynamicIndexing = VK_TRUE,
-		.shaderClipDistance = VK_FALSE,
-		.shaderCullDistance = VK_FALSE,
-		.shaderFloat64 = VK_FALSE,
-		.shaderInt64 = VK_FALSE,
-		.shaderInt16 = VK_FALSE,
-		.shaderResourceResidency = VK_FALSE,
-		.shaderResourceMinLod = VK_FALSE,
-		.sparseBinding = VK_FALSE,
-		.sparseResidencyBuffer = VK_FALSE,
-		.sparseResidencyImage2D = VK_FALSE,
-		.sparseResidencyImage3D = VK_FALSE,
-		.sparseResidency2Samples = VK_FALSE,
-		.sparseResidency4Samples = VK_FALSE,
-		.sparseResidency8Samples = VK_FALSE,
-		.sparseResidency16Samples = VK_FALSE,
-		.sparseResidencyAliased = VK_FALSE,
-		.variableMultisampleRate = VK_FALSE,
-		.inheritedQueries = VK_FALSE
+	static const VkPhysicalDeviceIndexTypeUint8FeaturesEXT OPTIONAL_INDEX_TYPE_UINT8_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
+		.pNext = nullptr,
+		.indexTypeUint8 = VK_TRUE
 	};
-	const VkPhysicalDeviceFeatures VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES {
-		.robustBufferAccess = VK_TRUE,
-		.fullDrawIndexUint32 = VK_TRUE,
-		.imageCubeArray = VK_TRUE,
-		.independentBlend = VK_FALSE,
-		.geometryShader = VK_TRUE,
-		.tessellationShader = VK_TRUE,
-		.sampleRateShading = VK_FALSE,
-		.dualSrcBlend = VK_FALSE,
-		.logicOp = VK_TRUE,
-		.multiDrawIndirect = VK_FALSE,
-		.drawIndirectFirstInstance = VK_TRUE,
-		.depthClamp = VK_FALSE,
-		.depthBiasClamp = VK_TRUE,
-		.fillModeNonSolid = VK_FALSE,
-		.depthBounds = VK_FALSE,
-		.wideLines = VK_TRUE,
-		.largePoints = VK_TRUE,
-		.alphaToOne = VK_FALSE,
-		.multiViewport = VK_FALSE,
-		.samplerAnisotropy = VK_TRUE,
-		.textureCompressionETC2 = VK_FALSE,
-		.textureCompressionASTC_LDR = VK_FALSE,
-		.textureCompressionBC = VK_FALSE,
-		.occlusionQueryPrecise = VK_TRUE,
-		.pipelineStatisticsQuery = VK_TRUE,
-		.vertexPipelineStoresAndAtomics = VK_TRUE,
-		.fragmentStoresAndAtomics = VK_TRUE,
-		.shaderTessellationAndGeometryPointSize = VK_TRUE,
-		.shaderImageGatherExtended = VK_TRUE,
-		.shaderStorageImageExtendedFormats = VK_TRUE,
-		.shaderStorageImageMultisample = VK_TRUE,
-		.shaderStorageImageReadWithoutFormat = VK_TRUE,
-		.shaderStorageImageWriteWithoutFormat = VK_TRUE,
-		.shaderUniformBufferArrayDynamicIndexing = VK_FALSE,
-		.shaderSampledImageArrayDynamicIndexing = VK_FALSE,
-		.shaderStorageBufferArrayDynamicIndexing = VK_FALSE,
-		.shaderStorageImageArrayDynamicIndexing = VK_FALSE,
-		.shaderClipDistance = VK_TRUE,
-		.shaderCullDistance = VK_TRUE,
-		.shaderFloat64 = VK_TRUE,
-		.shaderInt64 = VK_TRUE,
-		.shaderInt16 = VK_TRUE,
-		.shaderResourceResidency = VK_TRUE,
-		.shaderResourceMinLod = VK_TRUE,
-		.sparseBinding = VK_FALSE,
-		.sparseResidencyBuffer = VK_FALSE,
-		.sparseResidencyImage2D = VK_FALSE,
-		.sparseResidencyImage3D = VK_FALSE,
-		.sparseResidency2Samples = VK_FALSE,
-		.sparseResidency4Samples = VK_FALSE,
-		.sparseResidency8Samples = VK_FALSE,
-		.sparseResidency16Samples = VK_FALSE,
-		.sparseResidencyAliased = VK_FALSE,
-		.variableMultisampleRate = VK_TRUE,
-		.inheritedQueries = VK_TRUE
+	static const VkPhysicalDeviceMeshShaderFeaturesEXT OPTIONAL_MESH_SHADER_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT,
+		.pNext = (void*)&OPTIONAL_INDEX_TYPE_UINT8_FEATURES,
+		.taskShader = VK_TRUE,
+		.meshShader = VK_TRUE,
+		.multiviewMeshShader = VK_FALSE,
+		.primitiveFragmentShadingRateMeshShader = VK_FALSE,
+		.meshShaderQueries = VK_FALSE
+	};
+	static const VkPhysicalDeviceSynchronization2FeaturesKHR OPTIONAL_SYNCHRONIZATION_2_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR,
+		.pNext = (void*)&OPTIONAL_MESH_SHADER_FEATURES,
+		.synchronization2 = VK_TRUE
+	};
+
+	const VkPhysicalDeviceFeatures2 VulkanDevice::DEFAULT_REQUIRED_DEVICE_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+		.pNext = nullptr,
+		.features = {
+			.robustBufferAccess = VK_FALSE,
+			.fullDrawIndexUint32 = VK_FALSE,
+			.imageCubeArray = VK_FALSE,
+			.independentBlend = VK_FALSE,
+			.geometryShader = VK_FALSE,
+			.tessellationShader = VK_FALSE,
+			.sampleRateShading = VK_FALSE,
+			.dualSrcBlend = VK_FALSE,
+			.logicOp = VK_FALSE,
+			.multiDrawIndirect = VK_TRUE,
+			.drawIndirectFirstInstance = VK_FALSE,
+			.depthClamp = VK_TRUE,
+			.depthBiasClamp = VK_FALSE,
+			.fillModeNonSolid = VK_TRUE,
+			.depthBounds = VK_FALSE,
+			.wideLines = VK_FALSE,
+			.largePoints = VK_FALSE,
+			.alphaToOne = VK_FALSE,
+			.multiViewport = VK_FALSE,
+			.samplerAnisotropy = VK_FALSE,
+			.textureCompressionETC2 = VK_FALSE,
+			.textureCompressionASTC_LDR = VK_FALSE,
+			.textureCompressionBC = VK_FALSE,
+			.occlusionQueryPrecise = VK_FALSE,
+			.pipelineStatisticsQuery = VK_FALSE,
+			.vertexPipelineStoresAndAtomics = VK_FALSE,
+			.fragmentStoresAndAtomics = VK_FALSE,
+			.shaderTessellationAndGeometryPointSize = VK_FALSE,
+			.shaderImageGatherExtended = VK_FALSE,
+			.shaderStorageImageExtendedFormats = VK_FALSE,
+			.shaderStorageImageMultisample = VK_FALSE,
+			.shaderStorageImageReadWithoutFormat = VK_FALSE,
+			.shaderStorageImageWriteWithoutFormat = VK_FALSE,
+			.shaderUniformBufferArrayDynamicIndexing = VK_TRUE,
+			.shaderSampledImageArrayDynamicIndexing = VK_TRUE,
+			.shaderStorageBufferArrayDynamicIndexing = VK_TRUE,
+			.shaderStorageImageArrayDynamicIndexing = VK_TRUE,
+			.shaderClipDistance = VK_FALSE,
+			.shaderCullDistance = VK_FALSE,
+			.shaderFloat64 = VK_FALSE,
+			.shaderInt64 = VK_FALSE,
+			.shaderInt16 = VK_FALSE,
+			.shaderResourceResidency = VK_FALSE,
+			.shaderResourceMinLod = VK_FALSE,
+			.sparseBinding = VK_FALSE,
+			.sparseResidencyBuffer = VK_FALSE,
+			.sparseResidencyImage2D = VK_FALSE,
+			.sparseResidencyImage3D = VK_FALSE,
+			.sparseResidency2Samples = VK_FALSE,
+			.sparseResidency4Samples = VK_FALSE,
+			.sparseResidency8Samples = VK_FALSE,
+			.sparseResidency16Samples = VK_FALSE,
+			.sparseResidencyAliased = VK_FALSE,
+			.variableMultisampleRate = VK_FALSE,
+			.inheritedQueries = VK_FALSE
+		}
+	};
+	const VkPhysicalDeviceFeatures2 VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+		.pNext = nullptr,
+		.features = {
+			.robustBufferAccess = VK_TRUE,
+			.fullDrawIndexUint32 = VK_TRUE,
+			.imageCubeArray = VK_TRUE,
+			.independentBlend = VK_FALSE,
+			.geometryShader = VK_TRUE,
+			.tessellationShader = VK_TRUE,
+			.sampleRateShading = VK_FALSE,
+			.dualSrcBlend = VK_FALSE,
+			.logicOp = VK_TRUE,
+			.multiDrawIndirect = VK_FALSE,
+			.drawIndirectFirstInstance = VK_TRUE,
+			.depthClamp = VK_FALSE,
+			.depthBiasClamp = VK_TRUE,
+			.fillModeNonSolid = VK_FALSE,
+			.depthBounds = VK_FALSE,
+			.wideLines = VK_TRUE,
+			.largePoints = VK_TRUE,
+			.alphaToOne = VK_FALSE,
+			.multiViewport = VK_FALSE,
+			.samplerAnisotropy = VK_TRUE,
+			.textureCompressionETC2 = VK_FALSE,
+			.textureCompressionASTC_LDR = VK_FALSE,
+			.textureCompressionBC = VK_FALSE,
+			.occlusionQueryPrecise = VK_TRUE,
+			.pipelineStatisticsQuery = VK_TRUE,
+			.vertexPipelineStoresAndAtomics = VK_TRUE,
+			.fragmentStoresAndAtomics = VK_TRUE,
+			.shaderTessellationAndGeometryPointSize = VK_TRUE,
+			.shaderImageGatherExtended = VK_TRUE,
+			.shaderStorageImageExtendedFormats = VK_TRUE,
+			.shaderStorageImageMultisample = VK_TRUE,
+			.shaderStorageImageReadWithoutFormat = VK_TRUE,
+			.shaderStorageImageWriteWithoutFormat = VK_TRUE,
+			.shaderUniformBufferArrayDynamicIndexing = VK_FALSE,
+			.shaderSampledImageArrayDynamicIndexing = VK_FALSE,
+			.shaderStorageBufferArrayDynamicIndexing = VK_FALSE,
+			.shaderStorageImageArrayDynamicIndexing = VK_FALSE,
+			.shaderClipDistance = VK_TRUE,
+			.shaderCullDistance = VK_TRUE,
+			.shaderFloat64 = VK_TRUE,
+			.shaderInt64 = VK_TRUE,
+			.shaderInt16 = VK_TRUE,
+			.shaderResourceResidency = VK_TRUE,
+			.shaderResourceMinLod = VK_TRUE,
+			.sparseBinding = VK_FALSE,
+			.sparseResidencyBuffer = VK_FALSE,
+			.sparseResidencyImage2D = VK_FALSE,
+			.sparseResidencyImage3D = VK_FALSE,
+			.sparseResidency2Samples = VK_FALSE,
+			.sparseResidency4Samples = VK_FALSE,
+			.sparseResidency8Samples = VK_FALSE,
+			.sparseResidency16Samples = VK_FALSE,
+			.sparseResidencyAliased = VK_FALSE,
+			.variableMultisampleRate = VK_TRUE,
+			.inheritedQueries = VK_TRUE
+		}
 	};
 	const std::vector<const char*> VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 	const std::vector<const char*> VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS {
+		VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME,
 		VK_EXT_MESH_SHADER_EXTENSION_NAME,
-		VK_KHR_INDEX_TYPE_UINT8_EXTENSION_NAME,
 		VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME
 	};
 
@@ -206,26 +236,117 @@ namespace wfe {
 
 		return graphicsIndex != UINT32_T_MAX && presentIndex != UINT32_T_MAX && transferIndex != UINT32_T_MAX && computeIndex != UINT32_T_MAX;
 	}
-	bool VulkanDevice::GetDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures& supportedFeatures, const VkPhysicalDeviceFeatures& requiredFeatures, const VkPhysicalDeviceFeatures& optionalFeatures) {
-		// Get all device features
-		VkPhysicalDeviceFeatures devicebFeatures;
-		GetLoader()->vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+	bool VulkanDevice::GetDeviceFeatures(VkPhysicalDevice physicalDevice, VkPhysicalDeviceFeatures2& supportedFeatures, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures) {
+		struct FeatureRequest {
+			const VkBool32* requiredFeatures = nullptr;
+			const VkBool32* optionalFeatures = nullptr;
+			const VkBool32* deviceFeatures = nullptr;
+			VkBool32* supportedFeatures = nullptr;
+		};
 
-		// Loop through all features
-		uint32_t featureCount = sizeof(VkPhysicalDeviceFeatures) / sizeof(VkBool32);
+		std::unordered_map<VkStructureType, FeatureRequest> featureRequests;
 
-		const VkBool32* deviceFeaturesVec = (const VkBool32*)&deviceFeatures;
-		const VkBool32* requiredFeaturesVec = (const VkBool32*)&requiredFeatures;
-		const VkBool32* optionalFeaturesVec = (const VkBool32*)&optionalFeatures;
-		VkBool32* supportedFeaturesVec = (VkBool32*)&supportedFeatures;
+		// Get all required feature types
+		for(const VkBaseInStructure* featureStruct = (const VkBaseInStructure*)requiredFeatures.pNext; featureStruct; featureStruct = featureStruct->pNext)
+			featureRequests[featureStruct->sType].requiredFeatures = (const VkBool32*)(featureStruct + 1);
 
-		for(uint32_t i = 0; i != featureCount; ++i) {
-			// Exit the function if the current feature is required, yet not supported
-			if(requiredFeaturesVec[i] && !deviceFeaturesVec[i])
-				return false;
+		// Get all optional feature types
+		for(const VkBaseInStructure* featureStruct = (const VkBaseInStructure*)optionalFeatures.pNext; featureStruct; featureStruct = featureStruct->pNext)
+			featureRequests[featureStruct->sType].optionalFeatures = (const VkBool32*)(featureStruct + 1);
+		
+		// Build the device features struct
+		VkPhysicalDeviceFeatures2 deviceFeatures {
+			.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+			.pNext = nullptr
+		};
+		void** prevNext = &deviceFeatures.pNext;
+
+		for(std::pair<const VkStructureType, FeatureRequest>& pair : featureRequests) {
+			// Allocate the new structure
+			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)malloc(VulkanGetStructSize(pair.first));
+			if(!newStruct)
+				throw std::runtime_error("Failed to allocate VkPhysicalDeviceFeatures2 pNext chain!");
 			
-			// Set the feature in the supported features vector
-			supportedFeaturesVec[i] = deviceFeaturesVec[i] && (requiredFeaturesVec[i] || optionalFeaturesVec[i]);
+			// Set its info
+			newStruct->sType = pair.first;
+			newStruct->pNext = nullptr;
+
+			// Add the struct to the pNext chain
+			*prevNext = newStruct;
+			prevNext = (void**)&newStruct->pNext;
+
+			pair.second.deviceFeatures = (const VkBool32*)(newStruct + 1);
+		}
+
+		// Build the supported features struct
+		supportedFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		supportedFeatures.pNext = nullptr;
+		prevNext = &supportedFeatures.pNext;
+
+		for(std::pair<const VkStructureType, FeatureRequest>& pair : featureRequests) {
+			// Allocate the new structure
+			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)malloc(VulkanGetStructSize(pair.first));
+			if(!newStruct)
+				throw std::runtime_error("Failed to allocate VkPhysicalDeviceFeatures2 pNext chain!");
+			
+			// Set its info
+			newStruct->sType = pair.first;
+			newStruct->pNext = nullptr;
+
+			// Add the struct to the pNext chain
+			*prevNext = newStruct;
+			prevNext = (void**)&newStruct->pNext;
+
+			pair.second.supportedFeatures = (VkBool32*)(newStruct + 1);
+		}
+
+		// Add the default request
+		featureRequests[VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2] = FeatureRequest {
+			.requiredFeatures = (const VkBool32*)&requiredFeatures.features,
+			.optionalFeatures = (const VkBool32*)&optionalFeatures.features,
+			.deviceFeatures = (const VkBool32*)&deviceFeatures.features,
+			.supportedFeatures = (VkBool32*)&supportedFeatures.features
+		};
+
+		// Get all device features
+		GetLoader()->vkGetPhysicalDeviceFeatures2(physicalDevice, &deviceFeatures);
+
+		// Set all enabled features
+		bool allSupported = true;
+
+		for(std::pair<const VkStructureType, FeatureRequest>& pair : featureRequests) {
+			// Get the feature count
+			size_t featureCount = (VulkanGetStructSize(pair.first) - sizeof(VkBaseOutStructure)) / sizeof(VkBool32);
+
+			// Check all features
+			for(size_t i = 0; i != featureCount; ++i) {
+				VkBool32 featureRequired = pair.second.requiredFeatures ? pair.second.requiredFeatures[i] : VK_FALSE;
+				VkBool32 featureOptional = pair.second.optionalFeatures ? pair.second.optionalFeatures[i] : VK_FALSE;
+				VkBool32 featureSupported = pair.second.deviceFeatures[i];
+				
+				// Exit the loop if the current feature is required, yet not supported
+				if(featureRequired && !featureSupported) {
+					allSupported = false;
+					break;
+				}
+
+				// Set the current feature's enabled status
+				pair.second.supportedFeatures[i] = featureSupported && (featureRequired || featureOptional);
+			}
+
+			// Exit the loop if not all required features are supported
+			if(!allSupported)
+				break;
+		}
+
+		// Free the device feature chain
+		for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {
+			// Get the next structure
+			VkBaseOutStructure* nextStruct = featureStruct->pNext;
+
+			// Free the current struct
+			free(featureStruct);
+			featureStruct = nextStruct;
 		}
 
 		return true;
@@ -266,7 +387,7 @@ namespace wfe {
 
 		return true;
 	}
-	void VulkanDevice::SetBestDevice(VulkanSurface* surface, const VkPhysicalDeviceFeatures& requiredFeatures, const VkPhysicalDeviceFeatures& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions) {
+	void VulkanDevice::SetBestDevice(VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions) {
 		// Get all devices
 		uint32_t deviceCount;
 		GetLoader()->vkEnumeratePhysicalDevices(instance->GetInstance(), &deviceCount, nullptr);
@@ -275,6 +396,12 @@ namespace wfe {
 
 		// Find the best device 
 		physicalDevice = VK_NULL_HANDLE;
+
+		deviceFeatures = {
+			.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
+			.pNext = nullptr
+		};
+
 		deviceProperties.deviceType = VK_PHYSICAL_DEVICE_TYPE_CPU;
 		VkDeviceSize totalMemorySize = 0;
 
@@ -291,7 +418,7 @@ namespace wfe {
 				continue;
 			
 			// Get the device's supported features
-			VkPhysicalDeviceFeatures currentFeatures;
+			VkPhysicalDeviceFeatures2 currentFeatures;
 			if(!GetDeviceFeatures(currentDevice, currentFeatures, requiredFeatures, optionalFeatures))
 				continue;
 			
@@ -312,6 +439,16 @@ namespace wfe {
 			
 			// If this is the only discrete device or it has the most memory, replace the old device with it
 			if((currentProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceProperties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) || currentMemorySize > totalMemorySize) {
+				// Delete the old device features
+				for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {
+					// Get the next structure
+					VkBaseOutStructure* nextStruct = featureStruct->pNext;
+
+					// Free the current struct
+					free(featureStruct);
+					featureStruct = nextStruct;
+				}
+
 				// Set the physical device and all info structs
 				physicalDevice = currentDevice;
 				deviceProperties = currentProperties;
@@ -324,6 +461,16 @@ namespace wfe {
 				queues.transferIndex = transferIndex;
 				queues.computeIndex = computeIndex;
 				enabledExtensions = currentExtensions;
+			} else {
+				// Delete the current device features
+				for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)currentFeatures.pNext; featureStruct;) {
+					// Get the next structure
+					VkBaseOutStructure* nextStruct = featureStruct->pNext;
+
+					// Free the current struct
+					free(featureStruct);
+					featureStruct = nextStruct;
+				}
 			}
 		}
 	}
@@ -372,7 +519,7 @@ namespace wfe {
 		// Set the device create info
 		VkDeviceCreateInfo deviceInfo {
 			.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-			.pNext = nullptr,
+			.pNext = &deviceFeatures,
 			.flags = 0,
 			.queueCreateInfoCount = queueInfoCount,
 			.pQueueCreateInfos = queueInfos,
@@ -380,7 +527,7 @@ namespace wfe {
 			.ppEnabledLayerNames = nullptr,
 			.enabledExtensionCount = (uint32_t)enabledExtensions.size(),
 			.ppEnabledExtensionNames = enabledExtensions.data(),
-			.pEnabledFeatures = &deviceFeatures
+			.pEnabledFeatures = nullptr
 		};
 
 		// Create the device
@@ -399,13 +546,23 @@ namespace wfe {
 	}
 
 	// Public functions
-	VulkanDevice::VulkanDevice(VulkanInstance* instance, VulkanSurface* surface, const VkPhysicalDeviceFeatures& requiredFeatures, const VkPhysicalDeviceFeatures& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions) : instance(instance) {
+	VulkanDevice::VulkanDevice(VulkanInstance* instance, VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions) : instance(instance) {
 		// Get the best physical device and create the logical device
 		SetBestDevice(surface, requiredFeatures, optionalFeatures, requiredExtensions, optionalExtensions);
 		CreateLogicalDevice();
 	}
 
 	VulkanDevice::~VulkanDevice() {
+		// Delete the device features
+		for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {
+			// Get the next structure
+			VkBaseOutStructure* nextStruct = featureStruct->pNext;
+
+			// Free the current struct
+			free(featureStruct);
+			featureStruct = nextStruct;
+		}
+
 		// Destroy the device
 		vkDestroyDevice(device, nullptr);
 	}
