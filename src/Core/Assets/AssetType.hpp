@@ -47,13 +47,25 @@ namespace wfe {
 		/// @param assetType The asset type to register.
 		static void RegisterAssetType(const AssetType& assetType);
 
+		/// @brief Creates a default asset type.
 		constexpr AssetType() = default;
+		/// @brief Copies the given asset type.
+		/// @param other The asset type to copy.
 		constexpr AssetType(const AssetType& other) = default;
+		/// @brief Moves the given asset type.
+		/// @param other The asset type to move.
 		constexpr AssetType(AssetType&& other) noexcept = default;
 
+		/// @brief Copies the given asset type's info into this asset type.
+		/// @param other The asset type whose info to copy.
+		/// @return A reference to this asset type.
 		AssetType& operator=(const AssetType& other) = default;
+		/// @brief Moves the given asset type's info into this asset type.
+		/// @param other The asset type whose info to move.
+		/// @return A reference to this asset type.
 		AssetType& operator=(AssetType&& other) noexcept = default;
 
+		/// @brief Destroys the asset type.
 		~AssetType() = default;
 
 		/// @brief The type's name.
@@ -82,16 +94,14 @@ struct AssetType##type##Constructor { \
 		\
 		strncpy(assetType.name, wfe::GetTypeName<type>().c_str(), wfe::AssetType::MAX_TYPE_NAME_LENGTH); \
 		\
-		const char* const EXT_ARRAY[] ## extensions; \
+		const char* const EXT_ARRAY[] extensions; \
 		assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
 		for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
 			strncpy(assetType.importExtensions[i], EXT_ARRAY[i], wfe::AssetType::MAX_EXTENSION_LENGTH); \
 		\
 		assetType.constructor = CreateAsset; \
 		\
-		try { \
-			wfe::AssetType::RegisterAssetType(assetType); \
-		} catch (const std::invalid_argument&) { } \
+		wfe::AssetType::RegisterAssetType(assetType); \
 	} \
 }; \
 static inline AssetType##type##Constructor assetType##type##ConstructorInstance { };

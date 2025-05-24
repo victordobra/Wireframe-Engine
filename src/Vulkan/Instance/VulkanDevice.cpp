@@ -1,5 +1,7 @@
 #include "VulkanDevice.hpp"
+#include "Core/Memory/Allocator.hpp"
 #include "Vulkan/API/VulkanStructSize.hpp"
+#include "Vulkan/VulkanRenderer.hpp"
 #include <unordered_map>
 #include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>
@@ -263,9 +265,9 @@ namespace wfe {
 
 		for(std::pair<const VkStructureType, FeatureRequest>& pair : featureRequests) {
 			// Allocate the new structure
-			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)malloc(VulkanGetStructSize(pair.first));
+			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)AllocMemory(VulkanGetStructSize(pair.first));
 			if(!newStruct)
-				throw std::runtime_error("Failed to allocate VkPhysicalDeviceFeatures2 pNext chain!");
+				throw std::bad_alloc();
 			
 			// Set its info
 			newStruct->sType = pair.first;
@@ -285,9 +287,9 @@ namespace wfe {
 
 		for(std::pair<const VkStructureType, FeatureRequest>& pair : featureRequests) {
 			// Allocate the new structure
-			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)malloc(VulkanGetStructSize(pair.first));
+			VkBaseOutStructure* newStruct = (VkBaseOutStructure*)AllocMemory(VulkanGetStructSize(pair.first));
 			if(!newStruct)
-				throw std::runtime_error("Failed to allocate VkPhysicalDeviceFeatures2 pNext chain!");
+				throw std::bad_alloc();
 			
 			// Set its info
 			newStruct->sType = pair.first;
@@ -345,7 +347,7 @@ namespace wfe {
 			VkBaseOutStructure* nextStruct = featureStruct->pNext;
 
 			// Free the current struct
-			free(featureStruct);
+			FreeMemory(featureStruct);
 			featureStruct = nextStruct;
 		}
 
@@ -531,7 +533,7 @@ namespace wfe {
 		};
 
 		// Create the device
-		VkResult result = GetLoader()->vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device);
+		VkResult result = GetLoader()->vkCreateDevice(physicalDevice, &deviceInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &device);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan logical device! Error code: " + string_VkResult(result));
 		
@@ -559,11 +561,11 @@ namespace wfe {
 			VkBaseOutStructure* nextStruct = featureStruct->pNext;
 
 			// Free the current struct
-			free(featureStruct);
+			FreeMemory(featureStruct);
 			featureStruct = nextStruct;
 		}
 
 		// Destroy the device
-		vkDestroyDevice(device, nullptr);
+		vkDestroyDevice(device, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

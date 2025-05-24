@@ -1,4 +1,5 @@
 #include "VulkanInstance.hpp"
+#include "Vulkan/VulkanRenderer.hpp"
 #include <stdexcept>
 #include <string.h>
 #include <vulkan/vk_enum_string_helper.h>
@@ -156,7 +157,7 @@ namespace wfe {
 		};
 
 		// Create the instance
-		VkResult result = loader->vkCreateInstance(&instanceInfo, nullptr, &instance);
+		VkResult result = loader->vkCreateInstance(&instanceInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &instance);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan instance! Error code: " + string_VkResult(result));
 		
@@ -165,7 +166,7 @@ namespace wfe {
 
 		// Create the debug messenger, if requested and supported
 		if(logger) {
-			result = loader->vkCreateDebugUtilsMessengerEXT(instance, &debugMessengerInfo, nullptr, &debugMessenger);
+			result = loader->vkCreateDebugUtilsMessengerEXT(instance, &debugMessengerInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &debugMessenger);
 			if(result != VK_SUCCESS)
 				throw std::runtime_error((std::string)"Failed to create Vulkan debug messenger! Error code: " + string_VkResult(result));
 		} else {
@@ -211,7 +212,7 @@ namespace wfe {
 	VulkanInstance::~VulkanInstance() {
 		// Destroy all existing components
 		if(debugMessenger)
-			loader->vkDestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-		loader->vkDestroyInstance(instance, nullptr);
+			loader->vkDestroyDebugUtilsMessengerEXT(instance, debugMessenger, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		loader->vkDestroyInstance(instance, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

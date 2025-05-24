@@ -1,7 +1,32 @@
 #include "VulkanRenderer.hpp"
 #include "Info/EngineInfo.hpp"
+#include "Core/Memory/Allocator.hpp"
 
 namespace wfe {
+	// Callback functions
+	void* AllocationCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {
+		// Allocate the memory
+		return AllocMemory(size, alignment);
+	}
+	void* ReallocationCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {
+		// Reallocate the memory
+		return ReallocMemory(pOriginal, size, alignment);
+	}
+	void FreeCallback(void* pUserData, void* pMemory) {
+		// Free the memory
+		FreeMemory(pMemory);
+	}
+
+	// Constants
+	const VkAllocationCallbacks VulkanRenderer::ALLOCATION_CALLBACKS {
+		.pUserData = nullptr,
+		.pfnAllocation = AllocationCallback,
+		.pfnReallocation = ReallocationCallback,
+		.pfnFree = FreeCallback,
+		.pfnInternalAllocation = nullptr,
+		.pfnInternalFree = nullptr
+	};
+
 	// Public functions
 	VulkanRenderer::VulkanRenderer(Program* program) : program(program) {
 		// Create the loader

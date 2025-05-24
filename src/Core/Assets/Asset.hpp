@@ -4,6 +4,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <string.h>
 #include <vector>
 
 namespace wfe {

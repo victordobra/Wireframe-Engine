@@ -13,6 +13,9 @@ namespace wfe {
 	/// @brief A class containing all Vulkan base classes required for a renderer.
 	class VulkanRenderer {
 	public:
+		/// @brief The Vulkan allocation callbacks used by the renderer.
+		static const VkAllocationCallbacks ALLOCATION_CALLBACKS;
+
 		/// @brief Creates the Vulkan renderer.
 		/// @param program The program owning this renderer.
 		VulkanRenderer(Program* program);

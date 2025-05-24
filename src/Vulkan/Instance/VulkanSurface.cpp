@@ -1,4 +1,5 @@
 #include "VulkanSurface.hpp"
+#include "Vulkan/VulkanRenderer.hpp"
 #include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan.h>
@@ -26,7 +27,7 @@ namespace wfe {
 		};
 
 		// Create the surface
-		VkResult result = instance->GetLoader()->vkCreateWin32SurfaceKHR(instance->GetInstance(), &createInfo, nullptr, &surface);
+		VkResult result = instance->GetLoader()->vkCreateWin32SurfaceKHR(instance->GetInstance(), &createInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &surface);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan Win32 window surface! Error code: " + string_VkResult(result));
 #elif defined(WFE_PLATFORM_LINUX)
@@ -35,6 +36,6 @@ namespace wfe {
 
 	VulkanSurface::~VulkanSurface() {
 		// Destroy the surface
-		vkDestroySurfaceKHR(instance->GetInstance(), surface, nullptr);
+		vkDestroySurfaceKHR(instance->GetInstance(), surface, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }
