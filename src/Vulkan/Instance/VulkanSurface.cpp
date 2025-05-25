@@ -36,6 +36,6 @@ namespace wfe {
 
 	VulkanSurface::~VulkanSurface() {
 		// Destroy the surface
-		vkDestroySurfaceKHR(instance->GetInstance(), surface, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		instance->GetLoader()->vkDestroySurfaceKHR(instance->GetInstance(), surface, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

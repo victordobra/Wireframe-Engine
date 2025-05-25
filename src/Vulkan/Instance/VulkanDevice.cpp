@@ -573,6 +573,6 @@ namespace wfe {
 		}
 
 		// Destroy the device
-		vkDestroyDevice(device, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		GetLoader()->vkDestroyDevice(device, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }
