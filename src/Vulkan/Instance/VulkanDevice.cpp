@@ -561,6 +561,18 @@ namespace wfe {
 		CreateLogicalDevice();
 	}
 
+	uint32_t VulkanDevice::GetMemoryTypeIndex(uint32_t memoryTypeBits, VkMemoryPropertyFlags properties) const {
+		// Loop through all memory types
+		for(uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; ++i) {
+			// Check if the current memory type is in the bitmask and has the required properties
+			if((memoryTypeBits & (1 << i)) && (deviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+				return i;
+		}
+
+		// No memory type was found; return UINT32_T_MAX
+		return UINT32_T_MAX;
+	}
+
 	VulkanDevice::~VulkanDevice() {
 		// Delete the device features
 		for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {

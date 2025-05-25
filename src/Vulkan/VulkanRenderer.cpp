@@ -51,10 +51,14 @@ namespace wfe {
 
 		// Create the device
 		device = new VulkanDevice(instance, surface);
+
+		// Create the swap chain
+		swapChain = new VulkanSwapChain(device, surface);
 	}
 
 	VulkanRenderer::~VulkanRenderer() {
 		// Destroy all renderer components
+		delete swapChain;
 		delete device;
 		delete surface;
 		delete instance;

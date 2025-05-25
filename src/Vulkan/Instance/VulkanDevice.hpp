@@ -102,6 +102,12 @@ namespace wfe {
 			return enabledExtensions;
 		}
 
+		/// @brief Gets the first suitable memory type for the given bitmask and properties.
+		/// @param memoryTypeBits A bitmask containing all memory types that are suitable for the given allocation.
+		/// @param properties The required memory properties for the type.
+		/// @return The index of the memroy type, or UINT32_T_MAX if no such type exists.
+		uint32_t GetMemoryTypeIndex(uint32_t memoryTypeBits, VkMemoryPropertyFlags properties) const;
+
 		/// @brief Destroys the Vulkan logical device.
 		~VulkanDevice();
 	private:

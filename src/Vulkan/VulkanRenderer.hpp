@@ -5,6 +5,7 @@
 #include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
 #include "Instance/VulkanSurface.hpp"
+#include "Instance/VulkanSwapChain.hpp"
 #include "Loader/VulkanLoader.hpp"
 
 namespace wfe {
@@ -51,6 +52,11 @@ namespace wfe {
 		VulkanDevice* GetDevice() const {
 			return device;
 		}
+		/// @brief Gets the Vulkan swap chain of the renderer.
+		/// @return The Vulkan swap chain of the renderer.
+		VulkanSwapChain* GetSwapChain() const {
+			return swapChain;
+		}
 
 		/// @brief Destroys the Vulkan renderer.
 		~VulkanRenderer();
@@ -61,5 +67,6 @@ namespace wfe {
 		VulkanInstance* instance;
 		VulkanSurface* surface;
 		VulkanDevice* device;
+		VulkanSwapChain* swapChain;
 	};
 }
