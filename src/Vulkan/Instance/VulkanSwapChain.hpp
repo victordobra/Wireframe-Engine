@@ -90,6 +90,10 @@ namespace wfe {
 			return swapChainImages;
 		}
 
+		/// @brief Logs informaton about the Vulkana instance to the given logger.
+		/// @param logger The logger to log the information to.
+		void LogInfo(Logger* logger) const;
+
 		/// @brief Recreates the Vulkan swap chain.
 		/// @param vsync Whether to enable vertical synchronization (VSync) for the swap chain. Defaulted to true.
 		void RecreateSwapChain(bool vsync = true);

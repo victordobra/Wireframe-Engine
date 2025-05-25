@@ -68,6 +68,10 @@ namespace wfe {
 			return enabledLayers;
 		}
 
+		/// @brief Logs informaton about the Vulkana instance to the given logger.
+		/// @param logger The logger to log the information to.
+		void LogInfo(Logger* logger) const;
+
 		/// @brief Destroys the Vulkan instance.
 		~VulkanInstance();
 	private:

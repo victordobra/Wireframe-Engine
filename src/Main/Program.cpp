@@ -26,8 +26,12 @@ namespace wfe {
 
 	// Public functions
 	Program::Program(const ProgramInfo& info, int32_t argc, char** args) : info(info) {
+		// Store the start time for engine initialization
+		std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+
 		// Create the program's logger
 		logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, "Initializing " + (std::string)info.programName + ", version " + std::to_string(info.programVersionMajor) + '.' + std::to_string(info.programVersionMinor) + '.' + std::to_string(info.programVersionPatch) + "...");
 
 		// Create the program's window and add the close listener
 		window = new Window(200, 200, 1280, 720, info.programName);
@@ -36,6 +40,13 @@ namespace wfe {
 		// Create all other components
 		renderer = new VulkanRenderer(this);
 		assetManager = new AssetManager(this);
+
+		// Store the end time for renderer initialization
+		std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+
+		// Output the initialization time
+		std::chrono::duration<float> duration = endTime - startTime;
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)info.programName + " initialized successfully in " + std::to_string(duration.count()) + "s.");
 	}
 
 	int32_t Program::Run() {
@@ -53,6 +64,9 @@ namespace wfe {
 		delete renderer;
 		delete assetManager;
 		delete window;
+
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)info.programName + " was closed successfully.");
+
 		delete logger;
 	}
 }

@@ -209,6 +209,19 @@ namespace wfe {
 		CreateInstance(appInfo, logger);
 	}
 
+	void VulkanInstance::LogInfo(Logger* logger) const {
+		// Log the instance's API version
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Using Vulkan instance API version " + std::to_string(VK_API_VERSION_VARIANT(apiVersion)) + "." + std::to_string(VK_API_VERSION_MAJOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_MINOR(apiVersion)) + "." + std::to_string(VK_API_VERSION_PATCH(apiVersion)) + ".");
+
+		// Log the enabled extensions
+		std::string extensionsString = "Enabled Vulkan instance extensions:\n";
+		for(const char* extension : enabledExtensions)
+			extensionsString += (std::string)" - " + extension + "\n";
+		extensionsString.pop_back();
+		
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, extensionsString);
+	}
+
 	VulkanInstance::~VulkanInstance() {
 		// Destroy all existing components
 		if(debugMessenger)

@@ -395,6 +395,13 @@ namespace wfe {
 		CreateSyncObjects();
 	}
 
+	void VulkanSwapChain::LogInfo(Logger* logger) const {
+		// Log the swap chain's information
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Using Vulkan swap chain with " + std::to_string(swapChainImages.size()) + " images.");
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Vulkan swap chain surface format: " + string_VkFormat(surfaceFormat.format) + ", color space " + string_VkColorSpaceKHR(surfaceFormat.colorSpace) + ".");
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"VSync is " + (vsyncSupported ? "supported" : "not supported") + ", non-VSync is " + (nonVsyncSupported ? "supported" : "not supported") + ".");
+	}
+
 	VulkanSwapChain::~VulkanSwapChain() {
 		if(swapChain) {
 			// Destroy the swap chain's images

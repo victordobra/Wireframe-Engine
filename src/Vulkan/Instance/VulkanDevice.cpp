@@ -561,6 +561,31 @@ namespace wfe {
 		CreateLogicalDevice();
 	}
 
+	void VulkanDevice::LogInfo(Logger* logger) const {
+		// Log the device's name and type
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Using Vulkan device " + deviceProperties.deviceName + " (" + string_VkPhysicalDeviceType(deviceProperties.deviceType) + ").");
+		
+		// Log the device's queue family indices
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Vulkan device queue family indices:\n - Graphics: " + std::to_string(queues.graphicsIndex) + "\n - Present: " + std::to_string(queues.presentIndex) + "\n - Transfer: " + std::to_string(queues.transferIndex) + "\n - Compute: " + std::to_string(queues.computeIndex));
+
+		// Log the device's extensions
+		std::string extensionsString = "Enabled Vulkan device extensions:\n";
+		for(const char* extension : enabledExtensions)
+			extensionsString += (std::string)" - " + extension + "\n";
+		extensionsString.pop_back();
+		
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, extensionsString);
+
+		// Log the device's total memory size
+		VkDeviceSize totalMemorySize = 0;
+		for(uint32_t i = 0; i != deviceMemoryProperties.memoryHeapCount; ++i) {
+			if(deviceMemoryProperties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+				totalMemorySize += deviceMemoryProperties.memoryHeaps[i].size;
+		}
+
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)"Total Vulkan device memory size: " + std::to_string(totalMemorySize >> 20) + " MiB.");
+	}
+
 	uint32_t VulkanDevice::GetMemoryTypeIndex(uint32_t memoryTypeBits, VkMemoryPropertyFlags properties) const {
 		// Loop through all memory types
 		for(uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; ++i) {

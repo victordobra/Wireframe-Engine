@@ -102,6 +102,10 @@ namespace wfe {
 			return enabledExtensions;
 		}
 
+		/// @brief Logs informaton about the Vulkana device to the given logger.
+		/// @param logger The logger to log the information to.
+		void LogInfo(Logger* logger) const;
+
 		/// @brief Gets the first suitable memory type for the given bitmask and properties.
 		/// @param memoryTypeBits A bitmask containing all memory types that are suitable for the given allocation.
 		/// @param properties The required memory properties for the type.

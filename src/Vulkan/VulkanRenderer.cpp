@@ -1,6 +1,7 @@
 #include "VulkanRenderer.hpp"
 #include "Info/EngineInfo.hpp"
 #include "Core/Memory/Allocator.hpp"
+#include <chrono>
 
 namespace wfe {
 	// Callback functions
@@ -29,6 +30,9 @@ namespace wfe {
 
 	// Public functions
 	VulkanRenderer::VulkanRenderer(Program* program) : program(program) {
+		// Store the start time for renderer initialization
+		std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+
 		// Create the loader
 		loader = new VulkanLoader();
 
@@ -54,6 +58,18 @@ namespace wfe {
 
 		// Create the swap chain
 		swapChain = new VulkanSwapChain(device, surface);
+
+		// Log all component infos
+		instance->LogInfo(program->GetLogger());
+		device->LogInfo(program->GetLogger());
+		swapChain->LogInfo(program->GetLogger());
+
+		// Store the end time for renderer initialization
+		std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+
+		// Output the initialization time
+		std::chrono::duration<float> duration = endTime - startTime;
+		program->GetLogger()->LogMessage(Logger::MESSAGE_LEVEL_INFO, "Vulkan renderer initialized successfully in " + std::to_string(duration.count()) + "s.");
 	}
 
 	VulkanRenderer::~VulkanRenderer() {
