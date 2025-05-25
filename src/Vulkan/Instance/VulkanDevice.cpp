@@ -8,6 +8,17 @@
 
 namespace wfe {
 	// Constants
+	static const VkPhysicalDeviceDynamicRenderingFeaturesKHR REQUIRED_DYNAMIC_RENDERING_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
+		.pNext = nullptr,
+		.dynamicRendering = VK_TRUE
+	};
+	static const VkPhysicalDeviceSynchronization2FeaturesKHR REQUIRED_SYNCHRONIZATION_2_FEATURES {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR,
+		.pNext = (void*)&REQUIRED_DYNAMIC_RENDERING_FEATURES,
+		.synchronization2 = VK_TRUE
+	};
+
 	static const VkPhysicalDeviceIndexTypeUint8FeaturesEXT OPTIONAL_INDEX_TYPE_UINT8_FEATURES {
 		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
 		.pNext = nullptr,
@@ -22,15 +33,10 @@ namespace wfe {
 		.primitiveFragmentShadingRateMeshShader = VK_FALSE,
 		.meshShaderQueries = VK_FALSE
 	};
-	static const VkPhysicalDeviceSynchronization2FeaturesKHR OPTIONAL_SYNCHRONIZATION_2_FEATURES {
-		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR,
-		.pNext = (void*)&OPTIONAL_MESH_SHADER_FEATURES,
-		.synchronization2 = VK_TRUE
-	};
 
 	const VkPhysicalDeviceFeatures2 VulkanDevice::DEFAULT_REQUIRED_DEVICE_FEATURES {
 		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
-		.pNext = nullptr,
+		.pNext = (void*)&REQUIRED_SYNCHRONIZATION_2_FEATURES,
 		.features = {
 			.robustBufferAccess = VK_FALSE,
 			.fullDrawIndexUint32 = VK_FALSE,
@@ -91,7 +97,7 @@ namespace wfe {
 	};
 	const VkPhysicalDeviceFeatures2 VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES {
 		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
-		.pNext = nullptr,
+		.pNext = (void*)&OPTIONAL_MESH_SHADER_FEATURES,
 		.features = {
 			.robustBufferAccess = VK_TRUE,
 			.fullDrawIndexUint32 = VK_TRUE,
@@ -151,12 +157,13 @@ namespace wfe {
 		}
 	};
 	const std::vector<const char*> VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS {
-		VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+		VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME
 	};
 	const std::vector<const char*> VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS {
 		VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME,
 		VK_EXT_MESH_SHADER_EXTENSION_NAME,
-		VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME
 	};
 
 	// Internal helper functions
