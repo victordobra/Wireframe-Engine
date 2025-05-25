@@ -75,13 +75,25 @@ namespace wfe {
 			if(!(level & messageLevels))
 				return;
 			
+			// Format the message, padding all line breaks
+			std::string formattedMessage;
+			formattedMessage.reserve(message.size());
+
+			for(size_t i = 0; i != message.size(); ++i) {
+				if(message[i] == '\n') {
+					formattedMessage += "\n          ";
+				} else {
+					formattedMessage += message[i];
+				}
+			}
+			
 			// Output the message and flush the output streams
 			const char* levelStr = GetMessageLevelString(level);
 
-			outStream << levelStr << ' ' << message << '\n';
+			outStream << levelStr << ' ' << formattedMessage << '\n';
 			outStream.flush();
 			if(logConsole) {
-				std::cout << levelStr << ' ' << message << '\n';
+				std::cout << levelStr << ' ' << formattedMessage << '\n';
 				std::cout.flush();
 			}
 		}
