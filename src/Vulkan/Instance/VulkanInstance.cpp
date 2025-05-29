@@ -13,7 +13,6 @@
 #elif defined(WFE_PLATFORM_LINUX)
 #endif
 
-
 namespace wfe {
 	// Constants
 	const uint32_t VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION = VK_API_VERSION_1_2;
