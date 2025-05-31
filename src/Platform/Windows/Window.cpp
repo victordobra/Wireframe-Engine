@@ -17,6 +17,7 @@ namespace wfe {
 
 	static HINSTANCE hInstance;
 	static ATOM winClassID;
+	static HBRUSH hbrBackground;
 
 	// Internal functions
 	static void ThrowError(const std::string& message) {
@@ -214,6 +215,9 @@ namespace wfe {
 			// Set the instance handle
 			hInstance = GetModuleHandle(nullptr);
 
+			// Create the background brush
+			hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
+
 			// Set the window class's info
 			WNDCLASSEXA winClassInfo {
 				.cbSize = sizeof(WNDCLASSEXA),
@@ -224,7 +228,7 @@ namespace wfe {
 				.hInstance = hInstance,
 				.hIcon = LoadIconA(nullptr, IDI_APPLICATION),
 				.hCursor = LoadCursorA(nullptr, IDC_ARROW),
-				.hbrBackground = 0,
+				.hbrBackground = hbrBackground,
 				.lpszMenuName = nullptr,
 				.lpszClassName = CLASS_NAME,
 				.hIconSm = LoadIconA(nullptr, IDI_APPLICATION)
@@ -405,8 +409,15 @@ namespace wfe {
 		while(!windowMutex.compare_exchange_weak(lock, 1))
 			lock = 0;
 
-		// Unregister the window class if there are no more windows
+		// Check if there are no more windows
 		if(windowMap.empty()) {
+			if(hbrBackground) {
+				// Delete the background brush
+				DeleteObject(hbrBackground);
+				hbrBackground = nullptr;
+			}
+
+			// Unregister the window class
 			UnregisterClassA((LPCSTR)(size_t)platformData.winClassID, platformData.hInstance);
 			winClassID = 0;
 		}
