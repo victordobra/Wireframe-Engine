@@ -1,18 +1,6 @@
 #include "Program.hpp"
 
 namespace wfe {
-	// Constants
-	const char* const DEFAULT_LOG_FILE = "log.txt";
-
-#if defined(WFE_BUILD_MODE_DEBUG)
-	const Logger::MessageLevelMask DEFAULT_LOG_MESSAGE_LEVELS = Logger::MESSAGE_LEVEL_ALL;
-	const bool DEFAULT_LOG_CONSOLE_ENABLE = true;
-#else
-	const Logger::MessageLevelMask DEFAULT_LOG_MESSAGE_LEVELS = Logger::MESSAGE_LEVEL_RELEASE;
-	const bool DEFAULT_LOG_CONSOLE_ENABLE = false;
-#endif
-
-
 	// Close event listener
 	void* Program::CloseEventListener(void* userData, void* params) {
 		// Get the program whose window is closing
@@ -25,16 +13,16 @@ namespace wfe {
 	}
 
 	// Public functions
-	Program::Program(const ProgramInfo& info, int32_t argc, char** args) : info(info) {
+	Program::Program(const ProgramInfo& info, const ProgramSettings& settings) : info(info), settings(settings) {
 		// Store the start time for engine initialization
 		std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
 
 		// Create the program's logger
-		logger = new Logger(DEFAULT_LOG_FILE, DEFAULT_LOG_MESSAGE_LEVELS, DEFAULT_LOG_CONSOLE_ENABLE);
+		logger = new Logger(settings.logFilePath, settings.logMessageLevels, settings.enableConsoleLog);
 		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, "Initializing " + (std::string)info.programName + ", version " + std::to_string(info.programVersionMajor) + '.' + std::to_string(info.programVersionMinor) + '.' + std::to_string(info.programVersionPatch) + "...");
 
 		// Create the program's window and add the close listener
-		window = new Window(200, 200, 1280, 720, info.programName);
+		window = new Window(settings.windowX, settings.windowY, settings.windowWidth, settings.windowHeight, info.programName, false, settings.startMaximized, settings.startFullscreen);
 		window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
 		// Create all other components

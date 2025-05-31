@@ -44,20 +44,20 @@ namespace wfe {
 			.applicationVersion = VK_MAKE_API_VERSION(0, program->GetProgramInfo().programVersionMajor, program->GetProgramInfo().programVersionMinor, program->GetProgramInfo().programVersionPatch),
 			.pEngineName = WFE_ENGINE_NAME,
 			.engineVersion = VK_MAKE_API_VERSION(0, WFE_ENGINE_VERSION_MAJOR, WFE_ENGINE_VERSION_MINOR, WFE_ENGINE_VERSION_PATCH),
-			.apiVersion = VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION
+			.apiVersion = program->GetProgramSettings().requiredVulkanAPIVersion
 		};
 
 		// Create the instance
-		instance = new VulkanInstance(loader, appInfo, program->GetLogger());
+		instance = new VulkanInstance(loader, appInfo, (program->GetProgramSettings().enableDebug ? program->GetLogger() : nullptr), program->GetProgramSettings().requiredVulkanInstanceExtensions, program->GetProgramSettings().optionalVulkanInstanceExtensions, program->GetProgramSettings().vulkanValidationLayers);
 
 		// Create the surface
 		surface = new VulkanSurface(instance, program->GetWindow());
 
 		// Create the device
-		device = new VulkanDevice(instance, surface);
+		device = new VulkanDevice(instance, surface, program->GetProgramSettings().requiredVulkanDeviceFeatures, program->GetProgramSettings().optionalVulkanDeviceFeatures, program->GetProgramSettings().requiredVulkanDeviceExtensions, program->GetProgramSettings().optionalVulkanDeviceExtensions);
 
 		// Create the swap chain
-		swapChain = new VulkanSwapChain(device, surface);
+		swapChain = new VulkanSwapChain(device, surface, program->GetProgramSettings().enableVsync);
 
 		// Log all component infos
 		instance->LogInfo(program->GetLogger());

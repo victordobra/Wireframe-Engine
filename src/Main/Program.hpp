@@ -21,11 +21,55 @@ namespace wfe {
 			/// @brief The patch component of the program's version.
 			uint32_t programVersionPatch;
 		};
+		/// @brief A struct containing the program's general settings, used for startup.
+		struct ProgramSettings {
+			/// @brief True if debugging should be enabled, otherwise false.
+			bool enableDebug = true;
+			/// @brief True if the program should log to the console, otherwise false.
+			bool enableConsoleLog = true;
+			/// @brief The path to the log file to be used by the program.
+			const char* logFilePath = "log.txt";
+			/// @brief A bitmask containing the message levels that should be logged by the program's logger.
+			Logger::MessageLevelMask logMessageLevels = Logger::MESSAGE_LEVEL_ALL;
+
+			/// @brief True if vertical synchronization (vsync) should be enabled, otherwise false.
+			bool enableVsync = true;
+			/// @brief True if the window should start maximized, otherwise false.
+			bool startMaximized = false;
+			/// @brief True if the window should start fullscreened, otherwise false.
+			bool startFullscreen = false;
+			
+			/// @brief The initial X coordinate of the window. Ignored if the window is maximized or fullscreened.
+			int32_t windowX = 128;
+			/// @brief The initial Y coordinate of the window. Ignored if the window is maximized or fullscreened.
+			int32_t windowY = 128;
+			/// @brief The initial width of the window. Ignored if the window is maximized or fullscreened.
+			uint32_t windowWidth = 512;
+			/// @brief The initial height of the window. Ignored if the window is maximized or fullscreened.
+			uint32_t windowHeight = 512;
+
+			/// @brief The required Vulkan API version to be used by the program.
+			uint32_t requiredVulkanAPIVersion = VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION;
+			/// @brief A vector containing the required Vulkan instance extensions.
+			std::vector<const char*> requiredVulkanInstanceExtensions = VulkanInstance::DEFAULT_REQUIRED_INSTANCE_EXTENSIONS;
+			/// @brief A vector containing the optional Vulkan instance extensions.
+			std::vector<const char*> optionalVulkanInstanceExtensions = VulkanInstance::DEFAULT_OPTIONAL_INSTANCE_EXTENSIONS;
+			/// @brief A vector containing the Vulkana validation layers to enable if debugging is enabled.
+			std::vector<const char*> vulkanValidationLayers = VulkanInstance::DEFAULT_VALIDATION_LAYERS;
+			/// @brief A struct containing the required Vulkan device features.
+			VkPhysicalDeviceFeatures2 requiredVulkanDeviceFeatures = VulkanDevice::DEFAULT_REQUIRED_DEVICE_FEATURES;
+			/// @brief A struct containing the optional Vulkan device features.
+			VkPhysicalDeviceFeatures2 optionalVulkanDeviceFeatures = VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES;
+			/// @brief A vector containing the required Vulkan device extensions.
+			std::vector<const char*> requiredVulkanDeviceExtensions = VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS;
+			/// @brief A vector containing the optional Vulkan device extensions.
+			std::vector<const char*> optionalVulkanDeviceExtensions = VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS;
+		};
 
 		/// @brief Creates the program and its components.
-		/// @param argc The number for console arguments given. Defaulted to 0.
-		/// @param args The console arguments given, or nullpre if none are present.
-		Program(const ProgramInfo& info, int32_t argc = 0, char** args = nullptr);
+		/// @param info The program's general information.
+		/// @param settings The program's settings, used for startup.
+		Program(const ProgramInfo& info, const ProgramSettings& settings);
 		Program(const Program&) = delete;
 		Program(Program&&) noexcept = delete;
 
@@ -40,6 +84,11 @@ namespace wfe {
 		/// @return The program's general information.
 		const ProgramInfo& GetProgramInfo() const {
 			return info;
+		}
+		/// @brief Gets the program's settings. They should not be used to query the programa's current status, but rather at startup to configure the program.
+		/// @return The program's settings.
+		const ProgramSettings& GetProgramSettings() const {
+			return settings;
 		}
 
 		/// @brief Gets the program's logger.
@@ -69,6 +118,7 @@ namespace wfe {
 		static void* CloseEventListener(void* userData, void* params);
 
 		ProgramInfo info;
+		ProgramSettings settings;
 		atomic_uint32_t running = 1;
 
 		Logger* logger;
