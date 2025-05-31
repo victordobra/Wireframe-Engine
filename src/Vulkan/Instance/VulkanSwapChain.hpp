@@ -21,8 +21,8 @@ namespace wfe {
 
 			/// @brief The depth image's handle.
 			VkImage depthImage;
-			/// @brief The depth image's memory handle.
-			VkDeviceMemory depthImageMemory;
+			/// @brief The depth image's memory block.
+			VulkanAllocator::Memory depthImageMemory;
 			/// @brief The depth image's view handle.
 			VkImageView depthImageView;
 			/// @brief The depth image's attachment info.

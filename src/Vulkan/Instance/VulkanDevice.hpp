@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
+#include "VulkanAllocator.hpp"
 #include "VulkanInstance.hpp"
 #include "VulkanSurface.hpp"
 #include <vulkan/vk_platform.h>
@@ -65,6 +66,11 @@ namespace wfe {
 		VulkanLoader* GetLoader() const {
 			return instance->GetLoader();
 		}
+		/// @brief Gets the Vulkan memory allocator used by this device.
+		/// @return The Vulkan memory allocator used by this device.
+		VulkanAllocator* GetAllocator() const {
+			return allocator;
+		}
 
 		/// @brief Gets the internal handle of the Vulkan physical device.
 		/// @return The internal handle of the Vulkan physical device.
@@ -122,6 +128,7 @@ namespace wfe {
 		void CreateLogicalDevice();
 
 		VulkanInstance* instance;
+		VulkanAllocator* allocator;
 
 		VkPhysicalDevice physicalDevice;
 		VkDevice device;

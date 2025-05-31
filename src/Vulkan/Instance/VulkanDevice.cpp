@@ -559,6 +559,9 @@ namespace wfe {
 		// Get the best physical device and create the logical device
 		SetBestDevice(surface, requiredFeatures, optionalFeatures, requiredExtensions, optionalExtensions);
 		CreateLogicalDevice();
+
+		// Create the memory allocator
+		allocator = new VulkanAllocator(this);
 	}
 
 	void VulkanDevice::LogInfo(Logger* logger) const {
@@ -599,6 +602,9 @@ namespace wfe {
 	}
 
 	VulkanDevice::~VulkanDevice() {
+		// Destroy the memory allocator
+		delete allocator;
+
 		// Delete the device features
 		for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {
 			// Get the next structure

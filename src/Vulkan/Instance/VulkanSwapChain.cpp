@@ -216,33 +216,12 @@ namespace wfe {
 			if(result != VK_SUCCESS)
 				throw std::runtime_error((std::string)"Failed to create Vulkan swap chain depth image! Error code: " + string_VkResult(result));
 			
-			// Get the image's memory requirements
-			VkMemoryRequirements memoryRequirements;
-			device->GetLoader()->vkGetImageMemoryRequirements(device->GetDevice(), image.depthImage, &memoryRequirements);
-
-			// Get the memory type index
-			uint32_t memoryTypeIndex = device->GetMemoryTypeIndex(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			if(memoryTypeIndex == UINT32_MAX)
-				throw std::runtime_error("Failed to find a suitable memory type for the Vulkan swap chain depth image!");
-			
-			// Set the memory allocate info
-			VkMemoryDedicatedAllocateInfo dedicatedAllocInfo {
-				.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO,
-				.pNext = nullptr,
-				.image = image.depthImage,
-				.buffer = VK_NULL_HANDLE
-			};
-			VkMemoryAllocateInfo allocInfo {
-				.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				.pNext = &dedicatedAllocInfo,
-				.allocationSize = memoryRequirements.size,
-				.memoryTypeIndex = memoryTypeIndex
-			};
-
 			// Allocate the memory for the depth image
-			result = device->GetLoader()->vkAllocateMemory(device->GetDevice(), &allocInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &image.depthImageMemory);
-			if(result != VK_SUCCESS)
-				throw std::runtime_error((std::string)"Failed to allocate memory for Vulkan swap chain depth image! Error code: " + string_VkResult(result));
+			try {
+				image.depthImageMemory = device->GetAllocator()->AllocImageMemory(image.depthImage, VK_IMAGE_TILING_OPTIMAL, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			} catch(const std::bad_alloc&) {
+				throw std::runtime_error("Failed to allocate memory for Vulkan swap chain depth image!");
+			}
 		}
 
 		// Set the depth image memory bind infos
@@ -253,7 +232,7 @@ namespace wfe {
 				.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,
 				.pNext = nullptr,
 				.image = swapChainImages[i].depthImage,
-				.memory = swapChainImages[i].depthImageMemory,
+				.memory = swapChainImages[i].depthImageMemory.memory,
 				.memoryOffset = 0
 			};
 		}
@@ -364,7 +343,7 @@ namespace wfe {
 			for(SwapChainImage& image : swapChainImages) {
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.imageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkFreeMemory(device->GetDevice(), image.depthImageMemory, &VulkanRenderer::ALLOCATION_CALLBACKS);
+				device->GetAllocator()->FreeMemory(image.depthImageMemory);
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetLoader()->vkDestroySemaphore(device->GetDevice(), image.renderingFinisedSemaphore, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
@@ -408,7 +387,7 @@ namespace wfe {
 			for(SwapChainImage& image : swapChainImages) {
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.imageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkFreeMemory(device->GetDevice(), image.depthImageMemory, &VulkanRenderer::ALLOCATION_CALLBACKS);
+				device->GetAllocator()->FreeMemory(image.depthImageMemory);
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetLoader()->vkDestroySemaphore(device->GetDevice(), image.renderingFinisedSemaphore, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
