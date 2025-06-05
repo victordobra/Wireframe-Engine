@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Assets/AssetManager.hpp"
+#include "Core/ECS/EntityManager.hpp"
 #include "Core/Debug/Logger.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Platform/Window.hpp"
@@ -64,6 +65,9 @@ namespace wfe {
 			std::vector<const char*> requiredVulkanDeviceExtensions = VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS;
 			/// @brief A vector containing the optional Vulkan device extensions.
 			std::vector<const char*> optionalVulkanDeviceExtensions = VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS;
+			
+			/// @brief The maximum number of entities that can be active at once.
+			size_t maxEntityCount = 256;
 		};
 
 		/// @brief Creates the program and its components.
@@ -111,6 +115,11 @@ namespace wfe {
 		AssetManager* GetAssetManager() const {
 			return assetManager;
 		}
+		/// @brief Gets the program's entity manager.
+		/// @return The program's entity manager.
+		EntityManager* GetEntityManager() const {
+			return entityManager;
+		}
 
 		/// @brief Destroys the program and its components.
 		~Program();
@@ -125,5 +134,6 @@ namespace wfe {
 		Window* window;
 		VulkanRenderer* renderer;
 		AssetManager* assetManager;
+		EntityManager* entityManager;
 	};
 }

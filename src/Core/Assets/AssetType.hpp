@@ -27,7 +27,7 @@ namespace wfe {
 
 		/// @brief Gets the number of registered asset types.
 		/// @return The number of registered asset types.
-		static const size_t GetAssetTypeCount() {
+		static size_t GetAssetTypeCount() {
 			return assetTypeCount;
 		}
 		/// @brief Gets all registered asset types.
