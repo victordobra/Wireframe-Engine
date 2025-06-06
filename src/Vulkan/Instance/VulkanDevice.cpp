@@ -507,7 +507,7 @@ namespace wfe {
 		// Set all queue create infos
 		VkDeviceQueueCreateInfo queueInfos[4];
 		uint32_t queueInfoCount = 0;
-		const float32_t queuePriorities[] { 1.0f, 1.0f, 1.0f, 1.0f };
+		const float queuePriorities[] { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		for(uint32_t i = 0; i != queueFamilyCount; ++i) {
 			// Skip the family if no queues are present in it

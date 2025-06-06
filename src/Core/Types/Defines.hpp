@@ -19,10 +19,6 @@ namespace wfe {
 	typedef ::uint32_t uint32_t;
 	typedef ::uint64_t uint64_t;
 
-	// Floating point types
-	typedef float  float32_t;
-	typedef double float64_t;
-		
 	// Architecture specific types
 #ifdef WFE_ARCHITECTURE_64_BIT
 	typedef uint64_t size_t;
@@ -52,9 +48,6 @@ namespace wfe {
 	WFE_STATIC_ASSERT((sizeof(uint32_t)  == 4), "Expected uint32_t to be 4 bytes!");
 	WFE_STATIC_ASSERT((sizeof(uint64_t)  == 8), "Expected uint64_t to be 8 bytes!");
 
-	WFE_STATIC_ASSERT((sizeof(float32_t) == 4), "Expected float32_t to be 4 bytes!");
-	WFE_STATIC_ASSERT((sizeof(float64_t) == 8), "Expected float64_t to be 8 bytes!");
-
 	// Atomic types
 	typedef std::atomic<int8_t>  atomic_int8_t;
 	typedef std::atomic<int16_t> atomic_int16_t;
@@ -65,9 +58,6 @@ namespace wfe {
 	typedef std::atomic<uint16_t> atomic_uint16_t;
 	typedef std::atomic<uint32_t> atomic_uint32_t;
 	typedef std::atomic<uint64_t> atomic_uint64_t;
-
-	typedef std::atomic<float32_t> atomic_float32_t;
-	typedef std::atomic<float64_t> atomic_float64_t;
 
 	typedef std::atomic<size_t> atomic_size_t;
 	typedef std::atomic<ptrdiff_t> atomic_ptrdiff_t;
@@ -109,19 +99,19 @@ namespace wfe {
 	/// @brief The maximum value an uint64_t can hold.
 	constexpr uint64_t UINT64_T_MAX = 18446744073709551615ULL;
 
-	/// @brief The minimum absolute value a float32_t can hold.
-	constexpr float32_t FLOAT32_T_MIN_ABS = 1.17549e-38;
-	/// @brief The minimum value a float32_t can hold.
-	constexpr float32_t FLOAT32_T_MIN = -3.40282e+38;
-	/// @brief The maximum value a float32_t can hold.
-	constexpr float32_t FLOAT32_T_MAX = 3.40282e+38;
+	/// @brief The minimum absolute value a float can hold.
+	constexpr float float_MIN_ABS = 1.17549e-38;
+	/// @brief The minimum value a float can hold.
+	constexpr float float_MIN = -3.40282e+38;
+	/// @brief The maximum value a float can hold.
+	constexpr float float_MAX = 3.40282e+38;
 
-	/// @brief The minimum absolute value a float64_t can hold.
-	constexpr float64_t FLOAT64_T_MIN_ABS = 2.22507e-308;
-	/// @brief The minimum value a float64_t can hold.
-	constexpr float64_t FLOAT64_T_MIN = -1.79769e+308;
-	/// @brief The maximum value a float64_t can hold.
-	constexpr float64_t FLOAT64_T_MAX = 1.79769e+308;
+	/// @brief The minimum absolute value a double can hold.
+	constexpr double DOUBLE_MIN_ABS = 2.22507e-308;
+	/// @brief The minimum value a double can hold.
+	constexpr double DOUBLE_MIN = -1.79769e+308;
+	/// @brief The maximum value a double can hold.
+	constexpr double DOUBLE_MAX = 1.79769e+308;
 
 #if defined(WFE_ARCHITECTURE_64_BIT)
 	/// @brief The minimim value a size_t can hold.

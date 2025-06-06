@@ -48,7 +48,7 @@ namespace wfe {
 		/// @brief A vector containing all integer values stored in the object.
 		std::vector<int64_t> intValues;
 		/// @brief A vector containing all floating point values stored in the object.
-		std::vector<float32_t> floatValues;
+		std::vector<float> floatValues;
 		/// @brief A vector containing all boolean values stored in the object.
 		std::vector<bool> boolValues;
 		/// @brief A vector containing all string values stored in the object.
