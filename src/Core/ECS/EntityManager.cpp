@@ -4,7 +4,7 @@
 
 namespace wfe {
 	// Public functions
-	EntityManager::EntityManager(size_t maxEntityCount) : maxEntityCount(maxEntityCount), firstFree(0), freeList(new Entity[maxEntityCount]), signatures(new Signature[maxEntityCount]) {
+	EntityManager::EntityManager(size_t maxEntityCount) : maxEntityCount(maxEntityCount), firstFree(0), freeList(new Entity[maxEntityCount]), signatures(new Signature[maxEntityCount]), transforms(new Transform[maxEntityCount]) {
 		// Set the free list values
 		for(Entity i = 0; i != maxEntityCount - 1; ++i)
 			freeList[i] = i + 1;
@@ -28,6 +28,13 @@ namespace wfe {
 		// Get the entity from the free list
 		Entity entity = firstFree;
 		firstFree = freeList[entity];
+
+		// Reset the entity's transform
+		transforms[entity] = {
+			.pos = Vector3::ZERO,
+			.rot = Quaternion::IDENTITY,
+			.scale = Vector3::ONE
+		};
 
 		return entity;
 	}
@@ -57,8 +64,9 @@ namespace wfe {
 		for(size_t i = 0; i != ComponentType::GetComponentTypeCount(); ++i)
 			delete componentLists[i];
 		
-		// Destroy the signature and free lists
+		// Destroy the free list and the signature and transform arrays
 		delete[] freeList;
 		delete[] signatures;
+		delete[] transforms;
 	}
 }

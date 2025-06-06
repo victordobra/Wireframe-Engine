@@ -3,6 +3,7 @@
 #include "Core/Types/Defines.hpp"
 #include "ComponentList.hpp"
 #include "ComponentType.hpp"
+#include "Transform.hpp"
 #include <bitset>
 #include <string>
 #include <unordered_map>
@@ -32,6 +33,18 @@ namespace wfe {
 		/// @return The maximum number of entities managed.
 		size_t GetMaxEntityCount() const {
 			return maxEntityCount;
+		}
+		/// @brief Gets the given entity's transform.
+		/// @param entity The entity whose transform to get.
+		/// @return A reference to the entity's transform.
+		Transform& GetEntityTransform(Entity entity) {
+			return transforms[entity];
+		}
+		/// @brief Gets the given entity's transform.
+		/// @param entity The entity whose transform to get.
+		/// @return A const reference to the entity's transform.
+		const Transform& GetEntityTransform(Entity entity) const {
+			return transforms[entity];
 		}
 		/// @brief Gets the given entity's signature.
 		/// @param entity The entity whose signature to get.
@@ -80,6 +93,7 @@ namespace wfe {
 		Entity firstFree;
 		Entity* freeList;
 		std::bitset<ComponentType::MAX_COMPONENT_TYPE_COUNT>* signatures;
+		Transform* transforms;
 		std::vector<ComponentList*> componentLists;
 
 		std::unordered_map<std::string, size_t> typeIndices;

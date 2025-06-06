@@ -9,6 +9,7 @@
 #include "Core/ECS/ComponentList.hpp"
 #include "Core/ECS/ComponentType.hpp"
 #include "Core/ECS/EntityManager.hpp"
+#include "Core/ECS/Transform.hpp"
 #include "Core/Management/Event.hpp"
 #include "Core/Management/TypeName.hpp"
 #include "Core/Math/Matrix4x4.hpp"
