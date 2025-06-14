@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Core/Management/TypeName.hpp"
 #include "Core/Types/Defines.hpp"
-#include <set>
 #include <string>
+#include <typeinfo>
 #include <vector>
 
 namespace wfe {
@@ -15,12 +14,8 @@ namespace wfe {
 	public:
 		/// @brief The maximum possible total number of asset types
 		static inline const size_t MAX_ASSET_TYPE_COUNT = 128;
-		/// @brief The maximum length of an asset type, including the null termination character.
-		static inline const size_t MAX_TYPE_NAME_LENGTH = 64;
 		/// @brief The maximum number of import file extensions for the asset.
 		static inline const size_t MAX_EXTENSION_COUNT = 8;
-		/// @brief The maximum length of an import file extension, including the null termination character.
-		static inline const size_t MAX_EXTENSION_LENGTH = 8;
 
 		/// @brief The asset constructor function type.
 		typedef Asset*(*Constructor)(Program* program, uint64_t id);
@@ -35,6 +30,11 @@ namespace wfe {
 		static const AssetType* GetAssetTypes() {
 			return assetTypes;
 		}
+		
+		/// @brief Gets the given asset's type.
+		/// @param asset The asset whose type to get.
+		/// @return A reference to the asset type with the given name.
+		static const AssetType& GetAssetType(const Asset* asset);
 		/// @brief Gets the asset type with the given name.
 		/// @param name The asset type's name.
 		/// @return A reference to the asset type with the given name.
@@ -69,11 +69,13 @@ namespace wfe {
 		~AssetType() = default;
 
 		/// @brief The type's name.
-		char name[MAX_TYPE_NAME_LENGTH] { };
+		const char* name = nullptr;
+		/// @brief The type's name, according to the current compiler.
+		const char* platformName { };
 		/// @brief The number of file extensions associated with this asset type.
 		size_t importExtensionCount = 0;
 		/// @brief The file extensions associated with this asset type.
-		char importExtensions[MAX_EXTENSION_COUNT][MAX_EXTENSION_LENGTH] { };
+		const char* importExtensions[MAX_EXTENSION_COUNT] { };
 		/// @brief The asset's constructor.
 		Constructor constructor = nullptr;
 	private:
@@ -92,12 +94,13 @@ struct AssetType##type##Constructor { \
 	AssetType##type##Constructor() { \
 		wfe::AssetType assetType; \
 		\
-		strncpy(assetType.name, wfe::GetTypeName<type>().c_str(), wfe::AssetType::MAX_TYPE_NAME_LENGTH); \
+		assetType.name = #type; \
+		assetType.platformName = typeid(type).name(); \
 		\
 		const char* const EXT_ARRAY[] extensions; \
 		assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
 		for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
-			strncpy(assetType.importExtensions[i], EXT_ARRAY[i], wfe::AssetType::MAX_EXTENSION_LENGTH); \
+			assetType.importExtensions[i] = EXT_ARRAY[i]; \
 		\
 		assetType.constructor = CreateAsset; \
 		\

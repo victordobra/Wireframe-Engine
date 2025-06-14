@@ -5,13 +5,10 @@
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetManager.hpp"
 #include "Core/Assets/AssetType.hpp"
-#include "Core/Debug/Logger.hpp"
 #include "Core/ECS/ComponentList.hpp"
 #include "Core/ECS/ComponentType.hpp"
 #include "Core/ECS/EntityManager.hpp"
 #include "Core/ECS/Transform.hpp"
-#include "Core/Management/Event.hpp"
-#include "Core/Management/TypeName.hpp"
 #include "Core/Math/Matrix4x4.hpp"
 #include "Core/Math/Quaternion.hpp"
 #include "Core/Math/Vector2.hpp"
@@ -22,6 +19,8 @@
 #include "Core/Parsers/WFEONParser.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
+#include "Core/Utils/Event.hpp"
+#include "Core/Utils/Logger.hpp"
 
 #include "Info/EngineInfo.hpp"
 

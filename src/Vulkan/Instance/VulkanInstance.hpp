@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/Debug/Logger.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
+#include "Core/Utils/Logger.hpp"
 #include "Vulkan/Loader/VulkanLoader.hpp"
 #include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>

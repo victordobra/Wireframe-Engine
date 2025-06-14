@@ -2,8 +2,8 @@
 
 #include "Core/Assets/AssetManager.hpp"
 #include "Core/ECS/EntityManager.hpp"
-#include "Core/Debug/Logger.hpp"
 #include "Core/Types/Defines.hpp"
+#include "Core/Utils/Logger.hpp"
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 

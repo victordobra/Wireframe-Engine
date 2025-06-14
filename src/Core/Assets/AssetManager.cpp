@@ -262,7 +262,7 @@ namespace wfe {
 			stream.write((char*)&id, sizeof(uint64_t));
 
 			// Write the asset's type
-			std::string typeName = WFE_TYPE_NAME(*(directory.assets[i]));
+			std::string typeName = AssetType::GetAssetType(directory.assets[i]).name;
 			uint64_t typeNameLength = typeName.size();
 			stream.write((char*)&typeNameLength, sizeof(uint64_t));
 			stream.write((char*)typeName.data(), typeNameLength);

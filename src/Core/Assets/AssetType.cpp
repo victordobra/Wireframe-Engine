@@ -8,6 +8,18 @@ namespace wfe {
 	constinit AssetType AssetType::assetTypes[AssetType::MAX_ASSET_TYPE_COUNT];
 
 	// Public functions
+	const AssetType& AssetType::GetAssetType(const Asset* asset) {
+		// Search for the asset type by the platform name
+		const char* platformName = typeid(*asset).name();
+
+		for(size_t i = 0; i != assetTypeCount; ++i) {
+			if(!strcmp(assetTypes[i].platformName, platformName))
+				return assetTypes[i];
+		}
+
+		// If not found, throw an exception
+		throw std::invalid_argument("Asset type not found!");
+	}
 	const AssetType& AssetType::GetAssetTypeName(const std::string& name) {
 		// Search for the asset type by name
 		for(size_t i = 0; i != assetTypeCount; ++i) {
@@ -32,7 +44,7 @@ namespace wfe {
 	void AssetType::RegisterAssetType(const AssetType& assetType) {
 		// Check if the asset type is already registered
 		for(size_t i = 0; i != assetTypeCount; ++i) {
-			if(!strncmp(assetTypes[i].name, assetType.name, MAX_TYPE_NAME_LENGTH))
+			if(!strcmp(assetTypes[i].name, assetType.name))
 				throw std::invalid_argument((std::string)"Asset type with name \"" + assetType.name + "\" is already registered!");
 		}
 
@@ -40,7 +52,7 @@ namespace wfe {
 		for(size_t i = 0; i != assetType.importExtensionCount; ++i) {
 			for(size_t j = 0; i != assetTypeCount; ++i) {
 				for(size_t k = 0; j != assetTypes[j].importExtensionCount; ++j)
-					if(!strncmp(assetTypes[j].importExtensions[k], assetType.importExtensions[i], MAX_EXTENSION_LENGTH))
+					if(!strcmp(assetTypes[j].importExtensions[k], assetType.importExtensions[i]))
 						throw std::invalid_argument((std::string)"Asset type with extension \"" + assetType.importExtensions[i] + "\" is already registered!");
 			}
 		}

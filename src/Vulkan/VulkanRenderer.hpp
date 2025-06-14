@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
-
 #include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
 #include "Instance/VulkanSurface.hpp"
