@@ -35,11 +35,11 @@ message(STATUS "Engine library created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	# Add the include directories for Windows
-	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info)
+	target_include_directories(${ENGINE_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/external ${PROJECT_SOURCE_DIR}/src)
 	message(STATUS "Engine include directories added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
-	target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info)
+	target_include_directories(${ENGINE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external ${PROJECT_SOURCE_DIR}/src)
 	message(STATUS "Engine include directories added.")
 
 	# Add the link libraries for Linux
@@ -70,7 +70,7 @@ message(STATUS "Test project executable created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	# Add the include directories for Windows
-	target_include_directories(${TEST_PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	target_include_directories(${TEST_PROJECT_NAME} PUBLIC $ENV{VULKAN_SDK}/Include ${PROJECT_SOURCE_DIR}/external ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/test)
 	message(STATUS "Test project include directories added.")
 
 	# Add the link libraries for Windows
@@ -78,7 +78,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	message(STATUS "Test project link libraries added.")
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	# Add the include directories for Linux
-	target_include_directories(${TEST_PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/info ${PROJECT_SOURCE_DIR}/src)
+	target_include_directories(${TEST_PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/external ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/test)
 	message(STATUS "Test project include directories added.")
 
 	# Add the link libraries for Linux

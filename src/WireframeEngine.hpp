@@ -16,6 +16,7 @@
 #include "Core/Math/Vector4.hpp"
 #include "Core/Memory/Allocator.hpp"
 #include "Core/Memory/VirtualMemory.hpp"
+#include "Core/Parsers/ImageParser.hpp"
 #include "Core/Parsers/WFEONParser.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
