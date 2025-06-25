@@ -1,6 +1,7 @@
 #include "VulkanRenderer.hpp"
 #include "Info/EngineInfo.hpp"
 #include "Core/Memory/Allocator.hpp"
+#include <vulkan/vk_enum_string_helper.h>
 #include <chrono>
 
 namespace wfe {
@@ -59,6 +60,19 @@ namespace wfe {
 		// Create the swap chain
 		swapChain = new VulkanSwapChain(device, surface, program->GetProgramSettings().enableVsync);
 
+		// Set the transfer command pool create info
+		VkCommandPoolCreateInfo transferCommandPoolCreateInfo {
+			.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+			.queueFamilyIndex = device->GetDeviceQueues().transferIndex
+		};
+
+		// Create the transfer command pool
+		VkResult result = loader->vkCreateCommandPool(device->GetDevice(), &transferCommandPoolCreateInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &transferCommandPool);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan transfer command pool! Error code: " + string_VkResult(result));
+
 		// Log all component infos
 		instance->LogInfo(program->GetLogger());
 		device->LogInfo(program->GetLogger());
@@ -73,6 +87,9 @@ namespace wfe {
 	}
 
 	VulkanRenderer::~VulkanRenderer() {
+		// Destroy the command pool
+		loader->vkDestroyCommandPool(device->GetDevice(), transferCommandPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
+
 		// Destroy all renderer components
 		delete swapChain;
 		delete device;

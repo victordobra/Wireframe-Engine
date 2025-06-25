@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Assets/General/Image.hpp"
 #include "Assets/General/TextFile.hpp"
 
 #include "Core/Assets/Asset.hpp"

@@ -16,11 +16,11 @@ namespace wfe {
 		/// @brief A struct representing a block of allocated memory.
 		struct Memory {
 			/// @brief The Vulkan device memory handle associated with the allocated memory.
-			VkDeviceMemory memory;
+			VkDeviceMemory memory = VK_NULL_HANDLE;
 			/// @brief The offset of the allocated memory block in the biffer Vulkan device memory.
-			VkDeviceSize offset;
+			VkDeviceSize offset = 0;
 			/// @brief The size of the allocated memory block in bytes.
-			VkDeviceSize size;
+			VkDeviceSize size = 0;
 		};
 
 		/// @brief Created a Vulkan device memory allocator.

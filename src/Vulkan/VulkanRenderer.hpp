@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
+#include "API/VulkanStructSize.hpp"
+#include "Instance/VulkanAllocator.hpp"
 #include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
 #include "Instance/VulkanSurface.hpp"
@@ -56,6 +58,11 @@ namespace wfe {
 		VulkanSwapChain* GetSwapChain() const {
 			return swapChain;
 		}
+		/// @brief Gets the Vulkan command pool used for global transfer operations.
+		/// @return A handle to Vulkan command pool used for global transfer operations.
+		VkCommandPool GetTransferCommandPool() const {
+			return transferCommandPool;
+		}
 
 		/// @brief Destroys the Vulkan renderer.
 		~VulkanRenderer();
@@ -67,5 +74,6 @@ namespace wfe {
 		VulkanSurface* surface;
 		VulkanDevice* device;
 		VulkanSwapChain* swapChain;
+		VkCommandPool transferCommandPool;
 	};
 }

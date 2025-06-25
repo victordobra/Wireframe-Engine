@@ -4,8 +4,12 @@
 #include "Core/Types/Defines.hpp"
 
 namespace wfe {
+	/// @brief A class representing a text file asset.
 	class TextFile : public Asset {
 	public:
+		/// @brief Creates a new text file.
+		/// @param program The program that owns the asset.
+		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
 		TextFile(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
 		TextFile(const TextFile&) = delete;
 		TextFile(TextFile&&) = delete;
@@ -47,6 +51,7 @@ namespace wfe {
 			return data.data();
 		}
 
+		/// @brief Destroys the text file.
 		~TextFile() = default;
 	private:
 		WFE_ASSET_TYPE(TextFile, { "txt" })
