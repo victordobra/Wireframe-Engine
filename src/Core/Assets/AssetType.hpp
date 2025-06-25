@@ -85,8 +85,8 @@ namespace wfe {
 
 /// @brief A macro to register an asset type.
 /// @param type The asset type to register.
-/// @param extensions A vector containing the file extension(s) associated with this asset type.
-#define WFE_ASSET_TYPE(type, extensions) \
+/// @param ... A vector containing the file extension(s) associated with this asset type.
+#define WFE_ASSET_TYPE(type, ...) \
 struct AssetType##type##Constructor { \
 	static wfe::Asset* CreateAsset(wfe::Program* program, wfe::uint64_t id) { \
 		return dynamic_cast<wfe::Asset*>(new type(program, id)); \
@@ -97,7 +97,7 @@ struct AssetType##type##Constructor { \
 		assetType.name = #type; \
 		assetType.platformName = typeid(type).name(); \
 		\
-		const char* const EXT_ARRAY[] extensions; \
+		const char* const EXT_ARRAY[] __VA_ARGS__; \
 		assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
 		for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
 			assetType.importExtensions[i] = EXT_ARRAY[i]; \
