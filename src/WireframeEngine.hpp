@@ -2,6 +2,7 @@
 
 #include "Assets/General/Image.hpp"
 #include "Assets/General/TextFile.hpp"
+#include "Assets/Rendering/Shader.hpp"
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetManager.hpp"
