@@ -4,6 +4,30 @@
 
 namespace wfe {
 	// Virtual function definitions
+	Shader::Shader(Program* program, size_t sourceSize, const uint8_t* source, uint64_t id = UINT64_T_MAX) : Asset(program, id), sourceSize(sourceSize) {
+		// Allocate the source code buffer
+		this->source = (uint8_t*)AllocMemory(this->sourceSize);
+		if(!this->source)
+			throw std::bad_alloc();
+		
+		// Copy the shader's source code
+		memcpy(this->source, source, this->sourceSize);
+
+		// Set the shader module info
+		VkShaderModuleCreateInfo shaderModuleInfo {
+			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.codeSize = this->sourceSize,
+			.pCode = (const uint32_t*)this->source
+		};
+
+		// Create the shader module
+		VkResult result = GetProgram()->GetRenderer()->GetLoader()->vkCreateShaderModule(GetProgram()->GetRenderer()->GetDevice()->GetDevice(), &shaderModuleInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &shaderModule);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan shader module! Error code: %s" + string_VkResult(result));
+	}
+
 	void Shader::Load(std::istream& stream) {
 		// Read the size of the source code
 		stream.seekg(0, std::ios::end);
@@ -40,7 +64,7 @@ namespace wfe {
 		// Create the shader module
 		VkResult result = GetProgram()->GetRenderer()->GetLoader()->vkCreateShaderModule(GetProgram()->GetRenderer()->GetDevice()->GetDevice(), &shaderModuleInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &shaderModule);
 		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create shader module! Error code: %s" + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to create Vulkan shader module! Error code: %s" + string_VkResult(result));
 	}
 	void Shader::Save(std::ostream& stream) const {
 		// Write the source code to the stream

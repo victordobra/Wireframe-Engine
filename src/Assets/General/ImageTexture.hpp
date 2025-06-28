@@ -1,38 +1,47 @@
 #pragma once
 
 #include "Core/Assets/Asset.hpp"
+#include "Core/Parsers/ImageParser.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/Instance/VulkanAllocator.hpp"
 #include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>
 
 namespace wfe {
-	/// @brief A class representing an image asset.
-	class Image : public Asset {
+	/// @brief A class representing texture using the data of an image.
+	class ImageTexture : public Asset {
 	public:
-		/// @brief Creates a new image.
+		/// @brief Creates a new blank image texture. The image must be subsequentally loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		Image(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
-		Image(const Image&) = delete;
-		Image(Image&&) = delete;
+		ImageTexture(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
+		/// @brief Creates a new image texture with the given info.
+		/// @param program The program that owns the asset.
+		/// @param width The image width, in pixels.
+		/// @param height The image height, in pixels.
+		/// @param composition The image composition, equal to the number of 8-bit components in each pixel.
+		/// @param data A pointer to the image data, or nullptr if the image data is undefined.
+		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
+		ImageTexture(Program* program, uint32_t width, uint32_t height, ImageComposition composition, const void* data = nullptr, uint64_t id = UINT64_T_MAX);
+		ImageTexture(const ImageTexture&) = delete;
+		ImageTexture(ImageTexture&&) = delete;
 
-		Image& operator=(const Image&) = delete;
-		Image& operator=(Image&&) = delete;
+		ImageTexture& operator=(const ImageTexture&) = delete;
+		ImageTexture& operator=(ImageTexture&&) = delete;
 
-		/// @brief Loads the image from a binary stream, using the final encoding.
+		/// @brief Loads the image texture from a binary stream, using the final encoding.
 		/// @param stream The stream to load the image from.
 		void Load(std::istream& stream) override;
-		/// @brief Saves the image to a binary stream, using the final encoding.
+		/// @brief Saves the image texture to a binary stream, using the final encoding.
 		/// @param stream The stream to save the image to.
 		void Save(std::ostream& stream) const override;
-		/// @brief Imports the image from a file.
+		/// @brief Imports the image texture from a file.
 		/// @param path The path to the file to import the image from.
 		void Import(const std::string& path) override;
-		/// @brief Exports the image to a file.
+		/// @brief Exports the image texture to a file.
 		/// @param path The path to the file to export the image to.
 		void Export(const std::string& path) const override;
-		/// @brief Gets the image's dependencies.
+		/// @brief Gets the image texture's dependencies.
 		/// @return The image's dependencies.
 		std::vector<Asset*> GetDependencies() const override {
 			return {};
@@ -89,36 +98,36 @@ namespace wfe {
 			return imageLayout;
 		}
 
-		/// @brief Gets the image's data.
+		/// @brief Gets the texture's image data.
 		/// @param data A pointer to a buffer where the image's data will be stored. Must be able to fit all pixel data.
 		void GetImageData(void* data) const;
-		/// @brief Sets the image's data.
+		/// @brief Sets the texture's image data.
 		/// @param data A pointer to a buffer storing the image's new data. Must contain the data of all pixels.
 		void SetImageData(const void* data);
 
-		/// @brief Sets the image layout. Can be used if the layout was transitioned externally.
-		/// @param newLayout The image's new layout.
-		void SetImageLayout(VkImageLayout newLayout) {
+		/// @brief Sets the Vulkan image layout. Can be used if the layout was transitioned externally.
+		/// @param newLayout The Vulkan image's new layout.
+		void SetImageLayout(VkImageLayout newLayout) const {
 			imageLayout = newLayout;
 		}
-		/// @brief Transitions the image's layout.
-		/// @param newLayout The new layout to transition the image to.
+		/// @brief Transitions the Vulkan image's layout.
+		/// @param newLayout The new layout to transition the Vulkan image to.
 		/// @param srcStageMask The source pipeline stage mask for the layout transition barrier.
 		/// @param dstStageMask The destination pipeline stage mask for the layout transition barrier.
 		void TransitionImageLayout(VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT_KHR, VkPipelineStageFlags2KHR dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT_KHR) const;
-		/// @brief Transitions the image's layout.
+		/// @brief Transitions the Vulkan image's layout.
 		/// @param commandBuffer The command buffer to record the layout transition commands to.
-		/// @param newLayout The new layout to transition the image to.
+		/// @param newLayout The new layout to transition the Vulkan image to.
 		/// @param srcStageMask The source pipeline stage mask for the layout transition barrier.
 		/// @param dstStageMask The destination pipeline stage mask for the layout transition barrier.
 		void TransitionImageLayout(VkCommandBuffer commandBuffer, VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT_KHR, VkPipelineStageFlags2KHR dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT_KHR) const;
 
 		/// @brief Destroys the image.
-		~Image() {
+		~ImageTexture() {
 			DestroyVulkanComponents();
 		}
 	private:
-		WFE_ASSET_TYPE(Image, { "bmp", "jpg", "jpeg", "png" })
+		WFE_ASSET_TYPE(ImageTexture, { "bmp", "jpg", "jpeg", "png" })
 
 		void CreateVulkanComponents();
 		void DestroyVulkanComponents();

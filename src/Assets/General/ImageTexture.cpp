@@ -1,11 +1,10 @@
-#include "Image.hpp"
-#include "Core/Parsers/ImageParser.hpp"
+#include "ImageTexture.hpp"
 #include "Main/Program.hpp"
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
 	// Internal helper functions
-	void Image::CreateVulkanComponents() {
+	void ImageTexture::CreateVulkanComponents() {
 		// Exit the function if the image already has Vulkan components created
 		if(image)
 			return;
@@ -121,7 +120,7 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan image view! Error code: " + string_VkResult(result));
 	}
-	void Image::DestroyVulkanComponents() {
+	void ImageTexture::DestroyVulkanComponents() {
 		// Exit the function if the image doesn't have Vulkan components created
 		if(!image)
 			return;
@@ -147,7 +146,7 @@ namespace wfe {
 		linearViewFormat = VK_FORMAT_UNDEFINED;
 		imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	}
-	void Image::InternalGetImageData(void* data, VkImageLayout dstLayout) const {
+	void ImageTexture::InternalGetImageData(void* data, VkImageLayout dstLayout) const {
 		// Get the image's composition from its format
 		ImageComposition composition;
 		switch(imageFormat) {
@@ -312,7 +311,7 @@ namespace wfe {
 		device->GetLoader()->vkDestroyBuffer(device->GetDevice(), stagingBuffer, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		device->GetAllocator()->FreeMemory(stagingBufferMemory);
 	}
-	void Image::InternalSetImageData(const void* data, VkImageLayout dstLayout) {
+	void ImageTexture::InternalSetImageData(const void* data, VkImageLayout dstLayout) {
 		// Get the image's composition from its format
 		ImageComposition composition;
 		switch(imageFormat) {
@@ -479,7 +478,7 @@ namespace wfe {
 	}
 
 	// Virtual function definitions
-	void Image::Load(std::istream& stream) {
+	void ImageTexture::Load(std::istream& stream) {
 		// Load the image's width, height and composition
 		uint8_t imageParams[9];
 		if(stream.read((char*)imageParams, 9).gcount() != 9)
@@ -538,7 +537,7 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void Image::Save(std::ostream& stream) const {
+	void ImageTexture::Save(std::ostream& stream) const {
 		// Get the image's composition from its format
 		ImageComposition composition;
 		switch(imageFormat) {
@@ -590,7 +589,7 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void Image::Import(const std::string& path) {
+	void ImageTexture::Import(const std::string& path) {
 		// Open the file stream for reading
 		std::ifstream stream(path, std::ios::binary);
 		if(!stream)
@@ -646,7 +645,7 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void Image::Export(const std::string& path) const {
+	void ImageTexture::Export(const std::string& path) const {
 		// Get the image's composition from its format
 		ImageComposition composition;
 		switch(imageFormat) {
@@ -705,16 +704,53 @@ namespace wfe {
 	}
 
 	// Public functions
-	void Image::GetImageData(void* data) const {
+	ImageTexture::ImageTexture(Program* program, uint32_t width, uint32_t height, ImageComposition composition, const void* data, uint64_t id) : Asset(program, id), width(width), height(height) {
+		// Set the image's formats
+		switch(composition) {
+		case IMAGE_COMPOSITION_GRAYSCALE:
+			imageFormat = VK_FORMAT_R8_UINT;
+			srgbViewFormat = VK_FORMAT_R8_SRGB;
+			linearViewFormat = VK_FORMAT_R8_UNORM;
+			break;
+		case IMAGE_COMPOSITION_GRAYSCALE_ALPHA:
+			imageFormat = VK_FORMAT_R8G8_UINT;
+			srgbViewFormat = VK_FORMAT_R8G8_SRGB;
+			linearViewFormat = VK_FORMAT_R8G8_UNORM;
+			break;
+		case IMAGE_COMPOSITION_RGB:
+			imageFormat = VK_FORMAT_R8G8B8_UINT;
+			srgbViewFormat = VK_FORMAT_R8G8B8_SRGB;
+			linearViewFormat = VK_FORMAT_R8G8B8_UNORM;
+			break;
+		case IMAGE_COMPOSITION_RGBA:
+			imageFormat = VK_FORMAT_R8G8B8A8_UINT;
+			srgbViewFormat = VK_FORMAT_R8G8B8A8_SRGB;
+			linearViewFormat = VK_FORMAT_R8G8B8A8_UNORM;
+			break;
+		}
+
+		// Create the Vulkan components for the image
+		CreateVulkanComponents();
+
+		if(data) {
+			// Set the image's data
+			InternalSetImageData(data, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		} else {
+			// Transition the image's layout
+			TransitionImageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		}
+	}
+
+	void ImageTexture::GetImageData(void* data) const {
 		// Get the image's data and transition back to the original layout
 		InternalGetImageData(data, imageLayout);
 	}
-	void Image::SetImageData(const void* data) {
+	void ImageTexture::SetImageData(const void* data) {
 		// Set the image's data and transition back to the original layout
 		InternalSetImageData(data, imageLayout);
 	}
 
-	void Image::TransitionImageLayout(VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask, VkPipelineStageFlags2KHR dstStageMask) const {
+	void ImageTexture::TransitionImageLayout(VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask, VkPipelineStageFlags2KHR dstStageMask) const {
 		// Exit the function if the layout wouldn't be changed
 		if(imageLayout == newLayout)
 			return;
@@ -803,7 +839,7 @@ namespace wfe {
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), transitionFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool(), 1, &commandBuffer);
 	}
-	void Image::TransitionImageLayout(VkCommandBuffer commandBuffer, VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask, VkPipelineStageFlags2KHR dstStageMask) const {
+	void ImageTexture::TransitionImageLayout(VkCommandBuffer commandBuffer, VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask, VkPipelineStageFlags2KHR dstStageMask) const {
 		// Set the image memory barrier
 		VkImageMemoryBarrier2KHR imageMemoryBarrier {
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2_KHR,

@@ -9,10 +9,16 @@ namespace wfe {
 	/// @brief A class representing a shader module asset.
 	class Shader : public Asset {
 	public:
-		/// @brief Creates a new shader.
+		/// @brief Creates a new blank shader. The shader must be subsequently loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
 		Shader(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
+		/// @brief Creates a new shader.
+		/// @param program The program that owns the asset.
+		/// @param sourceSize The size of the shader's SPIR-V source code, in bytes.
+		/// @param source The shader's SPIR-V source code.
+		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
+		Shader(Program* program, size_t sourceSize, const uint8_t* source, uint64_t id = UINT64_T_MAX);
 		Shader(const Shader&) = delete;
 		Shader(Shader&&) = delete;
 
