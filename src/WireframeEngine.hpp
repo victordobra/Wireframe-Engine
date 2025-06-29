@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Assets/General/ImageTexture.hpp"
+#include "Assets/Rendering/ImageTexture.hpp"
 #include "Assets/Rendering/Shader.hpp"
 
 #include "Core/Assets/Asset.hpp"
