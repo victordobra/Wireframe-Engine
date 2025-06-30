@@ -4,7 +4,7 @@
 
 namespace wfe {
 	// Virtual function definitions
-	Shader::Shader(Program* program, size_t sourceSize, const uint8_t* source, uint64_t id = UINT64_T_MAX) : Asset(program, id), sourceSize(sourceSize) {
+	Shader::Shader(Program* program, size_t sourceSize, const uint8_t* source, uint64_t id) : Asset(program, id), sourceSize(sourceSize) {
 		// Allocate the source code buffer
 		this->source = (uint8_t*)AllocMemory(this->sourceSize);
 		if(!this->source)

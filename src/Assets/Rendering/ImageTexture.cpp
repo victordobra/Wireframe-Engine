@@ -224,7 +224,7 @@ namespace wfe {
 		VkCommandBufferAllocateInfo commandBufferAllocInfo {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			.pNext = nullptr,
-			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool(),
+			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(),
 			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 			.commandBufferCount = 1
 		};
@@ -305,7 +305,7 @@ namespace wfe {
 		
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool(), 1, &commandBuffer);
+		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(), 1, &commandBuffer);
 
 		// Destroy the staging buffer and free its memory
 		device->GetLoader()->vkDestroyBuffer(device->GetDevice(), stagingBuffer, &VulkanRenderer::ALLOCATION_CALLBACKS);
@@ -389,7 +389,7 @@ namespace wfe {
 		VkCommandBufferAllocateInfo commandBufferAllocInfo {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			.pNext = nullptr,
-			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool(),
+			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(),
 			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 			.commandBufferCount = 1
 		};
@@ -470,7 +470,7 @@ namespace wfe {
 		
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool(), 1, &commandBuffer);
+		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(), 1, &commandBuffer);
 
 		// Destroy the staging buffer and free its memory
 		device->GetLoader()->vkDestroyBuffer(device->GetDevice(), stagingBuffer, &VulkanRenderer::ALLOCATION_CALLBACKS);
@@ -774,7 +774,7 @@ namespace wfe {
 		VkCommandBufferAllocateInfo commandBufferAllocInfo {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			.pNext = nullptr,
-			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool(),
+			.commandPool = GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(),
 			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY
 		};
 
@@ -837,7 +837,7 @@ namespace wfe {
 		
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), transitionFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool(), 1, &commandBuffer);
+		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(), 1, &commandBuffer);
 	}
 	void ImageTexture::TransitionImageLayout(VkCommandBuffer commandBuffer, VkImageLayout newLayout, VkPipelineStageFlags2KHR srcStageMask, VkPipelineStageFlags2KHR dstStageMask) const {
 		// Set the image memory barrier

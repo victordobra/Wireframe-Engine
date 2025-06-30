@@ -3,6 +3,7 @@
 #include "Core/Types/Defines.hpp"
 #include "API/VulkanStructSize.hpp"
 #include "Instance/VulkanAllocator.hpp"
+#include "Instance/VulkanCommandPool.hpp"
 #include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
 #include "Instance/VulkanSurface.hpp"
@@ -58,10 +59,20 @@ namespace wfe {
 		VulkanSwapChain* GetSwapChain() const {
 			return swapChain;
 		}
+		/// @brief Gets the Vulkan command pool used for global graphics operations.
+		/// @return The Vulkan command pool used for global graphics operations.
+		VulkanCommandPool* GetGraphicsCommandPool() const {
+			return graphicsCommandPool;
+		}
 		/// @brief Gets the Vulkan command pool used for global transfer operations.
-		/// @return A handle to Vulkan command pool used for global transfer operations.
-		VkCommandPool GetTransferCommandPool() const {
+		/// @return The Vulkan command pool used for global transfer operations.
+		VulkanCommandPool* GetTransferCommandPool() const {
 			return transferCommandPool;
+		}
+		/// @brief Gets the Vulkan command pool used for global compute operations.
+		/// @return The Vulkan command pool used for global compute operations.
+		VulkanCommandPool* GetComputeCommandPool() const {
+			return computeCommandPool;
 		}
 
 		/// @brief Destroys the Vulkan renderer.
@@ -74,6 +85,8 @@ namespace wfe {
 		VulkanSurface* surface;
 		VulkanDevice* device;
 		VulkanSwapChain* swapChain;
-		VkCommandPool transferCommandPool;
+		VulkanCommandPool* graphicsCommandPool;
+		VulkanCommandPool* transferCommandPool;
+		VulkanCommandPool* computeCommandPool;
 	};
 }
