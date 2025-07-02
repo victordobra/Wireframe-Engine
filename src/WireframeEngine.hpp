@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Assets/Rendering/ImageTexture.hpp"
-#include "Assets/Rendering/Shader.hpp"
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetManager.hpp"
@@ -23,6 +22,8 @@
 #include "Core/Types/Defines.hpp"
 #include "Core/Utils/Event.hpp"
 #include "Core/Utils/Logger.hpp"
+
+#include "Graphics/GraphicsSystem.hpp"
 
 #include "Info/EngineInfo.hpp"
 

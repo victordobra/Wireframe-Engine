@@ -288,21 +288,6 @@ namespace wfe {
 			};
 		}
 	}
-	void VulkanSwapChain::CreateSyncObjects() {
-		// Set the semaphore create info
-		VkSemaphoreCreateInfo semaphoreInfo {
-			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0
-		};
-
-		// Create the rendering finished semaphores
-		for(SwapChainImage& image : swapChainImages) {
-			VkResult result = device->GetLoader()->vkCreateSemaphore(device->GetDevice(), &semaphoreInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &image.renderingFinisedSemaphore);
-			if(result != VK_SUCCESS)
-				throw std::runtime_error((std::string)"Failed to create Vulkan swap chain rendering finished semaphore! Error code: " + string_VkResult(result));
-		}
-	}
 
 	// Public functions
 	VulkanSwapChain::VulkanSwapChain(VulkanDevice* device, VulkanSurface* surface, bool vsync) : device(device), surface(surface) {
@@ -322,7 +307,6 @@ namespace wfe {
 		CreateSwapChain();
 		CreateSwapChainImages();
 		CreateDepthImages();
-		CreateSyncObjects();
 
 		// Add the resize listener to the window
 		surface->GetWindow()->GetResizeEvent().AddListener({ ResizeListener, this });
@@ -345,7 +329,6 @@ namespace wfe {
 				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetAllocator()->FreeMemory(image.depthImageMemory);
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkDestroySemaphore(device->GetDevice(), image.renderingFinisedSemaphore, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
 
 			swapChainImages.clear();
@@ -371,7 +354,6 @@ namespace wfe {
 		// Create the swap chain's components
 		CreateSwapChainImages();
 		CreateDepthImages();
-		CreateSyncObjects();
 	}
 
 	void VulkanSwapChain::LogInfo(Logger* logger) const {
@@ -389,7 +371,6 @@ namespace wfe {
 				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
 				device->GetAllocator()->FreeMemory(image.depthImageMemory);
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkDestroySemaphore(device->GetDevice(), image.renderingFinisedSemaphore, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
 
 			// Destroy the swap chain

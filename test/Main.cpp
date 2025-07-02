@@ -31,7 +31,8 @@ int main(int argc, char** args) {
 		.optionalVulkanDeviceFeatures = wfe::VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES,
 		.requiredVulkanDeviceExtensions = wfe::VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS,
 		.optionalVulkanDeviceExtensions = wfe::VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS,
-		.maxEntityCount = 256
+		.maxEntityCount = 256,
+		.maxFramesInFlight = 2
 	};
 
 	// Create and run the program

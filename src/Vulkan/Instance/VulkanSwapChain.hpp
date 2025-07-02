@@ -27,9 +27,6 @@ namespace wfe {
 			VkImageView depthImageView;
 			/// @brief The depth image's attachment info.
 			VkRenderingAttachmentInfoKHR depthAttachmentInfo;
-
-			/// @brief The semaphore that the swap chain will wait for before presenting the image.
-			VkSemaphore renderingFinisedSemaphore;
 		};
 
 		/// @brief Creates a Vulkan swap chain.
@@ -105,7 +102,6 @@ namespace wfe {
 		void CreateSwapChain(VkSwapchainKHR oldSwapChain = VK_NULL_HANDLE);
 		void CreateSwapChainImages();
 		void CreateDepthImages();
-		void CreateSyncObjects();
 
 		VulkanDevice* device;
 		VulkanSurface* surface;

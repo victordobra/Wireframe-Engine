@@ -68,6 +68,8 @@ namespace wfe {
 			
 			/// @brief The maximum number of entities that can be active at once.
 			size_t maxEntityCount = 256;
+			/// @brief The maximum number of frames in flight at a given moment.
+			size_t maxFramesInFlight = 2;
 		};
 
 		/// @brief Creates the program and its components.
@@ -120,6 +122,11 @@ namespace wfe {
 		EntityManager* GetEntityManager() const {
 			return entityManager;
 		}
+		/// @brief Gets the program's graphics system.
+		/// @return The program's graphics system.
+		GraphicsSystem* GetGraphicsSystem() const {
+			return graphicsSystem;
+		}
 
 		/// @brief Destroys the program and its components.
 		~Program();
@@ -135,5 +142,6 @@ namespace wfe {
 		VulkanRenderer* renderer;
 		AssetManager* assetManager;
 		EntityManager* entityManager;
+		GraphicsSystem* graphicsSystem;
 	};
 }
