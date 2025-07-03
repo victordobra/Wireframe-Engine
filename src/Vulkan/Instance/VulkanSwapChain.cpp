@@ -313,6 +313,9 @@ namespace wfe {
 	}
 
 	void VulkanSwapChain::RecreateSwapChain(bool vsync) {
+		// Wait for all presents to finish
+		device->GetLoader()->vkQueueWaitIdle(device->GetDeviceQueues().presentQueue);
+
 		// Set the new present mode
 		if(vsync && !vsyncSupported) {
 			throw std::runtime_error("VSync was requested, yet is not supported by the Vulkan swap chain!");

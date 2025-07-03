@@ -82,6 +82,10 @@ namespace wfe {
 	}
 
 	void GraphicsSystem::Render() {
+		// Skip the current frame if the swap chain does not exist
+		if(!renderer->GetSwapChain()->GetSwapChain())
+			return;
+
 		// Wait for the last frame in flight to finish rendering
 		VkResult result = renderer->GetLoader()->vkWaitForFences(renderer->GetDevice()->GetDevice(), 1, &renderingFences[frameIndex], VK_TRUE, UINT64_T_MAX);
 		if(result != VK_SUCCESS)
