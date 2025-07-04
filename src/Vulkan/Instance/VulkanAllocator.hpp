@@ -53,6 +53,11 @@ namespace wfe {
 		/// @param memory The memory to free.
 		void FreeMemory(Memory memory);
 
+		/// @brief Gets the mapped data region of the given memory block.
+		/// @param memory The memory block whosed mapped data to get.
+		/// @return A pointer to the memory's mapped data, or nullptr if the given memory is not host visible.
+		void* GetMappedMemory(Memory memory) const;
+
 		/// @brief Destroys the Vulkan device memory allocator and frees all allocated memory.
 		~VulkanAllocator();
 	private:
@@ -77,6 +82,7 @@ namespace wfe {
 		VulkanDevice* device;
 
 		std::unordered_map<VkDeviceMemory, uint32_t> memoryTypeIndices;
+		std::unordered_map<VkDeviceMemory, void*> memoryDatas;
 		std::vector<MemoryType> memoryTypes;
 	};
 }

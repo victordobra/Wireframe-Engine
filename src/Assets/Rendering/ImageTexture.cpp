@@ -198,14 +198,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan staging buffer to its memory! Error code: " + string_VkResult(result));
 		
 		// Write the image data to the staging buffer
-		void* mappedData;
-		result = device->GetLoader()->vkMapMemory(device->GetDevice(), stagingBufferMemory.memory, stagingBufferMemory.offset, stagingBufferMemory.size, 0, &mappedData);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to map Vulkan staging buffer memory! Error code: " + string_VkResult(result));
-		
-		memcpy(mappedData, data, (size_t)stagingBufferInfo.size);
-
-		device->GetLoader()->vkUnmapMemory(device->GetDevice(), stagingBufferMemory.memory);
+		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
 
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {
@@ -363,14 +356,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan staging buffer to its memory! Error code: " + string_VkResult(result));
 		
 		// Write the image data to the staging buffer
-		void* mappedData;
-		result = device->GetLoader()->vkMapMemory(device->GetDevice(), stagingBufferMemory.memory, stagingBufferMemory.offset, stagingBufferMemory.size, 0, &mappedData);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to map Vulkan staging buffer memory! Error code: " + string_VkResult(result));
-		
-		memcpy(mappedData, data, (size_t)stagingBufferInfo.size);
-
-		device->GetLoader()->vkUnmapMemory(device->GetDevice(), stagingBufferMemory.memory);
+		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
 
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {

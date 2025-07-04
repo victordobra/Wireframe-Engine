@@ -22,13 +22,25 @@ namespace wfe {
 		// Allocate the device memory
 		VkResult result = device->GetLoader()->vkAllocateMemory(device->GetDevice(), &allocInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &memory);
 		if(result == VK_SUCCESS) {
+			// Check if the current memory is host visible
+			if(device->GetDeviceMemoryProperties().memoryTypes[memoryTypeIndex].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
+				// Map the current memory
+				void* data;
+				result = device->GetLoader()->vkMapMemory(device->GetDevice(), memory, 0, VK_WHOLE_SIZE, 0, &data);
+				if(result != VK_SUCCESS)
+					throw std::runtime_error((std::string)"Failed to map Vulkan device memory! Error code: " + string_VkResult(result));
+				
+				// Add the mapped memory to the map
+				memoryDatas.insert({ memory, data });
+			}
+
 			// Add the new memory to the memory types
 			memoryTypeIndices.insert({ memory, memoryTypeIndex });
 			memoryTypes[memoryTypeIndex].allocations.insert({ memory, {} });
 			return true;
 		}
 		if(result != VK_ERROR_OUT_OF_DEVICE_MEMORY)
-			throw std::runtime_error((std::string)"Failed to allocate device memory: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to allocate Vulkan device memory! Error code: " + string_VkResult(result));
 		
 		return false;
 	}
@@ -50,12 +62,28 @@ namespace wfe {
 		// Allocate the device memory
 		VkResult result = device->GetLoader()->vkAllocateMemory(device->GetDevice(), &allocInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &memory.memory);
 		if(result != VK_SUCCESS && result != VK_ERROR_OUT_OF_DEVICE_MEMORY)
-			throw std::runtime_error((std::string)"Failed to allocate dedicated device memory: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to allocate Vulkan dedicated device memory! Error code: " + string_VkResult(result));
 		
 		memory.offset = 0;
 		memory.size = size & ~1;
+
+		// Exit if the allocation was unsuccessful
+		if(result != VK_SUCCESS)
+			return false;
+
+		// Check if the current memory is host visible
+		if(device->GetDeviceMemoryProperties().memoryTypes[memoryTypeIndex].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
+			// Map the current memory
+			void* data;
+			result = device->GetLoader()->vkMapMemory(device->GetDevice(), memory.memory, 0, VK_WHOLE_SIZE, 0, &data);
+			if(result != VK_SUCCESS)
+				throw std::runtime_error((std::string)"Failed to map Vulkan device memory! Error code: " + string_VkResult(result));
+			
+			// Add the mapped memory to the map
+			memoryDatas.insert({ memory.memory, data });
+		}
 		
-		return result == VK_SUCCESS;
+		return true;
 	}
 	bool VulkanAllocator::AllocateFreeBlock(VkDeviceSize size, VkDeviceSize alignment, VkDeviceSize freeStart, VkDeviceSize freeEnd, VkDeviceSize& offset) {
 		// Align the starts and ends of the free block accordingly
@@ -226,6 +254,14 @@ namespace wfe {
 
 		// If the memory isn't in the type index map, it must be dedicated
 		if(memoryTypeIndexIter == memoryTypeIndices.end()) {
+			// Check if the memory is host visible
+			auto dataIter = memoryDatas.find(memory.memory);
+			if(dataIter != memoryDatas.end()) {
+				// Unmap the memory and remove the memory data from the map
+				device->GetLoader()->vkUnmapMemory(device->GetDevice(), memory.memory);
+				memoryDatas.erase(dataIter);
+			}
+
 			device->GetLoader()->vkFreeMemory(device->GetDevice(), memory.memory, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			return;
 		}
@@ -235,6 +271,17 @@ namespace wfe {
 
 		// Free the memory from the memory type
 		memoryTypes[memoryTypeIndex].allocations[memory.memory].erase({ memory.offset, memory.size });
+	}
+
+	void* VulkanAllocator::GetMappedMemory(Memory memory) const {
+		// Check if the given memory is mapped
+		auto dataIter = memoryDatas.find(memory.memory);
+		if(dataIter == memoryDatas.end())
+			return nullptr;
+		
+		// Get the mapped memory and offset it accordingly
+		uint8_t* dataStart = (uint8_t*)(dataIter->second);
+		return dataStart + memory.offset;
 	}
 
 	VulkanAllocator::~VulkanAllocator() {

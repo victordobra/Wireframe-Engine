@@ -170,14 +170,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan memory to material staging buffer! Error code: " + string_VkResult(result));
 		
 		// Write the material data to the staging buffer
-		void* bufferData;
-		result = device->GetLoader()->vkMapMemory(device->GetDevice(), stagingBufferMemory.memory, stagingBufferMemory.offset, stagingBufferMemory.size, 0, &bufferData);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to map Vulkan material staging buffer memory! Error code: " + string_VkResult(result));
-		
-		*(MaterialData*)bufferData = data;
-	
-		device->GetLoader()->vkUnmapMemory(device->GetDevice(), stagingBufferMemory.memory);
+		*(MaterialData*)(device->GetAllocator()->GetMappedMemory(stagingBufferMemory)) = data;
 
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {
