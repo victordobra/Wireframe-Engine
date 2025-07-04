@@ -22,6 +22,11 @@ namespace wfe {
 		// Allocate the device memory
 		VkResult result = device->GetLoader()->vkAllocateMemory(device->GetDevice(), &allocInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &memory);
 		if(result == VK_SUCCESS) {
+			// Lock the alloc mutex
+			uint32_t locked = 0;
+			while(!allocMutex.compare_exchange_strong(locked, 1))
+				locked = 0;
+
 			// Check if the current memory is host visible
 			if(device->GetDeviceMemoryProperties().memoryTypes[memoryTypeIndex].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
 				// Map the current memory
@@ -37,6 +42,10 @@ namespace wfe {
 			// Add the new memory to the memory types
 			memoryTypeIndices.insert({ memory, memoryTypeIndex });
 			memoryTypes[memoryTypeIndex].allocations.insert({ memory, {} });
+
+			// Unlock the alloc mutex
+			allocMutex = 0;
+
 			return true;
 		}
 		if(result != VK_ERROR_OUT_OF_DEVICE_MEMORY)
@@ -80,7 +89,11 @@ namespace wfe {
 				throw std::runtime_error((std::string)"Failed to map Vulkan device memory! Error code: " + string_VkResult(result));
 			
 			// Add the mapped memory to the map
+			uint32_t locked = 0;
+			while(!allocMutex.compare_exchange_strong(locked, 1))
+				locked = 0;
 			memoryDatas.insert({ memory.memory, data });
+			allocMutex = 0;
 		}
 		
 		return true;
@@ -120,6 +133,11 @@ namespace wfe {
 			}
 		}
 
+		// Lock the alloc mutex
+		uint32_t locked = 0;
+		while(!allocMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
+
 		// Loop through all available device memories
 		for(const std::pair<VkDeviceMemory, std::set<Allocation>>& memoryAllocations : memoryTypes[memoryTypeIndex].allocations) {
 			// Loop though all allication pairs to find all free blocks
@@ -130,6 +148,7 @@ namespace wfe {
 				if(AllocateFreeBlock(size, alignment, prevOffset, allocation.offset + (allocation.size & 1), memory.offset)) {
 					memory.memory = memoryAllocations.first;
 					memory.size = size & ~1;
+					allocMutex = 0;
 					return true;
 				}
 
@@ -141,9 +160,13 @@ namespace wfe {
 			if(AllocateFreeBlock(size, alignment, prevOffset, DEVICE_MEMORY_SIZE + (size & 1), memory.offset)) {
 				memory.memory = memoryAllocations.first;
 				memory.size = size & ~1;
+				allocMutex = 0;
 				return true;
 			}
 		};
+
+		// Unlock the alloc mutex
+		allocMutex = 0;
 
 		// Allocate a new device memory
 		VkDeviceMemory newMemory;
@@ -151,7 +174,10 @@ namespace wfe {
 			return false;
 		
 		// Add the memory block to the new device memory
+		while(!allocMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 		memoryTypes[memoryTypeIndex].allocations[newMemory].insert({ 0, size });
+		allocMutex = 0;
 
 		memory.memory = newMemory;
 		memory.offset = 0;
@@ -249,6 +275,11 @@ namespace wfe {
 		throw std::bad_alloc();
 	}
 	void VulkanAllocator::FreeMemory(Memory memory) {
+		// Lock the alloc mutex
+		uint32_t locked = 0;
+		while(!allocMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
+
 		// Get the memory type index
 		auto memoryTypeIndexIter = memoryTypeIndices.find(memory.memory);
 
@@ -262,7 +293,10 @@ namespace wfe {
 				memoryDatas.erase(dataIter);
 			}
 
+			// Unlock the alloc mutex and free the memory
+			allocMutex = 0;
 			device->GetLoader()->vkFreeMemory(device->GetDevice(), memory.memory, &VulkanRenderer::ALLOCATION_CALLBACKS);
+
 			return;
 		}
 
@@ -271,16 +305,24 @@ namespace wfe {
 
 		// Free the memory from the memory type
 		memoryTypes[memoryTypeIndex].allocations[memory.memory].erase({ memory.offset, memory.size });
+		allocMutex = 0;
 	}
 
 	void* VulkanAllocator::GetMappedMemory(Memory memory) const {
 		// Check if the given memory is mapped
+		uint32_t locked = 0;
+		while(!allocMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
+
 		auto dataIter = memoryDatas.find(memory.memory);
-		if(dataIter == memoryDatas.end())
+		if(dataIter == memoryDatas.end()) {
+			allocMutex = 0;
 			return nullptr;
+		}
 		
 		// Get the mapped memory and offset it accordingly
 		uint8_t* dataStart = (uint8_t*)(dataIter->second);
+		allocMutex = 0;
 		return dataStart + memory.offset;
 	}
 

@@ -84,5 +84,7 @@ namespace wfe {
 		std::unordered_map<VkDeviceMemory, uint32_t> memoryTypeIndices;
 		std::unordered_map<VkDeviceMemory, void*> memoryDatas;
 		std::vector<MemoryType> memoryTypes;
+
+		mutable atomic_uint32_t allocMutex = 0;
 	};
 }
