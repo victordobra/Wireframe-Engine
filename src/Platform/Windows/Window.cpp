@@ -31,9 +31,9 @@ namespace wfe {
 
 	LRESULT CALLBACK Window::GlobalProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		// Get the window object corresponding to the current hWnd
-		uint32_t lock = 0;
-		while(!windowMutex.compare_exchange_weak(lock, 1))
-			lock = 0;
+		uint32_t locked = 0;
+		while(!windowMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 		auto iter = windowMap.find(hWnd);
 		windowMutex = 0;
 
@@ -206,9 +206,9 @@ namespace wfe {
 	// Public functions
 	Window::Window(int32_t x, int32_t y, uint32_t width, uint32_t height, const std::string& title, bool minimized, bool maximized, bool fullscreen) : x(x), y(y), width(width), height(height), title(title), minimized(minimized), maximized(maximized), fullscreen(fullscreen) {
 		// Lock the window mutex
-		uint32_t lock = 0;
-		while(!windowMutex.compare_exchange_weak(lock, 1))
-			lock = 0;
+		uint32_t locked = 0;
+		while(!windowMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 
 		// Check if the window class has been registered
 		if(!winClassID) {
@@ -282,8 +282,8 @@ namespace wfe {
 			ThrowError("Failed to create Win32 window!");
 
 		// Add the window to the map
-		while(!windowMutex.compare_exchange_weak(lock, 1))
-			lock = 0;
+		while(!windowMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 		windowMap.insert({ platformData.hWnd, this });
 		windowMutex = 0;
 
@@ -396,9 +396,9 @@ namespace wfe {
 		delete inputManager;
 
 		// Remove the window from the map
-		uint32_t lock = 0;
-		while(!windowMutex.compare_exchange_weak(lock, 1))
-			lock = 0;
+		uint32_t locked = 0;
+		while(!windowMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 		windowMap.erase(platformData.hWnd);
 		windowMutex = 0;
 
@@ -406,8 +406,8 @@ namespace wfe {
 		DestroyWindow(platformData.hWnd);
 
 		// Lock the window mutex
-		while(!windowMutex.compare_exchange_weak(lock, 1))
-			lock = 0;
+		while(!windowMutex.compare_exchange_strong(locked, 1))
+			locked = 0;
 
 		// Check if there are no more windows
 		if(windowMap.empty()) {
