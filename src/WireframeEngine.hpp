@@ -23,6 +23,7 @@
 #include "Core/Utils/Event.hpp"
 #include "Core/Utils/Logger.hpp"
 
+#include "Graphics/Main/MaterialManager.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 
 #include "Info/EngineInfo.hpp"

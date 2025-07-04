@@ -30,6 +30,7 @@ namespace wfe {
 		assetManager = new AssetManager(this);
 		entityManager = new EntityManager(settings.maxEntityCount);
 		graphicsSystem = new GraphicsSystem(renderer, settings.maxFramesInFlight);
+		materialManager = new MaterialManager(renderer, settings.maxMaterialCount);
 
 		// Store the end time for renderer initialization
 		std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
@@ -54,6 +55,7 @@ namespace wfe {
 
 	Program::~Program() {
 		// Destroy the program's components
+		delete materialManager;
 		delete graphicsSystem;
 		delete entityManager;
 		delete assetManager;

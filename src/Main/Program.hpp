@@ -70,6 +70,8 @@ namespace wfe {
 			size_t maxEntityCount = 256;
 			/// @brief The maximum number of frames in flight at a given moment.
 			size_t maxFramesInFlight = 2;
+			/// @brief The maximum number of materials that the renderer can handle.
+			size_t maxMaterialCount = 256;
 		};
 
 		/// @brief Creates the program and its components.
@@ -127,6 +129,11 @@ namespace wfe {
 		GraphicsSystem* GetGraphicsSystem() const {
 			return graphicsSystem;
 		}
+		/// @brief Gets the program's material manager.
+		/// @return The program's material manager.
+		MaterialManager* GetMaterialManager() const {
+			return materialManager;
+		}
 
 		/// @brief Destroys the program and its components.
 		~Program();
@@ -143,5 +150,6 @@ namespace wfe {
 		AssetManager* assetManager;
 		EntityManager* entityManager;
 		GraphicsSystem* graphicsSystem;
+		MaterialManager* materialManager;
 	};
 }
