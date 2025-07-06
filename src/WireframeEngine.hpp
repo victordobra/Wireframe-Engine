@@ -24,6 +24,7 @@
 #include "Core/Utils/Logger.hpp"
 
 #include "Graphics/Main/MaterialManager.hpp"
+#include "Graphics/Main/MeshRenderer.hpp"
 #include "Graphics/Main/RenderMesh.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 
