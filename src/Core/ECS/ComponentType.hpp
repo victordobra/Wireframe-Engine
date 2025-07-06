@@ -73,13 +73,13 @@ namespace wfe {
 
 /// @brief A macro to register a component type.
 /// @param type The component type to register.
-#define WFE_COMPONENT_TYPE(type, extensions) \
+#define WFE_COMPONENT_TYPE(type) \
 struct ComponentType##type##Constructor { \
 	static void CreateComponent(void* address) { \
 		new(address) type; \
 	} \
 	static void DestroyComponent(void* address) { \
-		address->~type(); \
+		((type*)address)->~type(); \
 	} \
 	ComponentType##type##Constructor() { \
 		wfe::ComponentType componentType; \
@@ -87,7 +87,7 @@ struct ComponentType##type##Constructor { \
 		componentType.name = typeid(type).name(); \
 		componentType.size = sizeof(type); \
 		componentType.constructor = CreateComponent; \
-		componentType.destructor = DestroyComponent \
+		componentType.destructor = DestroyComponent; \
 		\
 		wfe::ComponentType::RegisterComponentType(componentType); \
 	} \
