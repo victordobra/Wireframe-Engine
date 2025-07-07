@@ -37,6 +37,10 @@ namespace wfe {
 			throw std::runtime_error("Failed to allocate Vulkan mesh vertex buffer memory!");
 		}
 
+		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), vertexBuffer, vertexBufferMemory.memory, vertexBufferMemory.offset);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh vertex buffer to its memory! Error code: " + string_VkResult(result));
+
 		// Set the index buffer create info
 		VkBufferCreateInfo indexBufferInfo {
 			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
@@ -60,6 +64,10 @@ namespace wfe {
 		} catch(const std::bad_alloc&) {
 			throw std::runtime_error("Failed to allocate Vulkan mesh index buffer memory!");
 		}
+
+		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), indexBuffer, indexBufferMemory.memory, indexBufferMemory.offset);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh index buffer to its memory! Error code: " + string_VkResult(result));
 
 		// Set the vertex staging buffer create info
 		uint32_t transferFamily = device->GetDeviceQueues().transferIndex;
@@ -89,6 +97,10 @@ namespace wfe {
 			throw std::runtime_error("Failed to allocate Vulkan mesh vertex staging buffer memory!");
 		}
 
+		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), vertexStagingBuffer, vertexStagingBufferMemory.memory, vertexStagingBufferMemory.offset);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh vertex staging buffer to its memory! Error code: " + string_VkResult(result));
+
 		// Set the vertex staging buffer's info
 		memcpy(device->GetAllocator()->GetMappedMemory(vertexStagingBufferMemory), vertices.data(), sizeof(Vertex) * vertices.size());
 		
@@ -117,6 +129,10 @@ namespace wfe {
 		} catch(const std::bad_alloc&) {
 			throw std::runtime_error("Failed to allocate Vulkan mesh index staging buffer memory!");
 		}
+
+		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), indexStagingBuffer, indexStagingBufferMemory.memory, indexStagingBufferMemory.offset);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh index staging buffer to its memory! Error code: " + string_VkResult(result));
 
 		// Set the index staging buffer's info
 		memcpy(device->GetAllocator()->GetMappedMemory(indexStagingBufferMemory), indices.data(), sizeof(uint32_t) * indices.size());
