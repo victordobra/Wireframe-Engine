@@ -36,10 +36,49 @@ int main(int argc, char** args) {
 		.maxMaterialCount = 256
 	};
 
-	// Create and run the program
+	// Create the program
 	wfe::Program* program = new wfe::Program(programInfo, programSettings);
 
+	// Load the test image
+	wfe::ImageTexture* surfaceTex = new wfe::ImageTexture(program);
+	surfaceTex->Import("assets/TestImage.png");
+
+	// Create the example material
+	wfe::Material* material = new wfe::Material(program->GetMaterialManager(), { wfe::Vector4::ONE }, { surfaceTex });
+
+	// Create the example mesh
+	std::vector<wfe::RenderMesh::Vertex> vertices {
+		{ { -1.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+		{ {  1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+		{ { -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
+		{ {  1.0f,  1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }
+	};
+	std::vector<wfe::uint32_t> indices {
+		0, 1, 2,
+		1, 3, 2
+	};
+
+	wfe::RenderMesh* mesh = new wfe::RenderMesh(program->GetRenderer(), vertices, indices);
+
+	// Create the rendered entity and add a render mesh component
+	wfe::Entity entity = program->GetEntityManager()->CreateEntity();
+	program->GetEntityManager()->GetEntityTransform(entity).pos = wfe::Vector3(0.0f, 0.0f, -3.0f);
+
+	wfe::size_t typeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();
+	wfe::MeshRenderer* meshRenderer = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(typeIndex)->CreateComponent(entity);
+
+	meshRenderer->mesh = mesh;
+	meshRenderer->material = material;
+
+	// Run the program
 	wfe::int32_t returnCode = program->Run();
+
+	// Destroy the created entity and all other resources
+	program->GetEntityManager()->DestroyEntity(entity);
+
+	delete mesh;
+	delete material;
+	delete surfaceTex;
 
 	// Destroy the program and exit
 	delete program;

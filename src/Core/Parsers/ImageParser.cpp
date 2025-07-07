@@ -52,6 +52,9 @@ namespace wfe {
 
 	// Public functions
 	uint8_t* ReadImageFile(std::istream& stream, uint32_t& width, uint32_t& height) {
+		// Configure STB to flip the image on read
+		stbi_set_flip_vertically_on_load(1);
+
 		// Load the image
 		int32_t x, y, comp;
 		uint8_t* memory = stbi_load_from_callbacks(&IO_CALLBACKS, &stream, &x, &y, &comp, STBI_rgb_alpha);
@@ -66,14 +69,23 @@ namespace wfe {
 	}
 
 	bool WritePNGFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
+		// Configure STB to flip the image on write
+		stbi_flip_vertically_on_write(1);
+
 		// Write the image
 		return (bool)stbi_write_png_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data, (int32_t)(4 * width));
 	}
 	bool WriteJPEGFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
+		// Configure STB to flip the image on write
+		stbi_flip_vertically_on_write(1);
+
 		// Write the image
 		return (bool)stbi_write_jpg_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data, 90);
 	}
 	bool WriteBMPFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
+		// Configure STB to flip the image on write
+		stbi_flip_vertically_on_write(1);
+
 		// Write the image
 		return (bool)stbi_write_bmp_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data);
 	}

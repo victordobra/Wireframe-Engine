@@ -101,9 +101,8 @@ endif()
 
 # Compile shaders
 foreach(GLSL ${GLSL_SOURCE_FILES})
-	get_filename_component(GLSL_NAME ${GLSL} NAME)
-	set(SPIRV "${PROJECT_SOURCE_DIR}/assets/shaders/${GLSL_NAME}.spv")
-	add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} ${GLSL} -V -o ${SPIRV} DEPENDS ${GLSL})
+	set(SPIRV "${GLSL}.u32")
+	add_custom_command(OUTPUT ${SPIRV} COMMAND ${GLSL_VALIDATOR} --target-env vulkan1.2 -x ${GLSL} -V -o ${SPIRV} DEPENDS ${GLSL})
 	list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 

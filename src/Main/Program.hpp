@@ -4,6 +4,8 @@
 #include "Core/ECS/EntityManager.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Core/Utils/Logger.hpp"
+#include "Graphics/Main/MainPipeline.hpp"
+#include "Graphics/GraphicsSystem.hpp"
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 
@@ -134,6 +136,11 @@ namespace wfe {
 		MaterialManager* GetMaterialManager() const {
 			return materialManager;
 		}
+		/// @brief Gets the program's main graphics pipeline.
+		/// @return The program's main graphics pipeline.
+		MainPipeline* GetMainPipeline() const {
+			return mainPipeline;
+		}
 
 		/// @brief Destroys the program and its components.
 		~Program();
@@ -151,5 +158,6 @@ namespace wfe {
 		EntityManager* entityManager;
 		GraphicsSystem* graphicsSystem;
 		MaterialManager* materialManager;
+		MainPipeline* mainPipeline;
 	};
 }
