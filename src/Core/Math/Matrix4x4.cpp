@@ -331,10 +331,10 @@ namespace wfe {
 		float invNearFar = 1.0f / (nearPlane - farPlane);
 
 		// Calculate the resulting matrix's values
-		return { -2.0f * invLeftRight,            0.0f,                          0.0f,                                0.0f,
-		          0.0f,                          -2.0f * invBottomTop,           0.0f,                                0.0f,
-		          0.0f,                           0.0f,                          2.0f * invNearFar,                   0.0f,
-		          (left + right) * invLeftRight,  (top + bottom) * invBottomTop, (farPlane + nearPlane) * invNearFar, 1.0f };
+		return { -2.0f * invLeftRight,            0.0f,                           0.0f,                   0.0f,
+		          0.0f,                          -2.0f * invBottomTop,            0.0f,                   0.0f,
+		          0.0f,                           0.0f,                           2.0f * invNearFar,      0.0f,
+		          (left + right) * invLeftRight,  (top + bottom) * invBottomTop, -nearPlane * invNearFar, 1.0f };
 	}
 	Matrix4x4 Matrix4x4::LookAt(Vector3 position, Vector3 target, Vector3 up) {
 		// Calculate all axes using the given vectors
