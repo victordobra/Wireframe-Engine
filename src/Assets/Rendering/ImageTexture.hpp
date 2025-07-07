@@ -19,10 +19,9 @@ namespace wfe {
 		/// @param program The program that owns the asset.
 		/// @param width The image width, in pixels.
 		/// @param height The image height, in pixels.
-		/// @param composition The image composition, equal to the number of 8-bit components in each pixel.
 		/// @param data A pointer to the image data, or nullptr if the image data is undefined.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		ImageTexture(Program* program, uint32_t width, uint32_t height, ImageComposition composition, const void* data = nullptr, uint64_t id = UINT64_T_MAX);
+		ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data = nullptr, uint64_t id = UINT64_T_MAX);
 		ImageTexture(const ImageTexture&) = delete;
 		ImageTexture(ImageTexture&&) = delete;
 
@@ -80,17 +79,17 @@ namespace wfe {
 		/// @brief Gets the Vulkan image's format.
 		/// @return The Vulkan image's format.
 		VkFormat GetImageFormat() const {
-			return imageFormat;
+			return VK_FORMAT_R8G8B8A8_UINT;
 		}
 		/// @brief Gets the Vulkan format of the sRGB image view.
 		/// @return The Vulkan format of the sRGB image view.
 		VkFormat GetSRGBViewFormat() const {
-			return srgbViewFormat;
+			return VK_FORMAT_R8G8B8A8_SRGB;
 		}
 		/// @brief Gets the Vulkan format of the linear image view.
 		/// @return The Vulkan format of the linear image view.
 		VkFormat GetLinearViewFormat() const {
-			return linearViewFormat;
+			return VK_FORMAT_R8G8B8A8_UNORM;
 		}
 		/// @brief Gets the Vulkan image layout.
 		/// @return The Vulkan image layout.
@@ -140,10 +139,6 @@ namespace wfe {
 		VulkanAllocator::Memory imageMemory;
 		VkImageView srgbImageView = VK_NULL_HANDLE;
 		VkImageView linearImageView = VK_NULL_HANDLE;
-
-		VkFormat imageFormat = VK_FORMAT_UNDEFINED;
-		VkFormat srgbViewFormat = VK_FORMAT_UNDEFINED;
-		VkFormat linearViewFormat = VK_FORMAT_UNDEFINED;
 
 		mutable VkImageLayout imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	};

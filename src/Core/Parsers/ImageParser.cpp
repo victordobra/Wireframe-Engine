@@ -51,31 +51,30 @@ namespace wfe {
 	};
 
 	// Public functions
-	uint8_t* ReadImageFile(std::istream& stream, uint32_t& width, uint32_t& height, ImageComposition& composition) {
+	uint8_t* ReadImageFile(std::istream& stream, uint32_t& width, uint32_t& height) {
 		// Load the image
 		int32_t x, y, comp;
-		uint8_t* memory = stbi_load_from_callbacks(&IO_CALLBACKS, &stream, &x, &y, &comp, STBI_default);
+		uint8_t* memory = stbi_load_from_callbacks(&IO_CALLBACKS, &stream, &x, &y, &comp, STBI_rgb_alpha);
 		if(!memory)
 			return nullptr;
 		
 		// Set the image's width and height
 		width = (uint32_t)x;
 		height = (uint32_t)y;
-		composition = (ImageComposition)comp;
 
 		return memory;
 	}
 
-	bool WritePNGFile(std::ostream& stream, uint32_t width, uint32_t height, ImageComposition composition, uint8_t* data) {
+	bool WritePNGFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
 		// Write the image
-		return (bool)stbi_write_png_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, (int32_t)composition, data, (int32_t)((uint32_t)composition * width));
+		return (bool)stbi_write_png_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data, (int32_t)(4 * width));
 	}
-	bool WriteJPEGFile(std::ostream& stream, uint32_t width, uint32_t height, ImageComposition composition, uint8_t* data) {
+	bool WriteJPEGFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
 		// Write the image
-		return (bool)stbi_write_jpg_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, (int32_t)composition, data, 90);
+		return (bool)stbi_write_jpg_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data, 90);
 	}
-	bool WriteBMPFile(std::ostream& stream, uint32_t width, uint32_t height, ImageComposition composition, uint8_t* data) {
+	bool WriteBMPFile(std::ostream& stream, uint32_t width, uint32_t height, uint8_t* data) {
 		// Write the image
-		return (bool)stbi_write_bmp_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, (int32_t)composition, data);
+		return (bool)stbi_write_bmp_to_func(WriteCallback, &stream, (int32_t)width, (int32_t)height, STBI_rgb_alpha, data);
 	}
 }

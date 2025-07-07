@@ -22,7 +22,7 @@ namespace wfe {
 			.pNext = nullptr,
 			.flags = VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT,
 			.imageType = VK_IMAGE_TYPE_2D,
-			.format = imageFormat,
+			.format = VK_FORMAT_R8G8B8A8_UINT,
 			.extent = { width, height, 1 },
 			.mipLevels = 1,
 			.arrayLayers = 1,
@@ -53,45 +53,6 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to bind Vulkan image to its memory! Error code: " + string_VkResult(result));
 
-		// Set the component mapping
-		VkComponentMapping componentMapping;
-		switch(imageFormat) {
-		case VK_FORMAT_R8_UINT:
-			componentMapping = {
-				.r = VK_COMPONENT_SWIZZLE_R,
-				.g = VK_COMPONENT_SWIZZLE_R,
-				.b = VK_COMPONENT_SWIZZLE_R,
-				.a = VK_COMPONENT_SWIZZLE_ONE
-			};
-			break;
-		case VK_FORMAT_R8G8_UINT:
-			componentMapping = {
-				.r = VK_COMPONENT_SWIZZLE_R,
-				.g = VK_COMPONENT_SWIZZLE_R,
-				.b = VK_COMPONENT_SWIZZLE_R,
-				.a = VK_COMPONENT_SWIZZLE_G
-			};
-			break;
-		case VK_FORMAT_R8G8B8_UINT:
-			componentMapping = {
-				.r = VK_COMPONENT_SWIZZLE_R,
-				.g = VK_COMPONENT_SWIZZLE_G,
-				.b = VK_COMPONENT_SWIZZLE_B,
-				.a = VK_COMPONENT_SWIZZLE_ONE
-			};
-			break;
-		case VK_FORMAT_R8G8B8A8_UINT:
-			componentMapping = {
-				.r = VK_COMPONENT_SWIZZLE_R,
-				.g = VK_COMPONENT_SWIZZLE_G,
-				.b = VK_COMPONENT_SWIZZLE_B,
-				.a = VK_COMPONENT_SWIZZLE_A
-			};
-			break;
-		default:
-			throw std::runtime_error("Unsupported Vulkan image format!");
-		}
-
 		// Set the image view create info
 		VkImageViewCreateInfo imageViewInfo {
 			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -99,7 +60,12 @@ namespace wfe {
 			.flags =  0,
 			.image = image,
 			.viewType = VK_IMAGE_VIEW_TYPE_2D,
-			.components = componentMapping,
+			.components = {
+				.r = VK_COMPONENT_SWIZZLE_R,
+				.g = VK_COMPONENT_SWIZZLE_G,
+				.b = VK_COMPONENT_SWIZZLE_B,
+				.a = VK_COMPONENT_SWIZZLE_A
+			},
 			.subresourceRange = {
 				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
 				.baseMipLevel = 0,
@@ -110,12 +76,12 @@ namespace wfe {
 		};
 
 		// Create the image views
-		imageViewInfo.format = srgbViewFormat;
+		imageViewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 		result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &imageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &srgbImageView);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan image view! Error code: " + string_VkResult(result));
 		
-		imageViewInfo.format = linearViewFormat;
+		imageViewInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
 		result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &imageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &linearImageView);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan image view! Error code: " + string_VkResult(result));
@@ -141,29 +107,9 @@ namespace wfe {
 		imageMemory = {};
 		srgbImageView = VK_NULL_HANDLE;
 		linearImageView = VK_NULL_HANDLE;
-		imageFormat = VK_FORMAT_UNDEFINED;
-		srgbViewFormat = VK_FORMAT_UNDEFINED;
-		linearViewFormat = VK_FORMAT_UNDEFINED;
 		imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	}
 	void ImageTexture::InternalGetImageData(void* data, VkImageLayout dstLayout) const {
-		// Get the image's composition from its format
-		ImageComposition composition;
-		switch(imageFormat) {
-		case VK_FORMAT_R8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE;
-			break;
-		case VK_FORMAT_R8G8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE_ALPHA;
-			break;
-		case VK_FORMAT_R8G8B8_UINT:
-			composition = IMAGE_COMPOSITION_RGB;
-			break;
-		case VK_FORMAT_R8G8B8A8_UINT:
-			composition = IMAGE_COMPOSITION_RGBA;
-			break;
-		}
-
 		// Set the staging buffer create info
 		VulkanDevice* device = GetProgram()->GetRenderer()->GetDevice();
 		uint32_t transferFamily = device->GetDeviceQueues().transferIndex;
@@ -172,7 +118,7 @@ namespace wfe {
 			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0,
-			.size = (VkDeviceSize)width * height * (VkDeviceSize)composition,
+			.size = (VkDeviceSize)width * height * 4,
 			.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
 			.queueFamilyIndexCount = 1,
@@ -305,23 +251,6 @@ namespace wfe {
 		device->GetAllocator()->FreeMemory(stagingBufferMemory);
 	}
 	void ImageTexture::InternalSetImageData(const void* data, VkImageLayout dstLayout) {
-		// Get the image's composition from its format
-		ImageComposition composition;
-		switch(imageFormat) {
-		case VK_FORMAT_R8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE;
-			break;
-		case VK_FORMAT_R8G8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE_ALPHA;
-			break;
-		case VK_FORMAT_R8G8B8_UINT:
-			composition = IMAGE_COMPOSITION_RGB;
-			break;
-		case VK_FORMAT_R8G8B8A8_UINT:
-			composition = IMAGE_COMPOSITION_RGBA;
-			break;
-		}
-
 		// Set the staging buffer create info
 		VulkanDevice* device = GetProgram()->GetRenderer()->GetDevice();
 		uint32_t transferFamily = device->GetDeviceQueues().transferIndex;
@@ -330,7 +259,7 @@ namespace wfe {
 			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0,
-			.size = (VkDeviceSize)width * height * (VkDeviceSize)composition,
+			.size = (VkDeviceSize)width * height * 4,
 			.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
 			.queueFamilyIndexCount = 1,
@@ -465,23 +394,20 @@ namespace wfe {
 
 	// Virtual function definitions
 	void ImageTexture::Load(std::istream& stream) {
-		// Load the image's width, height and composition
-		uint8_t imageParams[9];
-		if(stream.read((char*)imageParams, 9).gcount() != 9)
+		// Load the image's width and height
+		uint8_t imageParams[8];
+		if(stream.read((char*)imageParams, 8).gcount() != 8)
 			throw std::runtime_error("Failed to read image parameters from stream!");
 		
 		width = ((uint32_t)imageParams[0] << 24) | ((uint32_t)imageParams[1] << 16) | ((uint32_t)imageParams[2] << 8) | (uint32_t)imageParams[3];
 		height = ((uint32_t)imageParams[4] << 24) | ((uint32_t)imageParams[5] << 16) | ((uint32_t)imageParams[6] << 8) | (uint32_t)imageParams[7];
-		ImageComposition composition = (ImageComposition)imageParams[8];
 
 		// Check if the image's composition is valid
 		if(!width || !height)
 			throw std::runtime_error("Invalid image dimensions read from stream!");
-		if(composition < IMAGE_COMPOSITION_GRAYSCALE || composition > IMAGE_COMPOSITION_RGBA)
-			throw std::runtime_error("Invalid image composition read from stream!");
 
 		// Allocate the image's data buffer
-		size_t dataSize = width * height * (uint32_t)composition;
+		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
 		if(!imageData)
 			throw std::bad_alloc();
@@ -490,30 +416,6 @@ namespace wfe {
 		if(stream.read((char*)imageData, dataSize).gcount() != dataSize)
 			throw std::runtime_error("Failed to read image data from stream!");
 		
-		// Set the image's formats
-		switch(composition) {
-		case IMAGE_COMPOSITION_GRAYSCALE:
-			imageFormat = VK_FORMAT_R8_UINT;
-			srgbViewFormat = VK_FORMAT_R8_SRGB;
-			linearViewFormat = VK_FORMAT_R8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_GRAYSCALE_ALPHA:
-			imageFormat = VK_FORMAT_R8G8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGB:
-			imageFormat = VK_FORMAT_R8G8B8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGBA:
-			imageFormat = VK_FORMAT_R8G8B8A8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8A8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8A8_UNORM;
-			break;
-		}
-
 		// Create the Vulkan components for the image
 		CreateVulkanComponents();
 
@@ -524,25 +426,8 @@ namespace wfe {
 		FreeMemory(imageData);
 	}
 	void ImageTexture::Save(std::ostream& stream) const {
-		// Get the image's composition from its format
-		ImageComposition composition;
-		switch(imageFormat) {
-		case VK_FORMAT_R8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE;
-			break;
-		case VK_FORMAT_R8G8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE_ALPHA;
-			break;
-		case VK_FORMAT_R8G8B8_UINT:
-			composition = IMAGE_COMPOSITION_RGB;
-			break;
-		case VK_FORMAT_R8G8B8A8_UINT:
-			composition = IMAGE_COMPOSITION_RGBA;
-			break;
-		}
-
 		// Allocate the image's data buffer
-		size_t dataSize = width * height * (uint32_t)composition;
+		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
 		if(!imageData)
 			throw std::bad_alloc();
@@ -551,7 +436,7 @@ namespace wfe {
 		InternalGetImageData(imageData, imageLayout);
 
 		// Write the image's width, height and composition to the stream
-		uint8_t imageParams[9];
+		uint8_t imageParams[8];
 
 		imageParams[0] = (uint8_t)(width >> 24);
 		imageParams[1] = (uint8_t)(width >> 16);
@@ -563,9 +448,7 @@ namespace wfe {
 		imageParams[6] = (uint8_t)(height >> 8);
 		imageParams[7] = (uint8_t)height;
 
-		imageParams[8] = (uint8_t)composition;
-
-		if(!stream.write((char*)imageParams, 9))
+		if(!stream.write((char*)imageParams, 8))
 			throw std::runtime_error("Failed to write image parameters to stream!");
 		
 		// Write the image's data to the stream
@@ -583,9 +466,8 @@ namespace wfe {
 
 		// Load the image data from the stream
 		uint32_t newWidth, newHeight;
-		ImageComposition composition;
 
-		uint8_t* imageData = ReadImageFile(stream, newWidth, newHeight, composition);
+		uint8_t* imageData = ReadImageFile(stream, newWidth, newHeight);
 		if(!imageData)
 			throw std::runtime_error("Failed to read image data from stream!");	
 		
@@ -599,29 +481,6 @@ namespace wfe {
 		width = newWidth;
 		height = newHeight;
 
-		switch(composition) {
-		case IMAGE_COMPOSITION_GRAYSCALE:
-			imageFormat = VK_FORMAT_R8_UINT;
-			srgbViewFormat = VK_FORMAT_R8_SRGB;
-			linearViewFormat = VK_FORMAT_R8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_GRAYSCALE_ALPHA:
-			imageFormat = VK_FORMAT_R8G8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGB:
-			imageFormat = VK_FORMAT_R8G8B8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGBA:
-			imageFormat = VK_FORMAT_R8G8B8A8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8A8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8A8_UNORM;
-			break;
-		}
-
 		// Create the Vulkan components for the image
 		CreateVulkanComponents();
 
@@ -632,25 +491,8 @@ namespace wfe {
 		FreeMemory(imageData);
 	}
 	void ImageTexture::Export(const std::string& path) const {
-		// Get the image's composition from its format
-		ImageComposition composition;
-		switch(imageFormat) {
-		case VK_FORMAT_R8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE;
-			break;
-		case VK_FORMAT_R8G8_UINT:
-			composition = IMAGE_COMPOSITION_GRAYSCALE_ALPHA;
-			break;
-		case VK_FORMAT_R8G8B8_UINT:
-			composition = IMAGE_COMPOSITION_RGB;
-			break;
-		case VK_FORMAT_R8G8B8A8_UINT:
-			composition = IMAGE_COMPOSITION_RGBA;
-			break;
-		}
-
 		// Allocate the image's data buffer
-		size_t dataSize = width * height * (uint32_t)composition;
+		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
 		if(!imageData)
 			throw std::bad_alloc();
@@ -672,13 +514,13 @@ namespace wfe {
 		
 		// Write the image to the stream
 		if(extension == "bmp") {
-			if(!WriteBMPFile(stream, width, height, composition, imageData))
+			if(!WriteBMPFile(stream, width, height, imageData))
 				throw std::runtime_error("Failed to write BMP image file \"" + path + "\"!");
 		} else if(extension == "jpg" || extension == "jpeg") {
-			if(!WriteJPEGFile(stream, width, height, composition, imageData))
+			if(!WriteJPEGFile(stream, width, height, imageData))
 				throw std::runtime_error("Failed to write JPEG image file \"" + path + "\"!");
 		} else if(extension == "png") {
-			if(!WritePNGFile(stream, width, height, composition, imageData))
+			if(!WritePNGFile(stream, width, height, imageData))
 				throw std::runtime_error("Failed to write PNG image file \"" + path + "\"!");
 		} else {
 			throw std::invalid_argument("Unsupported image file format \"" + extension + "\" for image export!");
@@ -690,31 +532,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	ImageTexture::ImageTexture(Program* program, uint32_t width, uint32_t height, ImageComposition composition, const void* data, uint64_t id) : Asset(program, id), width(width), height(height) {
-		// Set the image's formats
-		switch(composition) {
-		case IMAGE_COMPOSITION_GRAYSCALE:
-			imageFormat = VK_FORMAT_R8_UINT;
-			srgbViewFormat = VK_FORMAT_R8_SRGB;
-			linearViewFormat = VK_FORMAT_R8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_GRAYSCALE_ALPHA:
-			imageFormat = VK_FORMAT_R8G8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGB:
-			imageFormat = VK_FORMAT_R8G8B8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8_UNORM;
-			break;
-		case IMAGE_COMPOSITION_RGBA:
-			imageFormat = VK_FORMAT_R8G8B8A8_UINT;
-			srgbViewFormat = VK_FORMAT_R8G8B8A8_SRGB;
-			linearViewFormat = VK_FORMAT_R8G8B8A8_UNORM;
-			break;
-		}
-
+	ImageTexture::ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data, uint64_t id) : Asset(program, id), width(width), height(height) {
 		// Create the Vulkan components for the image
 		CreateVulkanComponents();
 
