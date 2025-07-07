@@ -35,6 +35,11 @@ namespace wfe {
 		VulkanRenderer* GetRenderer() const {
 			return renderer;
 		}
+		/// @brief Gets the number of vertices in the mesh.
+		/// @return The number of vertices in the mesh.
+		size_t GetVertexCount() const {
+			return vertexCount;
+		}
 		/// @brief Gets the mesh's vertex buffer.
 		/// @return The mesh's vertex buffer.
 		VkBuffer GetVertexBuffer() const {
@@ -44,6 +49,11 @@ namespace wfe {
 		/// @return The mesh vertex buffer's memory.
 		VulkanAllocator::Memory GetVertexBufferMemory() const {
 			return vertexBufferMemory;
+		}
+		/// @brief Gets the mesh's index buffer.
+		/// @return The mesh's index buffer.
+		size_t GetIndexCount() const {
+			return indexCount;
 		}
 		/// @brief Gets the mesh's index buffer.
 		/// @return The mesh's index buffer.
@@ -61,8 +71,10 @@ namespace wfe {
 	private:
 		VulkanRenderer* renderer;
 
+		size_t vertexCount;
 		VkBuffer vertexBuffer;
 		VulkanAllocator::Memory vertexBufferMemory;
+		size_t indexCount;
 		VkBuffer indexBuffer;
 		VulkanAllocator::Memory indexBufferMemory;
 	};
