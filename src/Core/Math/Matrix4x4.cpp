@@ -315,14 +315,14 @@ namespace wfe {
 
 	Matrix4x4 Matrix4x4::PerspectiveProjection(float fov, float aspectRatio, float nearPlane, float farPlane) {
 		// Calculate some values to save processing
-		float halfTanFov = tanf(fov * .5f);
+		float halfTanFov = tanf(fov * 0.5f);
 		float invFarNear = 1 / (farPlane - nearPlane);
 
 		// Calculate the resulting matrix's values
-		return { 1.0f / (aspectRatio * halfTanFov), 0.0f,               0.0f,                                 0.0f,
-		         0.0f,                              1.0f / halfTanFov,  0.0f,                                 0.0f,
-		         0.0f,                              0.0f,              -farPlane * invFarNear,               -1.0f,
-		         0.0f,                              0.0f,              -(nearPlane * farPlane) * invFarNear,  0.0f };
+		return { 1.0f / (aspectRatio * halfTanFov),  0.0f,               0.0f,                                 0.0f,
+		         0.0f,                              -1.0f / halfTanFov,  0.0f,                                 0.0f,
+		         0.0f,                               0.0f,              -farPlane * invFarNear,               -1.0f,
+		         0.0f,                               0.0f,              -(nearPlane * farPlane) * invFarNear,  0.0f };
 	}
 	Matrix4x4 Matrix4x4::OrtographicProjection(float left, float right, float bottom, float top, float nearPlane, float farPlane) {
 		// Calculate some values to save processing
@@ -332,7 +332,7 @@ namespace wfe {
 
 		// Calculate the resulting matrix's values
 		return { -2.0f * invLeftRight,            0.0f,                           0.0f,                   0.0f,
-		          0.0f,                          -2.0f * invBottomTop,            0.0f,                   0.0f,
+		          0.0f,                           2.0f * invBottomTop,            0.0f,                   0.0f,
 		          0.0f,                           0.0f,                           2.0f * invNearFar,      0.0f,
 		          (left + right) * invLeftRight,  (top + bottom) * invBottomTop, -nearPlane * invNearFar, 1.0f };
 	}
