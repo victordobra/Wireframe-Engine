@@ -50,6 +50,9 @@ namespace wfe {
 			graphicsSystem->Render();
 		}
 
+		// Wait for all rendering to finish
+		renderer->GetLoader()->vkDeviceWaitIdle(renderer->GetDevice()->GetDevice());
+
 		return 0;
 	}
 
