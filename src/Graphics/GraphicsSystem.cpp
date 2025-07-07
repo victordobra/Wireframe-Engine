@@ -90,6 +90,13 @@ namespace wfe {
 		VkResult result = renderer->GetLoader()->vkWaitForFences(renderer->GetDevice()->GetDevice(), 1, &renderingFences[frameIndex], VK_TRUE, UINT64_T_MAX);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to wait for Vulkan rendering fence! Error code: " + string_VkResult(result));
+
+		// Begin recording all pipeline command buffers asynchronously
+		std::vector<std::future<VkCommandBuffer>> commandBufferFutures;
+
+		commandBufferFutures.resize(pipelines.size());
+		for(size_t i = 0; i != pipelines.size(); ++i)
+			commandBufferFutures[i] = std::async(PipelineRender, pipelines[i]);
 		
 		// Reset the rendering fence
 		result = renderer->GetLoader()->vkResetFences(renderer->GetDevice()->GetDevice(), 1, &renderingFences[frameIndex]);
@@ -197,22 +204,14 @@ namespace wfe {
 		// Begin rendering
 		renderer->GetLoader()->vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
 
-		if(!pipelines.empty()) {
-			// Record all pipeline command buffers asynchronously
-			std::vector<VkCommandBuffer> commandBuffers;
-			std::vector<std::future<VkCommandBuffer>> commandBufferFutures;
-
-			commandBufferFutures.resize(pipelines.size());
-			for(size_t i = 0; i != pipelines.size(); ++i)
-				commandBufferFutures[i] = std::async(PipelineRender, pipelines[i]);
-
-			commandBuffers.resize(pipelines.size());
-			for(size_t i = 0; i != pipelines.size(); ++i)
-				commandBuffers[i] = commandBufferFutures[i].get();
-			
-			// Execute all command buffers
-			renderer->GetLoader()->vkCmdExecuteCommands(commandBuffer, (uint32_t)commandBuffers.size(), commandBuffers.data());
-		}
+		// Run all secondary command buffers
+		std::vector<VkCommandBuffer> commandBuffers;
+		commandBuffers.resize(pipelines.size());
+		for(size_t i = 0; i != pipelines.size(); ++i)
+			commandBuffers[i] = commandBufferFutures[i].get();
+		
+		// Execute all command buffers
+		renderer->GetLoader()->vkCmdExecuteCommands(commandBuffer, (uint32_t)commandBuffers.size(), commandBuffers.data());
 
 		// End rendering
 		renderer->GetLoader()->vkCmdEndRenderingKHR(commandBuffer);

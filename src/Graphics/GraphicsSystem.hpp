@@ -91,7 +91,7 @@ namespace wfe {
 		GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
 		GraphicsPipeline& operator=(GraphicsPipeline&&) = delete;
 
-		/// @brief Records the current pipeline's render commands to the given Vulkan command buffer.
+		/// @brief Records the current pipeline's render commands.
 		/// @return A Vulkan secondary command buffer in which are recorded the rendering commands.
 		virtual VkCommandBuffer RecordCommands() = 0;
 
