@@ -104,6 +104,8 @@ namespace wfe {
 
 		if((size & 1) != (freeStart & 1) && alignment < granularity)
 			alignment = granularity;
+		
+		freeStart &= ~1;
 		freeStart = (freeStart + alignment - 1) & ~(alignment - 1);
 		
 		if((size & 1) != (freeEnd & 1)) {
@@ -139,15 +141,20 @@ namespace wfe {
 			locked = 0;
 
 		// Loop through all available device memories
-		for(const std::pair<VkDeviceMemory, std::set<Allocation>>& memoryAllocations : memoryTypes[memoryTypeIndex].allocations) {
+		for(std::pair<const VkDeviceMemory, std::set<Allocation>>& memoryAllocations : memoryTypes[memoryTypeIndex].allocations) {
 			// Loop though all allication pairs to find all free blocks
 			VkDeviceSize prevOffset = size & 1;
 
 			for(const Allocation& allocation : memoryAllocations.second) {
 				// Check if the current free block is large enough
 				if(AllocateFreeBlock(size, alignment, prevOffset, allocation.offset + (allocation.size & 1), memory.offset)) {
+					// Add the allocation to the set
+					memoryAllocations.second.insert({ memory.offset, size });
+
+					// Set the memory's info and exit the function
 					memory.memory = memoryAllocations.first;
 					memory.size = size & ~1;
+
 					allocMutex = 0;
 					return true;
 				}
@@ -158,8 +165,13 @@ namespace wfe {
 
 			// Check if the last free block is large enough
 			if(AllocateFreeBlock(size, alignment, prevOffset, DEVICE_MEMORY_SIZE + (size & 1), memory.offset)) {
+				// Add the allocation to the set
+				memoryAllocations.second.insert({ memory.offset, size });
+
+				// Set the memory's info and exit the function
 				memory.memory = memoryAllocations.first;
 				memory.size = size & ~1;
+
 				allocMutex = 0;
 				return true;
 			}
@@ -255,6 +267,9 @@ namespace wfe {
 		if(memoryRequirements.memoryRequirements.alignment < 2)
 			memoryRequirements.memoryRequirements.alignment = 2;
 		memoryRequirements.memoryRequirements.size = (memoryRequirements.memoryRequirements.size + memoryRequirements.memoryRequirements.alignment - 1) & ~(memoryRequirements.memoryRequirements.alignment - 1);
+		
+		// Add the image flag to the size
+		memoryRequirements.memoryRequirements.size |= 1;
 
 		// Require a dedicated allocation if the requested memory is too large
 		dedicatedRequirements.requiresDedicatedAllocation |= (memoryRequirements.memoryRequirements.size > DEVICE_MAX_ALLOC_SIZE);
