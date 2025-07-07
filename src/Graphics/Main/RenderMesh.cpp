@@ -84,7 +84,7 @@ namespace wfe {
 		// Allocate and bind the vertex staging buffer's memory
 		VulkanAllocator::Memory vertexStagingBufferMemory;
 		try {
-			vertexStagingBufferMemory = device->GetAllocator()->AllocBufferMemory(vertexStagingBuffer, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			vertexStagingBufferMemory = device->GetAllocator()->AllocBufferMemory(vertexStagingBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 		} catch(const std::bad_alloc&) {
 			throw std::runtime_error("Failed to allocate Vulkan mesh vertex staging buffer memory!");
 		}
@@ -113,7 +113,7 @@ namespace wfe {
 		// Allocate and bind the index staging buffer's memory
 		VulkanAllocator::Memory indexStagingBufferMemory;
 		try {
-			indexStagingBufferMemory = device->GetAllocator()->AllocBufferMemory(indexStagingBuffer, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			indexStagingBufferMemory = device->GetAllocator()->AllocBufferMemory(indexStagingBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 		} catch(const std::bad_alloc&) {
 			throw std::runtime_error("Failed to allocate Vulkan mesh index staging buffer memory!");
 		}
