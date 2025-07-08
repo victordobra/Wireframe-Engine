@@ -49,11 +49,22 @@ namespace wfe {
 		uint64_t GetID() const {
 			return id;
 		}
+		/// @brief Gets the asset's path, as used by the asset manager.
+		/// @return The asset's path, as used by the asset manager.
+		const std::string& GetPath() const {
+			return path;
+		}
+		/// @brief Sets the asset's path which the asset manager will use.
+		/// @param newPath The new asset path.
+		void SetPath(const std::string& newPath) {
+			path = newPath;
+		}
 
 		/// @brief Destroys the asset.
 		virtual ~Asset() = default;
 	private:
 		Program* program;
 		uint64_t id;
+		std::string path;
 	};
 }

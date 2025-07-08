@@ -143,9 +143,6 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to bind Vulkan staging buffer to its memory! Error code: " + string_VkResult(result));
 		
-		// Write the image data to the staging buffer
-		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
-
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {
 			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
@@ -242,6 +239,9 @@ namespace wfe {
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for image copy! Error code: " + string_VkResult(result));
 		
+		// Read the image data from the staging buffer
+		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
+
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), GetProgram()->GetRenderer()->GetTransferCommandPool()->GetCommandPool(), 1, &commandBuffer);

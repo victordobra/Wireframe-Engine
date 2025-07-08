@@ -188,7 +188,7 @@ namespace wfe {
 	}
 	void WFEONObject::InternalWrite(std::ostream& stream, const std::string& prefix) const {
 		// Write all the values in the object
-		for(const auto& value : values) {
+		for(const std::pair<const std::string, WFEONValue>& value : values) {
 			// Write the variable name
 			stream << prefix << value.first << " = ";
 
