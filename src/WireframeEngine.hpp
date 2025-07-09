@@ -20,6 +20,7 @@
 #include "Core/Parsers/WFEONParser.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
+#include "Core/Utils/BinaryIO.hpp"
 #include "Core/Utils/Event.hpp"
 #include "Core/Utils/Logger.hpp"
 

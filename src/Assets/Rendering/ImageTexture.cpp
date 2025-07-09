@@ -1,4 +1,5 @@
 #include "ImageTexture.hpp"
+#include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
 #include <vulkan/vk_enum_string_helper.h>
 
@@ -395,16 +396,8 @@ namespace wfe {
 	// Virtual function definitions
 	void ImageTexture::Load(std::istream& stream) {
 		// Load the image's width and height
-		uint8_t imageParams[8];
-		if(stream.read((char*)imageParams, 8).gcount() != 8)
-			throw std::runtime_error("Failed to read image parameters from stream!");
-		
-		width = ((uint32_t)imageParams[0] << 24) | ((uint32_t)imageParams[1] << 16) | ((uint32_t)imageParams[2] << 8) | (uint32_t)imageParams[3];
-		height = ((uint32_t)imageParams[4] << 24) | ((uint32_t)imageParams[5] << 16) | ((uint32_t)imageParams[6] << 8) | (uint32_t)imageParams[7];
-
-		// Check if the image's composition is valid
-		if(!width || !height)
-			throw std::runtime_error("Invalid image dimensions read from stream!");
+		width = BinaryReadUint32(stream);
+		height = BinaryReadUint32(stream);
 
 		// Allocate the image's data buffer
 		size_t dataSize = width * height * 4;
@@ -413,8 +406,7 @@ namespace wfe {
 			throw std::bad_alloc();
 		
 		// Read the image data from the stream
-		if(stream.read((char*)imageData, dataSize).gcount() != dataSize)
-			throw std::runtime_error("Failed to read image data from stream!");
+		stream.read((char*)imageData, dataSize);
 		
 		// Create the Vulkan components for the image
 		CreateVulkanComponents();
@@ -435,25 +427,12 @@ namespace wfe {
 		// Get the image's data
 		InternalGetImageData(imageData, imageLayout);
 
-		// Write the image's width, height and composition to the stream
-		uint8_t imageParams[8];
-
-		imageParams[0] = (uint8_t)(width >> 24);
-		imageParams[1] = (uint8_t)(width >> 16);
-		imageParams[2] = (uint8_t)(width >> 8);
-		imageParams[3] = (uint8_t)width;
-
-		imageParams[4] = (uint8_t)(height >> 24);
-		imageParams[5] = (uint8_t)(height >> 16);
-		imageParams[6] = (uint8_t)(height >> 8);
-		imageParams[7] = (uint8_t)height;
-
-		if(!stream.write((char*)imageParams, 8))
-			throw std::runtime_error("Failed to write image parameters to stream!");
+		// Write the image's width and height to the stream
+		BinaryWriteUint32(stream, width);
+		BinaryWriteUint32(stream, height);
 		
 		// Write the image's data to the stream
-		if(!stream.write((char*)imageData, dataSize))
-			throw std::runtime_error("Failed to write image data to stream!");
+		stream.write((const char*)imageData, dataSize);
 		
 		// Free the image data buffer
 		FreeMemory(imageData);
