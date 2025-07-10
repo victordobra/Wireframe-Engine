@@ -1,0 +1,12 @@
+assets = [
+    {
+        id = 0
+        path = "TestImage.png"
+        dependencies = []
+    }
+    {
+        id = 1
+        path = "TestCube.mtl"
+        dependencies = [ 0 ]
+    }
+]

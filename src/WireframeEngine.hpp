@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Assets/Rendering/ImageTexture.hpp"
+#include "Assets/Rendering/MaterialCollection.hpp"
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetManager.hpp"

@@ -29,7 +29,7 @@ namespace wfe {
 		// Get the input stream
 		std::istream* stream = (std::istream*)user;
 
-		stream->seekg(n, std::ios_base::cur);
+		stream->seekg(n, std::ios::cur);
 	}
 	static int32_t EOFCallback(void* user) {
 		// Get the input stream

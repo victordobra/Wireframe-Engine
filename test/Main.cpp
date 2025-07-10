@@ -39,12 +39,12 @@ int main(int argc, char** args) {
 	// Create the program
 	wfe::Program* program = new wfe::Program(programInfo, programSettings);
 
-	// Load the test image
-	wfe::ImageTexture* surfaceTex = new wfe::ImageTexture(program);
-	surfaceTex->Import("assets/TestImage.png");
+	// Import the asset directory and get all assets
+	program->GetAssetManager()->ImportDirectory("assets/");
 
-	// Create the example material
-	wfe::Material* material = new wfe::Material(program->GetMaterialManager(), { wfe::Vector4::ONE }, { surfaceTex });
+	// Get the material from the directory
+	wfe::MaterialCollection* materialCollection = (wfe::MaterialCollection*)program->GetAssetManager()->GetAsset(1);
+	wfe::Material* material = materialCollection->GetItems()[0].material;
 
 	// Create the example mesh
 	std::vector<wfe::RenderMesh::Vertex> vertices {
@@ -77,8 +77,9 @@ int main(int argc, char** args) {
 	program->GetEntityManager()->DestroyEntity(entity);
 
 	delete mesh;
-	delete material;
-	delete surfaceTex;
+
+	// Unload the asset directory
+	program->GetAssetManager()->UnloadDirectory("assets/");
 
 	// Destroy the program and exit
 	delete program;
