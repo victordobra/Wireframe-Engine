@@ -70,7 +70,7 @@ namespace wfe {
 		}
 
 		// Set all children intervals
-		size_t intervalStart = 0;
+		loadIntervals[index].first = 0;
 		for(uint64_t childID : assetDependencies) {
 			// Get the child's index
 			auto childIter = indices.find(childID);
@@ -82,12 +82,9 @@ namespace wfe {
 			GetLoadInterval(childIndex, indices, dependencies, loadIntervals);
 
 			// Update the interval start, if the current asset needs more time to load
-			if(loadIntervals[childIndex].first >= intervalStart)
-				intervalStart = loadIntervals[childIndex].first + 1;
+			if(loadIntervals[childIndex].first >= loadIntervals[index].first)
+				loadIntervals[index].first = loadIntervals[childIndex].first + 1;
 		}
-
-		// Set the asset's load interval
-		loadIntervals[index] = { intervalStart, SIZE_T_MAX };
 
 		// Update the load intervals of all children
 		for(uint64_t childID : assetDependencies) {
@@ -98,8 +95,8 @@ namespace wfe {
 			size_t childIndex = childIter->second;
 
 			// Update the child's load interval
-			if(loadIntervals[childIndex].second >= intervalStart)
-				loadIntervals[childIndex].second = intervalStart - 1;
+			if(loadIntervals[childIndex].second >= loadIntervals[index].first)
+				loadIntervals[childIndex].second = loadIntervals[index].first - 1;
 		}
 	}
 	void AssetManager::GetAssetLoadOrder(const std::vector<uint64_t>& ids, const std::vector<std::vector<uint64_t>>& dependencies, std::vector<std::vector<size_t>>& loadStartOrder, std::vector<std::vector<size_t>>& loadEndOrder) {
