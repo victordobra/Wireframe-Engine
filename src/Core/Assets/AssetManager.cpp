@@ -7,8 +7,9 @@
 namespace wfe {
 	// Asset jobs
 	static Asset* LoadAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::string& path) {
-		// Create the asset
+		// Create the asset and set its path
 		Asset* asset = assetType.constructor(program, id);
+		asset->SetPath(path);
 
 		// Load the asset from the file
 		std::ifstream stream(path, std::ios::binary);
@@ -17,9 +18,6 @@ namespace wfe {
 
 		asset->Load(stream);
 		stream.close();
-
-		// Set the asset's path
-		asset->SetPath(path);
 
 		return asset;
 	}
@@ -33,14 +31,12 @@ namespace wfe {
 		stream.close();
 	}
 	static Asset* ImportAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::string& path) {
-		// Create the asset
+		// Create the asset and set its path
 		Asset* asset = assetType.constructor(program, id);
+		asset->SetPath(path);
 
 		// Import the asset from the file
 		asset->Import(path);
-
-		// Set the asset's path
-		asset->SetPath(path);
 
 		return asset;
 	}
@@ -167,6 +163,7 @@ namespace wfe {
 
 			dirPaths[i].resize(pathLength, '\0');
 			stream.read((char*)dirPaths[i].data(), pathLength);
+			dirPaths[i] = path + dirPaths[i];
 
 			// Read the asset's ID
 			ids[i] = BinaryReadUint64(stream);
@@ -204,7 +201,7 @@ namespace wfe {
 				size_t index = loadStartOrder[i][j];
 
 				// Load the asset
-				loadFutures[index] = std::async(std::launch::async | std::launch::deferred, LoadAssetJob, program, *assetTypes[index], ids[index], path + dirPaths[index]);
+				loadFutures[index] = std::async(std::launch::async | std::launch::deferred, LoadAssetJob, program, *assetTypes[index], ids[index], dirPaths[index]);
 			}
 
 			for(size_t j = 0; j != loadEndOrder[i].size(); ++j) {
@@ -349,7 +346,7 @@ namespace wfe {
 				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value is not a string!");
 			if(pathValue.count != 1)
 				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value is not a single string!");
-			dirPaths[i] = assetObject.stringValues[pathValue.startIndex];
+			dirPaths[i] = path + assetObject.stringValues[pathValue.startIndex];
 
 			// Get the asset's ID
 			const WFEONObject::WFEONValue& idValue = assetObject.values.at("id");
@@ -402,7 +399,7 @@ namespace wfe {
 				size_t index = loadStartOrder[i][j];
 
 				// Load the asset
-				loadFutures[index] = std::async(std::launch::async | std::launch::deferred, ImportAssetJob, program, *assetTypes[index], ids[index], path + dirPaths[index]);
+				loadFutures[index] = std::async(std::launch::async | std::launch::deferred, ImportAssetJob, program, *assetTypes[index], ids[index], dirPaths[index]);
 			}
 
 			for(size_t j = 0; j != loadEndOrder[i].size(); ++j) {
