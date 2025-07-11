@@ -65,6 +65,10 @@ namespace wfe {
 		VulkanAllocator::Memory GetIndexBufferMemory() const {
 			return indexBufferMemory;
 		}
+		/// @brief Gets the mesh's vertices and indices.
+		/// @param vertices A pointer to the array in which all vertex data will be written.
+		/// @param indices A pointer to the array in which all indices will be written.
+		void GetMeshData(Vertex* vertices, uint32_t* indices) const;
 
 		/// @brief Destroys the render mesh.
 		~RenderMesh();
