@@ -239,3 +239,16 @@ namespace wfe {
 	/// @return The resulting vector.
 	Vector4 operator*(const Vector4& vec, const Matrix4x4& mat);
 }
+
+template<>
+struct std::hash<wfe::Matrix4x4> {
+	std::size_t operator()(const wfe::Matrix4x4& mat) {
+		// Use the boost library hash combine to mix all hashes
+		std::hash<float> hasher;
+		size_t res = 0;
+		for(size_t i = 0; i != 16; ++i)
+			res ^= hasher(mat.data[i]) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		
+		return res;
+	}
+};

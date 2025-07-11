@@ -194,3 +194,16 @@ namespace wfe {
 	/// @return The resulting Vector3, with each of its dimensions being the dividen of the given value and the given Vector3's corresponding dimension.
 	Vector3 operator/(float val, const Vector3& vec);
 }
+
+template<>
+struct std::hash<wfe::Vector3> {
+	std::size_t operator()(const wfe::Vector3& vec) {
+		// Use the boost library hash combine to mix all hashes
+		std::hash<float> hasher;
+		size_t res = 0;
+		for(size_t i = 0; i != 3; ++i)
+			res ^= hasher(vec.elements[i]) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		
+		return res;
+	}
+};

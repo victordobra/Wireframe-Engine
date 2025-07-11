@@ -118,3 +118,16 @@ namespace wfe {
 		static Quaternion EulerAngles(Vector3 eulerAngles);
 	};
 }
+
+template<>
+struct std::hash<wfe::Quaternion> {
+	std::size_t operator()(const wfe::Quaternion& quat) {
+		// Use the boost library hash combine to mix all hashes
+		std::hash<float> hasher;
+		size_t res = 0;
+		for(size_t i = 0; i != 4; ++i)
+			res ^= hasher(quat.elements[i]) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		
+		return res;
+	}
+};
