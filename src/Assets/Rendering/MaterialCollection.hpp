@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace wfe {
+	/// @brief A class representing a collection of materials, each with a different name.
 	class MaterialCollection : public Asset {
 	public:
 		/// @brief A struct defining an item in the material collection.

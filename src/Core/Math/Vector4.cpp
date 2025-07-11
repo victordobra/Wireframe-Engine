@@ -188,3 +188,17 @@ namespace wfe {
 		return { val / vec.x, val / vec.y, val / vec.z, val / vec.w };
 	}
 }
+
+// Hash function
+template<>
+struct std::hash<wfe::Vector4> {
+	std::size_t operator()(const wfe::Vector4& vec) {
+		// Use the boost library hash combine to mix all hashes
+		std::hash<float> hasher;
+		size_t res = 0;
+		for(size_t i = 0; i != 4; ++i)
+			res ^= hasher(vec.elements[i]) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		
+		return res;
+	}
+};

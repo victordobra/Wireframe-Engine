@@ -12,8 +12,9 @@ namespace wfe {
 	// Virtual function definitions
 	void MaterialCollection::Load(std::istream& stream) {
 		// Destroy all previous items
-		for(Item& item : items)
-			delete item.material;
+		for(size_t i = 0; i != items.size(); ++i)
+			delete items[i].material;
+		items.clear();
 	
 		// Read the number of items
 		uint64_t itemCount = BinaryReadUint64(stream);
@@ -73,8 +74,9 @@ namespace wfe {
 	}
 	void MaterialCollection::Import(const std::string& path) {
 		// Destroy all previous items
-		for(Item& item : items)
-			delete item.material;
+		for(size_t i = 0; i != items.size(); ++i)
+			delete items[i].material;
+		items.clear();
 	
 		// Open the file stream
 		std::ifstream stream(path);
@@ -232,6 +234,7 @@ namespace wfe {
 		return depVector;
 	}
 
+	// Public functions
 	MaterialCollection::~MaterialCollection() {
 		// Destroy all member materials
 		for(size_t i = 0; i != items.size(); ++i)

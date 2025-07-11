@@ -8,7 +8,7 @@
 #include <vulkan/vulkan_core.h>
 
 namespace wfe {
-	/// @brief A class representing texture using the data of an image.
+	/// @brief A class representing a texture using the data of an image.
 	class ImageTexture : public Asset {
 	public:
 		/// @brief Creates a new blank image texture. The image must be subsequentally loaded or imported.

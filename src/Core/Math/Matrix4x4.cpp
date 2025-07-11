@@ -1,4 +1,5 @@
 #include "Matrix4x4.hpp"
+#include <functional>
 #include <math.h>
 
 namespace wfe {
@@ -441,3 +442,17 @@ namespace wfe {
 		         mat.m03 * vec.x + mat.m13 * vec.y + mat.m23 * vec.z + mat.m33 * vec.w };
 	}
 }
+
+// Hash function
+template<>
+struct std::hash<wfe::Matrix4x4> {
+	std::size_t operator()(const wfe::Matrix4x4& mat) {
+		// Use the boost library hash combine to mix all hashes
+		std::hash<float> hasher;
+		size_t res = 0;
+		for(size_t i = 0; i != 16; ++i)
+			res ^= hasher(mat.data[i]) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		
+		return res;
+	}
+};
