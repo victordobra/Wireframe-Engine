@@ -1,5 +1,68 @@
 #include <WireframeEngine.hpp>
 #include "Info/ProjectInfo.hpp"
+#include <math.h>
+
+struct ArcballCameraInfo {
+	wfe::Program* program;
+
+	float xAngle = 0.0f;
+	float yAngle = 0.0f;
+
+	wfe::Vector3 center = wfe::Vector3::ZERO;
+	float radius = 5.0f;
+	float cameraVel = 0.004f;
+};
+
+static void* FrameEventCallback(void* userData, void* params) {
+	// Get the arcball camera info
+	ArcballCameraInfo& arcballInfo = *(ArcballCameraInfo*)userData;
+
+	// Update the camera angle, if the mouse is pressed
+	wfe::InputManager* inputManager = arcballInfo.program->GetWindow()->GetInputManager();
+
+	if(inputManager->IsKeyDown(wfe::InputManager::KEY_LEFT_MBUTTON)) {
+		// Get the mouse movement and apply it to the camera
+		wfe::InputManager::MouseMovement movement = inputManager->GetMouseMovement();
+
+		arcballInfo.xAngle += movement.y * arcballInfo.cameraVel;
+		arcballInfo.yAngle += -movement.x * arcballInfo.cameraVel;
+
+		// Clamp the X angle, to avoid the camera turning over
+		if(arcballInfo.xAngle > M_PI_2) {
+			arcballInfo.xAngle = M_PI_2;
+		} else if(arcballInfo.xAngle < -M_PI_2) {
+			arcballInfo.xAngle = -M_PI_2;
+		}
+
+		// Loop the Y angle
+		while(arcballInfo.yAngle > M_PI)
+			arcballInfo.yAngle -= M_PI * 2;
+		while(arcballInfo.yAngle < -M_PI)
+			arcballInfo.yAngle += M_PI * 2;
+	}
+
+	// Calculate the camera's position
+	wfe::Vector3 position {
+		sinf(arcballInfo.yAngle) * cosf(arcballInfo.xAngle),
+		sinf(arcballInfo.xAngle),
+		cosf(arcballInfo.yAngle) * cosf(arcballInfo.xAngle)
+	};
+	position = (position * arcballInfo.radius) + arcballInfo.center;
+
+	// Calculate the camera's rotation
+	wfe::Quaternion rotation = wfe::Quaternion::AroundAxis(wfe::Vector3::UP, arcballInfo.yAngle) * wfe::Quaternion::AroundAxis(wfe::Vector3::RIGHT, -arcballInfo.xAngle);
+
+	// Set the camera's info
+	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetMainPipeline();
+	wfe::MainPipeline::CameraInfo cameraInfo = mainPipeline->GetCameraInfo();
+
+	cameraInfo.pos = position;
+	cameraInfo.rot = rotation;
+
+	mainPipeline->SetCameraInfo(cameraInfo);
+
+	return nullptr;
+}
 
 int main(int argc, char** args) {
 	// Set the program info
@@ -21,8 +84,8 @@ int main(int argc, char** args) {
 		.startFullscreen = false,
 		.windowX = 128,
 		.windowY = 128,
-		.windowWidth = 512,
-		.windowHeight = 512,
+		.windowWidth = 1024,
+		.windowHeight = 1024,
 		.requiredVulkanAPIVersion = wfe::VulkanInstance::DEFAULT_REQUIRED_INSTANCE_API_VERSION,
 		.requiredVulkanInstanceExtensions = wfe::VulkanInstance::DEFAULT_REQUIRED_INSTANCE_EXTENSIONS,
 		.optionalVulkanInstanceExtensions = wfe::VulkanInstance::DEFAULT_OPTIONAL_INSTANCE_EXTENSIONS,
@@ -39,6 +102,11 @@ int main(int argc, char** args) {
 	// Create the program
 	wfe::Program* program = new wfe::Program(programInfo, programSettings);
 
+	// Add the update listener
+	ArcballCameraInfo arcballInfo;
+	arcballInfo.program = program;
+	program->GetFrameEvent().AddListener({ FrameEventCallback, &arcballInfo });
+
 	// Import the asset directory and get all assets
 	program->GetAssetManager()->ImportDirectory("assets/");
 
@@ -51,7 +119,6 @@ int main(int argc, char** args) {
 
 	// Create the rendered entity and add a render mesh component
 	wfe::Entity entity = program->GetEntityManager()->CreateEntity();
-	program->GetEntityManager()->GetEntityTransform(entity).pos = wfe::Vector3(0.0f, 0.0f, -3.0f);
 
 	wfe::size_t typeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();
 	wfe::MeshRenderer* meshRenderer = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(typeIndex)->CreateComponent(entity);

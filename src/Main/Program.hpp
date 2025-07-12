@@ -142,6 +142,12 @@ namespace wfe {
 			return mainPipeline;
 		}
 
+		/// @brief Gets the event triggered on every frame update.
+		/// @return A reference to the event triggered on every frame update.
+		Event& GetFrameEvent() const {
+			return frameEvent;
+		}
+
 		/// @brief Destroys the program and its components.
 		~Program();
 	private:
@@ -159,5 +165,7 @@ namespace wfe {
 		GraphicsSystem* graphicsSystem;
 		MaterialManager* materialManager;
 		MainPipeline* mainPipeline;
+
+		mutable Event frameEvent;
 	};
 }

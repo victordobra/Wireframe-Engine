@@ -60,6 +60,9 @@ namespace wfe {
 			// Poll the window's events
 			window->PollEvents();
 
+			// Trigger the frame update event
+			frameEvent.TriggerEvent(nullptr);
+
 			// Render to the window's surface
 			graphicsSystem->Render();
 		}

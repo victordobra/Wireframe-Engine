@@ -351,8 +351,8 @@ namespace wfe {
 	}
 	void InputManager::InternalMouseMove(MouseMovement movement) {
 		// Add the movements to the manager's mouse movement
-		mouseMovement.x += movement.x - mousePos.x;
-		mouseMovement.y += movement.y - mousePos.y;
+		mouseMovement.x = movement.x - mousePos.x;
+		mouseMovement.y = movement.y - mousePos.y;
 		mouseMovement.scroll += movement.scroll;
 	}
 	void InputManager::EndInputEvents() {
