@@ -9,4 +9,9 @@ assets = [
         path = "TestCube.mtl"
         dependencies = [ 0 ]
     }
+    {
+        id = 2
+        path = "TestCube.obj"
+        dependencies = [ 1 ]
+    }
 ]

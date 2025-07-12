@@ -180,14 +180,14 @@ namespace wfe {
 		if(!stream)
 			throw std::runtime_error("Failed to open material collection file \"" + path + "\" for writing!");
 
-		// Set the stream's floatind point precision
+		// Set the stream's floating point precision
 		stream << std::fixed << std::setprecision(6);
 		
 		// Write an automatic comment to the file
 		stream << "# " << WFE_ENGINE_NAME << " version " << WFE_ENGINE_VERSION_MAJOR << '.' << WFE_ENGINE_VERSION_MINOR << '.' << WFE_ENGINE_VERSION_PATCH << '\n';
 		stream << "# Automatically generated MTL file\n\n";
 
-		// Get the length of the material's parent directory path, to trim it from all texture file references
+		// Get the length of the collection's parent directory path, to trim it from all texture file references
 		size_t dirEnd = path.find_last_of("\\/"), dirSize;
 		if(dirEnd == std::string::npos) {
 			dirSize = 0;
@@ -210,7 +210,9 @@ namespace wfe {
 			// Write the material's textures
 			const wfe::Material::MaterialTextures textures = items[i].material->GetTextures();
 
-			stream << "\tmap_Kd " << (textures.surfaceTexture->GetPath().c_str() + dirSize) << "\n\n";
+			stream << "\tmap_Kd " << (textures.surfaceTexture->GetPath().c_str() + dirSize) << '\n';
+
+			stream << '\n';
 		}
 
 		// Close the stream

@@ -42,23 +42,12 @@ int main(int argc, char** args) {
 	// Import the asset directory and get all assets
 	program->GetAssetManager()->ImportDirectory("assets/");
 
-	// Get the material from the directory
-	wfe::MaterialCollection* materialCollection = (wfe::MaterialCollection*)program->GetAssetManager()->GetAsset(1);
-	wfe::Material* material = materialCollection->GetItems()[0].material;
+	// Get the render object from the directory
+	wfe::RenderObject* renderObject = (wfe::RenderObject*)program->GetAssetManager()->GetAsset(2);
 
-	// Create the example mesh
-	std::vector<wfe::RenderMesh::Vertex> vertices {
-		{ { -1.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
-		{ {  1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
-		{ { -1.0f,  1.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
-		{ {  1.0f,  1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }
-	};
-	std::vector<wfe::uint32_t> indices {
-		0, 1, 2,
-		1, 3, 2
-	};
-
-	wfe::RenderMesh* mesh = new wfe::RenderMesh(program->GetRenderer(), vertices, indices);
+	// Get the mesh and its material
+	wfe::RenderMesh* mesh = renderObject->GetItems()[0].mesh;
+	wfe::Material* material = renderObject->GetItems()[0].material;
 
 	// Create the rendered entity and add a render mesh component
 	wfe::Entity entity = program->GetEntityManager()->CreateEntity();
@@ -73,10 +62,8 @@ int main(int argc, char** args) {
 	// Run the program
 	wfe::int32_t returnCode = program->Run();
 
-	// Destroy the created entity and all other resources
+	// Destroy the created entity
 	program->GetEntityManager()->DestroyEntity(entity);
-
-	delete mesh;
 
 	// Unload the asset directory
 	program->GetAssetManager()->UnloadDirectory("assets/");

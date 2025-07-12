@@ -2,6 +2,7 @@
 
 #include "Assets/Rendering/ImageTexture.hpp"
 #include "Assets/Rendering/MaterialCollection.hpp"
+#include "Assets/Rendering/RenderObject.hpp"
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetManager.hpp"
