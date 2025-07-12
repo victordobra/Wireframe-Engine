@@ -347,14 +347,14 @@ namespace wfe {
 			.dstOffset = 0,
 			.size = (VkDeviceSize)sizeof(Vertex) * vertexCount
 		};
-		device->GetLoader()->vkCmdCopyBuffer(commandBuffer, vertexStagingBuffer, vertexBuffer, 1, &vertexBufferCopy);
+		device->GetLoader()->vkCmdCopyBuffer(commandBuffer, vertexBuffer, vertexStagingBuffer, 1, &vertexBufferCopy);
 
 		VkBufferCopy indexBufferCopy {
 			.srcOffset = 0,
 			.dstOffset = 0,
 			.size = (VkDeviceSize)sizeof(uint32_t) * indexCount
 		};
-		device->GetLoader()->vkCmdCopyBuffer(commandBuffer, indexStagingBuffer, indexBuffer, 1, &indexBufferCopy);
+		device->GetLoader()->vkCmdCopyBuffer(commandBuffer, indexBuffer, indexStagingBuffer, 1, &indexBufferCopy);
 		
 		// End the command buffer recording
 		device->GetLoader()->vkEndCommandBuffer(commandBuffer);
