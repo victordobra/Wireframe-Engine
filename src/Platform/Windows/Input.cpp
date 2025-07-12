@@ -320,7 +320,7 @@ namespace wfe {
 		size_t bitIndex = ((size_t)key & 1) << 2;
 
 		// Set the key down and key pressed flags
-		keyStates[valueIndex] |= 0b0010 << bitIndex;
+		keyStates[valueIndex] |= 0b0011 << bitIndex;
 
 		// Set the key event info
 		KeyEventInfo eventInfo { 
@@ -351,8 +351,8 @@ namespace wfe {
 	}
 	void InputManager::InternalMouseMove(MouseMovement movement) {
 		// Add the movements to the manager's mouse movement
-		mouseMovement.x += movement.x;
-		mouseMovement.y += movement.y;
+		mouseMovement.x += movement.x - mousePos.x;
+		mouseMovement.y += movement.y - mousePos.y;
 		mouseMovement.scroll += movement.scroll;
 	}
 	void InputManager::EndInputEvents() {

@@ -375,6 +375,9 @@ namespace wfe {
 	}
 
 	void Window::PollEvents() {
+		// Begin the input manager's events
+		inputManager->BeginInputEvents();
+
 		// Handle the window's events
 		MSG msg;
 		while(PeekMessageA(&msg, platformData.hWnd, 0, 0, PM_REMOVE)) {
@@ -389,6 +392,9 @@ namespace wfe {
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
 		}
+
+		// End the input manager's events
+		inputManager->EndInputEvents();
 	}
 
 	Window::~Window() {
