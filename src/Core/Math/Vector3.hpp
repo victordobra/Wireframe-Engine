@@ -197,7 +197,7 @@ namespace wfe {
 
 template<>
 struct std::hash<wfe::Vector3> {
-	std::size_t operator()(const wfe::Vector3& vec) {
+	std::size_t operator()(const wfe::Vector3& vec) const {
 		// Use the boost library hash combine to mix all hashes
 		std::hash<float> hasher;
 		size_t res = 0;

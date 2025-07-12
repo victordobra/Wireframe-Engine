@@ -121,7 +121,7 @@ namespace wfe {
 
 template<>
 struct std::hash<wfe::Quaternion> {
-	std::size_t operator()(const wfe::Quaternion& quat) {
+	std::size_t operator()(const wfe::Quaternion& quat) const {
 		// Use the boost library hash combine to mix all hashes
 		std::hash<float> hasher;
 		size_t res = 0;

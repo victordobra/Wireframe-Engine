@@ -242,7 +242,7 @@ namespace wfe {
 
 template<>
 struct std::hash<wfe::Matrix4x4> {
-	std::size_t operator()(const wfe::Matrix4x4& mat) {
+	std::size_t operator()(const wfe::Matrix4x4& mat) const {
 		// Use the boost library hash combine to mix all hashes
 		std::hash<float> hasher;
 		size_t res = 0;
