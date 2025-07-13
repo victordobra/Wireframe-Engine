@@ -233,7 +233,7 @@ namespace wfe {
 				.pNext = nullptr,
 				.image = swapChainImages[i].depthImage,
 				.memory = swapChainImages[i].depthImageMemory.memory,
-				.memoryOffset = 0
+				.memoryOffset = swapChainImages[i].depthImageMemory.offset
 			};
 		}
 
