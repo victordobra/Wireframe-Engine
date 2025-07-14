@@ -11,6 +11,11 @@ project(${ENGINE_NAME} VERSION ${ENGINE_VERSION_MAJOR}.${ENGINE_VERSION_MINOR}.$
 message(STATUS "Engine name set to \"${PROJECT_NAME}\".")
 message(STATUS "Engine version set to ${PROJECT_VERSION}.")
 
+# Add MSVC compile options, if required
+if(MSVC)
+	add_compile_options(/D_CRT_SECURE_NO_WARNINGS /D_USE_MATH_DEFINES /Zc:preprocessor)
+endif()
+
 # Configure the info header files
 configure_file(${PROJECT_SOURCE_DIR}/src/Info/EngineInfo.hpp.in ${PROJECT_SOURCE_DIR}/src/Info/EngineInfo.hpp)
 configure_file(${PROJECT_SOURCE_DIR}/test/Info/ProjectInfo.hpp.in ${PROJECT_SOURCE_DIR}/test/Info/ProjectInfo.hpp)
