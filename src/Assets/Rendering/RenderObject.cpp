@@ -180,7 +180,7 @@ namespace wfe {
 			}
 		}
 	}
-	void RenderObject::Import(const std::string& path) {
+	void RenderObject::Import(const std::filesystem::path& path) {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].mesh;
@@ -190,7 +190,7 @@ namespace wfe {
 		// Open the file stream
 		std::ifstream stream(path);
 		if(!stream)
-			throw std::runtime_error("Failed to open render object file \"" + path + "\" for reading!");
+			throw std::runtime_error("Failed to open render object file \"" + path.string() + "\" for reading!");
 		
 		// Read all of the file's lines
 		std::vector<std::string> lines;
@@ -227,13 +227,7 @@ namespace wfe {
 		stream.close();
 
 		// Get the directory the render object file is in
-		std::string fileDir;
-		size_t dirEnd = path.find_last_of("\\/");
-		if(dirEnd == std::string::npos) {
-			fileDir = "";
-		} else {
-			fileDir = path.substr(0, dirEnd + 1);
-		}
+		std::filesystem::path fileDir = path.lexically_normal().parent_path();
 
 		// Save the current render mesh's info
 		std::string currentName;
@@ -255,14 +249,14 @@ namespace wfe {
 
 			if(keyword == "mtllib") {
 				// Read the material collection file name
-				std::string materialCollectionFileName;
-				strStream >> materialCollectionFileName;
-				materialCollectionFileName = fileDir + materialCollectionFileName;
+				std::string materialCollectionRelPath;
+				strStream >> materialCollectionRelPath;
 
 				// Get the material collection with the given path
-				materialCollection = dynamic_cast<MaterialCollection*>(GetProgram()->GetAssetManager()->GetAsset(materialCollectionFileName));
+				std::filesystem::path materialCollectionPath = (fileDir / materialCollectionRelPath).lexically_normal();
+				materialCollection = dynamic_cast<MaterialCollection*>(GetProgram()->GetAssetManager()->GetAsset(materialCollectionPath));
 				if(!materialCollection)
-					throw std::runtime_error("Material collection file with path \"" + materialCollectionFileName + "\" not found!");
+					throw std::runtime_error("Material collection file with path \"" + materialCollectionPath.string() + "\" not found!");
 			} else if(keyword == "o") {
 				// Build the current mesh, if it exists
 				if(!currentName.empty()) {
@@ -451,11 +445,11 @@ namespace wfe {
 			items.push_back({ currentName, mesh, material });
 		}
 	}
-	void RenderObject::Export(const std::string& path) const {
+	void RenderObject::Export(const std::filesystem::path& path) const {
 		// Open the file stream
 		std::ofstream stream(path);
 		if(!stream)
-			throw std::runtime_error("Failed to open render object file \"" + path + "\" for writing!");
+			throw std::runtime_error("Failed to open render object file \"" + path.string() + "\" for writing!");
 
 		// Set the stream's floating point precision
 		stream << std::fixed << std::setprecision(6);
@@ -464,17 +458,14 @@ namespace wfe {
 		stream << "# " << WFE_ENGINE_NAME << " version " << WFE_ENGINE_VERSION_MAJOR << '.' << WFE_ENGINE_VERSION_MINOR << '.' << WFE_ENGINE_VERSION_PATCH << '\n';
 		stream << "# Automatically generated OBJ file\n\n";
 
-		// Get the length of the collection's parent directory path, to trim it from all texture file references
-		size_t dirEnd = path.find_last_of("\\/"), dirSize;
-		if(dirEnd == std::string::npos) {
-			dirSize = 0;
-		} else {
-			dirSize = dirEnd + 1;
-		}
+		// Get the directory the render object file is in
+		std::filesystem::path fileDir = path.lexically_normal().parent_path();
 
 		// Write the material collection's path, if it exsists
-		if(materialCollection)
-			stream << "mtllib " << (materialCollection->GetPath().c_str() + dirSize) << "\n\n";
+		if(materialCollection) {
+			std::filesystem::path materialCollectionPath = materialCollection->GetPath().lexically_relative(fileDir);
+			stream << "mtllib " << materialCollectionPath.string() << "\n\n";
+		}
 
 		// Write every item's info
 		for(size_t i = 0; i != items.size(); ++i) {
@@ -560,6 +551,7 @@ namespace wfe {
 		}
 
 		// Close the file stream
+		stream.close();
 	}
 
 	// Public functions

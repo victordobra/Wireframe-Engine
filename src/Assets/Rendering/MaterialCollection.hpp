@@ -36,10 +36,10 @@ namespace wfe {
 		void Save(std::ostream& stream) const override;
 		/// @brief Imports the material collection from a file.
 		/// @param path The path to the file to import the collection from.
-		void Import(const std::string& path) override;
+		void Import(const std::filesystem::path& path) override;
 		/// @brief Exports the material collection to a file.
 		/// @param path The path to the file to export the collection to.
-		void Export(const std::string& path) const override;
+		void Export(const std::filesystem::path& path) const override;
 		/// @brief Gets the material collection's dependencies.
 		/// @return The collection's dependencies.
 		std::vector<Asset*> GetDependencies() const override;
@@ -58,7 +58,7 @@ namespace wfe {
 		/// @brief Destroys the material colection.
 		~MaterialCollection();
 	private:
-		WFE_ASSET_TYPE(MaterialCollection, { "mtl" })
+		WFE_ASSET_TYPE(MaterialCollection, { ".mtl" })
 
 		std::vector<Item> items;
 	};

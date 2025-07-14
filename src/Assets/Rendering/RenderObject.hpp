@@ -40,10 +40,10 @@ namespace wfe {
 		void Save(std::ostream& stream) const override;
 		/// @brief Imports the render object from a file.
 		/// @param path The path to the file to import the object from.
-		void Import(const std::string& path) override;
+		void Import(const std::filesystem::path& path) override;
 		/// @brief Exports the render object to a file.
 		/// @param path The path to the file to export the object to.
-		void Export(const std::string& path) const override;
+		void Export(const std::filesystem::path& path) const override;
 		/// @brief Gets the render object's dependencies.
 		/// @return The object's dependencies.
 		std::vector<Asset*> GetDependencies() const override {
@@ -73,7 +73,7 @@ namespace wfe {
 		/// @brief Destroys the render object.
 		~RenderObject();
 	private:
-		WFE_ASSET_TYPE(RenderObject, { "obj" })
+		WFE_ASSET_TYPE(RenderObject, { ".obj" })
 
 		MaterialCollection* materialCollection;
 		std::vector<Item> items;

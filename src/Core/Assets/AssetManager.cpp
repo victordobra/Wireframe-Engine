@@ -3,10 +3,11 @@
 #include "Core/Parsers/WFEONParser.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include <fstream>
+#include <future>
 
 namespace wfe {
 	// Asset jobs
-	static Asset* LoadAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::string& path) {
+	static Asset* LoadAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::filesystem::path& path) {
 		// Create the asset and set its path
 		Asset* asset = assetType.constructor(program, id);
 		asset->SetPath(path);
@@ -14,23 +15,23 @@ namespace wfe {
 		// Load the asset from the file
 		std::ifstream stream(path, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open asset file \"" + path + "\" for reading!");
+			throw std::runtime_error("Failed to open asset file \"" + path.string() + "\" for reading!");
 
 		asset->Load(stream);
 		stream.close();
 
 		return asset;
 	}
-	static void SaveAssetJob(const Asset* asset, const std::string& path) {
+	static void SaveAssetJob(const Asset* asset, const std::filesystem::path& path) {
 		// Save the asset to the file
 		std::ofstream stream(path, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open asset file \"" + path + "\" for writing!");
+			throw std::runtime_error("Failed to open asset file \"" + path.string() + "\" for writing!");
 		
 		asset->Save(stream);
 		stream.close();
 	}
-	static Asset* ImportAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::string& path) {
+	static Asset* ImportAssetJob(Program* program, const AssetType& assetType, uint64_t id, const std::filesystem::path& path) {
 		// Create the asset and set its path
 		Asset* asset = assetType.constructor(program, id);
 		asset->SetPath(path);
@@ -40,7 +41,7 @@ namespace wfe {
 
 		return asset;
 	}
-	static void ExportAssetJob(const Asset* asset, const std::string& path) {
+	static void ExportAssetJob(const Asset* asset, const std::filesystem::path& path) {
 		// Export the asset to the file
 		asset->Export(path);
 	}
@@ -137,18 +138,19 @@ namespace wfe {
 	}
 
 	// Public functions
-	void AssetManager::LoadDirectory(const std::string& path) {
+	void AssetManager::LoadDirectory(const std::filesystem::path& path) {
 		// Open the directory's info file
-		std::ifstream stream(path + ".assets", std::ios::binary);
+		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::ifstream stream(infoFilePath, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open asset directory info file \"" + path + ".assets\" for reading!");
+			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for reading!");
 		
 		// Read the asset count
 		uint64_t assetCount = BinaryReadUint64(stream);
 
 		// Read every asset
 		std::vector<Asset*> dirAssets(assetCount);
-		std::vector<std::string> dirPaths(assetCount);
+		std::vector<std::filesystem::path> dirPaths(assetCount);
 
 		std::vector<uint64_t> ids(assetCount);
 		std::vector<const AssetType*> assetTypes(assetCount);
@@ -157,10 +159,9 @@ namespace wfe {
 		for(size_t i = 0; i != assetCount; ++i) {
 			// Read the asset's path
 			uint64_t pathLength = BinaryReadUint64(stream);
-
-			dirPaths[i].resize(pathLength, '\0');
-			stream.read((char*)dirPaths[i].data(), pathLength);
-			dirPaths[i] = path + dirPaths[i];
+			std::string relativePath(pathLength, 0);
+			stream.read(relativePath.data(), pathLength);
+			dirPaths[i] = (path / dirPaths[i]).lexically_normal();
 
 			// Read the asset's ID
 			ids[i] = BinaryReadUint64(stream);
@@ -168,8 +169,8 @@ namespace wfe {
 			// Read the asset's type
 			uint64_t typeNameLength = BinaryReadUint64(stream);
 
-			std::string typeName(typeNameLength, '\0');
-			stream.read((char*)typeName.data(), typeNameLength);
+			std::string typeName(typeNameLength, 0);
+			stream.read(typeName.data(), typeNameLength);
 
 			assetTypes[i] = &AssetType::GetAssetTypeName(typeName);
 			if(assetTypes[i] == nullptr)
@@ -232,21 +233,21 @@ namespace wfe {
 		while(!assetsMutex.compare_exchange_strong(locked, 1))
 			locked = 0;
 			
-		directories.insert({ path, dirAssets });
+		directories.insert({ path.lexically_normal(), dirAssets });
 
 		assetsMutex = 0;
 	}
-	void AssetManager::SaveDirectory(const std::string& path, bool saveAssets) const {
+	void AssetManager::SaveDirectory(const std::filesystem::path& path, bool saveAssets) const {
 		// Lock the assets mutex
 		uint32_t locked = 0;
 		while(!assetsMutex.compare_exchange_strong(locked, 1))
 			locked = 0;
 
 		// Identify the directory
-		const auto directoryIter = directories.find(path);
+		const auto directoryIter = directories.find(path.lexically_normal());
 		if(directoryIter == directories.end()) {
 			assetsMutex = 0;
-			throw std::runtime_error("Failed to find loaded asset directory \"" + path + "\"!");
+			throw std::runtime_error("Failed to find loaded asset directory \"" + path.string() + "\"!");
 		}
 
 		std::vector<Asset*> dirAssets = directoryIter->second;
@@ -264,13 +265,14 @@ namespace wfe {
 		}
 
 		// Open the directory's info file
-		std::ofstream stream(path + ".assets", std::ios::binary);
+		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::ofstream stream(infoFilePath, std::ios::binary);
 		if(!stream) {
 			// Wait for all assets to finish saving
 			for(size_t i = 0; i != saveFutures.size(); ++i)
 				saveFutures[i].wait();
 
-			throw std::runtime_error("Failed to open asset directory info file \"" + path + ".assets\" for writing!");
+			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for writing!");
 		}
 		
 		// Write the asset count
@@ -279,8 +281,9 @@ namespace wfe {
 		// Write every asset
 		for(size_t i = 0; i != dirAssets.size(); ++i) {
 			// Write the asset's path
-			BinaryWriteUint64(stream, dirAssets[i]->GetPath().size());
-			stream.write((const char*)dirAssets[i]->GetPath().data(), dirAssets[i]->GetPath().size());
+			std::string relativePath = dirAssets[i]->GetPath().lexically_relative(path).string();
+			BinaryWriteUint64(stream, relativePath.size());
+			stream.write(relativePath.data(), relativePath.size());
 
 			// Write the asset's ID
 			BinaryWriteUint64(stream, dirAssets[i]->GetID());
@@ -288,7 +291,7 @@ namespace wfe {
 			// Write the asset's type
 			std::string typeName = AssetType::GetAssetType(dirAssets[i]).name;
 			BinaryWriteUint64(stream, typeName.size());
-			stream.write((const char*)typeName.data(), typeName.size());
+			stream.write(typeName.data(), typeName.size());
 
 			// Write the asset's dependencies
 			std::vector<Asset*> assetDependencies = dirAssets[i]->GetDependencies();
@@ -307,11 +310,12 @@ namespace wfe {
 				saveFutures[i].wait();
 		}
 	}
-	void AssetManager::ImportDirectory(const std::string& path) {
+	void AssetManager::ImportDirectory(const std::filesystem::path& path) {
 		// Open the directory's info file
-		std::ifstream stream(path + ".assets", std::ios::binary);
+		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::ifstream stream(infoFilePath, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open asset directory info file \"" + path + ".assets\" for reading!");
+			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for reading!");
 		
 		// Parse the WFEON file
 		WFEONObject wfeonObject;
@@ -322,12 +326,12 @@ namespace wfe {
 		// Get the asset count
 		const WFEONObject::WFEONValue& assetValue = wfeonObject.values.at("assets");
 		if(assetValue.type != WFEONObject::VALUE_TYPE_OBJECT)
-			throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"assets\" value is not an object!");
+			throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"assets\" value is not an object!");
 		size_t assetCount = assetValue.count;
 
 		// Get every asset
 		std::vector<Asset*> dirAssets(assetCount);
-		std::vector<std::string> dirPaths(assetCount);
+		std::vector<std::filesystem::path> dirPaths(assetCount);
 
 		std::vector<uint64_t> ids(assetCount);
 		std::vector<const AssetType*> assetTypes(assetCount);
@@ -340,31 +344,21 @@ namespace wfe {
 			// Get the asset's path
 			const WFEONObject::WFEONValue& pathValue = assetObject.values.at("path");
 			if(pathValue.type != WFEONObject::VALUE_TYPE_STRING)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value is not a string!");
+				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"path\" value is not a string!");
 			if(pathValue.count != 1)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value is not a single string!");
-			dirPaths[i] = path + assetObject.stringValues[pathValue.startIndex];
+				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"path\" value is not a single string!");
+			dirPaths[i] = (path / assetObject.stringValues[pathValue.startIndex]).lexically_normal();
 
 			// Get the asset's ID
 			const WFEONObject::WFEONValue& idValue = assetObject.values.at("id");
 			if(idValue.type != WFEONObject::VALUE_TYPE_INT)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"id\" value is not an integer!");
+				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"id\" value is not an integer!");
 			if(idValue.count != 1)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"id\" value is not a single integer!");
+				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"id\" value is not a single integer!");
 			ids[i] = (uint64_t)assetObject.intValues[idValue.startIndex];
 
 			// Get the file extension
-			size_t fileStart = dirPaths[i].find_last_of("/\\");
-			if(fileStart == std::string::npos) {
-				fileStart = 0;
-			} else {
-				++fileStart;
-			}
-			size_t extensionStart = dirPaths[i].find_last_of('.');
-			if(extensionStart == std::string::npos || extensionStart < fileStart)
-				throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"path\" value does not contain a file extension!");
-			
-			std::string extension = dirPaths[i].substr(extensionStart + 1);
+			std::string extension = dirPaths[i].extension().string();
 
 			// Get the asset's type
 			assetTypes[i] = &AssetType::GetAssetTypeExtension(extension);
@@ -373,9 +367,9 @@ namespace wfe {
 			const WFEONObject::WFEONValue& dependenciesValue = assetObject.values.at("dependencies");
 			if(dependenciesValue.type != WFEONObject::VALUE_TYPE_COUNT) {
 				if(dependenciesValue.type != WFEONObject::VALUE_TYPE_INT)
-					throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"dependencies\" value is not an object!");
+					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"dependencies\" value is not an object!");
 				if(dependenciesValue.count != 1)
-					throw std::runtime_error("Failed to load asset directory \"" + path + "\": \"dependencies\" value is not a single object!");
+					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"dependencies\" value is not a single object!");
 				
 				dependencies[i].resize(dependenciesValue.count);
 				for(size_t j = 0; j != dependenciesValue.count; ++j)
@@ -430,21 +424,21 @@ namespace wfe {
 		while(!assetsMutex.compare_exchange_strong(locked, 1))
 			locked = 0;
 			
-		directories.insert({ path, dirAssets });
+		directories.insert({ path.lexically_normal(), dirAssets });
 
 		assetsMutex = 0;
 	}
-	void AssetManager::ExportDirectory(const std::string& path, bool exportAssets) const {
+	void AssetManager::ExportDirectory(const std::filesystem::path& path, bool exportAssets) const {
 		// Lock the assets mutex
 		uint32_t locked = 0;
 		while(!assetsMutex.compare_exchange_strong(locked, 1))
 			locked = 0;
 
 		// Identify the directory
-		const auto directoryIter = directories.find(path);
+		const auto directoryIter = directories.find(path.lexically_normal());
 		if(directoryIter == directories.end()) {
 			assetsMutex = 0;
-			throw std::runtime_error("Failed to find loaded asset directory \"" + path + "\"!");
+			throw std::runtime_error("Failed to find loaded asset directory \"" + path.string() + "\"!");
 		}
 
 		std::vector<Asset*> dirAssets = directoryIter->second;
@@ -458,7 +452,7 @@ namespace wfe {
 			// Export all assets in the directory
 			exportFutures.resize(dirAssets.size());
 			for(size_t i = 0; i != dirAssets.size(); ++i)
-				exportFutures[i] = std::async(std::launch::async | std::launch::deferred, ExportAssetJob, dirAssets[i], path + dirAssets[i]->GetPath());
+				exportFutures[i] = std::async(std::launch::async | std::launch::deferred, ExportAssetJob, dirAssets[i], dirAssets[i]->GetPath());
 		}
 
 		// Generate the directory's info object
@@ -480,7 +474,7 @@ namespace wfe {
 
 			// Create the path value
 			assetObject.values.insert({ "path", { WFEONObject::VALUE_TYPE_STRING, 1, 0 } });
-			assetObject.stringValues[0] = dirAssets[i]->GetPath();
+			assetObject.stringValues[0] = dirAssets[i]->GetPath().lexically_relative(path).string();
 
 			// Create the ID value
 			assetObject.values.insert({ "id", { WFEONObject::VALUE_TYPE_INT, 1, 0 } });
@@ -493,13 +487,14 @@ namespace wfe {
 		}
 
 		// Open the directory's info file
-		std::ofstream stream(path + ".assets", std::ios::binary);
+		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::ofstream stream(infoFilePath, std::ios::binary);
 		if(!stream) {
 			// Wait for all assets to finish saving
 			for(size_t i = 0; i != exportFutures.size(); ++i)
 				exportFutures[i].wait();
 
-			throw std::runtime_error("Failed to open asset directory info file \"" + path + ".assets\" for writing!");
+			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for writing!");
 		}
 		
 		// Write the WFEON object
@@ -513,17 +508,17 @@ namespace wfe {
 				exportFutures[i].wait();
 		}
 	}
-	void AssetManager::UnloadDirectory(const std::string& path) {
+	void AssetManager::UnloadDirectory(const std::filesystem::path& path) {
 		// Lock the assets mutex
 		uint32_t locked = 0;
 		while(!assetsMutex.compare_exchange_strong(locked, 1))
 			locked = 0;
 
 		// Identify the directory
-		const auto directoryIter = directories.find(path);
+		const auto directoryIter = directories.find(path.lexically_normal());
 		if(directoryIter == directories.end()) {
 			assetsMutex = 0;
-			throw std::runtime_error("Failed to find loaded asset directory \"" + path + "\"!");
+			throw std::runtime_error("Failed to find loaded asset directory \"" + path.string() + "\"!");
 		}
 
 		std::vector<Asset*> dirAssets = directoryIter->second;

@@ -36,10 +36,10 @@ namespace wfe {
 		void Save(std::ostream& stream) const override;
 		/// @brief Imports the image texture from a file.
 		/// @param path The path to the file to import the image from.
-		void Import(const std::string& path) override;
+		void Import(const std::filesystem::path& path) override;
 		/// @brief Exports the image texture to a file.
 		/// @param path The path to the file to export the image to.
-		void Export(const std::string& path) const override;
+		void Export(const std::filesystem::path& path) const override;
 		/// @brief Gets the image texture's dependencies.
 		/// @return The image's dependencies.
 		std::vector<Asset*> GetDependencies() const override {
@@ -126,7 +126,7 @@ namespace wfe {
 			DestroyVulkanComponents();
 		}
 	private:
-		WFE_ASSET_TYPE(ImageTexture, { "bmp", "jpg", "jpeg", "png" })
+		WFE_ASSET_TYPE(ImageTexture, { ".bmp", ".jpg", ".jpeg", ".png" })
 
 		void CreateVulkanComponents();
 		void DestroyVulkanComponents();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Assets/AssetType.hpp"
+#include <filesystem>
 #include <istream>
 #include <ostream>
 #include <string>
@@ -31,10 +32,10 @@ namespace wfe {
 		virtual void Save(std::ostream& stream) const = 0;
 		/// @brief Imports the asset from a file.
 		/// @param path The path to the file to import the asset from.
-		virtual void Import(const std::string& path) = 0;
+		virtual void Import(const std::filesystem::path& path) = 0;
 		/// @brief Exports the asset to a file.
 		/// @param path The epath to the file to export the asset to.
-		virtual void Export(const std::string& path) const = 0;
+		virtual void Export(const std::filesystem::path& path) const = 0;
 		/// @brief Gets the asset's dependencies.
 		/// @return A vector of the asset's dependencies.
 		virtual std::vector<Asset*> GetDependencies() const = 0;
@@ -51,12 +52,12 @@ namespace wfe {
 		}
 		/// @brief Gets the asset's path, as used by the asset manager.
 		/// @return The asset's path, as used by the asset manager.
-		const std::string& GetPath() const {
+		const std::filesystem::path& GetPath() const {
 			return path;
 		}
 		/// @brief Sets the asset's path which the asset manager will use.
 		/// @param newPath The new asset path.
-		void SetPath(const std::string& newPath) {
+		void SetPath(const std::filesystem::path& newPath) {
 			path = newPath;
 		}
 
@@ -65,6 +66,6 @@ namespace wfe {
 	private:
 		Program* program;
 		uint64_t id;
-		std::string path;
+		std::filesystem::path path;
 	};
 }

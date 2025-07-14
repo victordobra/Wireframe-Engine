@@ -72,7 +72,7 @@ namespace wfe {
 			BinaryWriteUint64(stream, materialTextures.surfaceTexture->GetID());
 		}
 	}
-	void MaterialCollection::Import(const std::string& path) {
+	void MaterialCollection::Import(const std::filesystem::path& path) {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].material;
@@ -81,7 +81,7 @@ namespace wfe {
 		// Open the file stream
 		std::ifstream stream(path);
 		if(!stream)
-			throw std::runtime_error("Failed to open material collection file \"" + path + "\" for reading!");
+			throw std::runtime_error("Failed to open material collection file \"" + path.string() + "\" for reading!");
 		
 		// Read all of the file's lines
 		std::vector<std::string> lines;
@@ -118,13 +118,7 @@ namespace wfe {
 		stream.close();
 
 		// Get the directory the material collection file is in
-		std::string fileDir;
-		size_t dirEnd = path.find_last_of("\\/");
-		if(dirEnd == std::string::npos) {
-			fileDir = "";
-		} else {
-			fileDir = path.substr(0, dirEnd + 1);
-		}
+		std::filesystem::path fileDir = path.lexically_normal().parent_path();
 
 		// Save the current material's info
 		std::string currentName;
@@ -156,17 +150,14 @@ namespace wfe {
 				strStream >> currentData.surfaceColor.x >> currentData.surfaceColor.y >> currentData.surfaceColor.z;
 			} else if(keyword == "map_Kd") {
 				// Read the image file name
-				std::string imageFileName;
-				strStream >> imageFileName;
-				imageFileName = fileDir + imageFileName;
+				std::string imageRelPath;
+				strStream >> imageRelPath;
 				
 				// Get the image with the given path
-				wfe::ImageTexture* texture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imageFileName));
-				if(!texture)
-					throw std::runtime_error("Image file with path \"" + imageFileName + "\" not found!");
-				
-				// Set the texture
-				currentTextures.surfaceTexture = texture;
+				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
+				currentTextures.surfaceTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.surfaceTexture)
+					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
 			}
 		}
 
@@ -174,11 +165,11 @@ namespace wfe {
 		if(!currentName.empty())
 			items.push_back({ currentName, new Material(GetProgram()->GetMaterialManager(), currentData, currentTextures) });
 	}
-	void MaterialCollection::Export(const std::string& path) const {
+	void MaterialCollection::Export(const std::filesystem::path& path) const {
 		// Open the file stream
 		std::ofstream stream(path);
 		if(!stream)
-			throw std::runtime_error("Failed to open material collection file \"" + path + "\" for writing!");
+			throw std::runtime_error("Failed to open material collection file \"" + path.string() + "\" for writing!");
 
 		// Set the stream's floating point precision
 		stream << std::fixed << std::setprecision(6);
@@ -187,13 +178,8 @@ namespace wfe {
 		stream << "# " << WFE_ENGINE_NAME << " version " << WFE_ENGINE_VERSION_MAJOR << '.' << WFE_ENGINE_VERSION_MINOR << '.' << WFE_ENGINE_VERSION_PATCH << '\n';
 		stream << "# Automatically generated MTL file\n\n";
 
-		// Get the length of the collection's parent directory path, to trim it from all texture file references
-		size_t dirEnd = path.find_last_of("\\/"), dirSize;
-		if(dirEnd == std::string::npos) {
-			dirSize = 0;
-		} else {
-			dirSize = dirEnd + 1;
-		}
+		// Get the directory the material collection file is in
+		std::filesystem::path fileDir = path.lexically_normal().parent_path();
 
 		// Write every material's info to the file
 		for(size_t i = 0; i != items.size(); ++i) {
@@ -210,7 +196,9 @@ namespace wfe {
 			// Write the material's textures
 			const wfe::Material::MaterialTextures textures = items[i].material->GetTextures();
 
-			stream << "\tmap_Kd " << (textures.surfaceTexture->GetPath().c_str() + dirSize) << '\n';
+			std::filesystem::path surfaceTexturePath = textures.surfaceTexture->GetPath().lexically_relative(fileDir);
+
+			stream << "\tmap_Kd " << surfaceTexturePath.string() << '\n';
 
 			stream << '\n';
 		}

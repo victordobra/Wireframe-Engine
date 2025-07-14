@@ -2,10 +2,10 @@
 
 #include "Core/Types/Defines.hpp"
 #include "Asset.hpp"
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <future>
 
 namespace wfe {
 	class Program;
@@ -25,21 +25,21 @@ namespace wfe {
 
 		/// @brief Loads all assets from a directory.
 		/// @param path The path to the directory to load assets from.
-		void LoadDirectory(const std::string& path);
+		void LoadDirectory(const std::filesystem::path& path);
 		/// @brief Saves all assets to the given directory.
 		/// @param path The path to the directory to save assets to. It must be a previously loaded directory.
 		/// @param saveAssets True if the assets should be saved, false if only the directory structure should be saved.
-		void SaveDirectory(const std::string& path, bool saveAssets = false) const;
+		void SaveDirectory(const std::filesystem::path& path, bool saveAssets = false) const;
 		/// @brief Imports all assets from a directory.
 		/// @param path The path to the directory to import assets from.
-		void ImportDirectory(const std::string& path);
+		void ImportDirectory(const std::filesystem::path& path);
 		/// @brief Exports all assets to the given directory.
 		/// @param path The path to the directory to export assets to. It must be a previously imported directory.
 		/// @param exportAssets True if the assets should be exported, false if only the directory structure should be exported.
-		void ExportDirectory(const std::string& path, bool exportAssets = false) const;
+		void ExportDirectory(const std::filesystem::path& path, bool exportAssets = false) const;
 		/// @brief Unloads all assets from a directory.
 		/// @param path The path to the directory to unload assets from.
-		void UnloadDirectory(const std::string& path);
+		void UnloadDirectory(const std::filesystem::path& path);
 
 		/// @brief Gets the asset with the given ID.
 		/// @param id The ID of the asset to get.
@@ -66,14 +66,14 @@ namespace wfe {
 		/// @brief Gets the asset with the given path.
 		/// @param path The path of the asset to get.
 		/// @return A pointer to the asset with the given path, or nullptr if the asset does not exist.
-		Asset* GetAsset(const std::string& path) const {
+		Asset* GetAsset(const std::filesystem::path& path) const {
 			// Lock the asset mutex
 			uint32_t locked = 0;
 			while(!assetsMutex.compare_exchange_strong(locked, 1))
 				locked = 0;
 			
 			// Get the asset from the path map
-			auto iter = assetsPath.find(path);
+			auto iter = assetsPath.find(path.lexically_normal());
 			Asset* asset;
 			if(iter != assetsPath.end()) {
 				asset = iter->second;
@@ -117,8 +117,8 @@ namespace wfe {
 		Program* program;
 
 		std::unordered_map<uint64_t, Asset*> assetsID;
-		std::unordered_map<std::string, Asset*> assetsPath;
-		std::unordered_map<std::string, std::vector<Asset*>> directories;
+		std::unordered_map<std::filesystem::path, Asset*> assetsPath;
+		std::unordered_map<std::filesystem::path, std::vector<Asset*>> directories;
 
 		mutable atomic_uint32_t assetsMutex;
 	};

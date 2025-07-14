@@ -437,11 +437,11 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void ImageTexture::Import(const std::string& path) {
+	void ImageTexture::Import(const std::filesystem::path& path) {
 		// Open the file stream for reading
 		std::ifstream stream(path, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open image file \"" + path + "\" for reading!");
+			throw std::runtime_error("Failed to open image file \"" + path.string() + "\" for reading!");
 
 		// Load the image data from the stream
 		uint32_t newWidth, newHeight;
@@ -469,7 +469,7 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void ImageTexture::Export(const std::string& path) const {
+	void ImageTexture::Export(const std::filesystem::path& path) const {
 		// Allocate the image's data buffer
 		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
@@ -480,27 +480,23 @@ namespace wfe {
 		InternalGetImageData(imageData, imageLayout);
 
 		// Get the file's extension
-		size_t dotPos = path.find_last_of('.');
-		if(dotPos == std::string::npos)
-			throw std::runtime_error("Image export path \"" + path + "\" does not have an extension!");
-
-		std::string extension = path.substr(dotPos + 1);
+		std::string extension = path.extension().string();
 
 		// Open the file stream for writing
 		std::ofstream stream(path, std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open image file \"" + path + "\" for writing!");
+			throw std::runtime_error("Failed to open image file \"" + path.string() + "\" for writing!");
 		
 		// Write the image to the stream
-		if(extension == "bmp") {
+		if(extension == ".bmp") {
 			if(!WriteBMPFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write BMP image file \"" + path + "\"!");
-		} else if(extension == "jpg" || extension == "jpeg") {
+				throw std::runtime_error("Failed to write BMP image file \"" + path.string() + "\"!");
+		} else if(extension == ".jpg" || extension == ".jpeg") {
 			if(!WriteJPEGFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write JPEG image file \"" + path + "\"!");
-		} else if(extension == "png") {
+				throw std::runtime_error("Failed to write JPEG image file \"" + path.string() + "\"!");
+		} else if(extension == ".png") {
 			if(!WritePNGFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write PNG image file \"" + path + "\"!");
+				throw std::runtime_error("Failed to write PNG image file \"" + path.string() + "\"!");
 		} else {
 			throw std::invalid_argument("Unsupported image file format \"" + extension + "\" for image export!");
 		}
