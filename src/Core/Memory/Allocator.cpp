@@ -532,52 +532,68 @@ void* operator new[](size_t size, std::align_val_t alignment) {
 		throw std::bad_alloc();
 	return memory;
 }
+void* operator new(size_t size, const std::nothrow_t& tag) noexcept {
+	// Allocate the memory
+	return wfe::AllocMemory(size);
+}
+void* operator new[](size_t size, const std::nothrow_t& tag) noexcept {
+	// Allocate the memory
+	return wfe::AllocMemory(size);
+}
+void* operator new(size_t size, std::align_val_t alignment, const std::nothrow_t& tag) noexcept {
+	// Allocate the memory
+	return wfe::AllocMemory(size, (size_t)alignment);
+}
+void* operator new[](size_t size, std::align_val_t alignment, const std::nothrow_t& tag) noexcept {
+	// Allocate the memory
+	return wfe::AllocMemory(size, (size_t)alignment);
+}
 
 void operator delete(void* memory) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete[](void* memory) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete(void* memory, std::align_val_t alignment) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete[](void* memory, std::align_val_t alignment) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete(void* memory, size_t size) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete[](void* memory, size_t size) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete(void* memory, size_t size, std::align_val_t alignment) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
 void operator delete[](void* memory, size_t size, std::align_val_t alignment) noexcept {
-	if(memory) {
-		// Free the memory
-		wfe::FreeMemory(memory);
-	}
+	// Free the memory
+	wfe::FreeMemory(memory);
+}
+void operator delete(void* memory, const std::nothrow_t& tag) noexcept {
+	// Free the memory
+	wfe::FreeMemory(memory);
+}
+void operator delete[](void* memory, const std::nothrow_t& tag) noexcept {
+	// Free the memory
+	wfe::FreeMemory(memory);
+}
+void operator delete(void* memory, std::align_val_t alignment, const std::nothrow_t& tag) noexcept {
+	// Free the memory
+	wfe::FreeMemory(memory);
+}
+void operator delete[](void* memory, std::align_val_t alignment, const std::nothrow_t& tag) noexcept {
+	// Free the memory
+	wfe::FreeMemory(memory);
 }
