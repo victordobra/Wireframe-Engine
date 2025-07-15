@@ -15,6 +15,9 @@ namespace wfe {
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].material;
 		items.clear();
+
+		// Query the default texture
+		ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
 	
 		// Read the number of items
 		uint64_t itemCount = BinaryReadUint64(stream);
@@ -125,6 +128,9 @@ namespace wfe {
 		Material::MaterialData currentData;
 		Material::MaterialTextures currentTextures;
 
+		// Query the default texture
+		ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
+
 		// Parse every line in the file
 		for(const std::string& line : lines) {
 			// Create an input string stream
@@ -141,7 +147,7 @@ namespace wfe {
 				
 				// Reset the material info
 				currentData.surfaceColor = Vector4::ONE;
-				currentTextures.surfaceTexture = nullptr;
+				currentTextures.surfaceTexture = defaultTexture;
 
 				// Read the material's name
 				strStream >> currentName;
@@ -194,11 +200,13 @@ namespace wfe {
 			stream << '\n';
 
 			// Write the material's textures
-			const wfe::Material::MaterialTextures textures = items[i].material->GetTextures();
+			const Material::MaterialTextures textures = items[i].material->GetTextures();
+			ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
 
-			std::filesystem::path surfaceTexturePath = textures.surfaceTexture->GetPath().lexically_relative(fileDir);
-
-			stream << "\tmap_Kd " << surfaceTexturePath.string() << '\n';
+			if(textures.surfaceTexture != defaultTexture) {
+				std::filesystem::path surfaceTexturePath = textures.surfaceTexture->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Kd " << surfaceTexturePath.string() << '\n';
+			}
 
 			stream << '\n';
 		}

@@ -1,11 +1,12 @@
 #include "MaterialManager.hpp"
+#include "Main/Program.hpp"
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
 	// Material manager functions
-	MaterialManager::MaterialManager(VulkanRenderer* renderer, size_t maxMaterialCount) : renderer(renderer) {
+	MaterialManager::MaterialManager(Program* program, size_t maxMaterialCount) : renderer(program->GetRenderer()) {
 		// Set the texture sampler create info
 		VkSamplerCreateInfo textureSamplerInfo {
 			.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
@@ -91,10 +92,15 @@ namespace wfe {
 		result = renderer->GetLoader()->vkCreateDescriptorSetLayout(renderer->GetDevice()->GetDevice(), &setLayoutInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &materialSetLayout);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan descriptor set layout for material descriptor sets! Error code: " + string_VkResult(result));
+		
+		// Create the default image texture
+		uint8_t textureData[] { 0xff, 0xff, 0xff, 0xff };
+		defaultImageTexture = new ImageTexture(program, 1, 1, &textureData);
 	}
 
 	MaterialManager::~MaterialManager() {
 		// Destroy the manager's components
+		delete defaultImageTexture;
 		renderer->GetLoader()->vkDestroyDescriptorSetLayout(renderer->GetDevice()->GetDevice(), materialSetLayout, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		renderer->GetLoader()->vkDestroyDescriptorPool(renderer->GetDevice()->GetDevice(), descriptorPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		renderer->GetLoader()->vkDestroySampler(renderer->GetDevice()->GetDevice(), textureSampler, &VulkanRenderer::ALLOCATION_CALLBACKS);

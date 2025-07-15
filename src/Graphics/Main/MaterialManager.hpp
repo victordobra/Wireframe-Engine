@@ -9,14 +9,15 @@
 
 namespace wfe {
 	class Material;
+	class Program;
 
 	/// @brief A class that manages materials and their descriptor sets.
 	class MaterialManager {
 	public:
 		/// @brief Creates a new material manager.
-		/// @param renderer The Vulkan renderer the material manager will use.
+		/// @param program The program that owns the material manager.
 		/// @param maxMaterialCount The maximum number of materials.
-		MaterialManager(VulkanRenderer* renderer, size_t maxMaterialCount);
+		MaterialManager(Program* program, size_t maxMaterialCount);
 		MaterialManager(const MaterialManager&) = delete;
 		MaterialManager(MaterialManager&&) = delete;
 
@@ -43,6 +44,11 @@ namespace wfe {
 		VkDescriptorSetLayout GetMaterialSetLayout() const {
 			return materialSetLayout;
 		}
+		/// @brief Gets the default white image texture, used when no texture is specified.
+		/// @return The default white image texture, used when no texture is specified.
+		ImageTexture* GetDefaultImageTexture() const {
+			return defaultImageTexture;
+		}
 
 		/// @brief Destroys the material manager.
 		~MaterialManager();
@@ -53,6 +59,7 @@ namespace wfe {
 		VkSampler textureSampler;
 		VkDescriptorPool descriptorPool;
 		VkDescriptorSetLayout materialSetLayout;
+		ImageTexture* defaultImageTexture;
 	};
 
 	/// @brief A class that contains all data and textures for a 3D material.

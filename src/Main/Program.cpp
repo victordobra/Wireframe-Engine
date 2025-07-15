@@ -43,7 +43,7 @@ namespace wfe {
 		assetManager = new AssetManager(this);
 		entityManager = new EntityManager(settings.maxEntityCount);
 		graphicsSystem = new GraphicsSystem(renderer, settings.maxFramesInFlight);
-		materialManager = new MaterialManager(renderer, settings.maxMaterialCount);
+		materialManager = new MaterialManager(this, settings.maxMaterialCount);
 		mainPipeline = new MainPipeline(this, cameraInfo);
 
 		// Store the end time for renderer initialization
