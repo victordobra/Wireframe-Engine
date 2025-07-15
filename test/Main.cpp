@@ -29,16 +29,16 @@ static void* FrameEventCallback(void* userData, void* params) {
 
 		// Clamp the X angle, to avoid the camera turning over
 		if(arcballInfo.xAngle > M_PI_2) {
-			arcballInfo.xAngle = M_PI_2;
+			arcballInfo.xAngle = (float)M_PI_2;
 		} else if(arcballInfo.xAngle < -M_PI_2) {
-			arcballInfo.xAngle = -M_PI_2;
+			arcballInfo.xAngle = (float)-M_PI_2;
 		}
 
 		// Loop the Y angle
 		while(arcballInfo.yAngle > M_PI)
-			arcballInfo.yAngle -= M_PI * 2;
+			arcballInfo.yAngle -= (float)M_PI * 2;
 		while(arcballInfo.yAngle < -M_PI)
-			arcballInfo.yAngle += M_PI * 2;
+			arcballInfo.yAngle += (float)M_PI * 2;
 	}
 
 	// Calculate the camera's position

@@ -100,11 +100,11 @@ namespace wfe {
 	constexpr uint64_t UINT64_T_MAX = 18446744073709551615ULL;
 
 	/// @brief The minimum absolute value a float can hold.
-	constexpr float float_MIN_ABS = 1.17549e-38;
+	constexpr float float_MIN_ABS = (float)1.17549e-38;
 	/// @brief The minimum value a float can hold.
-	constexpr float float_MIN = -3.40282e+38;
+	constexpr float float_MIN = (float)-3.40282e+38;
 	/// @brief The maximum value a float can hold.
-	constexpr float float_MAX = 3.40282e+38;
+	constexpr float float_MAX = (float)3.40282e+38;
 
 	/// @brief The minimum absolute value a double can hold.
 	constexpr double DOUBLE_MIN_ABS = 2.22507e-308;

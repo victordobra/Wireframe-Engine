@@ -32,7 +32,7 @@ namespace wfe {
 			.rot = Quaternion::IDENTITY,
 			.cameraType = MainPipeline::CAMERA_TYPE_PERSPECTIVE,
 			.perspectiveInfo = {
-				.fov = M_PI_2,
+				.fov = (float)M_PI_2,
 				.nearPlane = 0.001f,
 				.farPlane = 1000.f
 			}

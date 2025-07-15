@@ -309,7 +309,7 @@ namespace wfe {
 		// Reset the mouse movement
 		mouseMovement.x = 0;
 		mouseMovement.y = 0;
-		mouseMovement.scroll = 0.f;
+		mouseMovement.scroll = 0;
 	}
 	void InputManager::InternalKeyDown(uint64_t keyCode) {
 		// Convert the virtual key code to a key

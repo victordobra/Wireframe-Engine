@@ -370,7 +370,7 @@ namespace wfe {
 				auto iter = arrVertices.find(vert1);
 				if(iter == arrVertices.end()) {
 					// Add the vertex to the map and set its index
-					index1 = arrVertices.size();
+					index1 = (uint32_t)arrVertices.size();
 					arrVertices.insert({ vert1, index1 });
 				} else {
 					// Get the vertex's index
@@ -381,7 +381,7 @@ namespace wfe {
 				iter = arrVertices.find(vert2);
 				if(iter == arrVertices.end()) {
 					// Add the vertex to the map and set its index
-					index2 = arrVertices.size();
+					index2 = (uint32_t)arrVertices.size();
 					arrVertices.insert({ vert2, index2 });
 				} else {
 					// Get the vertex's index
@@ -392,7 +392,7 @@ namespace wfe {
 				iter = arrVertices.find(vert3);
 				if(iter == arrVertices.end()) {
 					// Add the vertex to the map and set its index
-					index3 = arrVertices.size();
+					index3 = (uint32_t)arrVertices.size();
 					arrVertices.insert({ vert3, index3 });
 				} else {
 					// Get the vertex's index
@@ -507,7 +507,7 @@ namespace wfe {
 			size_t ind = 0;
 			for(auto iter = positions.begin(); iter != positions.end(); ++iter) {
 				stream << "\tv " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
-				iter->second = ++ind;
+				iter->second = (uint32_t)++ind;
 			}
 			stream << '\n';
 
@@ -515,7 +515,7 @@ namespace wfe {
 			ind = 0;
 			for(auto iter = uvCoords.begin(); iter != uvCoords.end(); ++iter) {
 				stream << "\tvt " << iter->first.x << ' ' << iter->first.y << '\n';
-				iter->second = ++ind;
+				iter->second = (uint32_t)++ind;
 			}
 			stream << '\n';
 
@@ -523,7 +523,7 @@ namespace wfe {
 			ind = 0;
 			for(auto iter = normals.begin(); iter != normals.end(); ++iter) {
 				stream << "\tvn " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
-				iter->second = ++ind;
+				iter->second = (uint32_t)++ind;
 			}
 			stream << '\n';
 
