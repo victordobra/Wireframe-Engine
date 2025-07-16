@@ -10,11 +10,16 @@
 
 namespace wfe {
 	// Virtual function definitions
-	void MaterialCollection::Load(std::istream& stream) {
+	void MaterialCollection::Load() {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].material;
 		items.clear();
+
+		// Open the file stream for reading
+		std::ifstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for reading!");
 
 		// Query the default texture
 		ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
@@ -50,8 +55,16 @@ namespace wfe {
 			// Create the material
 			items[i].material = new Material(GetProgram()->GetMaterialManager(), materialData, materialTextures);
 		}
+
+		// Close the file stream
+		stream.close();
 	}
-	void MaterialCollection::Save(std::ostream& stream) const {
+	void MaterialCollection::Save() const {
+		// Open the file stream for writing
+		std::ofstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for writing!");
+
 		// Write the number of items
 		BinaryWriteUint64(stream, items.size());
 
@@ -74,17 +87,20 @@ namespace wfe {
 
 			BinaryWriteUint64(stream, materialTextures.surfaceTexture->GetID());
 		}
+
+		// Close the file stream
+		stream.close();
 	}
-	void MaterialCollection::Import(const std::filesystem::path& path) {
+	void MaterialCollection::Import() {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].material;
 		items.clear();
 	
-		// Open the file stream
-		std::ifstream stream(path);
+		// Open the file stream for reading
+		std::ifstream stream(GetPath());
 		if(!stream)
-			throw std::runtime_error("Failed to open material collection file \"" + path.string() + "\" for reading!");
+			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for reading!");
 		
 		// Read all of the file's lines
 		std::vector<std::string> lines;
@@ -121,7 +137,7 @@ namespace wfe {
 		stream.close();
 
 		// Get the directory the material collection file is in
-		std::filesystem::path fileDir = path.lexically_normal().parent_path();
+		std::filesystem::path fileDir = GetPath().lexically_normal().parent_path();
 
 		// Save the current material's info
 		std::string currentName;
@@ -171,11 +187,11 @@ namespace wfe {
 		if(!currentName.empty())
 			items.push_back({ currentName, new Material(GetProgram()->GetMaterialManager(), currentData, currentTextures) });
 	}
-	void MaterialCollection::Export(const std::filesystem::path& path) const {
-		// Open the file stream
-		std::ofstream stream(path);
+	void MaterialCollection::Export() const {
+		// Open the file stream for writing
+		std::ofstream stream(GetPath());
 		if(!stream)
-			throw std::runtime_error("Failed to open material collection file \"" + path.string() + "\" for writing!");
+			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for writing!");
 
 		// Set the stream's floating point precision
 		stream << std::fixed << std::setprecision(6);
@@ -185,7 +201,7 @@ namespace wfe {
 		stream << "# Automatically generated MTL file\n\n";
 
 		// Get the directory the material collection file is in
-		std::filesystem::path fileDir = path.lexically_normal().parent_path();
+		std::filesystem::path fileDir = GetPath().lexically_normal().parent_path();
 
 		// Write every material's info to the file
 		for(size_t i = 0; i != items.size(); ++i) {

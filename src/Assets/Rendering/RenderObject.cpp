@@ -39,11 +39,16 @@ struct std::hash<wfe::ArrVertex> {
 
 namespace wfe {
 	// Virtual function definitions
-	void RenderObject::Load(std::istream& stream) {
+	void RenderObject::Load() {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].mesh;
 		items.clear();
+
+		// Open the file stream for reading
+		std::ifstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open render object file \"" + GetPath().string() + "\" for reading!");
 
 		// Read the material collection's ID
 		uint64_t materialCollectionID = BinaryReadUint64(stream);
@@ -116,8 +121,16 @@ namespace wfe {
 					throw std::runtime_error("Invalid material name stored in render object file!");
 			}
 		}
+
+		// Close the file stream
+		stream.close();
 	}
-	void RenderObject::Save(std::ostream& stream) const {
+	void RenderObject::Save() const {
+		// Open the file stream for writing
+		std::ofstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open render object file \"" + GetPath().string() + "\" for writing!");
+
 		// Write the material collection's ID
 		if(materialCollection) {
 			BinaryWriteUint64(stream, materialCollection->GetID());
@@ -179,18 +192,21 @@ namespace wfe {
 				stream.write(materialName.data(), materialName.size());
 			}
 		}
+
+		// Close the file stream
+		stream.close();
 	}
-	void RenderObject::Import(const std::filesystem::path& path) {
+	void RenderObject::Import() {
 		// Destroy all previous items
 		for(size_t i = 0; i != items.size(); ++i)
 			delete items[i].mesh;
 		items.clear();
 		materialCollection = nullptr;
 
-		// Open the file stream
-		std::ifstream stream(path);
+		// Open the file stream for reading
+		std::ifstream stream(GetPath());
 		if(!stream)
-			throw std::runtime_error("Failed to open render object file \"" + path.string() + "\" for reading!");
+			throw std::runtime_error("Failed to open render object file \"" + GetPath().string() + "\" for reading!");
 		
 		// Read all of the file's lines
 		std::vector<std::string> lines;
@@ -227,7 +243,7 @@ namespace wfe {
 		stream.close();
 
 		// Get the directory the render object file is in
-		std::filesystem::path fileDir = path.lexically_normal().parent_path();
+		std::filesystem::path fileDir = GetPath().lexically_normal().parent_path();
 
 		// Save the current render mesh's info
 		std::string currentName;
@@ -445,11 +461,11 @@ namespace wfe {
 			items.push_back({ currentName, mesh, material });
 		}
 	}
-	void RenderObject::Export(const std::filesystem::path& path) const {
-		// Open the file stream
-		std::ofstream stream(path);
+	void RenderObject::Export() const {
+		// Open the file stream for writing
+		std::ofstream stream(GetPath());
 		if(!stream)
-			throw std::runtime_error("Failed to open render object file \"" + path.string() + "\" for writing!");
+			throw std::runtime_error("Failed to open render object file \"" + GetPath().string() + "\" for writing!");
 
 		// Set the stream's floating point precision
 		stream << std::fixed << std::setprecision(6);
@@ -459,7 +475,7 @@ namespace wfe {
 		stream << "# Automatically generated OBJ file\n\n";
 
 		// Get the directory the render object file is in
-		std::filesystem::path fileDir = path.lexically_normal().parent_path();
+		std::filesystem::path fileDir = GetPath().lexically_normal().parent_path();
 
 		// Write the material collection's path, if it exsists
 		if(materialCollection) {

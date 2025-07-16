@@ -25,25 +25,22 @@ namespace wfe {
 		/// @brief Creates a new blank render object. The object must be subsequentally loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		RenderObject(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
+		/// @param path The asset file's path. Left blank if the asset has no path.
+		RenderObject(Program* program, uint64_t id = UINT64_T_MAX, const std::filesystem::path& path = "") : Asset(program, id, path) { }
 		RenderObject(const RenderObject&) = delete;
 		RenderObject(RenderObject&&) = delete;
 
 		RenderObject& operator=(const RenderObject&) = delete;
 		RenderObject& operator=(RenderObject&&) = delete;
 
-		/// @brief Loads the render object from a binary stream, using the final encoding.
-		/// @param stream The stream to load the object from.
-		void Load(std::istream& stream) override;
-		/// @brief Saves the render object to a binary stream, using the final encoding.
-		/// @param stream The stream to save the object to.
-		void Save(std::ostream& stream) const override;
-		/// @brief Imports the render object from a file.
-		/// @param path The path to the file to import the object from.
-		void Import(const std::filesystem::path& path) override;
-		/// @brief Exports the render object to a file.
-		/// @param path The path to the file to export the object to.
-		void Export(const std::filesystem::path& path) const override;
+		/// @brief Loads the render object from its path, using the final encoding.
+		void Load() override;
+		/// @brief Saves the render object to its path, using the final encoding.
+		void Save() const override;
+		/// @brief Imports the render object from its path.
+		void Import() override;
+		/// @brief Exports the render object to its path.
+		void Export() const override;
 		/// @brief Gets the render object's dependencies.
 		/// @return The object's dependencies.
 		std::vector<Asset*> GetDependencies() const override {

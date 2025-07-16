@@ -3,7 +3,6 @@
 #include "Core/Types/Defines.hpp"
 #include "Asset.hpp"
 #include <filesystem>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -22,24 +21,6 @@ namespace wfe {
 
 		AssetManager& operator=(const AssetManager&) = delete;
 		AssetManager& operator=(AssetManager&&) = delete;
-
-		/// @brief Loads all assets from a directory.
-		/// @param path The path to the directory to load assets from.
-		void LoadDirectory(const std::filesystem::path& path);
-		/// @brief Saves all assets to the given directory.
-		/// @param path The path to the directory to save assets to. It must be a previously loaded directory.
-		/// @param saveAssets True if the assets should be saved, false if only the directory structure should be saved.
-		void SaveDirectory(const std::filesystem::path& path, bool saveAssets = false) const;
-		/// @brief Imports all assets from a directory.
-		/// @param path The path to the directory to import assets from.
-		void ImportDirectory(const std::filesystem::path& path);
-		/// @brief Exports all assets to the given directory.
-		/// @param path The path to the directory to export assets to. It must be a previously imported directory.
-		/// @param exportAssets True if the assets should be exported, false if only the directory structure should be exported.
-		void ExportDirectory(const std::filesystem::path& path, bool exportAssets = false) const;
-		/// @brief Unloads all assets from a directory.
-		/// @param path The path to the directory to unload assets from.
-		void UnloadDirectory(const std::filesystem::path& path);
 
 		/// @brief Gets the asset with the given ID.
 		/// @param id The ID of the asset to get.
@@ -111,14 +92,10 @@ namespace wfe {
 	private:
 		friend Asset;
 
-		void GetLoadInterval(size_t index, const std::unordered_map<uint64_t, size_t>& indices, const std::vector<std::vector<uint64_t>>& dependencies, std::vector<std::pair<size_t, size_t>>& loadIntervals);
-		void GetAssetLoadOrder(const std::vector<uint64_t>& ids, const std::vector<std::vector<uint64_t>>& dependencies, std::vector<std::vector<size_t>>& loadStartOrder, std::vector<std::vector<size_t>>& loadEndOrder);
-
 		Program* program;
 
 		std::unordered_map<uint64_t, Asset*> assetsID;
 		std::unordered_map<std::filesystem::path, Asset*> assetsPath;
-		std::unordered_map<std::filesystem::path, std::vector<Asset*>> directories;
 
 		mutable atomic_uint32_t assetsMutex;
 	};

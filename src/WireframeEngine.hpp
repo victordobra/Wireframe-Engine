@@ -5,6 +5,7 @@
 #include "Assets/Rendering/RenderObject.hpp"
 
 #include "Core/Assets/Asset.hpp"
+#include "Core/Assets/AssetDirectory.hpp"
 #include "Core/Assets/AssetManager.hpp"
 #include "Core/Assets/AssetType.hpp"
 #include "Core/ECS/ComponentList.hpp"

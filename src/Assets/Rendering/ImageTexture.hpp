@@ -14,32 +14,30 @@ namespace wfe {
 		/// @brief Creates a new blank image texture. The image must be subsequentally loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		ImageTexture(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
+		/// @param path The asset file's path. Left blank if the asset has no path.
+		ImageTexture(Program* program, uint64_t id = UINT64_T_MAX, const std::filesystem::path& path = "") : Asset(program, id, path) { }
 		/// @brief Creates a new image texture with the given info.
 		/// @param program The program that owns the asset.
 		/// @param width The image width, in pixels.
 		/// @param height The image height, in pixels.
 		/// @param data A pointer to the image data, or nullptr if the image data is undefined.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data = nullptr, uint64_t id = UINT64_T_MAX);
+		/// @param path The asset file's path. Left blank if the asset has no path.
+		ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data = nullptr, uint64_t id = UINT64_T_MAX, const std::filesystem::path& path = "");
 		ImageTexture(const ImageTexture&) = delete;
 		ImageTexture(ImageTexture&&) = delete;
 
 		ImageTexture& operator=(const ImageTexture&) = delete;
 		ImageTexture& operator=(ImageTexture&&) = delete;
 
-		/// @brief Loads the image texture from a binary stream, using the final encoding.
-		/// @param stream The stream to load the image from.
-		void Load(std::istream& stream) override;
-		/// @brief Saves the image texture to a binary stream, using the final encoding.
-		/// @param stream The stream to save the image to.
-		void Save(std::ostream& stream) const override;
-		/// @brief Imports the image texture from a file.
-		/// @param path The path to the file to import the image from.
-		void Import(const std::filesystem::path& path) override;
-		/// @brief Exports the image texture to a file.
-		/// @param path The path to the file to export the image to.
-		void Export(const std::filesystem::path& path) const override;
+		/// @brief Loads the image texture from its path, using the final encoding.
+		void Load() override;
+		/// @brief Saves the image texture to its path, using the final encoding.
+		void Save() const override;
+		/// @brief Imports the image texture from its path.
+		void Import() override;
+		/// @brief Exports the image texture to its path.
+		void Export() const override;
 		/// @brief Gets the image texture's dependencies.
 		/// @return The image's dependencies.
 		std::vector<Asset*> GetDependencies() const override {

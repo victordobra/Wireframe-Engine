@@ -394,7 +394,15 @@ namespace wfe {
 	}
 
 	// Virtual function definitions
-	void ImageTexture::Load(std::istream& stream) {
+	void ImageTexture::Load() {
+		// Destroy any existing Vulkan components
+		DestroyVulkanComponents();
+
+		// Open the file stream for reading
+		std::ifstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for reading!");
+
 		// Load the image's width and height
 		width = BinaryReadUint32(stream);
 		height = BinaryReadUint32(stream);
@@ -414,10 +422,16 @@ namespace wfe {
 		// Set the image's data
 		InternalSetImageData(imageData, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		
-		// Free the image data buffer
+		// Close the file stream and free the image data buffer
+		stream.close();
 		FreeMemory(imageData);
 	}
-	void ImageTexture::Save(std::ostream& stream) const {
+	void ImageTexture::Save() const {
+		// Open the file stream for writing
+		std::ofstream stream(GetPath(), std::ios::binary);
+		if(!stream)
+			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for writing!");
+		
 		// Allocate the image's data buffer
 		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
@@ -433,15 +447,19 @@ namespace wfe {
 		
 		// Write the image's data to the stream
 		stream.write((const char*)imageData, dataSize);
-		
-		// Free the image data buffer
+
+		// Close the file stream and free the image data buffer
+		stream.close();
 		FreeMemory(imageData);
 	}
-	void ImageTexture::Import(const std::filesystem::path& path) {
+	void ImageTexture::Import() {
+		// Destroy any existing Vulkan components
+		DestroyVulkanComponents();
+
 		// Open the file stream for reading
-		std::ifstream stream(path, std::ios::binary);
+		std::ifstream stream(GetPath(), std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open image file \"" + path.string() + "\" for reading!");
+			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for reading!");
 
 		// Load the image data from the stream
 		uint32_t newWidth, newHeight;
@@ -453,9 +471,6 @@ namespace wfe {
 		// Close the stream
 		stream.close();
 		
-		// Destroy any existing Vulkan components
-		DestroyVulkanComponents();
-
 		// Set the image's properties
 		width = newWidth;
 		height = newHeight;
@@ -469,7 +484,7 @@ namespace wfe {
 		// Free the image data buffer
 		FreeMemory(imageData);
 	}
-	void ImageTexture::Export(const std::filesystem::path& path) const {
+	void ImageTexture::Export() const {
 		// Allocate the image's data buffer
 		size_t dataSize = width * height * 4;
 		uint8_t* imageData = (uint8_t*)AllocMemory(dataSize);
@@ -480,23 +495,23 @@ namespace wfe {
 		InternalGetImageData(imageData, imageLayout);
 
 		// Get the file's extension
-		std::string extension = path.extension().string();
+		std::string extension = GetPath().extension().string();
 
 		// Open the file stream for writing
-		std::ofstream stream(path, std::ios::binary);
+		std::ofstream stream(GetPath(), std::ios::binary);
 		if(!stream)
-			throw std::runtime_error("Failed to open image file \"" + path.string() + "\" for writing!");
+			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for writing!");
 		
 		// Write the image to the stream
 		if(extension == ".bmp") {
 			if(!WriteBMPFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write BMP image file \"" + path.string() + "\"!");
+				throw std::runtime_error("Failed to write BMP image file \"" + GetPath().string() + "\"!");
 		} else if(extension == ".jpg" || extension == ".jpeg") {
 			if(!WriteJPEGFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write JPEG image file \"" + path.string() + "\"!");
+				throw std::runtime_error("Failed to write JPEG image file \"" + GetPath().string() + "\"!");
 		} else if(extension == ".png") {
 			if(!WritePNGFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write PNG image file \"" + path.string() + "\"!");
+				throw std::runtime_error("Failed to write PNG image file \"" + GetPath().string() + "\"!");
 		} else {
 			throw std::invalid_argument("Unsupported image file format \"" + extension + "\" for image export!");
 		}
@@ -507,7 +522,7 @@ namespace wfe {
 	}
 
 	// Public functions
-	ImageTexture::ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data, uint64_t id) : Asset(program, id), width(width), height(height) {
+	ImageTexture::ImageTexture(Program* program, uint32_t width, uint32_t height, const void* data, uint64_t id, const std::filesystem::path& path) : Asset(program, id, path), width(width), height(height) {
 		// Create the Vulkan components for the image
 		CreateVulkanComponents();
 

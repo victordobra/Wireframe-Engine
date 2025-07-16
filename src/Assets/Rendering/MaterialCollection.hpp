@@ -21,25 +21,22 @@ namespace wfe {
 		/// @brief Creates a new blank material collection. The collection must be subsequentally loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
-		MaterialCollection(Program* program, uint64_t id = UINT64_T_MAX) : Asset(program, id) { }
+		/// @param path The asset file's path. Left blank if the asset has no path.
+		MaterialCollection(Program* program, uint64_t id = UINT64_T_MAX, const std::filesystem::path& path = "") : Asset(program, id, path) { }
 		MaterialCollection(const MaterialCollection&) = delete;
 		MaterialCollection(MaterialCollection&&) = delete;
 
 		MaterialCollection& operator=(const MaterialCollection&) = delete;
 		MaterialCollection& operator=(MaterialCollection&&) = delete;
 
-		/// @brief Loads the material collection from a binary stream, using the final encoding.
-		/// @param stream The stream to load the collection from.
-		void Load(std::istream& stream) override;
-		/// @brief Saves the material collection to a binary stream, using the final encoding.
-		/// @param stream The stream to save the collection to.
-		void Save(std::ostream& stream) const override;
-		/// @brief Imports the material collection from a file.
-		/// @param path The path to the file to import the collection from.
-		void Import(const std::filesystem::path& path) override;
-		/// @brief Exports the material collection to a file.
-		/// @param path The path to the file to export the collection to.
-		void Export(const std::filesystem::path& path) const override;
+		/// @brief Loads the material collection from its path, using the final encoding.
+		void Load() override;
+		/// @brief Saves the material collection to its path, using the final encoding.
+		void Save() const override;
+		/// @brief Imports the material collection from its path.
+		void Import() override;
+		/// @brief Exports the material collection to its path.
+		void Export() const override;
 		/// @brief Gets the material collection's dependencies.
 		/// @return The collection's dependencies.
 		std::vector<Asset*> GetDependencies() const override;

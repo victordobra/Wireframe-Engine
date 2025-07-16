@@ -107,8 +107,9 @@ int main(int argc, char** args) {
 	arcballInfo.program = program;
 	program->GetFrameEvent().AddListener({ FrameEventCallback, &arcballInfo });
 
-	// Import the asset directory and get all assets
-	program->GetAssetManager()->ImportDirectory("assets/");
+	// Import the asset directory
+	wfe::AssetDirectory* assetDir = new wfe::AssetDirectory(program, "assets/");
+	assetDir->Import();
 
 	// Get the render object from the directory
 	wfe::RenderObject* renderObject = (wfe::RenderObject*)program->GetAssetManager()->GetAsset(2);
@@ -132,8 +133,8 @@ int main(int argc, char** args) {
 	// Destroy the created entity
 	program->GetEntityManager()->DestroyEntity(entity);
 
-	// Unload the asset directory
-	program->GetAssetManager()->UnloadDirectory("assets/");
+	// Destroy the asset directory
+	delete assetDir;
 
 	// Destroy the program and exit
 	delete program;

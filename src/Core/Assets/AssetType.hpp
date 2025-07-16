@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
+#include <filesystem>
 #include <string>
 #include <typeinfo>
 #include <vector>
@@ -18,7 +19,10 @@ namespace wfe {
 		static inline const size_t MAX_EXTENSION_COUNT = 8;
 
 		/// @brief The asset constructor function type.
-		typedef Asset*(*Constructor)(Program* program, uint64_t id);
+		/// @param program The program that owns the asset.
+		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
+		/// @param path The asset's path. Left blank if the asset has no path.
+		typedef Asset*(*Constructor)(Program* program, uint64_t id, const std::filesystem::path& path);
 
 		/// @brief Gets the number of registered asset types.
 		/// @return The number of registered asset types.
@@ -88,8 +92,8 @@ namespace wfe {
 /// @param ... A vector containing the file extension(s) associated with this asset type.
 #define WFE_ASSET_TYPE(type, ...) \
 struct AssetType##type##Constructor { \
-	static wfe::Asset* CreateAsset(wfe::Program* program, wfe::uint64_t id) { \
-		return dynamic_cast<wfe::Asset*>(new type(program, id)); \
+	static wfe::Asset* CreateAsset(wfe::Program* program, wfe::uint64_t id, const std::filesystem::path& path) { \
+		return dynamic_cast<wfe::Asset*>(new type(program, id, path)); \
 	} \
 	AssetType##type##Constructor() { \
 		wfe::AssetType assetType; \
