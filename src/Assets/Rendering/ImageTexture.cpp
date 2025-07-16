@@ -241,7 +241,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for image copy! Error code: " + string_VkResult(result));
 		
 		// Read the image data from the staging buffer
-		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
+		memcpy(data, device->GetAllocator()->GetMappedMemory(stagingBufferMemory), (size_t)stagingBufferInfo.size);
 
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);

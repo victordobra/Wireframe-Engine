@@ -149,7 +149,7 @@ namespace wfe {
 			uint64_t pathLength = BinaryReadUint64(stream);
 			std::string relativePath(pathLength, 0);
 			stream.read(relativePath.data(), pathLength);
-			paths[i] = (path / paths[i]).lexically_normal();
+			paths[i] = (path / relativePath).lexically_normal();
 
 			// Read the asset's type
 			uint64_t typeNameLength = BinaryReadUint64(stream);

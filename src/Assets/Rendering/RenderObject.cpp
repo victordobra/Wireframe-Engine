@@ -175,9 +175,6 @@ namespace wfe {
 				BinaryWriteUint32(stream, indices[j]);
 			
 			if(items[i].material) {
-				// Write the material name's length as 0, to indicate that no material exists
-				BinaryWriteUint64(stream, 0);
-			} else {
 				// Get the material's name from the material manager
 				std::string materialName;
 				for(const MaterialCollection::Item& item : materialCollection->GetItems()) {
@@ -190,6 +187,9 @@ namespace wfe {
 				// Write the material's name
 				BinaryWriteUint64(stream, materialName.size());
 				stream.write(materialName.data(), materialName.size());
+			} else {
+				// Write the material name's length as 0, to indicate that no material exists
+				BinaryWriteUint64(stream, 0);
 			}
 		}
 
