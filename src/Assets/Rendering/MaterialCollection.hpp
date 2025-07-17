@@ -2,7 +2,7 @@
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Types/Defines.hpp"
-#include "Graphics/Main/MaterialManager.hpp"
+#include "Graphics/Main/Resources/Material.hpp"
 #include <string>
 #include <vector>
 

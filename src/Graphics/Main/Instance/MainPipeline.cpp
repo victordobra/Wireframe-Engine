@@ -1,6 +1,6 @@
 #include "MainPipeline.hpp"
 #include "Core/Math/Matrix4x4.hpp"
-#include "MeshRenderer.hpp"
+#include "Graphics/Main/Components/MeshRenderer.hpp"
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
@@ -14,10 +14,10 @@ namespace wfe {
 
 	// Shader sources
 	static const uint32_t VERTEX_SHADER_SOURCE[] {
-#include "Shaders/VertShader.vert.u32"
+#include "Graphics/Main/Shaders/VertShader.vert.u32"
 	};
 	static const uint32_t FRAGMENT_SHADER_SOURCE[] {
-#include "Shaders/FragShader.frag.u32"
+#include "Graphics/Main/Shaders/FragShader.frag.u32"
 	};
 
 	// Record commands function

@@ -27,10 +27,10 @@
 #include "Core/Utils/Event.hpp"
 #include "Core/Utils/Logger.hpp"
 
-#include "Graphics/Main/MainPipeline.hpp"
-#include "Graphics/Main/MaterialManager.hpp"
-#include "Graphics/Main/MeshRenderer.hpp"
-#include "Graphics/Main/RenderMesh.hpp"
+#include "Graphics/Main/Components/MeshRenderer.hpp"
+#include "Graphics/Main/Instance/MainPipeline.hpp"
+#include "Graphics/Main/Resources/Material.hpp"
+#include "Graphics/Main/Resources/RenderMesh.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 
 #include "Info/EngineInfo.hpp"

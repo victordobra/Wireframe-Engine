@@ -1,4 +1,4 @@
-#include "MaterialManager.hpp"
+#include "Material.hpp"
 #include "Main/Program.hpp"
 #include <stdexcept>
 #include <string>

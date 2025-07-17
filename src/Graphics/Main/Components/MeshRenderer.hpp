@@ -2,8 +2,8 @@
 
 #include "Core/ECS/ComponentType.hpp"
 #include "Core/Types/Defines.hpp"
-#include "MaterialManager.hpp"
-#include "RenderMesh.hpp"
+#include "Graphics/Main/Resources/Material.hpp"
+#include "Graphics/Main/Resources/RenderMesh.hpp"
 
 namespace wfe {
 	/// @brief A component indicating a mesh being rendered using the main graphics pipeline.
