@@ -94,7 +94,7 @@ namespace wfe {
 
 	Quaternion Quaternion::AroundAxis(Vector3 axis, float angle) {
 		// Calculate the sine and cosine of the given angle
-		float halfAngle = angle * .5f;
+		float halfAngle = angle * 0.5f;
 		float halfSin = sinf(halfAngle), halfCos = cosf(halfAngle);
 
 		// Calculate the resulting quaternion's coordinates
@@ -102,9 +102,9 @@ namespace wfe {
 	}
 	Quaternion Quaternion::EulerAngles(Vector3 eulerAngles) {
 		// Calculate the halves of all euler angles
-		float halfX = eulerAngles.x * .5f;
-		float halfY = eulerAngles.y * .5f;
-		float halfZ = eulerAngles.z * .5f;
+		float halfX = eulerAngles.x * 0.5f;
+		float halfY = eulerAngles.y * 0.5f;
+		float halfZ = eulerAngles.z * 0.5f;
 
 		// Calculate the sines and cosines of the angle halves
 		float sinX = sinf(halfX), cosX = cosf(halfX);
@@ -112,9 +112,9 @@ namespace wfe {
 		float sinZ = sinf(halfZ), cosZ = cosf(halfZ);
 
 		// Calculate the elements of the resulting quaternion
-		return { sinX * cosY * cosZ - cosX * sinY * sinZ,
-		         cosX * sinY * cosZ + sinX * cosY * sinZ,
-		         cosX * cosY * sinZ + sinX * sinY * cosZ,
-		         cosX * cosY * cosZ - sinX * sinY * sinZ  };
+		return {  sinX * cosY * cosZ + cosX * sinY * sinZ,
+		         -sinX * cosY * sinZ + cosX * sinY * cosZ,
+		         -sinX * sinY * cosZ + cosX * cosY * sinZ,
+		          sinX * sinY * sinZ + cosX * cosY * cosZ  };
 	}
 }

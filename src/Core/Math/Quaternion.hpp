@@ -112,7 +112,7 @@ namespace wfe {
 		/// @param angle The angle of rotation, in radians.
 		/// @return The resulting quaternion.
 		static Quaternion AroundAxis(Vector3 axis, float angle);
-		/// @brief Generates a quaternion that represents the rotation of the given euler angles.
+		/// @brief Generates a quaternion that represents the rotation of the given euler angles, applied in the ZXY order.
 		/// @param eulerAngles The euler angles, in radians.
 		/// @return The resulting quaternion.
 		static Quaternion EulerAngles(Vector3 eulerAngles);
