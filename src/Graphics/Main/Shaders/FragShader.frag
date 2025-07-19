@@ -9,9 +9,6 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 norm;
 
 // Light structures
-struct AmbientLightInfo {
-	vec4 color;
-};
 struct SunLightInfo {
 	vec4 color;
 	vec4 direction;
@@ -27,33 +24,33 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 	vec4 cameraPos;
 	vec4 cameraFwd;
 
-	uint ambientLightCount;
+	vec4 ambientLightColor;
+
 	uint sunLightCount;
 	uint pointLightCount;
 
-	AmbientLightInfo ambientLights[MAX_LIGHT_COUNT];
 	SunLightInfo sunLights[MAX_LIGHT_COUNT];
 	PointLightInfo pointLights[MAX_LIGHT_COUNT];
 };
 
 // Material info
 layout(set = 1, binding = 0) uniform MaterialInfo {
-	vec4 surfaceColor;
+	vec4 ambientColor;
+	vec4 diffuseColor;
 };
-layout(set = 1, binding = 1) uniform sampler2D surfaceTex;
+layout(set = 1, binding = 1) uniform sampler2D ambientTex;
+layout(set = 1, binding = 2) uniform sampler2D diffuseTex;
 
 // Shader output
 layout(location = 0) out vec4 outColor;
 
-void main() {
+// Functions
+vec4 GetAmbientValue() {
+	return texture(ambientTex, uv) * ambientColor * ambientLightColor;
+}
+vec4 GetDiffuseValue() {
 	// Store the light value
 	vec3 lightValue = vec3(0.0);
-
-	// Calculate the ambient light contribution
-	for(uint i = 0; i != ambientLightCount; ++i) {
-		// Simply add the ambient light color
-		lightValue += ambientLights[i].color.rgb * ambientLights[i].color.a;
-	}
 
 	// Calculate the sun light contribution
 	for(uint i = 0; i != sunLightCount; ++i) {
@@ -78,6 +75,14 @@ void main() {
 		lightValue += pointLights[i].color.rgb * pointLights[i].color.a * normalDot / distanceSqr;
 	}
 
+	return texture(diffuseTex, uv) * diffuseColor * vec4(lightValue, 1.0);
+}
+
+void main() {
+	// Get the ambient and diffuse values
+	vec4 ambientValue = GetAmbientValue();
+	vec4 diffuseValue = GetDiffuseValue();
+
 	// Set the output color
-	outColor = texture(surfaceTex, uv) * surfaceColor * vec4(lightValue, 1.0);
+	outColor = vec4((ambientValue + diffuseValue).rgb, 1.0);
 }

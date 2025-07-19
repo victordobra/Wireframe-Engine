@@ -67,13 +67,17 @@ namespace wfe {
 	public:
 		/// @brief A struct that contains all material general data.
 		struct MaterialData {
-			/// @brief The surface's base color, used to filter the given image.
-			Vector4 surfaceColor;
+			/// @brief The color affected by ambient lighting.
+			Vector4 ambientColor;
+			/// @brief The color affected by diffuse lighting.
+			Vector4 diffuseColor;
 		};
 		/// @brief A struct that contains all image textures used by the material.
 		struct MaterialTextures {
-			/// @brief The texture used for the surface's color.
-			ImageTexture* surfaceTexture;
+			/// @brief The texture used for the ambient color.
+			ImageTexture* ambientTexture;
+			/// @brief The texture used for the diffuse color.
+			ImageTexture* diffuseTexture;
 		};
 
 		/// @brief Creates a new material.

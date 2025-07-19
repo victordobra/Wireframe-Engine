@@ -10,8 +10,6 @@ namespace wfe {
 	public:
 		/// @brief An enum that represents the types of scene lights.
 		enum LightType {
-			/// @brief The ambient light type, which illuminates all objects.
-			LIGHT_TYPE_AMBIENT,
 			/// @brief The sun light type, whose direction is constant in the entire scene.
 			LIGHT_TYPE_SUN,
 			/// @brief The point light type, whose directions diverge from its position.

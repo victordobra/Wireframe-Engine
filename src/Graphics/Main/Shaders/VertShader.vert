@@ -9,9 +9,6 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 norm;
 
 // Light structures
-struct AmbientLightInfo {
-	vec4 color;
-};
 struct SunLightInfo {
 	vec4 color;
 	vec4 direction;
@@ -27,11 +24,11 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 	vec4 cameraPos;
 	vec4 cameraFwd;
 
-	uint ambientLightCount;
+	vec4 ambientLightColor;
+
 	uint sunLightCount;
 	uint pointLightCount;
 
-	AmbientLightInfo ambientLights[MAX_LIGHT_COUNT];
 	SunLightInfo sunLights[MAX_LIGHT_COUNT];
 	PointLightInfo pointLights[MAX_LIGHT_COUNT];
 };

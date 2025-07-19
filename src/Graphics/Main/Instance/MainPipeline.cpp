@@ -11,9 +11,6 @@ namespace wfe {
 	const uint32_t MAX_LIGHT_COUNT = 64;
 
 	// Structs
-	struct WFE_ALIGNAS(sizeof(Vector4)) AmbientLightInfo {
-		Vector4 color;
-	};
 	struct WFE_ALIGNAS(sizeof(Vector4)) SunLightInfo {
 		Vector4 color;
 		Vector4 direction;
@@ -28,11 +25,11 @@ namespace wfe {
 		Vector4 cameraPos;
 		Vector4 cameraFwd;
 
-		uint32_t ambientLightCount;
+		Vector4 ambientLightColor;
+
 		uint32_t sunLightCount;
 		uint32_t pointLightCount;
 
-		AmbientLightInfo ambientLights[MAX_LIGHT_COUNT];
 		SunLightInfo sunLights[MAX_LIGHT_COUNT];
 		PointLightInfo pointLights[MAX_LIGHT_COUNT];
 	};
@@ -557,8 +554,9 @@ namespace wfe {
 		sceneInfo->cameraPos = (Vector4)cameraInfo.pos;
 		sceneInfo->cameraFwd = (Vector4)(Vector3::FORWARD * Matrix4x4::Rotation(cameraInfo.rot));
 
+		sceneInfo->ambientLightColor = { ambientLightColor.x, ambientLightColor.y, ambientLightColor.z, 1.0f };
+
 		// Reset the light counters
-		sceneInfo->ambientLightCount = 0;
 		sceneInfo->sunLightCount = 0;
 		sceneInfo->pointLightCount = 0;
 
@@ -574,17 +572,6 @@ namespace wfe {
 
 			// Add the light to the scene info
 			switch(sceneLight.lightType) {
-			case SceneLight::LIGHT_TYPE_AMBIENT:
-				// Check if the max light count was already reached
-				if(sceneInfo->ambientLightCount == MAX_LIGHT_COUNT)
-					throw std::length_error("Exceeded maximum ambient light count!");
-				
-				// Add the current ambient light to the scene info
-				sceneInfo->ambientLights[sceneInfo->ambientLightCount++] = {
-					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity)
-				};
-
-				break;
 			case SceneLight::LIGHT_TYPE_SUN:
 				// Check if the max light count was already reached
 				if(sceneInfo->sunLightCount == MAX_LIGHT_COUNT)

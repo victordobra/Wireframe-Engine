@@ -37,20 +37,37 @@ namespace wfe {
 			// Read the material's data
 			Material::MaterialData materialData;
 
-			materialData.surfaceColor.x = BinaryReadFloat(stream);
-			materialData.surfaceColor.y = BinaryReadFloat(stream);
-			materialData.surfaceColor.z = BinaryReadFloat(stream);
-			materialData.surfaceColor.w = BinaryReadFloat(stream);
+			materialData.ambientColor.x = BinaryReadFloat(stream);
+			materialData.ambientColor.y = BinaryReadFloat(stream);
+			materialData.ambientColor.z = BinaryReadFloat(stream);
+			materialData.ambientColor.w = BinaryReadFloat(stream);
+
+			materialData.diffuseColor.x = BinaryReadFloat(stream);
+			materialData.diffuseColor.y = BinaryReadFloat(stream);
+			materialData.diffuseColor.z = BinaryReadFloat(stream);
+			materialData.diffuseColor.w = BinaryReadFloat(stream);
 
 			// Read the material texture IDs
-			uint64_t surfaceTextureID = BinaryReadUint64(stream);
+			uint64_t ambientTextureID = BinaryReadUint64(stream);
+			uint64_t diffuseTextureID = BinaryReadUint64(stream);
 
 			// Set the material's textures
 			Material::MaterialTextures materialTextures;
 
-			materialTextures.surfaceTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(surfaceTextureID);
-			if(!materialTextures.surfaceTexture)
-				throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			if(ambientTextureID == UINT64_T_MAX) {
+				materialTextures.ambientTexture = defaultTexture;
+			} else {
+				materialTextures.ambientTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(ambientTextureID);
+				if(!materialTextures.ambientTexture)
+					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			}
+			if(diffuseTextureID == UINT64_T_MAX) {
+				materialTextures.diffuseTexture = defaultTexture;
+			} else {
+				materialTextures.diffuseTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
+				if(!materialTextures.diffuseTexture)
+					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			}
 			
 			// Create the material
 			items[i].material = new Material(GetProgram()->GetMaterialManager(), materialData, materialTextures);
@@ -77,15 +94,21 @@ namespace wfe {
 			// Write the material's data
 			const Material::MaterialData& materialData = items[i].material->GetData();
 
-			BinaryWriteFloat(stream, materialData.surfaceColor.x);
-			BinaryWriteFloat(stream, materialData.surfaceColor.y);
-			BinaryWriteFloat(stream, materialData.surfaceColor.z);
-			BinaryWriteFloat(stream, materialData.surfaceColor.w);
+			BinaryWriteFloat(stream, materialData.ambientColor.x);
+			BinaryWriteFloat(stream, materialData.ambientColor.y);
+			BinaryWriteFloat(stream, materialData.ambientColor.z);
+			BinaryWriteFloat(stream, materialData.ambientColor.w);
+
+			BinaryWriteFloat(stream, materialData.diffuseColor.x);
+			BinaryWriteFloat(stream, materialData.diffuseColor.y);
+			BinaryWriteFloat(stream, materialData.diffuseColor.z);
+			BinaryWriteFloat(stream, materialData.diffuseColor.w);
 
 			// Write the material texture IDs
 			const Material::MaterialTextures& materialTextures = items[i].material->GetTextures();
 
-			BinaryWriteUint64(stream, materialTextures.surfaceTexture->GetID());
+			BinaryWriteUint64(stream, materialTextures.ambientTexture->GetID());
+			BinaryWriteUint64(stream, materialTextures.diffuseTexture->GetID());
 		}
 
 		// Close the file stream
@@ -162,14 +185,30 @@ namespace wfe {
 					items.push_back({ currentName, new Material(GetProgram()->GetMaterialManager(), currentData, currentTextures) });
 				
 				// Reset the material info
-				currentData.surfaceColor = Vector4::ONE;
-				currentTextures.surfaceTexture = defaultTexture;
+				currentData.ambientColor = Vector4::ONE;
+				currentData.diffuseColor = Vector4::ONE;
+
+				currentTextures.ambientTexture = defaultTexture;
+				currentTextures.diffuseTexture = defaultTexture;
 
 				// Read the material's name
 				strStream >> currentName;
+			} else if(keyword == "Ka") {
+				// Read the ambient color's new values
+				strStream >> currentData.ambientColor.x >> currentData.ambientColor.y >> currentData.ambientColor.z;
 			} else if(keyword == "Kd") {
-				// Read the surface color's new values
-				strStream >> currentData.surfaceColor.x >> currentData.surfaceColor.y >> currentData.surfaceColor.z;
+				// Read the diffuse color's new values
+				strStream >> currentData.diffuseColor.x >> currentData.diffuseColor.y >> currentData.diffuseColor.z;
+			} else if(keyword == "map_Ka") {
+				// Read the image file name
+				std::string imageRelPath;
+				strStream >> imageRelPath;
+				
+				// Get the image with the given path
+				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
+				currentTextures.ambientTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.ambientTexture)
+					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
 			} else if(keyword == "map_Kd") {
 				// Read the image file name
 				std::string imageRelPath;
@@ -177,8 +216,8 @@ namespace wfe {
 				
 				// Get the image with the given path
 				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
-				currentTextures.surfaceTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
-				if(!currentTextures.surfaceTexture)
+				currentTextures.diffuseTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.diffuseTexture)
 					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
 			}
 		}
@@ -211,7 +250,8 @@ namespace wfe {
 			// Write the material's data
 			const wfe::Material::MaterialData data = items[i].material->GetData();
 
-			stream << "\tKd " << data.surfaceColor.x << ' ' << data.surfaceColor.y << ' ' << data.surfaceColor.z << '\n';
+			stream << "\tKa " << data.ambientColor.x << ' ' << data.ambientColor.y << ' ' << data.ambientColor.z << '\n';
+			stream << "\tKd " << data.diffuseColor.x << ' ' << data.diffuseColor.y << ' ' << data.diffuseColor.z << '\n';
 
 			stream << '\n';
 
@@ -219,9 +259,13 @@ namespace wfe {
 			const Material::MaterialTextures textures = items[i].material->GetTextures();
 			ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
 
-			if(textures.surfaceTexture != defaultTexture) {
-				std::filesystem::path surfaceTexturePath = textures.surfaceTexture->GetPath().lexically_relative(fileDir);
-				stream << "\tmap_Kd " << surfaceTexturePath.string() << '\n';
+			if(textures.ambientTexture != defaultTexture) {
+				std::filesystem::path ambientTexturePath = textures.ambientTexture->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Ka " << ambientTexturePath.string() << '\n';
+			}
+			if(textures.diffuseTexture != defaultTexture) {
+				std::filesystem::path diffuseTexturePath = textures.diffuseTexture->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Kd " << diffuseTexturePath.string() << '\n';
 			}
 
 			stream << '\n';
@@ -235,7 +279,8 @@ namespace wfe {
 		std::unordered_set<Asset*> dependencies;
 		for(size_t i = 0; i != items.size(); ++i) {
 			// Add all of the current material's textures
-			dependencies.insert(items[i].material->GetTextures().surfaceTexture);
+			dependencies.insert(items[i].material->GetTextures().ambientTexture);
+			dependencies.insert(items[i].material->GetTextures().diffuseTexture);
 		}
 
 		// Move all dependencies to a vector

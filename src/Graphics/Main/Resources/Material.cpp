@@ -76,6 +76,13 @@ namespace wfe {
 				.descriptorCount = 1,
 				.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
 				.pImmutableSamplers = &textureSampler
+			},
+			{
+				.binding = 2,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.descriptorCount = 1,
+				.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
+				.pImmutableSamplers = &textureSampler
 			}
 		};
 
@@ -84,7 +91,7 @@ namespace wfe {
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0,
-			.bindingCount = 2,
+			.bindingCount = 3,
 			.pBindings = setLayoutBindings
 		};
 
@@ -290,10 +297,15 @@ namespace wfe {
 			.offset = 0,
 			.range = VK_WHOLE_SIZE
 		};
-		VkDescriptorImageInfo surfaceImageInfo {
+		VkDescriptorImageInfo ambientTextureInfo {
 			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.surfaceTexture->GetSRGBImageView(),
-			.imageLayout = textures.surfaceTexture->GetImageLayout()
+			.imageView = textures.ambientTexture->GetSRGBImageView(),
+			.imageLayout = textures.ambientTexture->GetImageLayout()
+		};
+		VkDescriptorImageInfo diffuseTextureInfo {
+			.sampler = VK_NULL_HANDLE,
+			.imageView = textures.diffuseTexture->GetSRGBImageView(),
+			.imageLayout = textures.diffuseTexture->GetImageLayout()
 		};
 
 		// Set the descriptor writes
@@ -318,14 +330,26 @@ namespace wfe {
 				.dstArrayElement = 0,
 				.descriptorCount = 1,
 				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &surfaceImageInfo,
+				.pImageInfo = &ambientTextureInfo,
+				.pBufferInfo = nullptr,
+				.pTexelBufferView = nullptr
+			},
+			{
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.pNext = nullptr,
+				.dstSet = descriptorSet,
+				.dstBinding = 2,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.pImageInfo = &diffuseTextureInfo,
 				.pBufferInfo = nullptr,
 				.pTexelBufferView = nullptr
 			}
 		};
 
 		// Update the material's descriptor set
-		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), 2, descriptorWrites, 0, nullptr);
+		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), 3, descriptorWrites, 0, nullptr);
 	}
 
 	Material::~Material() {

@@ -72,6 +72,11 @@ namespace wfe {
 		Program* GetProgram() const {
 			return program;
 		}
+		/// @brief Gets the color of the ambient light.
+		/// @return The color of the ambient light.
+		Vector3 GetAmbientLightColor() const {
+			return ambientLightColor;
+		}
 		/// @brief Gets the camera's information.
 		/// @return The camera's information.
 		const CameraInfo& GetCameraInfo() const {
@@ -103,6 +108,11 @@ namespace wfe {
 		void SetCameraInfo(const CameraInfo& newCameraInfo) {
 			cameraInfo = newCameraInfo;
 		}
+		/// @brief Sets the color of the ambient light.
+		/// @param newAmbientLightColor The new color of the ambient light.
+		void SetAmbientLightColor(const Vector3& newAmbientLightColor) {
+			ambientLightColor = newAmbientLightColor;
+		}
 
 		/// @brief Destroys the main graphics pipeline.
 		~MainPipeline();
@@ -114,6 +124,7 @@ namespace wfe {
 
 		Program* program;
 		CameraInfo cameraInfo;
+		Vector3 ambientLightColor;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;

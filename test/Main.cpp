@@ -127,18 +127,10 @@ int main(int argc, char** args) {
 	meshRenderer->mesh = mesh;
 	meshRenderer->material = material;
 
-	// Create the ambient light entityh
-	wfe::Entity ambientLightEntity = program->GetEntityManager()->CreateEntity();
-
-	wfe::size_t sceneLightTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::SceneLight>();
-	wfe::SceneLight* ambientLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(ambientLightEntity);
-
-	ambientLight->lightType = wfe::SceneLight::LIGHT_TYPE_AMBIENT;
-	ambientLight->lightColor = wfe::Vector3(1.0f, 1.0f, 1.0f);
-	ambientLight->lightIntensity = 0.1f;
-
 	// Create the sun light entity
 	wfe::Entity sunLightEntity = program->GetEntityManager()->CreateEntity();
+
+	wfe::size_t sceneLightTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::SceneLight>();
 	wfe::SceneLight* sunLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(sunLightEntity);
 
 	sunLight->lightType = wfe::SceneLight::LIGHT_TYPE_SUN;
@@ -157,12 +149,14 @@ int main(int argc, char** args) {
 
 	program->GetEntityManager()->GetEntityTransform(pointLightEntity).pos = { 3.0f, -3.0f, 0.0f };
 
+	// Set the ambient light color
+	program->GetMainPipeline()->SetAmbientLightColor({ 0.05f, 0.05f, 0.05f });
+
 	// Run the program
 	wfe::int32_t returnCode = program->Run();
 
 	// Destroy all created entities
 	program->GetEntityManager()->DestroyEntity(meshRendererEntity);
-	program->GetEntityManager()->DestroyEntity(ambientLightEntity);
 	program->GetEntityManager()->DestroyEntity(sunLightEntity);
 	program->GetEntityManager()->DestroyEntity(pointLightEntity);
 
