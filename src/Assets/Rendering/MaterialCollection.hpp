@@ -55,7 +55,7 @@ namespace wfe {
 		/// @brief Destroys the material colection.
 		~MaterialCollection();
 	private:
-		WFE_ASSET_TYPE(MaterialCollection, { ".mtl" })
+		WFE_ASSET_TYPE(MaterialCollection, ".mtl")
 
 		std::vector<Item> items;
 	};

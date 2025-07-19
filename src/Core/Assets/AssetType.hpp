@@ -89,7 +89,7 @@ namespace wfe {
 
 /// @brief A macro to register an asset type.
 /// @param type The asset type to register.
-/// @param ... A vector containing the file extension(s) associated with this asset type.
+/// @param ... The file extension(s) associated with this asset type.
 #define WFE_ASSET_TYPE(type, ...) \
 struct AssetType##type##Constructor { \
 	static wfe::Asset* CreateAsset(wfe::Program* program, wfe::uint64_t id, const std::filesystem::path& path) { \
@@ -100,11 +100,14 @@ struct AssetType##type##Constructor { \
 		\
 		assetType.name = #type; \
 		assetType.platformName = typeid(type).name(); \
+		assetType.importExtensionCount = 0; \
 		\
-		const char* const EXT_ARRAY[] __VA_ARGS__; \
-		assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
-		for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
-			assetType.importExtensions[i] = EXT_ARRAY[i]; \
+		__VA_OPT__( \
+			const char* const EXT_ARRAY[] { __VA_ARGS__ }; \
+			assetType.importExtensionCount = sizeof(EXT_ARRAY) / sizeof(const char*); \
+			for(wfe::size_t i = 0; i != assetType.importExtensionCount; ++i) \
+				assetType.importExtensions[i] = EXT_ARRAY[i]; \
+		) \
 		\
 		assetType.constructor = CreateAsset; \
 		\

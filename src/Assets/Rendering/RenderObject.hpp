@@ -70,7 +70,7 @@ namespace wfe {
 		/// @brief Destroys the render object.
 		~RenderObject();
 	private:
-		WFE_ASSET_TYPE(RenderObject, { ".obj" })
+		WFE_ASSET_TYPE(RenderObject, ".obj")
 
 		MaterialCollection* materialCollection;
 		std::vector<Item> items;
