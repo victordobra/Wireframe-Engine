@@ -303,9 +303,18 @@ namespace wfe {
 				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"path\" value is not a single string!");
 			paths[i] = (path / assetObject.stringValues[pathValue.startIndex]).lexically_normal();
 
-			// Get the asset's type
-			std::string extension = paths[i].extension().string();
-			assetTypes[i] = &AssetType::GetAssetTypeExtension(extension);
+			if(assetObject.values.count("type")) {
+				// Get the asset's type
+				const WFEONObject::WFEONValue& typeValue = assetObject.values.at("type");
+				if(typeValue.type != WFEONObject::VALUE_TYPE_STRING)
+					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"type\" value is not a string!");
+				
+				assetTypes[i] = &AssetType::GetAssetTypeName(assetObject.stringValues[typeValue.startIndex]);
+			} else {
+				// Deduce the asset's type from its file extension
+				std::string extension = paths[i].extension().string();
+				assetTypes[i] = &AssetType::GetAssetTypeExtension(extension);
+			}
 	
 			// Get the asset's dependencies
 			const WFEONObject::WFEONValue& dependenciesValue = assetObject.values.at("dependencies");
@@ -381,6 +390,10 @@ namespace wfe {
 			// Create the path value
 			assetObject.values.insert({ "path", { WFEONObject::VALUE_TYPE_STRING, 1, 0 } });
 			assetObject.stringValues[0] = assets[i]->GetPath().lexically_relative(path).string();
+
+			// Create the type value
+			assetObject.values.insert({ "type", { WFEONObject::VALUE_TYPE_STRING, 1, 1 } });
+			assetObject.stringValues[1] = AssetType::GetAssetType(assets[i]).name;
 
 			// Create the dependencies value
 			assetObject.values.insert({ "dependencies", { WFEONObject::VALUE_TYPE_INT, (uint64_t)assetDependencies.size(), 1 } });
