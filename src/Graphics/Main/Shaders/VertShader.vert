@@ -39,7 +39,7 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 // Push constants
 layout(push_constant) uniform PushConstants {
 	mat4x4 objectTransform;
-	mat4x4 objectRotTransform;
+	mat4x4 normalTransform;
 };
 
 // Shader output
@@ -51,7 +51,7 @@ void main() {
 	// Pass on the global position, normal and UV coordinates to the fragment shader
 	globalPos = (vec4(pos, 1.0) * objectTransform).xyz;
 	globalUV = uv;
-	globalNorm = (vec4(norm, 1.0) * objectRotTransform).xyz;
+	globalNorm = (vec4(norm, 1.0) * normalTransform).xyz;
 
 	// Calculate the vertex's camera position
 	gl_Position = vec4(globalPos, 1.0) * cameraTransform;

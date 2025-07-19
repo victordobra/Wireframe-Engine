@@ -38,7 +38,7 @@ namespace wfe {
 	};
 	struct PushConstants {
 		Matrix4x4 objectTransform;
-		Matrix4x4 objectRotTransform;
+		Matrix4x4 normalTransform;
 	};
 
 	// Shader sources
@@ -623,15 +623,13 @@ namespace wfe {
 			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
 
 			// Calculate the object's transformation matrix
-			Matrix4x4 objectTranslation = Matrix4x4::Translation(transform.pos);
-			Matrix4x4 objectRotation = Matrix4x4::Rotation(transform.rot);
-			Matrix4x4 objectScale = Matrix4x4::Scaling(transform.scale);
-			Matrix4x4 objectTransform = objectScale * objectRotation * objectTranslation;
+			Matrix4x4 objectTransform = Matrix4x4::Transform(transform.pos, transform.rot, transform.scale);
+			Matrix4x4 normalTransform = Matrix4x4::Rotation(transform.rot.Inverted()) * Matrix4x4::Scaling(1 / transform.scale); // The normal transform matrix transpose and GLSL standard matrix transpose cancel each other out
 
 			// Set the push constants
 			PushConstants pushConstants {
 				.objectTransform = objectTransform.Transposed(),
-				.objectRotTransform = objectRotation.Transposed()
+				.normalTransform = normalTransform
 			};
 
 			// Bind the descriptor sets and set the push constants
