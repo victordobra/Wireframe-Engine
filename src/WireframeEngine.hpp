@@ -28,6 +28,7 @@
 #include "Core/Utils/Logger.hpp"
 
 #include "Graphics/Main/Components/MeshRenderer.hpp"
+#include "Graphics/Main/Components/SceneLight.hpp"
 #include "Graphics/Main/Instance/MainPipeline.hpp"
 #include "Graphics/Main/Resources/Material.hpp"
 #include "Graphics/Main/Resources/RenderMesh.hpp"

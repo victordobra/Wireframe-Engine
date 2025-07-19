@@ -1,15 +1,44 @@
 #include "MainPipeline.hpp"
 #include "Core/Math/Matrix4x4.hpp"
 #include "Graphics/Main/Components/MeshRenderer.hpp"
+#include "Graphics/Main/Components/SceneLight.hpp"
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
+	// Constants
+	const uint32_t MAX_LIGHT_COUNT = 64;
+
 	// Structs
+	struct WFE_ALIGNAS(sizeof(Vector4)) AmbientLightInfo {
+		Vector4 color;
+	};
+	struct WFE_ALIGNAS(sizeof(Vector4)) SunLightInfo {
+		Vector4 color;
+		Vector4 direction;
+	};
+	struct WFE_ALIGNAS(sizeof(Vector4)) PointLightInfo {
+		Vector4 color;
+		Vector4 position;
+	};
+
+	struct SceneInfo {
+		Matrix4x4 cameraTransform;
+		Vector4 cameraPos;
+		Vector4 cameraFwd;
+
+		uint32_t ambientLightCount;
+		uint32_t sunLightCount;
+		uint32_t pointLightCount;
+
+		AmbientLightInfo ambientLights[MAX_LIGHT_COUNT];
+		SunLightInfo sunLights[MAX_LIGHT_COUNT];
+		PointLightInfo pointLights[MAX_LIGHT_COUNT];
+	};
 	struct PushConstants {
 		Matrix4x4 objectTransform;
-		Matrix4x4 cameraTransform;
+		Matrix4x4 objectRotTransform;
 	};
 
 	// Shader sources
@@ -20,139 +49,17 @@ namespace wfe {
 #include "Graphics/Main/Shaders/FragShader.frag.u32"
 	};
 
-	// Record commands function
-	VkCommandBuffer MainPipeline::RecordCommands() {
-		// Set the inheritence info
-		VkFormat colorFormat = program->GetRenderer()->GetSwapChain()->GetSurfaceFormat().format;
-
-		VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderingInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
-			.pNext = nullptr,
-			.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR,
-			.viewMask = 0,
-			.colorAttachmentCount = 1,
-			.pColorAttachmentFormats = &colorFormat,
-			.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT,
-			.stencilAttachmentFormat = VK_FORMAT_UNDEFINED,
-			.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT
-		};
-		VkCommandBufferInheritanceInfo inheritanceInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-			.pNext = &inheritanceRenderingInfo,
-			.renderPass = VK_NULL_HANDLE,
-			.subpass = 0,
-			.framebuffer = VK_NULL_HANDLE,
-			.occlusionQueryEnable = VK_FALSE,
-			.queryFlags = 0,
-			.pipelineStatistics = 0
-		};
-
-		// Set the command buffer begin info
-		VkCommandBufferBeginInfo beginInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-			.pInheritanceInfo = &inheritanceInfo
-		};
-
-		// Begin recording the command buffer
-		VkCommandBuffer commandBuffer = commandBuffers[program->GetGraphicsSystem()->GetFrameIndex()];
-		VulkanLoader* loader = program->GetRenderer()->GetLoader();
-
-		VkResult result = loader->vkBeginCommandBuffer(commandBuffer, &beginInfo);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to begin recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
-		
-		// Bind the pipeline
-		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-
-		// Set the viewport and scissor
-		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
-
-		VkViewport viewport {
-			.x = 0.0f,
-			.y = 0.0f,
-			.width = (float)extent.width,
-			.height = (float)extent.height,
-			.minDepth = 0.0f,
-			.maxDepth = 1.0f
-		};
-		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor {
-			.offset = { 0, 0 },
-			.extent = extent
-		};
-		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-		// Calculate the camera's transform matrix		
-		Matrix4x4 cameraProjection;
-		float aspectRatio = (float)extent.width / extent.height;
-
-		switch(cameraInfo.cameraType) {
-		case CAMERA_TYPE_PERSPECTIVE:
-			cameraProjection = Matrix4x4::PerspectiveProjection(cameraInfo.perspectiveInfo.fov, aspectRatio, cameraInfo.perspectiveInfo.nearPlane, cameraInfo.perspectiveInfo.farPlane);
-			break;
-		case CAMERA_TYPE_ORTOGRAPHIC:
-			cameraProjection = Matrix4x4::OrtographicProjection(-cameraInfo.ortographicInfo.viewHeight * aspectRatio, cameraInfo.ortographicInfo.viewHeight * aspectRatio, -cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.nearPlane, cameraInfo.ortographicInfo.farPlane);
-		}
-
-		Matrix4x4 cameraTransform = Matrix4x4::Translation(-cameraInfo.pos) * Matrix4x4::Rotation(cameraInfo.rot.Inverted()) * cameraProjection;
-
-		// Loop through all renderers
-		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
-		EntityManager::Signature meshRendererTypeSignature = 0;
-		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
-
-		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
-			// Get the transform and the renderer component
-			Transform transform = program->GetEntityManager()->GetEntityTransform(entity);
-			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
-
-			// Calculate the object's transformation matrix
-			Matrix4x4 objectTransform = Matrix4x4::Transform(transform.pos, transform.rot, transform.scale);
-
-			// Set the push constants
-			PushConstants pushConstants {
-				.objectTransform = objectTransform.Transposed(),
-				.cameraTransform = cameraTransform.Transposed()
-			};
-
-			// Bind the descriptor sets and set the push constants
-			VkDescriptorSet descriptorSet = meshRenderer.material->GetDescriptorSet();
-
-			loader->vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-			loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);
-
-			// Bind the vertex and index buffers
-			VkBuffer vertexBuffer = meshRenderer.mesh->GetVertexBuffer();
-			VkDeviceSize offset = 0;
-
-			loader->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, &offset);
-			loader->vkCmdBindIndexBuffer(commandBuffer, meshRenderer.mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			// Draw the mesh
-			loader->vkCmdDrawIndexed(commandBuffer, (uint32_t)meshRenderer.mesh->GetIndexCount(), 1, 0, 0, 0);
-		}
-
-		// End recording the command buffer
-		result = loader->vkEndCommandBuffer(commandBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to end recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
-		
-		return commandBuffer;
-	}
-
-	// Public functions
-	MainPipeline::MainPipeline(Program* program, const CameraInfo& cameraInfo) : GraphicsPipeline(program->GetGraphicsSystem()), program(program), cameraInfo(cameraInfo) {
+	// Internal helper functions
+	void MainPipeline::CreateCommandBuffers() {
 		// Set the command pool create info
 		VulkanDevice* device = program->GetRenderer()->GetDevice();
+		uint32_t graphicsFamily = device->GetDeviceQueues().graphicsIndex;
 
 		VkCommandPoolCreateInfo commandPoolInfo {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			.queueFamilyIndex = device->GetDeviceQueues().graphicsIndex
+			.queueFamilyIndex = graphicsFamily
 		};
 
 		// Create the command pool
@@ -174,8 +81,144 @@ namespace wfe {
 		result = device->GetLoader()->vkAllocateCommandBuffers(device->GetDevice(), &commandBufferInfo, commandBuffers.data());
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to allocate Vulkan main graphics pipeline secondary command buffers! Error code: " + string_VkResult(result));
+	}
+	void MainPipeline::CreateSceneInfoBuffers() {
+		// Set the scene info buffer create info
+		VulkanDevice* device = program->GetRenderer()->GetDevice();
+		uint32_t graphicsFamily = device->GetDeviceQueues().graphicsIndex;
+		size_t maxFramesInFlight = program->GetGraphicsSystem()->GetMaxFramesInFlight();
+
+		VkBufferCreateInfo sceneInfoBufferInfo {
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.size = sizeof(SceneInfo),
+			.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			.queueFamilyIndexCount = 1,
+			.pQueueFamilyIndices = &graphicsFamily
+		};
+
+		sceneInfoBuffers.resize(maxFramesInFlight);
+		sceneInfoBufferMemories.resize(maxFramesInFlight);
+
+		for(size_t i = 0; i != sceneInfoBuffers.size(); ++i) {
+			// Create the scene info buffer
+			VkResult result = device->GetLoader()->vkCreateBuffer(device->GetDevice(), &sceneInfoBufferInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &sceneInfoBuffers[i]);
+			if(result != VK_SUCCESS)
+				throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline scene info buffer! Error code: " + string_VkResult(result));
+			
+			// Allocate the scene info buffer's memory
+			try {
+				sceneInfoBufferMemories[i] = device->GetAllocator()->AllocBufferMemory(sceneInfoBuffers[i], VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+			} catch(const std::bad_alloc&) {
+				throw std::runtime_error("Failed to allocate Vulkan main graphics pipeline scene info buffer memory!");
+			}
+
+			// Bind the buffer to its memory
+			result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), sceneInfoBuffers[i], sceneInfoBufferMemories[i].memory, sceneInfoBufferMemories[i].offset);
+			if(result != VK_SUCCESS)
+				throw std::runtime_error((std::string)"Failed to bind Vulkan main graphics pipeline scene info buffer to its memory! Error code: " + string_VkResult(result));
+		}
+	}
+	void MainPipeline::CreateDescriptors() {
+		// Set the scene info descriptor set layout info
+		VulkanDevice* device = program->GetRenderer()->GetDevice();
+		size_t maxFramesInFlight = program->GetGraphicsSystem()->GetMaxFramesInFlight();
+
+		VkDescriptorSetLayoutBinding sceneInfoDescriptorSetLayoutBinding {
+			.binding = 0,
+			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.descriptorCount = 1,
+			.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
+			.pImmutableSamplers = nullptr
+		};
+
+		VkDescriptorSetLayoutCreateInfo sceneInfoDescriptorSetLayoutInfo {
+			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.bindingCount = 1,
+			.pBindings = &sceneInfoDescriptorSetLayoutBinding
+		};
+
+		// Create the scene info descriptor set layout
+		VkResult result = device->GetLoader()->vkCreateDescriptorSetLayout(device->GetDevice(), &sceneInfoDescriptorSetLayoutInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &sceneInfoDescriptorSetLayout);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline scene info descriptor set layout! Error code: " + string_VkResult(result));
+
+		// Set the scene info descriptor pool create info
+		VkDescriptorPoolSize sceneInfoDescriptorPoolSize {
+			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.descriptorCount = (uint32_t)maxFramesInFlight
+		};
+
+		VkDescriptorPoolCreateInfo sceneInfoDescriptorPoolInfo {
+			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.maxSets = (uint32_t)maxFramesInFlight,
+			.poolSizeCount = 1,
+			.pPoolSizes = &sceneInfoDescriptorPoolSize
+		};
+
+		// Create the scene info descriptor pool
+		result = device->GetLoader()->vkCreateDescriptorPool(device->GetDevice(), &sceneInfoDescriptorPoolInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &sceneInfoDescriptorPool);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline scene info descriptor pool! Error code: " + string_VkResult(result));
 		
+		// Set the scene info descriptor set alloc info
+		std::vector<VkDescriptorSetLayout> setLayouts(maxFramesInFlight);
+		for(size_t i = 0; i != setLayouts.size(); ++i)
+			setLayouts[i] = sceneInfoDescriptorSetLayout;
+		
+		VkDescriptorSetAllocateInfo sceneInfoDescriptorSetInfo {
+			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+			.pNext = nullptr,
+			.descriptorPool = sceneInfoDescriptorPool,
+			.descriptorSetCount = (uint32_t)maxFramesInFlight,
+			.pSetLayouts = setLayouts.data()
+		};
+
+		// Allocate the scene info descriptor sets
+		sceneInfoDescriptorSets.resize(maxFramesInFlight);
+		result = device->GetLoader()->vkAllocateDescriptorSets(device->GetDevice(), &sceneInfoDescriptorSetInfo, sceneInfoDescriptorSets.data());
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to allocate Vulkan main graphics pipeline scene info descriptor sets! Error code: " + string_VkResult(result));
+		
+		// Set the scene info descriptor set writes
+		std::vector<VkDescriptorBufferInfo> sceneInfoBufferInfos(maxFramesInFlight);
+		for(size_t i = 0; i != sceneInfoBufferInfos.size(); ++i) {
+			sceneInfoBufferInfos[i] = {
+				.buffer = sceneInfoBuffers[i],
+				.offset = 0,
+				.range = VK_WHOLE_SIZE
+			};
+		}
+
+		std::vector<VkWriteDescriptorSet> sceneInfoDescriptorSetWrites(maxFramesInFlight);
+		for(size_t i = 0; i != sceneInfoDescriptorSetWrites.size(); ++i) {
+			sceneInfoDescriptorSetWrites[i] = {
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.pNext = nullptr,
+				.dstSet = sceneInfoDescriptorSets[i],
+				.dstBinding = 0,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				.pImageInfo = nullptr,
+				.pBufferInfo = &sceneInfoBufferInfos[i],
+				.pTexelBufferView = nullptr
+			};
+		}
+
+		// Update the scene info descriptor stes
+		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), (uint32_t)sceneInfoDescriptorSetWrites.size(), sceneInfoDescriptorSetWrites.data(), 0, nullptr);
+	}
+	void MainPipeline::CreatePipeline() {
 		// Set the vertex shader module create info
+		VulkanDevice* device = program->GetRenderer()->GetDevice();
+
 		VkShaderModuleCreateInfo vertexShaderInfo {
 			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
 			.pNext = nullptr,
@@ -185,7 +228,7 @@ namespace wfe {
 		};
 
 		// Create the vertex shader module
-		result = device->GetLoader()->vkCreateShaderModule(device->GetDevice(), &vertexShaderInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &vertexShader);
+		VkResult result = device->GetLoader()->vkCreateShaderModule(device->GetDevice(), &vertexShaderInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &vertexShader);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan vertex shader module for main graphics pipeline! Error code: " + string_VkResult(result));
 
@@ -204,7 +247,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to create Vulkan fragment shader module for main graphics pipeline! Error code: " + string_VkResult(result));
 
 		// Set the pipeline layout create info
-		VkDescriptorSetLayout setLayout = program->GetMaterialManager()->GetMaterialSetLayout();
+		VkDescriptorSetLayout setLayouts[] { sceneInfoDescriptorSetLayout, program->GetMaterialManager()->GetMaterialSetLayout() };
 		VkPushConstantRange pushConstantRange {
 			.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
 			.offset = 0,
@@ -215,8 +258,8 @@ namespace wfe {
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0,
-			.setLayoutCount = 1,
-			.pSetLayouts = &setLayout,
+			.setLayoutCount = 2,
+			.pSetLayouts = setLayouts,
 			.pushConstantRangeCount = 1,
 			.pPushConstantRanges = &pushConstantRange
 		};
@@ -427,8 +470,206 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline! Error code: " + string_VkResult(result));
 	}
 
+	// Record commands function
+	VkCommandBuffer MainPipeline::RecordCommands() {
+		// Set the inheritence info
+		VkFormat colorFormat = program->GetRenderer()->GetSwapChain()->GetSurfaceFormat().format;
+
+		VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderingInfo {
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
+			.pNext = nullptr,
+			.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR,
+			.viewMask = 0,
+			.colorAttachmentCount = 1,
+			.pColorAttachmentFormats = &colorFormat,
+			.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT,
+			.stencilAttachmentFormat = VK_FORMAT_UNDEFINED,
+			.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT
+		};
+		VkCommandBufferInheritanceInfo inheritanceInfo {
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
+			.pNext = &inheritanceRenderingInfo,
+			.renderPass = VK_NULL_HANDLE,
+			.subpass = 0,
+			.framebuffer = VK_NULL_HANDLE,
+			.occlusionQueryEnable = VK_FALSE,
+			.queryFlags = 0,
+			.pipelineStatistics = 0
+		};
+
+		// Set the command buffer begin info
+		VkCommandBufferBeginInfo beginInfo {
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+			.pNext = nullptr,
+			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
+			.pInheritanceInfo = &inheritanceInfo
+		};
+
+		// Begin recording the command buffer
+		size_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
+		VulkanLoader* loader = program->GetRenderer()->GetLoader();
+
+		VkResult result = loader->vkBeginCommandBuffer(commandBuffer, &beginInfo);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to begin recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
+		
+		// Bind the pipeline
+		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
+		// Set the viewport and scissor
+		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
+
+		VkViewport viewport {
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = (float)extent.width,
+			.height = (float)extent.height,
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		};
+		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+		VkRect2D scissor {
+			.offset = { 0, 0 },
+			.extent = extent
+		};
+		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+		// Get the current scene info struct
+		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoBufferMemories[frameIndex]);
+
+		// Set the camera's info in the scene info
+		Matrix4x4 cameraProjection;
+		float aspectRatio = (float)extent.width / extent.height;
+
+		switch(cameraInfo.cameraType) {
+		case CAMERA_TYPE_PERSPECTIVE:
+			cameraProjection = Matrix4x4::PerspectiveProjection(cameraInfo.perspectiveInfo.fov, aspectRatio, cameraInfo.perspectiveInfo.nearPlane, cameraInfo.perspectiveInfo.farPlane);
+			break;
+		case CAMERA_TYPE_ORTOGRAPHIC:
+			cameraProjection = Matrix4x4::OrtographicProjection(-cameraInfo.ortographicInfo.viewHeight * aspectRatio, cameraInfo.ortographicInfo.viewHeight * aspectRatio, -cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.nearPlane, cameraInfo.ortographicInfo.farPlane);
+		}
+
+		Matrix4x4 cameraTransform = Matrix4x4::Translation(-cameraInfo.pos) * Matrix4x4::Rotation(cameraInfo.rot.Inverted()) * cameraProjection;
+
+		sceneInfo->cameraTransform = cameraTransform.Transposed();
+		sceneInfo->cameraPos = (Vector4)cameraInfo.pos;
+		sceneInfo->cameraFwd = (Vector4)(Vector3::FORWARD * Matrix4x4::Rotation(cameraInfo.rot));
+
+		// Reset the light counters
+		sceneInfo->ambientLightCount = 0;
+		sceneInfo->sunLightCount = 0;
+		sceneInfo->pointLightCount = 0;
+
+		// Loop through all lights
+		size_t sceneLightTypeIndex = program->GetEntityManager()->GetTypeIndex<SceneLight>();
+		EntityManager::Signature sceneLightTypeSignature = 0;
+		sceneLightTypeSignature.set(sceneLightTypeIndex, 1);
+
+		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, sceneLightTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, sceneLightTypeSignature)) {
+			// Get the transform and the light component
+			Transform transform = program->GetEntityManager()->GetEntityTransform(entity);
+			SceneLight sceneLight = *(SceneLight*)(program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->GetComponent(entity));
+
+			// Add the light to the scene info
+			switch(sceneLight.lightType) {
+			case SceneLight::LIGHT_TYPE_AMBIENT:
+				// Check if the max light count was already reached
+				if(sceneInfo->ambientLightCount == MAX_LIGHT_COUNT)
+					throw std::length_error("Exceeded maximum ambient light count!");
+				
+				// Add the current ambient light to the scene info
+				sceneInfo->ambientLights[sceneInfo->ambientLightCount++] = {
+					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity)
+				};
+
+				break;
+			case SceneLight::LIGHT_TYPE_SUN:
+				// Check if the max light count was already reached
+				if(sceneInfo->sunLightCount == MAX_LIGHT_COUNT)
+					throw std::length_error("Exceeded maximum sun light count!");
+				
+				// Add the current sun light to the scene info
+				sceneInfo->sunLights[sceneInfo->sunLightCount++] = {
+					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity),
+					.direction = (Vector4)(Vector3::FORWARD * Matrix4x4::Rotation(transform.rot))
+				};
+
+				break;
+			case SceneLight::LIGHT_TYPE_POINT:
+				// Check if the max light count was already reached
+				if(sceneInfo->pointLightCount == MAX_LIGHT_COUNT)
+					throw std::length_error("Exceeded maximum point light count!");
+				
+				// Add the current point light to the scene info
+				sceneInfo->pointLights[sceneInfo->pointLightCount++] = {
+					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity),
+					.position = (Vector4)transform.pos
+				};
+
+				break;
+			}
+		}
+
+		// Loop through all renderers
+		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
+		EntityManager::Signature meshRendererTypeSignature = 0;
+		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
+
+		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
+			// Get the transform and the renderer component
+			Transform transform = program->GetEntityManager()->GetEntityTransform(entity);
+			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
+
+			// Calculate the object's transformation matrix
+			Matrix4x4 objectTranslation = Matrix4x4::Translation(transform.pos);
+			Matrix4x4 objectRotation = Matrix4x4::Rotation(transform.rot);
+			Matrix4x4 objectScale = Matrix4x4::Scaling(transform.scale);
+			Matrix4x4 objectTransform = objectScale * objectRotation * objectTranslation;
+
+			// Set the push constants
+			PushConstants pushConstants {
+				.objectTransform = objectTransform.Transposed(),
+				.objectRotTransform = objectRotation.Transposed()
+			};
+
+			// Bind the descriptor sets and set the push constants
+			VkDescriptorSet descriptorSets[] { sceneInfoDescriptorSets[frameIndex], meshRenderer.material->GetDescriptorSet() };
+
+			loader->vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, descriptorSets, 0, nullptr);
+			loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);
+
+			// Bind the vertex and index buffers
+			VkBuffer vertexBuffer = meshRenderer.mesh->GetVertexBuffer();
+			VkDeviceSize offset = 0;
+
+			loader->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, &offset);
+			loader->vkCmdBindIndexBuffer(commandBuffer, meshRenderer.mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			// Draw the mesh
+			loader->vkCmdDrawIndexed(commandBuffer, (uint32_t)meshRenderer.mesh->GetIndexCount(), 1, 0, 0, 0);
+		}
+
+		// End recording the command buffer
+		result = loader->vkEndCommandBuffer(commandBuffer);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to end recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
+		
+		return commandBuffer;
+	}
+
+	// Public functions
+	MainPipeline::MainPipeline(Program* program, const CameraInfo& cameraInfo) : GraphicsPipeline(program->GetGraphicsSystem()), program(program), cameraInfo(cameraInfo) {
+		// Create the pipeline's components
+		CreateCommandBuffers();
+		CreateSceneInfoBuffers();
+		CreateDescriptors();
+		CreatePipeline();
+	}
+
 	MainPipeline::~MainPipeline() {
-		// Destroy the pipeline anad its layout
+		// Destroy the pipeline and its layout
 		VulkanDevice* device = program->GetRenderer()->GetDevice();
 
 		device->GetLoader()->vkDestroyPipeline(device->GetDevice(), pipeline, &VulkanRenderer::ALLOCATION_CALLBACKS);
@@ -437,6 +678,16 @@ namespace wfe {
 		// Destroy the shader modules
 		device->GetLoader()->vkDestroyShaderModule(device->GetDevice(), vertexShader, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		device->GetLoader()->vkDestroyShaderModule(device->GetDevice(), fragmentShader, &VulkanRenderer::ALLOCATION_CALLBACKS);
+
+		// Destroy the scene info descriptor pool and the scene info descriptor set layout
+		device->GetLoader()->vkDestroyDescriptorPool(device->GetDevice(), sceneInfoDescriptorPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		device->GetLoader()->vkDestroyDescriptorSetLayout(device->GetDevice(), sceneInfoDescriptorSetLayout, &VulkanRenderer::ALLOCATION_CALLBACKS);
+
+		// Destroy the scene info buffers
+		for(size_t i = 0; i != sceneInfoBuffers.size(); ++i)
+			device->GetLoader()->vkDestroyBuffer(device->GetDevice(), sceneInfoBuffers[i], &VulkanRenderer::ALLOCATION_CALLBACKS);
+		for(size_t i = 0; i != sceneInfoBufferMemories.size(); ++i)
+			device->GetAllocator()->FreeMemory(sceneInfoBufferMemories[i]);
 
 		// Free all command buffers and free their command pool
 		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), commandPool, (uint32_t)commandBuffers.size(), commandBuffers.data());

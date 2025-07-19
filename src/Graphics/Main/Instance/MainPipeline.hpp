@@ -107,11 +107,23 @@ namespace wfe {
 		/// @brief Destroys the main graphics pipeline.
 		~MainPipeline();
 	private:
+		void CreateCommandBuffers();
+		void CreateSceneInfoBuffers();
+		void CreateDescriptors();
+		void CreatePipeline();
+
 		Program* program;
 		CameraInfo cameraInfo;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
+
+		std::vector<VkBuffer> sceneInfoBuffers;
+		std::vector<VulkanAllocator::Memory> sceneInfoBufferMemories;
+
+		VkDescriptorPool sceneInfoDescriptorPool;
+		VkDescriptorSetLayout sceneInfoDescriptorSetLayout;
+		std::vector<VkDescriptorSet> sceneInfoDescriptorSets;
 
 		VkShaderModule vertexShader;
 		VkShaderModule fragmentShader;

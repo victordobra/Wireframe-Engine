@@ -50,7 +50,7 @@ static void* FrameEventCallback(void* userData, void* params) {
 	position = (position * arcballInfo.radius) + arcballInfo.center;
 
 	// Calculate the camera's rotation
-	wfe::Quaternion rotation = wfe::Quaternion::AroundAxis(wfe::Vector3::UP, arcballInfo.yAngle) * wfe::Quaternion::AroundAxis(wfe::Vector3::RIGHT, -arcballInfo.xAngle);
+	wfe::Quaternion rotation = wfe::Quaternion::EulerAngles({ -arcballInfo.xAngle, arcballInfo.yAngle, 0.0f });
 
 	// Set the camera's info
 	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetMainPipeline();
@@ -119,19 +119,52 @@ int main(int argc, char** args) {
 	wfe::Material* material = renderObject->GetItems()[0].material;
 
 	// Create the rendered entity and add a render mesh component
-	wfe::Entity entity = program->GetEntityManager()->CreateEntity();
+	wfe::Entity meshRendererEntity = program->GetEntityManager()->CreateEntity();
 
-	wfe::size_t typeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();
-	wfe::MeshRenderer* meshRenderer = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(typeIndex)->CreateComponent(entity);
+	wfe::size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();
+	wfe::MeshRenderer* meshRenderer = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->CreateComponent(meshRendererEntity);
 
 	meshRenderer->mesh = mesh;
 	meshRenderer->material = material;
 
+	// Create the ambient light entityh
+	wfe::Entity ambientLightEntity = program->GetEntityManager()->CreateEntity();
+
+	wfe::size_t sceneLightTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::SceneLight>();
+	wfe::SceneLight* ambientLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(ambientLightEntity);
+
+	ambientLight->lightType = wfe::SceneLight::LIGHT_TYPE_AMBIENT;
+	ambientLight->lightColor = wfe::Vector3(1.0f, 1.0f, 1.0f);
+	ambientLight->lightIntensity = 0.1f;
+
+	// Create the sun light entity
+	wfe::Entity sunLightEntity = program->GetEntityManager()->CreateEntity();
+	wfe::SceneLight* sunLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(sunLightEntity);
+
+	sunLight->lightType = wfe::SceneLight::LIGHT_TYPE_SUN;
+	sunLight->lightColor = wfe::Vector3(1.0f, 1.0f, 1.0f);
+	sunLight->lightIntensity = 0.8f;
+
+	program->GetEntityManager()->GetEntityTransform(sunLightEntity).rot = wfe::Quaternion::EulerAngles({ (float)M_PI_4, (float)M_PI_4, 0.0f });
+
+	// Create the point light entity
+	wfe::Entity pointLightEntity = program->GetEntityManager()->CreateEntity();
+	wfe::SceneLight* pointLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(pointLightEntity);
+
+	pointLight->lightType = wfe::SceneLight::LIGHT_TYPE_POINT;
+	pointLight->lightColor = wfe::Vector3(0.0f, 1.0f, 0.0f);
+	pointLight->lightIntensity = 3.0f;
+
+	program->GetEntityManager()->GetEntityTransform(pointLightEntity).pos = { 3.0f, -3.0f, 0.0f };
+
 	// Run the program
 	wfe::int32_t returnCode = program->Run();
 
-	// Destroy the created entity
-	program->GetEntityManager()->DestroyEntity(entity);
+	// Destroy all created entities
+	program->GetEntityManager()->DestroyEntity(meshRendererEntity);
+	program->GetEntityManager()->DestroyEntity(ambientLightEntity);
+	program->GetEntityManager()->DestroyEntity(sunLightEntity);
+	program->GetEntityManager()->DestroyEntity(pointLightEntity);
 
 	// Destroy the asset directory
 	delete assetDir;
