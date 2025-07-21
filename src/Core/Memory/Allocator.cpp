@@ -326,7 +326,7 @@ namespace wfe {
 			}
 
 			// No free block is large enough; allocate a new one
-			size_t lastFreeSize = *(size_t*)((size_t)largeHeapAddressStart + largeHeapSize - (sizeof(size_t) << 1));
+			size_t lastFreeSize = (*(size_t*)((size_t)largeHeapAddressStart + largeHeapSize - (sizeof(size_t) << 1))) ^ FREE_BLOCK_FLAG;
 			size_t freeBlock = (size_t)largeHeapAddressStart + largeHeapSize - lastFreeSize;
 
 			// Get the position of the new block
