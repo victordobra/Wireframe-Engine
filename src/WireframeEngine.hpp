@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Assets/Rendering/ImageCubemap.hpp"
 #include "Assets/Rendering/ImageTexture.hpp"
 #include "Assets/Rendering/MaterialCollection.hpp"
 #include "Assets/Rendering/RenderObject.hpp"
