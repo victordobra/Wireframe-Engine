@@ -33,6 +33,7 @@
 #include "Graphics/Main/Instance/MainPipeline.hpp"
 #include "Graphics/Main/Resources/Material.hpp"
 #include "Graphics/Main/Resources/RenderMesh.hpp"
+#include "Graphics/EngineGraphics.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 
 #include "Info/EngineInfo.hpp"

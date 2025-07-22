@@ -22,7 +22,7 @@ namespace wfe {
 			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for reading!");
 
 		// Query the default texture
-		ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
 	
 		// Read the number of items
 		uint64_t itemCount = BinaryReadUint64(stream);
@@ -70,7 +70,7 @@ namespace wfe {
 			}
 			
 			// Create the material
-			items[i].material = new Material(GetProgram()->GetMaterialManager(), materialData, materialTextures);
+			items[i].material = new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), materialData, materialTextures);
 		}
 
 		// Close the file stream
@@ -168,7 +168,7 @@ namespace wfe {
 		Material::MaterialTextures currentTextures;
 
 		// Query the default texture
-		ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
 
 		// Parse every line in the file
 		for(const std::string& line : lines) {
@@ -182,7 +182,7 @@ namespace wfe {
 			if(keyword == "newmtl") {
 				// Add the previous material to the item array, if it exists
 				if(!currentName.empty())
-					items.push_back({ currentName, new Material(GetProgram()->GetMaterialManager(), currentData, currentTextures) });
+					items.push_back({ currentName, new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), currentData, currentTextures) });
 				
 				// Reset the material info
 				currentData.ambientColor = Vector4::ONE;
@@ -224,7 +224,7 @@ namespace wfe {
 
 		// Add the last material to the item array, if it exists
 		if(!currentName.empty())
-			items.push_back({ currentName, new Material(GetProgram()->GetMaterialManager(), currentData, currentTextures) });
+			items.push_back({ currentName, new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), currentData, currentTextures) });
 	}
 	void MaterialCollection::Export() const {
 		// Open the file stream for writing
@@ -257,7 +257,7 @@ namespace wfe {
 
 			// Write the material's textures
 			const Material::MaterialTextures textures = items[i].material->GetTextures();
-			ImageTexture* defaultTexture = GetProgram()->GetMaterialManager()->GetDefaultImageTexture();
+			ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
 
 			if(textures.ambientTexture != defaultTexture) {
 				std::filesystem::path ambientTexturePath = textures.ambientTexture->GetPath().lexically_relative(fileDir);

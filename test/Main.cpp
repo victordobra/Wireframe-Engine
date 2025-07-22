@@ -53,7 +53,7 @@ static void* FrameEventCallback(void* userData, void* params) {
 	wfe::Quaternion rotation = wfe::Quaternion::EulerAngles({ -arcballInfo.xAngle, arcballInfo.yAngle, 0.0f });
 
 	// Set the camera's info
-	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetMainPipeline();
+	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetEngineGraphics()->GetMainPipeline();
 	wfe::MainPipeline::CameraInfo cameraInfo = mainPipeline->GetCameraInfo();
 
 	cameraInfo.pos = position;
@@ -150,7 +150,7 @@ int main(int argc, char** args) {
 	program->GetEntityManager()->GetEntityTransform(pointLightEntity).pos = { 3.0f, -3.0f, 0.0f };
 
 	// Set the ambient light color
-	program->GetMainPipeline()->SetAmbientLightColor({ 0.05f, 0.05f, 0.05f });
+	program->GetEngineGraphics()->GetMainPipeline()->SetAmbientLightColor({ 0.05f, 0.05f, 0.05f });
 
 	// Run the program
 	wfe::int32_t returnCode = program->Run();

@@ -4,7 +4,7 @@
 #include "Core/ECS/EntityManager.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Core/Utils/Logger.hpp"
-#include "Graphics/Main/Instance/MainPipeline.hpp"
+#include "Graphics/EngineGraphics.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
@@ -131,15 +131,10 @@ namespace wfe {
 		GraphicsSystem* GetGraphicsSystem() const {
 			return graphicsSystem;
 		}
-		/// @brief Gets the program's material manager.
-		/// @return The program's material manager.
-		MaterialManager* GetMaterialManager() const {
-			return materialManager;
-		}
-		/// @brief Gets the program's main graphics pipeline.
-		/// @return The program's main graphics pipeline.
-		MainPipeline* GetMainPipeline() const {
-			return mainPipeline;
+		/// @brief Gets the program's engine graphics components.
+		/// @return The program's engine graphics components.
+		EngineGraphics* GetEngineGraphics() const {
+			return engineGraphics;
 		}
 
 		/// @brief Gets the event triggered on every frame update.
@@ -163,8 +158,7 @@ namespace wfe {
 		AssetManager* assetManager;
 		EntityManager* entityManager;
 		GraphicsSystem* graphicsSystem;
-		MaterialManager* materialManager;
-		MainPipeline* mainPipeline;
+		EngineGraphics* engineGraphics;
 
 		mutable Event frameEvent;
 	};

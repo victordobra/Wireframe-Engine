@@ -26,25 +26,12 @@ namespace wfe {
 		window = new Window(settings.windowX, settings.windowY, settings.windowWidth, settings.windowHeight, info.programName, false, settings.startMaximized, settings.startFullscreen);
 		window->GetCloseEvent().AddListener({ CloseEventListener, this });
 
-		// Set the default camera info
-		MainPipeline::CameraInfo cameraInfo {
-			.pos = Vector3::ZERO,
-			.rot = Quaternion::IDENTITY,
-			.cameraType = MainPipeline::CAMERA_TYPE_PERSPECTIVE,
-			.perspectiveInfo = {
-				.fov = (float)M_PI_2,
-				.nearPlane = 0.001f,
-				.farPlane = 1000.f
-			}
-		};
-
 		// Create all other components
 		renderer = new VulkanRenderer(this);
 		assetManager = new AssetManager(this);
 		entityManager = new EntityManager(settings.maxEntityCount);
 		graphicsSystem = new GraphicsSystem(renderer, settings.maxFramesInFlight);
-		materialManager = new MaterialManager(this, settings.maxMaterialCount);
-		mainPipeline = new MainPipeline(this, cameraInfo);
+		engineGraphics = new EngineGraphics(this);
 
 		// Store the end time for renderer initialization
 		std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
@@ -75,8 +62,7 @@ namespace wfe {
 
 	Program::~Program() {
 		// Destroy the program's components
-		delete mainPipeline;
-		delete materialManager;
+		delete engineGraphics;
 		delete graphicsSystem;
 		delete entityManager;
 		delete assetManager;

@@ -2,6 +2,8 @@
 #include "Core/Math/Matrix4x4.hpp"
 #include "Graphics/Main/Components/MeshRenderer.hpp"
 #include "Graphics/Main/Components/SceneLight.hpp"
+#include "Graphics/EngineGraphics.hpp"
+#include "Main/Program.hpp"
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
@@ -212,7 +214,7 @@ namespace wfe {
 		// Update the scene info descriptor stes
 		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), (uint32_t)sceneInfoDescriptorSetWrites.size(), sceneInfoDescriptorSetWrites.data(), 0, nullptr);
 	}
-	void MainPipeline::CreatePipeline() {
+	void MainPipeline::CreatePipeline(EngineGraphics* engineGraphics) {
 		// Set the vertex shader module create info
 		VulkanDevice* device = program->GetRenderer()->GetDevice();
 
@@ -244,7 +246,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to create Vulkan fragment shader module for main graphics pipeline! Error code: " + string_VkResult(result));
 
 		// Set the pipeline layout create info
-		VkDescriptorSetLayout setLayouts[] { sceneInfoDescriptorSetLayout, program->GetMaterialManager()->GetMaterialSetLayout() };
+		VkDescriptorSetLayout setLayouts[] { sceneInfoDescriptorSetLayout, engineGraphics->GetMaterialManager()->GetMaterialSetLayout() };
 		VkPushConstantRange pushConstantRange {
 			.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
 			.offset = 0,
@@ -645,12 +647,12 @@ namespace wfe {
 	}
 
 	// Public functions
-	MainPipeline::MainPipeline(Program* program, const CameraInfo& cameraInfo) : GraphicsPipeline(program->GetGraphicsSystem()), program(program), cameraInfo(cameraInfo) {
+	MainPipeline::MainPipeline(EngineGraphics* engineGraphics, const CameraInfo& cameraInfo) : GraphicsPipeline(engineGraphics->GetProgram()->GetGraphicsSystem()), program(engineGraphics->GetProgram()), cameraInfo(cameraInfo) {
 		// Create the pipeline's components
 		CreateCommandBuffers();
 		CreateSceneInfoBuffers();
 		CreateDescriptors();
-		CreatePipeline();
+		CreatePipeline(engineGraphics);
 	}
 
 	MainPipeline::~MainPipeline() {

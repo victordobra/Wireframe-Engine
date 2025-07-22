@@ -6,6 +6,7 @@
 #include "Graphics/GraphicsSystem.hpp"
 
 namespace wfe {
+	class EngineGraphics;
 	class Program;
 
 	/// @brief A class implementing the main graphics pipeline, used for base 3D graphics.
@@ -54,9 +55,9 @@ namespace wfe {
 		};
 
 		/// @brief Creates a main graphics pipeline.
-		/// @param program The program that owns the pipeline.
+		/// @param engineGraphics The engine graphics component to register the pipeline in.
 		/// @param cameraInfo The camera's starting info.
-		MainPipeline(Program* program, const CameraInfo& cameraInfo);
+		MainPipeline(EngineGraphics* engineGraphics, const CameraInfo& cameraInfo);
 		MainPipeline(const MainPipeline&) = delete;
 		MainPipeline(MainPipeline&&) = delete;
 
@@ -120,7 +121,7 @@ namespace wfe {
 		void CreateCommandBuffers();
 		void CreateSceneInfoBuffers();
 		void CreateDescriptors();
-		void CreatePipeline();
+		void CreatePipeline(EngineGraphics* engineGraphics);
 
 		Program* program;
 		CameraInfo cameraInfo;
