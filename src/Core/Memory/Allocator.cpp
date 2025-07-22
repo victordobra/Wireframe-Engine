@@ -326,7 +326,13 @@ namespace wfe {
 			}
 
 			// No free block is large enough; allocate a new one
-			size_t lastFreeSize = (*(size_t*)((size_t)largeHeapAddressStart + largeHeapSize - (sizeof(size_t) << 1))) ^ FREE_BLOCK_FLAG;
+			size_t lastFreeSize = *(size_t*)((size_t)largeHeapAddressStart + largeHeapSize - (sizeof(size_t) << 1));
+			if(lastFreeSize & FREE_BLOCK_FLAG) {
+				lastFreeSize ^= FREE_BLOCK_FLAG;
+			} else {
+				lastFreeSize = 0;
+			}
+
 			size_t freeBlock = (size_t)largeHeapAddressStart + largeHeapSize - lastFreeSize;
 
 			// Get the position of the new block
@@ -334,7 +340,8 @@ namespace wfe {
 			size_t leftSpace = alignedPos - freeBlock;
 
 			// Remove the last free block from the free list
-			RemoveFreeList((size_t*)freeBlock - 1);
+			if(lastFreeSize)
+				RemoveFreeList((size_t*)freeBlock - 1);
 
 			// Commit the required memory for the new block
 			size_t endPos = alignedPos + size + (sizeof(size_t) << 1);
