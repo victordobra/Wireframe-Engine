@@ -420,6 +420,10 @@ namespace wfe {
 			GetLoader()->vkGetPhysicalDeviceProperties(currentDevice, &currentProperties);
 			if(currentProperties.apiVersion < instance->GetAPIVersion())
 				continue;
+			
+			// Check if the current device is a less performant type than the previous device
+			if(currentProperties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+				continue;
 
 			// Get the device's queue family indices
 			uint32_t graphicsIndex, presentIndex, transferIndex, computeIndex;
@@ -454,7 +458,7 @@ namespace wfe {
 					VkBaseOutStructure* nextStruct = featureStruct->pNext;
 
 					// Free the current struct
-					free(featureStruct);
+					FreeMemory(featureStruct);
 					featureStruct = nextStruct;
 				}
 
@@ -477,7 +481,7 @@ namespace wfe {
 					VkBaseOutStructure* nextStruct = featureStruct->pNext;
 
 					// Free the current struct
-					free(featureStruct);
+					FreeMemory(featureStruct);
 					featureStruct = nextStruct;
 				}
 			}
