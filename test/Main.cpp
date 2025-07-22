@@ -102,6 +102,9 @@ int main(int argc, char** args) {
 	// Create the program
 	wfe::Program* program = new wfe::Program(programInfo, programSettings);
 
+	// Store the start time for test component creation
+	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+
 	// Add the update listener
 	ArcballCameraInfo arcballInfo;
 	arcballInfo.program = program;
@@ -151,6 +154,13 @@ int main(int argc, char** args) {
 
 	// Set the ambient light color
 	program->GetEngineGraphics()->GetMainPipeline()->SetAmbientLightColor({ 0.05f, 0.05f, 0.05f });
+
+	// Store the end time for component creation
+	std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+
+	// Output the test component creation time
+	std::chrono::duration<float> duration = endTime - startTime;
+	program->GetLogger()->LogMessage(wfe::Logger::MESSAGE_LEVEL_INFO, (std::string)WFE_PROJECT_NAME + " components initialized successfully in " + std::to_string(duration.count()) + "s.");
 
 	// Run the program
 	wfe::int32_t returnCode = program->Run();

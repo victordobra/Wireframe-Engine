@@ -33,12 +33,12 @@ namespace wfe {
 		graphicsSystem = new GraphicsSystem(renderer, settings.maxFramesInFlight);
 		engineGraphics = new EngineGraphics(this);
 
-		// Store the end time for renderer initialization
+		// Store the end time for engine initialization
 		std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
 
 		// Output the initialization time
 		std::chrono::duration<float> duration = endTime - startTime;
-		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)info.programName + " initialized successfully in " + std::to_string(duration.count()) + "s.");
+		logger->LogMessage(Logger::MESSAGE_LEVEL_INFO, (std::string)info.programName + " engine initialized successfully in " + std::to_string(duration.count()) + "s.");
 	}
 
 	int32_t Program::Run() {
