@@ -467,6 +467,7 @@ namespace wfe {
 				deviceProperties = currentProperties;
 				deviceMemoryProperties = currentMemoryProperties;
 				deviceFeatures = currentFeatures;
+				totalMemorySize = currentMemorySize;
 
 				// Set the queue family indices and extensions
 				queues.graphicsIndex = graphicsIndex;
