@@ -68,12 +68,14 @@ namespace wfe {
 			/// @brief A vector containing the optional Vulkan device extensions.
 			std::vector<const char*> optionalVulkanDeviceExtensions = VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS;
 			
-			/// @brief The maximum number of entities that can be active at once.
-			size_t maxEntityCount = 256;
 			/// @brief The maximum number of frames in flight at a given moment.
 			size_t maxFramesInFlight = 2;
+			/// @brief The maximum number of entities that can be active at once.
+			size_t maxEntityCount = 256;
 			/// @brief The maximum number of materials that the renderer can handle.
 			size_t maxMaterialCount = 256;
+			/// @brief The maximum number of skyboxes that the renderer can handle.
+			size_t maxSkyboxCount = 8;
 		};
 
 		/// @brief Creates the program and its components.

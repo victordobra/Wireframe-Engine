@@ -78,13 +78,13 @@ namespace wfe {
 		x = -x;
 		y = -y;
 		z = -z;
-		w = -w;
+		w = w;
 
 		return *this;
 	}
 	Quaternion Quaternion::Inverted() const {
 		// Calculate the resulting quaternion's elements
-		return { -x, -y, -z, -w };
+		return { -x, -y, -z, w };
 	}
 
 	float Quaternion::Dot(const Quaternion& other) const {

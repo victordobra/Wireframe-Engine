@@ -33,6 +33,8 @@
 #include "Graphics/Main/Instance/MainPipeline.hpp"
 #include "Graphics/Main/Resources/Material.hpp"
 #include "Graphics/Main/Resources/RenderMesh.hpp"
+#include "Graphics/Skybox/Instance/SkyboxPipeline.hpp"
+#include "Graphics/Skybox/Resources/Skybox.hpp"
 #include "Graphics/EngineGraphics.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 

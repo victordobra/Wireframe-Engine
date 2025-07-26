@@ -14,4 +14,10 @@ assets = [
         path = "TestCube.obj"
         dependencies = [ 1 ]
     }
+    {
+        id = 3
+        path = "Skybox.png"
+        type = "ImageCubemap"
+        dependencies = []
+    }
 ]

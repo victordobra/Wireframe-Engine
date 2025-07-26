@@ -19,11 +19,17 @@ namespace wfe {
         // Create the material manager and the main graphics pipeline
         materialManager = new MaterialManager(program, program->GetProgramSettings().maxMaterialCount);
         mainPipeline = new MainPipeline(this, cameraInfo);
+
+        // Create the skybox manager and the skybox graphics pipeline
+        skyboxManager = new SkyboxManager(program, program->GetProgramSettings().maxSkyboxCount);
+        skyboxPipeline = new SkyboxPipeline(this);
     }
 
     EngineGraphics::~EngineGraphics() {
         // Destroy all graphics components
         delete mainPipeline;
         delete materialManager;
+        delete skyboxPipeline;
+        delete skyboxManager;
     }
 }

@@ -3,6 +3,8 @@
 #include "Core/Types/Defines.hpp"
 #include "Main/Instance/MainPipeline.hpp"
 #include "Main/Resources/Material.hpp"
+#include "Skybox/Instance/SkyboxPipeline.hpp"
+#include "Skybox/Resources/Skybox.hpp"
 
 namespace wfe {
     class Program;
@@ -34,6 +36,16 @@ namespace wfe {
         MainPipeline* GetMainPipeline() const {
             return mainPipeline;
         }
+        /// @brief Gets the skybox manager used by the engine.
+        /// @return The skybox manager used by the engine.
+        SkyboxManager* GetSkyboxManager() const {
+            return skyboxManager;
+        }
+        /// @brief Gets the skybox graphics pipeline used by the engine.
+        /// @return The skybox graphics pipeline used by the engine.
+        SkyboxPipeline* GetSkyboxPipeline() const {
+            return skyboxPipeline;
+        }
 
         /// @brief Destroys the engine's graphics components.
         ~EngineGraphics();
@@ -42,5 +54,7 @@ namespace wfe {
 
         MaterialManager* materialManager;
         MainPipeline* mainPipeline;
+        SkyboxManager* skyboxManager;
+        SkyboxPipeline* skyboxPipeline;
     };
 }

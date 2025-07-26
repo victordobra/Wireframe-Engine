@@ -355,8 +355,8 @@ namespace wfe {
 			.depthClampEnable = VK_TRUE,
 			.rasterizerDiscardEnable = VK_FALSE,
 			.polygonMode = VK_POLYGON_MODE_FILL,
-			.cullMode = VK_CULL_MODE_FRONT_BIT,
-			.frontFace = VK_FRONT_FACE_CLOCKWISE,
+			.cullMode = VK_CULL_MODE_BACK_BIT,
+			.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
 			.depthBiasEnable = VK_FALSE,
 			.depthBiasConstantFactor = 0.0f,
 			.depthBiasClamp = 0.0f,
@@ -676,7 +676,7 @@ namespace wfe {
 		for(size_t i = 0; i != sceneInfoBufferMemories.size(); ++i)
 			device->GetAllocator()->FreeMemory(sceneInfoBufferMemories[i]);
 
-		// Free all command buffers and free their command pool
+		// Free all command buffers and destroy their command pool
 		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), commandPool, (uint32_t)commandBuffers.size(), commandBuffers.data());
 		device->GetLoader()->vkDestroyCommandPool(device->GetDevice(), commandPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}

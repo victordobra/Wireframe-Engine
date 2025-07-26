@@ -50,7 +50,7 @@ static void* FrameEventCallback(void* userData, void* params) {
 	position = (position * arcballInfo.radius) + arcballInfo.center;
 
 	// Calculate the camera's rotation
-	wfe::Quaternion rotation = wfe::Quaternion::EulerAngles({ -arcballInfo.xAngle, arcballInfo.yAngle, 0.0f });
+	wfe::Quaternion rotation = wfe::Quaternion::AroundAxis(wfe::Vector3::RIGHT, arcballInfo.xAngle) * wfe::Quaternion::AroundAxis(wfe::Vector3::UP, -arcballInfo.yAngle);
 
 	// Set the camera's info
 	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetEngineGraphics()->GetMainPipeline();
@@ -94,9 +94,10 @@ int main(int argc, char** args) {
 		.optionalVulkanDeviceFeatures = wfe::VulkanDevice::DEFAULT_OPTIONAL_DEVICE_FEATURES,
 		.requiredVulkanDeviceExtensions = wfe::VulkanDevice::DEFAULT_REQUIRED_DEVICE_EXTENSIONS,
 		.optionalVulkanDeviceExtensions = wfe::VulkanDevice::DEFAULT_OPTIONAL_DEVICE_EXTENSIONS,
-		.maxEntityCount = 256,
 		.maxFramesInFlight = 2,
-		.maxMaterialCount = 256
+		.maxEntityCount = 256,
+		.maxMaterialCount = 256,
+		.maxSkyboxCount = 8
 	};
 
 	// Create the program
@@ -113,6 +114,10 @@ int main(int argc, char** args) {
 	// Import the asset directory
 	wfe::AssetDirectory* assetDir = new wfe::AssetDirectory(program, "assets/");
 	assetDir->Import();
+
+	// Create and set the skybox
+	wfe::Skybox* skybox = new wfe::Skybox(program->GetEngineGraphics()->GetSkyboxManager(), (wfe::ImageCubemap*)program->GetAssetManager()->GetAsset(3));
+	program->GetEngineGraphics()->GetSkyboxPipeline()->SetSkybox(skybox);
 
 	// Get the render object from the directory
 	wfe::RenderObject* renderObject = (wfe::RenderObject*)program->GetAssetManager()->GetAsset(2);
@@ -169,6 +174,9 @@ int main(int argc, char** args) {
 	program->GetEntityManager()->DestroyEntity(meshRendererEntity);
 	program->GetEntityManager()->DestroyEntity(sunLightEntity);
 	program->GetEntityManager()->DestroyEntity(pointLightEntity);
+
+	// Destroy the skybox
+	delete skybox;
 
 	// Destroy the asset directory
 	delete assetDir;
