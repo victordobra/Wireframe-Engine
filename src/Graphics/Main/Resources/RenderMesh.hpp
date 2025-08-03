@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Core/Math/Vector2.hpp"
-#include "Core/Math/Vector3.hpp"
+#include "Core/Math/General/VecUtils.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 
@@ -12,11 +11,11 @@ namespace wfe {
 		/// @brief A struct containing a singular vertex's info
 		struct Vertex {
 			/// @brief The vertex's position.
-			Vector3 position;
+			Vec3f position;
 			/// @brief The vertex's UV coordinates.
-			Vector2 uvCoord;
+			Vec2f uvCoord;
 			/// @brief THe vertex's unit normal vector.
-			Vector3 normal;
+			Vec3f normal;
 		};
 
 		/// @brief Creates a new render mesh.

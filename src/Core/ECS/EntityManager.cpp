@@ -31,9 +31,9 @@ namespace wfe {
 
 		// Reset the entity's transform
 		transforms[entity] = {
-			.pos = Vector3::ZERO,
-			.rot = Quaternion::IDENTITY,
-			.scale = Vector3::ONE
+			.pos = VEC3F_ZERO,
+			.rot = QUATF_IDENTITY,
+			.scale = VEC3F_ONE
 		};
 
 		return entity;

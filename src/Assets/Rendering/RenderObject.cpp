@@ -248,9 +248,9 @@ namespace wfe {
 		// Save the current render mesh's info
 		std::string currentName;
 		std::string currentMaterialName;
-		std::vector<Vector3> positions;
-		std::vector<Vector2> uvCoords;
-		std::vector<Vector3> normals;
+		std::vector<Vec3f> positions;
+		std::vector<Vec2f> uvCoords;
+		std::vector<Vec3f> normals;
 		std::unordered_map<ArrVertex, uint32_t> arrVertices;
 		std::vector<uint32_t> indices;
 
@@ -323,26 +323,25 @@ namespace wfe {
 				strStream >> currentName;
 			} else if(keyword == "v") {
 				// Read the current position
-				Vector3 position;
+				Vec3f position;
 				strStream >> position.x >> position.y >> position.z;
 
 				// Add the position to the array
 				positions.push_back(position);
 			} else if(keyword == "vt") {
 				// Read the current UV coordinate
-				Vector2 uvCoord;
+				Vec2f uvCoord;
 				strStream >> uvCoord.x >> uvCoord.y;
 				
 				// Add the UV coordinate to the array
 				uvCoords.push_back(uvCoord);
 			} else if(keyword == "vn") {
 				// Read the current normal and reduce it to a unit vector (not guaranteed by the Wavefront specification!)
-				Vector3 normal;
+				Vec3f normal;
 				strStream >> normal.x >> normal.y >> normal.z;
-				normal.Normalize();
 
 				// Add the normal to the array
-				normals.push_back(normal);
+				normals.push_back(VecNormalized(normal));
 			} else if(keyword == "f") {
 				// Read the three index strings
 				std::string face1, face2, face3;
@@ -371,10 +370,10 @@ namespace wfe {
 				};
 
 				// Check if the face was defined counter-clockwise, as required by the pipeline
-				Vector3 totalNormal = normals[vert1.normIndex] + normals[vert2.normIndex] + normals[vert3.normIndex];
-				Vector3 crossNormal = (positions[vert2.posIndex] - positions[vert1.posIndex]).Cross(positions[vert3.posIndex] - positions[vert1.posIndex]);
+				Vec3f totalNormal = normals[vert1.normIndex] + normals[vert2.normIndex] + normals[vert3.normIndex];
+				Vec3f crossNormal = VecCross(positions[vert2.posIndex] - positions[vert1.posIndex], positions[vert3.posIndex] - positions[vert1.posIndex]);
 
-				if(totalNormal.Dot(crossNormal) < 0.0f) {
+				if(VecDot(totalNormal, crossNormal) < 0.0f) {
 					// Swap to of the vertices
 					ArrVertex aux = vert2;
 					vert2 = vert3;
@@ -509,9 +508,9 @@ namespace wfe {
 			items[i].mesh->GetMeshData(vertices.data(), indices.data());
 
 			// Get all unique positions, UV coordinates and normals
-			std::unordered_map<Vector3, uint32_t> positions;
-			std::unordered_map<Vector2, uint32_t> uvCoords;
-			std::unordered_map<Vector3, uint32_t> normals;
+			std::unordered_map<Vec3f, uint32_t> positions;
+			std::unordered_map<Vec2f, uint32_t> uvCoords;
+			std::unordered_map<Vec3f, uint32_t> normals;
 
 			for(size_t j = 0; j != vertices.size(); ++j) {
 				positions.insert({ vertices[j].position, 0 });

@@ -185,8 +185,8 @@ namespace wfe {
 					items.push_back({ currentName, new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), currentData, currentTextures) });
 				
 				// Reset the material info
-				currentData.ambientColor = Vector4::ONE;
-				currentData.diffuseColor = Vector4::ONE;
+				currentData.ambientColor = VEC4F_ONE;
+				currentData.diffuseColor = VEC4F_ONE;
 
 				currentTextures.ambientTexture = defaultTexture;
 				currentTextures.diffuseTexture = defaultTexture;

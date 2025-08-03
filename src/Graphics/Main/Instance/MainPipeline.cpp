@@ -1,5 +1,5 @@
 #include "MainPipeline.hpp"
-#include "Core/Math/Matrix4x4.hpp"
+#include "Core/Math/General/MatUtils.hpp"
 #include "Graphics/Main/Components/MeshRenderer.hpp"
 #include "Graphics/Main/Components/SceneLight.hpp"
 #include "Graphics/EngineGraphics.hpp"
@@ -13,21 +13,21 @@ namespace wfe {
 	const uint32_t MAX_LIGHT_COUNT = 64;
 
 	// Structs
-	struct WFE_ALIGNAS(sizeof(Vector4)) SunLightInfo {
-		Vector4 color;
-		Vector4 direction;
+	struct WFE_ALIGNAS(sizeof(Vec4f)) SunLightInfo {
+		Vec4f color;
+		Vec4f direction;
 	};
-	struct WFE_ALIGNAS(sizeof(Vector4)) PointLightInfo {
-		Vector4 color;
-		Vector4 position;
+	struct WFE_ALIGNAS(sizeof(Vec4f)) PointLightInfo {
+		Vec4f color;
+		Vec4f position;
 	};
 
-	struct SceneInfo {
-		Matrix4x4 cameraTransform;
-		Vector4 cameraPos;
-		Vector4 cameraFwd;
+	struct WFE_ALIGNAS(sizeof(Vec4f)) SceneInfo {
+		Mat4x4f cameraTransform;
+		Vec4f cameraPos;
+		Vec4f cameraFwd;
 
-		Vector4 ambientLightColor;
+		Vec4f ambientLightColor;
 
 		uint32_t sunLightCount;
 		uint32_t pointLightCount;
@@ -36,8 +36,8 @@ namespace wfe {
 		PointLightInfo pointLights[MAX_LIGHT_COUNT];
 	};
 	struct PushConstants {
-		Matrix4x4 objectTransform;
-		Matrix4x4 normalTransform;
+		Mat4x4f objectTransform;
+		Mat4x4f normalTransform;
 	};
 
 	// Shader sources
@@ -539,22 +539,22 @@ namespace wfe {
 		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoBufferMemories[frameIndex]);
 
 		// Set the camera's info in the scene info
-		Matrix4x4 cameraProjection;
+		Mat4x4f cameraProjection;
 		float aspectRatio = (float)extent.width / extent.height;
 
 		switch(cameraInfo.cameraType) {
 		case CAMERA_TYPE_PERSPECTIVE:
-			cameraProjection = Matrix4x4::PerspectiveProjection(cameraInfo.perspectiveInfo.fov, aspectRatio, cameraInfo.perspectiveInfo.nearPlane, cameraInfo.perspectiveInfo.farPlane);
+			cameraProjection = Mat4x4PerspectiveProjection(cameraInfo.perspectiveInfo.fov, aspectRatio, cameraInfo.perspectiveInfo.nearPlane, cameraInfo.perspectiveInfo.farPlane);
 			break;
 		case CAMERA_TYPE_ORTOGRAPHIC:
-			cameraProjection = Matrix4x4::OrtographicProjection(-cameraInfo.ortographicInfo.viewHeight * aspectRatio, cameraInfo.ortographicInfo.viewHeight * aspectRatio, -cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.nearPlane, cameraInfo.ortographicInfo.farPlane);
+			cameraProjection = Mat4x4OrtographicProjection(-cameraInfo.ortographicInfo.viewHeight * aspectRatio, cameraInfo.ortographicInfo.viewHeight * aspectRatio, -cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.viewHeight, cameraInfo.ortographicInfo.nearPlane, cameraInfo.ortographicInfo.farPlane);
 		}
 
-		Matrix4x4 cameraTransform = Matrix4x4::Translation(-cameraInfo.pos) * Matrix4x4::Rotation(cameraInfo.rot.Inverted()) * cameraProjection;
+		Mat4x4f cameraTransform = cameraProjection * Mat4x4Rotate(QuatConjugate(cameraInfo.rot)) * Mat4x4Translate(-cameraInfo.pos);
 
-		sceneInfo->cameraTransform = cameraTransform.Transposed();
-		sceneInfo->cameraPos = (Vector4)cameraInfo.pos;
-		sceneInfo->cameraFwd = (Vector4)(Vector3::FORWARD * Matrix4x4::Rotation(cameraInfo.rot));
+		sceneInfo->cameraTransform = MatTranspose(cameraTransform);
+		sceneInfo->cameraPos = { cameraInfo.pos.x, cameraInfo.pos.y, cameraInfo.pos.z, 1.0f };
+		sceneInfo->cameraFwd = Mat4x4Rotate(cameraInfo.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f };
 
 		sceneInfo->ambientLightColor = { ambientLightColor.x, ambientLightColor.y, ambientLightColor.z, 1.0f };
 
@@ -581,8 +581,8 @@ namespace wfe {
 				
 				// Add the current sun light to the scene info
 				sceneInfo->sunLights[sceneInfo->sunLightCount++] = {
-					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity),
-					.direction = (Vector4)(Vector3::FORWARD * Matrix4x4::Rotation(transform.rot))
+					.color = { sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity },
+					.direction = Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f }
 				};
 
 				break;
@@ -593,8 +593,8 @@ namespace wfe {
 				
 				// Add the current point light to the scene info
 				sceneInfo->pointLights[sceneInfo->pointLightCount++] = {
-					.color = Vector4(sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity),
-					.position = (Vector4)transform.pos
+					.color = { sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity },
+					.position = { transform.pos.x, transform.pos.y, transform.pos.z, 1.0f }
 				};
 
 				break;
@@ -612,13 +612,13 @@ namespace wfe {
 			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
 
 			// Calculate the object's transformation matrix
-			Matrix4x4 objectTransform = Matrix4x4::Transform(transform.pos, transform.rot, transform.scale);
-			Matrix4x4 normalTransform = Matrix4x4::Rotation(transform.rot.Inverted()) * Matrix4x4::Scaling(1 / transform.scale); // The normal transform matrix transpose and GLSL standard matrix transpose cancel each other out
+			Mat4x4f objectTransform = Mat4x4Translate(transform.pos) * Mat4x4Rotate(transform.rot) * Mat4x4Scale(transform.scale);
+			Mat4x4f normalTransform = MatTranspose(Mat4x4Scale(1.0f / transform.scale) * Mat4x4Rotate(QuatConjugate(transform.rot)));
 
 			// Set the push constants
 			PushConstants pushConstants {
-				.objectTransform = objectTransform.Transposed(),
-				.normalTransform = normalTransform
+				.objectTransform = MatTranspose(objectTransform),
+				.normalTransform = MatTranspose(normalTransform)
 			};
 
 			// Bind the descriptor sets and set the push constants

@@ -8,9 +8,9 @@ struct ArcballCameraInfo {
 	float xAngle = 0.0f;
 	float yAngle = 0.0f;
 
-	wfe::Vector3 center = wfe::Vector3::ZERO;
+	wfe::Vec3f center = wfe::VEC3F_ZERO;
 	float radius = 5.0f;
-	float cameraVel = 0.004f;
+	float cameraVel = 0.002f;
 };
 
 static void* FrameEventCallback(void* userData, void* params) {
@@ -28,29 +28,29 @@ static void* FrameEventCallback(void* userData, void* params) {
 		arcballInfo.yAngle += -movement.x * arcballInfo.cameraVel;
 
 		// Clamp the X angle, to avoid the camera turning over
-		if(arcballInfo.xAngle > M_PI_2) {
-			arcballInfo.xAngle = (float)M_PI_2;
-		} else if(arcballInfo.xAngle < -M_PI_2) {
-			arcballInfo.xAngle = (float)-M_PI_2;
+		if(arcballInfo.xAngle > wfe::HALF_PI_F) {
+			arcballInfo.xAngle = wfe::HALF_PI_F;
+		} else if(arcballInfo.xAngle < -wfe::HALF_PI_F) {
+			arcballInfo.xAngle = -wfe::HALF_PI_F;
 		}
 
 		// Loop the Y angle
-		while(arcballInfo.yAngle > M_PI)
-			arcballInfo.yAngle -= (float)M_PI * 2;
-		while(arcballInfo.yAngle < -M_PI)
-			arcballInfo.yAngle += (float)M_PI * 2;
+		while(arcballInfo.yAngle > wfe::PI_F)
+			arcballInfo.yAngle -= wfe::PI_F * 2.0f;
+		while(arcballInfo.yAngle < -wfe::PI_F)
+			arcballInfo.yAngle += wfe::PI_F * 2.0f;
 	}
 
 	// Calculate the camera's position
-	wfe::Vector3 position {
-		sinf(arcballInfo.yAngle) * cosf(arcballInfo.xAngle),
-		sinf(arcballInfo.xAngle),
-		cosf(arcballInfo.yAngle) * cosf(arcballInfo.xAngle)
+	wfe::Vec3f position {
+		wfe::Sin(arcballInfo.yAngle) * wfe::Cos(arcballInfo.xAngle),
+		wfe::Sin(arcballInfo.xAngle),
+		wfe::Cos(arcballInfo.yAngle) * wfe::Cos(arcballInfo.xAngle)
 	};
 	position = (position * arcballInfo.radius) + arcballInfo.center;
 
 	// Calculate the camera's rotation
-	wfe::Quaternion rotation = wfe::Quaternion::AroundAxis(wfe::Vector3::RIGHT, arcballInfo.xAngle) * wfe::Quaternion::AroundAxis(wfe::Vector3::UP, -arcballInfo.yAngle);
+	wfe::Quatf rotation = wfe::QuatRotAroundAxis(arcballInfo.yAngle, wfe::VEC3F_UP) * wfe::QuatRotAroundAxis(-arcballInfo.xAngle, wfe::VEC3F_RIGHT);
 
 	// Set the camera's info
 	wfe::MainPipeline* mainPipeline = arcballInfo.program->GetEngineGraphics()->GetMainPipeline();
@@ -142,23 +142,23 @@ int main(int argc, char** args) {
 	wfe::SceneLight* sunLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(sunLightEntity);
 
 	sunLight->lightType = wfe::SceneLight::LIGHT_TYPE_SUN;
-	sunLight->lightColor = wfe::Vector3(1.0f, 1.0f, 1.0f);
+	sunLight->lightColor = { 1.0f, 1.0f, 1.0f };
 	sunLight->lightIntensity = 0.8f;
 
-	program->GetEntityManager()->GetEntityTransform(sunLightEntity).rot = wfe::Quaternion::EulerAngles({ (float)M_PI_4, (float)M_PI_4, 0.0f });
+	program->GetEntityManager()->GetEntityTransform(sunLightEntity).rot = wfe::QuatRotAroundAxis(-wfe::QUARTER_PI_F, wfe::VEC3F_UP) * wfe::QuatRotAroundAxis(-wfe::QUARTER_PI_F, wfe::VEC3F_RIGHT);
 
 	// Create the point light entity
 	wfe::Entity pointLightEntity = program->GetEntityManager()->CreateEntity();
 	wfe::SceneLight* pointLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(pointLightEntity);
 
 	pointLight->lightType = wfe::SceneLight::LIGHT_TYPE_POINT;
-	pointLight->lightColor = wfe::Vector3(0.0f, 1.0f, 0.0f);
+	pointLight->lightColor = { 0.0f, 1.0f, 0.0f };
 	pointLight->lightIntensity = 3.0f;
 
 	program->GetEntityManager()->GetEntityTransform(pointLightEntity).pos = { 3.0f, -3.0f, 0.0f };
 
 	// Set the ambient light color
-	program->GetEngineGraphics()->GetMainPipeline()->SetAmbientLightColor({ 0.05f, 0.05f, 0.05f });
+	program->GetEngineGraphics()->GetMainPipeline()->SetAmbientLightColor({ 0.02f, 0.02f, 0.02f });
 
 	// Store the end time for component creation
 	std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();

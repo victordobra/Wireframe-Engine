@@ -35,7 +35,7 @@ endif()
 
 # Create the engine library
 add_library(${ENGINE_NAME} STATIC ${ENGINE_SOURCES})
-target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
+target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_23)
 message(STATUS "Engine library created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
@@ -70,7 +70,7 @@ endif()
 
 # Create the test project executable
 add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES})
-target_compile_features(${TEST_PROJECT_NAME} PUBLIC cxx_std_20)
+target_compile_features(${TEST_PROJECT_NAME} PUBLIC cxx_std_23)
 message(STATUS "Test project executable created successfully.")
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")

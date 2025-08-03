@@ -1,8 +1,7 @@
 #include "SkyboxPipeline.hpp"
-#include "Core/Math/Matrix4x4.hpp"
+#include "Core/Math/General/MatUtils.hpp"
 #include "Graphics/EngineGraphics.hpp"
 #include "Main/Program.hpp"
-#include <math.h>
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
@@ -10,7 +9,7 @@
 namespace wfe {
 	// Structs
 	struct PushConstants {
-		Vector4 skyboxPoints[4];
+		Vec4f skyboxPoints[4];
 	};
 
 	// Shader sources
@@ -96,7 +95,7 @@ namespace wfe {
 		switch(cameraInfo.cameraType) {
 		case MainPipeline::CAMERA_TYPE_PERSPECTIVE: {
 			// Calculate the vertical and horizontal dimensions
-			float verticalSize = tanf(cameraInfo.perspectiveInfo.fov * 0.5f);
+			float verticalSize = Tan(cameraInfo.perspectiveInfo.fov * 0.5f);
 			float horizontalSize = verticalSize * (viewport.width / viewport.height);
 
 			// Set the top-right corner's coordinates
@@ -117,9 +116,9 @@ namespace wfe {
 		pushConstants.skyboxPoints[2] = { -pushConstants.skyboxPoints[3].x,  pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
 
 		// Apply the camera's rotation vector to all three points
-		Matrix4x4 cameraRotTransform = Matrix4x4::Rotation(cameraInfo.rot);
+		Mat4x4f cameraRotTransform = Mat4x4Rotate(cameraInfo.rot);
 		for(size_t i = 0; i != 4; ++i)
-			pushConstants.skyboxPoints[i] = pushConstants.skyboxPoints[i] * cameraRotTransform;
+			pushConstants.skyboxPoints[i] = cameraRotTransform * pushConstants.skyboxPoints[i];
 
 		// Push the skybox points and far plane to the shader
 		loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);

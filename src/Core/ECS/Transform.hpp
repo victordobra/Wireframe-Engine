@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Core/Math/Vector3.hpp"
-#include "Core/Math/Quaternion.hpp"
+#include "Core/Math/General/VecUtils.hpp"
+#include "Core/Math/General/QuatUtils.hpp"
 
 namespace wfe {
 	/// @brief A struct representing the position, rotation and size of an entity.
 	struct Transform {
 		/// @brief The entity's position.
-		Vector3 pos = Vector3::ZERO;
+		Vec3f pos = VEC3F_ZERO;
 		/// @brief The entity's rotation.
-		Quaternion rot = Quaternion::IDENTITY;
+		Quatf rot = QUATF_IDENTITY;
 		/// @brief The entity's scale.
-		Vector3 scale = Vector3::ONE;
+		Vec3f scale = VEC3F_ONE;
 	};
 }

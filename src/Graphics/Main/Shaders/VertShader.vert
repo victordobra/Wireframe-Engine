@@ -46,10 +46,10 @@ layout(location = 2) out vec3 globalNorm;
 
 void main() {
 	// Pass on the global position, normal and UV coordinates to the fragment shader
-	globalPos = (vec4(pos, 1.0) * objectTransform).xyz;
+	globalPos = (objectTransform * vec4(pos, 1.0)).xyz;
 	globalUV = uv;
-	globalNorm = (vec4(norm, 1.0) * normalTransform).xyz;
+	globalNorm = (normalTransform * vec4(norm, 1.0)).xyz;
 
 	// Calculate the vertex's camera position
-	gl_Position = vec4(globalPos, 1.0) * cameraTransform;
+	gl_Position = cameraTransform * vec4(globalPos, 1.0);
 }

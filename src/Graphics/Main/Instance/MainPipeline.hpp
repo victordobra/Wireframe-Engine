@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Math/Vector3.hpp"
-#include "Core/Math/Vector4.hpp"
+#include "Core/Math/General/VecUtils.hpp"
+#include "Core/Math/General/QuatUtils.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 
@@ -40,9 +40,9 @@ namespace wfe {
 		/// @brief The camera's information.
 		struct CameraInfo {
 			/// @brief The camera's position.
-			Vector3 pos;
+			Vec3f pos;
 			/// @brief The camera's rotation.
-			Quaternion rot;
+			Quatf rot;
 			/// @brief The camera's projection type.
 			CameraType cameraType;
 
@@ -75,7 +75,7 @@ namespace wfe {
 		}
 		/// @brief Gets the color of the ambient light.
 		/// @return The color of the ambient light.
-		Vector3 GetAmbientLightColor() const {
+		Vec3f GetAmbientLightColor() const {
 			return ambientLightColor;
 		}
 		/// @brief Gets the camera's information.
@@ -111,7 +111,7 @@ namespace wfe {
 		}
 		/// @brief Sets the color of the ambient light.
 		/// @param newAmbientLightColor The new color of the ambient light.
-		void SetAmbientLightColor(const Vector3& newAmbientLightColor) {
+		void SetAmbientLightColor(const Vec3f& newAmbientLightColor) {
 			ambientLightColor = newAmbientLightColor;
 		}
 
@@ -125,7 +125,7 @@ namespace wfe {
 
 		Program* program;
 		CameraInfo cameraInfo;
-		Vector3 ambientLightColor;
+		Vec3f ambientLightColor;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;

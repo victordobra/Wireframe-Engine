@@ -2,7 +2,7 @@
 
 #include "Core/ECS/ComponentType.hpp"
 #include "Core/Types/Defines.hpp"
-#include "Core/Math/Vector3.hpp"
+#include "Core/Math/Templates/Vec3.hpp"
 
 namespace wfe {
 	/// @brief A component representing a light in the render scene.
@@ -19,7 +19,7 @@ namespace wfe {
 		/// @brief The light's type.
 		LightType lightType;
 		/// @brief The light's color.
-		Vector3 lightColor;
+		Vec3f lightColor;
 		/// @brief The light's intensity.
 		float lightIntensity;
 	private:

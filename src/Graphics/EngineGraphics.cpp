@@ -6,8 +6,8 @@ namespace wfe {
     EngineGraphics::EngineGraphics(Program* program) : program(program) {
 		// Set the default camera info
 		MainPipeline::CameraInfo cameraInfo {
-			.pos = Vector3::ZERO,
-			.rot = Quaternion::IDENTITY,
+			.pos = VEC3F_ZERO,
+			.rot = QUATF_IDENTITY,
 			.cameraType = MainPipeline::CAMERA_TYPE_PERSPECTIVE,
 			.perspectiveInfo = {
 				.fov = (float)M_PI_2,

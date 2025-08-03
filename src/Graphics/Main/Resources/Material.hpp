@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Assets/Rendering/ImageTexture.hpp"
-#include "Core/Math/Vector4.hpp"
+#include "Core/Math/Templates/Vec4.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 #include <vulkan/vk_platform.h>
@@ -68,9 +68,9 @@ namespace wfe {
 		/// @brief A struct that contains all material general data.
 		struct MaterialData {
 			/// @brief The color affected by ambient lighting.
-			Vector4 ambientColor;
+			Vec4f ambientColor;
 			/// @brief The color affected by diffuse lighting.
-			Vector4 diffuseColor;
+			Vec4f diffuseColor;
 		};
 		/// @brief A struct that contains all image textures used by the material.
 		struct MaterialTextures {
