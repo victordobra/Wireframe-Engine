@@ -16,6 +16,16 @@ struct SunLightInfo {
 struct PointLightInfo {
 	vec4 color;
 	vec4 position;
+	float constantScaling;
+	float linearScaling;
+	float quadraticScaling;
+};
+struct SpotLightInfo {
+	vec4 color;
+	vec4 position;
+	vec4 direction;
+	float innerCutoff;
+	float outerCutoff;
 };
 
 // Scene info
@@ -28,9 +38,11 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 
 	uint sunLightCount;
 	uint pointLightCount;
+	uint spotLightCount;
 
 	SunLightInfo sunLights[MAX_LIGHT_COUNT];
 	PointLightInfo pointLights[MAX_LIGHT_COUNT];
+	SpotLightInfo spotLights[MAX_LIGHT_COUNT];
 };
 
 // Material info
@@ -55,7 +67,7 @@ vec4 GetDiffuseValue() {
 	// Calculate the sun light contribution
 	for(uint i = 0; i != sunLightCount; ++i) {
 		// Calculate the dot product between the light direction and the normal
-		float normalDot = max(dot(norm, -sunLights[i].direction.xyz), 0.0);
+		float normalDot = max(-dot(norm, sunLights[i].direction.xyz), 0.0);
 
 		// Add the sun light contribution
 		lightValue += sunLights[i].color.rgb * sunLights[i].color.a * normalDot;
@@ -64,15 +76,35 @@ vec4 GetDiffuseValue() {
 	// Calculate the point light contribution
 	for(uint i = 0; i != pointLightCount; ++i) {
 		// Calculate the distance from the point light to the fragment
-		vec3 distanceVec = pointLights[i].position.xyz - pos;
-		float distanceSqr = dot(distanceVec, distanceVec);
-		distanceVec *= inversesqrt(distanceSqr);
+		vec3 distVec = pointLights[i].position.xyz - pos;
+		float distSqr = dot(distVec, distVec);
+		float dist = sqrt(distSqr);
+		distVec /= dist;
+
+		// Calculate the light's intensity
+		float lightIntensity = pointLights[i].color.a / (pointLights[i].constantScaling + pointLights[i].linearScaling * dist + pointLights[i].quadraticScaling * distSqr);
 
 		// Calculate the dot product between the light direction and the normal
-		float normalDot = max(dot(norm, distanceVec), 0.0);
+		float normalDot = max(dot(norm, distVec), 0.0);
 
-		// Add the sun light contribution
-		lightValue += pointLights[i].color.rgb * pointLights[i].color.a * normalDot / distanceSqr;
+		// Add the point light contribution
+		lightValue += pointLights[i].color.rgb * normalDot * lightIntensity;
+	}
+
+	// Calculate the spot light contribution
+	for(uint i = 0; i != spotLightCount; ++i) {
+		// Calculate the direction vector from the spot light to the current point
+		vec3 pointDir = normalize(pos - spotLights[i].position.xyz);
+		float pointDot = dot(spotLights[i].direction.xyz, pointDir);
+
+		// Calculate the light's intensity
+		float lightIntensity = spotLights[i].color.a * clamp((pointDot - spotLights[i].outerCutoff) / (spotLights[i].innerCutoff - spotLights[i].outerCutoff), 0.0, 1.0);
+
+		// Calculate the dot product between the light direction and the normal
+		float normalDot = max(-dot(norm, pointDir), 0.0);
+
+		// Add the point light contribution
+		lightValue += spotLights[i].color.rgb * normalDot * lightIntensity;
 	}
 
 	return texture(diffuseTex, uv) * diffuseColor * vec4(lightValue, 1.0);

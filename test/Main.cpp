@@ -142,8 +142,10 @@ int main(int argc, char** args) {
 	wfe::SceneLight* sunLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(sunLightEntity);
 
 	sunLight->lightType = wfe::SceneLight::LIGHT_TYPE_SUN;
-	sunLight->lightColor = { 1.0f, 1.0f, 1.0f };
-	sunLight->lightIntensity = 0.8f;
+	sunLight->sunLightInfo = {
+		.lightColor = { 1.0f, 1.0f, 1.0f },
+		.lightIntensity = 0.8f
+	};
 
 	program->GetEntityManager()->GetEntityTransform(sunLightEntity).rot = wfe::QuatRotAroundAxis(-wfe::QUARTER_PI_F, wfe::VEC3F_UP) * wfe::QuatRotAroundAxis(-wfe::QUARTER_PI_F, wfe::VEC3F_RIGHT);
 
@@ -152,8 +154,13 @@ int main(int argc, char** args) {
 	wfe::SceneLight* pointLight = (wfe::SceneLight*)program->GetEntityManager()->GetComponentList(sceneLightTypeIndex)->CreateComponent(pointLightEntity);
 
 	pointLight->lightType = wfe::SceneLight::LIGHT_TYPE_POINT;
-	pointLight->lightColor = { 0.0f, 1.0f, 0.0f };
-	pointLight->lightIntensity = 3.0f;
+	pointLight->pointLightInfo = {
+		.lightColor = { 0.0f, 1.0f, 0.0f },
+		.lightIntensity = 3.0f,
+		.constantScaling = 1.0f,
+		.linearScaling = 0.7f,
+		.quadraticScaling = 1.8f
+	};
 
 	program->GetEntityManager()->GetEntityTransform(pointLightEntity).pos = { 3.0f, -3.0f, 0.0f };
 

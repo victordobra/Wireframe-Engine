@@ -20,6 +20,16 @@ namespace wfe {
 	struct WFE_ALIGNAS(sizeof(Vec4f)) PointLightInfo {
 		Vec4f color;
 		Vec4f position;
+		float constantScaling;
+		float linearScaling;
+		float quadraticScaling;
+	};
+	struct WFE_ALIGNAS(sizeof(Vec4f)) SpotLightInfo {
+		Vec4f color;
+		Vec4f position;
+		Vec4f direction;
+		float innerCutoff;
+		float outerCutoff;
 	};
 
 	struct WFE_ALIGNAS(sizeof(Vec4f)) SceneInfo {
@@ -31,9 +41,11 @@ namespace wfe {
 
 		uint32_t sunLightCount;
 		uint32_t pointLightCount;
+		uint32_t spotLightCount;
 
 		SunLightInfo sunLights[MAX_LIGHT_COUNT];
 		PointLightInfo pointLights[MAX_LIGHT_COUNT];
+		SpotLightInfo spotLights[MAX_LIGHT_COUNT];
 	};
 	struct PushConstants {
 		Mat4x4f objectTransform;
@@ -581,7 +593,7 @@ namespace wfe {
 				
 				// Add the current sun light to the scene info
 				sceneInfo->sunLights[sceneInfo->sunLightCount++] = {
-					.color = { sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity },
+					.color = { sceneLight.sunLightInfo.lightColor.x, sceneLight.sunLightInfo.lightColor.y, sceneLight.sunLightInfo.lightColor.z, sceneLight.sunLightInfo.lightIntensity },
 					.direction = Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f }
 				};
 
@@ -593,8 +605,26 @@ namespace wfe {
 				
 				// Add the current point light to the scene info
 				sceneInfo->pointLights[sceneInfo->pointLightCount++] = {
-					.color = { sceneLight.lightColor.x, sceneLight.lightColor.y, sceneLight.lightColor.z, sceneLight.lightIntensity },
-					.position = { transform.pos.x, transform.pos.y, transform.pos.z, 1.0f }
+					.color = { sceneLight.pointLightInfo.lightColor.x, sceneLight.pointLightInfo.lightColor.y, sceneLight.pointLightInfo.lightColor.z, sceneLight.pointLightInfo.lightIntensity },
+					.position = { transform.pos.x, transform.pos.y, transform.pos.z, 1.0f },
+					.constantScaling = sceneLight.pointLightInfo.constantScaling,
+					.linearScaling = sceneLight.pointLightInfo.linearScaling,
+					.quadraticScaling = sceneLight.pointLightInfo.quadraticScaling
+				};
+
+				break;
+			case SceneLight::LIGHT_TYPE_SPOT:
+				// Check if the max light count was already reached
+				if(sceneInfo->spotLightCount == MAX_LIGHT_COUNT)
+					throw std::length_error("Exceeded maximum spot light count!");
+				
+				// Add the current spot light to the scene info
+				sceneInfo->spotLights[sceneInfo->spotLightCount++] = {
+					.color = { sceneLight.spotLightInfo.lightColor.x, sceneLight.spotLightInfo.lightColor.y, sceneLight.spotLightInfo.lightColor.z, sceneLight.spotLightInfo.lightIntensity },
+					.position = { transform.pos.x, transform.pos.y, 1.0f },
+					.direction = Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f },
+					.innerCutoff = Cos(sceneLight.spotLightInfo.innerCutoff),
+					.outerCutoff = Cos(sceneLight.spotLightInfo.outerCutoff)
 				};
 
 				break;

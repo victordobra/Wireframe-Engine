@@ -16,6 +16,16 @@ struct SunLightInfo {
 struct PointLightInfo {
 	vec4 color;
 	vec4 position;
+	float constantScaling;
+	float linearScaling;
+	float quadraticScaling;
+};
+struct SpotLightInfo {
+	vec4 color;
+	vec4 position;
+	vec4 direction;
+	float innerCutoff;
+	float outerCutoff;
 };
 
 // Scene info
@@ -28,9 +38,11 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 
 	uint sunLightCount;
 	uint pointLightCount;
+	uint spotLightCount;
 
 	SunLightInfo sunLights[MAX_LIGHT_COUNT];
 	PointLightInfo pointLights[MAX_LIGHT_COUNT];
+	SpotLightInfo spotLights[MAX_LIGHT_COUNT];
 };
 
 // Push constants
