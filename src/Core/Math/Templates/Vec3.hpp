@@ -11,11 +11,11 @@ namespace wfe {
 	class Vec<3, T> {
 	public:
 		/// @brief The X component of the vector.
-		T x{};
+		T x;
 		/// @brief The Y component of the vector.
-		T y{};
+		T y;
 		/// @brief The Z component of the vector.
-		T z{};
+		T z;
 
 		/// @brief Gets the vector's component with the given index.
 		/// @param index The index of the component to find.

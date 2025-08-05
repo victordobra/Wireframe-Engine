@@ -9,13 +9,13 @@ namespace wfe {
 	class Quat {
 	public:
 		/// @brief The X component of the quaternion (the multiple of the i basis vector).
-		T x{};
+		T x;
 		/// @brief The Y component of the quaternion (the multiple of the j basis vector).
-		T y{};
+		T y;
 		/// @brief The Z component of the quaternion (the multiple of the k basis vector).
-		T z{};
+		T z;
 		/// @brief The W component of the quaternion (the multiple of the 1 basis vector).
-		T w{};
+		T w;
 
 		/// @brief Gets the quaternion's component with the given index.
 		/// @param index The index of the component to find.

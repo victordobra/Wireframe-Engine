@@ -12,7 +12,7 @@ namespace wfe {
 	class Mat {
 	public:
 		/// @brief The matrix's data.
-		T data[N][M]{};
+		T data[N][M];
 
 		/// @brief Gets the row with the given index.
 		/// @param index The row's index.
@@ -187,7 +187,7 @@ namespace wfe {
 	/// @return The resulting vector.
 	template<size_t N, size_t M, class T>
 	inline constexpr Vec<N, T> operator*(const Mat<N, M, T>& mat, const Vec<M, T>& vec) {
-		Vec<N, T> res;
+		Vec<N, T> res{};
 		for(size_t i = 0; i != N; ++i) {
 			for(size_t j = 0; j != M; ++j)
 				res[i] += mat.data[i][j] * vec[j];
@@ -204,7 +204,7 @@ namespace wfe {
 	/// @return The resulting vector.
 	template<size_t N, size_t M, class T>
 	inline constexpr Vec<M, T> operator*(const Vec<N, T>& vec, const Mat<N, M, T>& mat) {
-		Vec<M, T> res;
+		Vec<M, T> res{};
 		for(size_t i = 0; i != M; ++i) {
 			for(size_t j = 0; j != N; ++j)
 				res[i] += mat.data[j][i] * vec[j];
@@ -214,7 +214,7 @@ namespace wfe {
 	}
 	template<size_t N, size_t M, size_t P, class T> 
 	inline constexpr Mat<N, P, T> operator*(const Mat<N, M, T>& mat1, const Mat<M, P, T>& mat2) {
-		Mat<N, P, T> res;
+		Mat<N, P, T> res{};
 		for(size_t i = 0; i != N; ++i) {
 			for(size_t j = 0; j != P; ++j) {
 				for(size_t k = 0; k != M; ++k)
@@ -233,7 +233,7 @@ namespace wfe {
 	/// @return The resulting matrix.
 	template<size_t N, size_t M, class T>
 	inline constexpr Mat<N, M, T> operator/(const Mat<N, M, T>& mat, const T& scalar) {
-		Mat<N, M, T> res;
+		Mat<N, M, T> res{};
 		for(size_t i = 0; i != N; ++i) {
 			for(size_t j = 0; j != M; ++j)
 				res.data[i][j] = mat.data[i][j] / scalar;
