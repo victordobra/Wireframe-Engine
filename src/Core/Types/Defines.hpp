@@ -148,14 +148,4 @@ namespace wfe {
 /// @param macro1 The first macro to concatenate.
 /// @param macro2 The second macro to concatenate.
 #define WFE_MACRO_CONCAT(macro1, macro2) macro1 ## macro2
-
-#if defined(__GNUC__)
-/// @brief Aligns the current data type with the given number of bytes.
-/// @param alignment The alignment of the current structure.
-#define WFE_ALIGNAS(alignment) __attribute__((aligned(alignment)))
-#elif defined(_MSC_VER)
-/// @brief Aligns the current data type with the given number of bytes.
-/// @param alignment The alignment of the current structure.
-#define WFE_ALIGNAS(alignment) __declspec(align(alignment))
-#endif
 }

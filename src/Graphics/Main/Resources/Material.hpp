@@ -69,11 +69,11 @@ namespace wfe {
 		/// @brief A struct that contains all material general data.
 		struct MaterialData {
 			/// @brief The color affected by ambient lighting.
-			Vec4f ambientColor;
+			alignas(16) Vec3f ambientColor;
 			/// @brief The color affected by diffuse lighting.
-			Vec4f diffuseColor;
+			alignas(16) Vec3f diffuseColor;
 			/// @brief The color affected by specular lighting.
-			Vec3f specularColor;
+			alignas(16) Vec3f specularColor;
 			/// @brief The exponent for the specular component.
 			float specularExponent;
 		};

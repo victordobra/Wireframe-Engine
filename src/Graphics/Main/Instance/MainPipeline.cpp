@@ -13,31 +13,34 @@ namespace wfe {
 	const uint32_t MAX_LIGHT_COUNT = 64;
 
 	// Structs
-	struct WFE_ALIGNAS(sizeof(Vec4f)) SunLightInfo {
-		Vec4f color;
-		Vec4f direction;
+	struct alignas(16) SunLightInfo {
+		alignas(16) Vec3f color;
+		float intensity;
+		alignas(16) Vec3f direction;
 	};
-	struct WFE_ALIGNAS(sizeof(Vec4f)) PointLightInfo {
-		Vec4f color;
-		Vec4f position;
+	struct alignas(16) PointLightInfo {
+		alignas(16) Vec3f color;
+		float intensity;
+		alignas(16) Vec3f position;
 		float constantScaling;
 		float linearScaling;
 		float quadraticScaling;
 	};
-	struct WFE_ALIGNAS(sizeof(Vec4f)) SpotLightInfo {
-		Vec4f color;
-		Vec4f position;
-		Vec4f direction;
+	struct alignas(16) SpotLightInfo {
+		alignas(16) Vec3f color;
+		float intensity;
+		alignas(16) Vec3f position;
+		alignas(16) Vec3f direction;
 		float innerCutoff;
 		float outerCutoff;
 	};
 
-	struct WFE_ALIGNAS(sizeof(Vec4f)) SceneInfo {
+	struct alignas(16) SceneInfo {
 		Mat4x4f cameraTransform;
-		Vec4f cameraPos;
-		Vec4f cameraFwd;
+		alignas(16) Vec3f cameraPos;
+		alignas(16) Vec3f cameraFwd;
 
-		Vec4f ambientLightColor;
+		alignas(16) Vec3f ambientLightColor;
 
 		uint32_t sunLightCount;
 		uint32_t pointLightCount;
@@ -565,10 +568,10 @@ namespace wfe {
 		Mat4x4f cameraTransform = cameraProjection * Mat4x4Rotate(QuatConjugate(cameraInfo.rot)) * Mat4x4Translate(-cameraInfo.pos);
 
 		sceneInfo->cameraTransform = MatTranspose(cameraTransform);
-		sceneInfo->cameraPos = { cameraInfo.pos.x, cameraInfo.pos.y, cameraInfo.pos.z, 1.0f };
-		sceneInfo->cameraFwd = Mat4x4Rotate(cameraInfo.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f };
+		sceneInfo->cameraPos = { cameraInfo.pos.x, cameraInfo.pos.y, cameraInfo.pos.z };
+		sceneInfo->cameraFwd = (Vec3f)(Mat4x4Rotate(cameraInfo.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f });
 
-		sceneInfo->ambientLightColor = { ambientLightColor.x, ambientLightColor.y, ambientLightColor.z, 1.0f };
+		sceneInfo->ambientLightColor = { ambientLightColor.x, ambientLightColor.y, ambientLightColor.z };
 
 		// Reset the light counters
 		sceneInfo->sunLightCount = 0;
@@ -593,8 +596,9 @@ namespace wfe {
 				
 				// Add the current sun light to the scene info
 				sceneInfo->sunLights[sceneInfo->sunLightCount++] = {
-					.color = { sceneLight.sunLightInfo.lightColor.x, sceneLight.sunLightInfo.lightColor.y, sceneLight.sunLightInfo.lightColor.z, sceneLight.sunLightInfo.lightIntensity },
-					.direction = Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f }
+					.color = { sceneLight.sunLightInfo.lightColor.x, sceneLight.sunLightInfo.lightColor.y, sceneLight.sunLightInfo.lightColor.z },
+					.intensity = sceneLight.sunLightInfo.lightIntensity,
+					.direction = (Vec3f)(Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f })
 				};
 
 				break;
@@ -605,8 +609,9 @@ namespace wfe {
 				
 				// Add the current point light to the scene info
 				sceneInfo->pointLights[sceneInfo->pointLightCount++] = {
-					.color = { sceneLight.pointLightInfo.lightColor.x, sceneLight.pointLightInfo.lightColor.y, sceneLight.pointLightInfo.lightColor.z, sceneLight.pointLightInfo.lightIntensity },
-					.position = { transform.pos.x, transform.pos.y, transform.pos.z, 1.0f },
+					.color = { sceneLight.pointLightInfo.lightColor.x, sceneLight.pointLightInfo.lightColor.y, sceneLight.pointLightInfo.lightColor.z },
+					.intensity = sceneLight.pointLightInfo.lightIntensity,
+					.position = { transform.pos.x, transform.pos.y, transform.pos.z },
 					.constantScaling = sceneLight.pointLightInfo.constantScaling,
 					.linearScaling = sceneLight.pointLightInfo.linearScaling,
 					.quadraticScaling = sceneLight.pointLightInfo.quadraticScaling
@@ -620,9 +625,10 @@ namespace wfe {
 				
 				// Add the current spot light to the scene info
 				sceneInfo->spotLights[sceneInfo->spotLightCount++] = {
-					.color = { sceneLight.spotLightInfo.lightColor.x, sceneLight.spotLightInfo.lightColor.y, sceneLight.spotLightInfo.lightColor.z, sceneLight.spotLightInfo.lightIntensity },
-					.position = { transform.pos.x, transform.pos.y, 1.0f },
-					.direction = Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f },
+					.color = { sceneLight.spotLightInfo.lightColor.x, sceneLight.spotLightInfo.lightColor.y, sceneLight.spotLightInfo.lightColor.z },
+					.intensity = sceneLight.spotLightInfo.lightIntensity,
+					.position = { transform.pos.x, transform.pos.y, transform.pos.z },
+					.direction = (Vec3f)(Mat4x4Rotate(transform.rot) * Vec4f{ 0.0f, 0.0f, -1.0f, 1.0f }),
 					.innerCutoff = Cos(sceneLight.spotLightInfo.innerCutoff),
 					.outerCutoff = Cos(sceneLight.spotLightInfo.outerCutoff)
 				};

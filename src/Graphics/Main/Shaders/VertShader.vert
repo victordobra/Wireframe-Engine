@@ -10,20 +10,23 @@ layout(location = 2) in vec3 norm;
 
 // Light structures
 struct SunLightInfo {
-	vec4 color;
-	vec4 direction;
+	vec3 color;
+	float intensity;
+	vec3 direction;
 };
 struct PointLightInfo {
-	vec4 color;
-	vec4 position;
+	vec3 color;
+	float intensity;
+	vec3 position;
 	float constantScaling;
 	float linearScaling;
 	float quadraticScaling;
 };
 struct SpotLightInfo {
-	vec4 color;
-	vec4 position;
-	vec4 direction;
+	vec3 color;
+	float intensity;
+	vec3 position;
+	vec3 direction;
 	float innerCutoff;
 	float outerCutoff;
 };
@@ -31,10 +34,10 @@ struct SpotLightInfo {
 // Scene info
 layout(set = 0, binding = 0) uniform SceneInfo {
 	mat4x4 cameraTransform;
-	vec4 cameraPos;
-	vec4 cameraFwd;
+	vec3 cameraPos;
+	vec3 cameraFwd;
 
-	vec4 ambientLightColor;
+	vec3 ambientLightColor;
 
 	uint sunLightCount;
 	uint pointLightCount;

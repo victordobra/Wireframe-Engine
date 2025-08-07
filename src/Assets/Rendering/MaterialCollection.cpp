@@ -40,16 +40,15 @@ namespace wfe {
 			materialData.ambientColor.x = BinaryReadFloat(stream);
 			materialData.ambientColor.y = BinaryReadFloat(stream);
 			materialData.ambientColor.z = BinaryReadFloat(stream);
-			materialData.ambientColor.w = BinaryReadFloat(stream);
 
 			materialData.diffuseColor.x = BinaryReadFloat(stream);
 			materialData.diffuseColor.y = BinaryReadFloat(stream);
 			materialData.diffuseColor.z = BinaryReadFloat(stream);
-			materialData.diffuseColor.w = BinaryReadFloat(stream);
 
 			materialData.specularColor.x = BinaryReadFloat(stream);
 			materialData.specularColor.y = BinaryReadFloat(stream);
 			materialData.specularColor.z = BinaryReadFloat(stream);
+
 			materialData.specularExponent = BinaryReadFloat(stream);
 
 			// Read the material texture IDs
@@ -118,16 +117,15 @@ namespace wfe {
 			BinaryWriteFloat(stream, materialData.ambientColor.x);
 			BinaryWriteFloat(stream, materialData.ambientColor.y);
 			BinaryWriteFloat(stream, materialData.ambientColor.z);
-			BinaryWriteFloat(stream, materialData.ambientColor.w);
 
 			BinaryWriteFloat(stream, materialData.diffuseColor.x);
 			BinaryWriteFloat(stream, materialData.diffuseColor.y);
 			BinaryWriteFloat(stream, materialData.diffuseColor.z);
-			BinaryWriteFloat(stream, materialData.diffuseColor.w);
 
 			BinaryWriteFloat(stream, materialData.specularColor.x);
 			BinaryWriteFloat(stream, materialData.specularColor.y);
 			BinaryWriteFloat(stream, materialData.specularColor.z);
+
 			BinaryWriteFloat(stream, materialData.specularExponent);
 
 			// Write the material texture IDs
@@ -213,8 +211,8 @@ namespace wfe {
 					items.push_back({ currentName, new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), currentData, currentTextures) });
 				
 				// Reset the material info
-				currentData.ambientColor = VEC4F_ONE;
-				currentData.diffuseColor = VEC4F_ONE;
+				currentData.ambientColor = VEC3F_ONE;
+				currentData.diffuseColor = VEC3F_ONE;
 				currentData.specularColor = VEC3F_ONE;
 				currentData.specularExponent = 32.0f;
 
