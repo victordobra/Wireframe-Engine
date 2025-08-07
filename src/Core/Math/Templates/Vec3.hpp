@@ -139,6 +139,12 @@ namespace wfe {
 
 			return *this;
 		}
+
+		/// @brief Converts this vector to a two-dimensional vector, ignoring the Z component.
+		/// @return The two-dimensional vector resulting from the conversion.
+		constexpr explicit operator Vec<2, T>() const {
+			return { x, y };
+		}
 	};
 
 	/// @brief Checks if two vectors are equal.

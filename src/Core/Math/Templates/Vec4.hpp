@@ -153,6 +153,17 @@ namespace wfe {
 
 			return *this;
 		}
+
+		/// @brief Converts this vector to a two-dimensional vector, ignoring the Z and W components.
+		/// @return The two-dimensional vector resulting from the conversion.
+		constexpr explicit operator Vec<2, T>() const {
+			return { x, y };
+		}
+		/// @brief Converts this vector to a three-dimensional vector, ignoring the W component.
+		/// @return The three-dimensional vector resulting from the conversion.
+		constexpr explicit operator Vec<3, T>() const {
+			return { x, y, z };
+		}
 	};
 
 	/// @brief Checks if two vectors are equal.
