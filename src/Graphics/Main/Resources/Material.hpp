@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Assets/Rendering/ImageTexture.hpp"
+#include "Core/Math/Templates/Vec3.hpp"
 #include "Core/Math/Templates/Vec4.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
@@ -71,6 +72,10 @@ namespace wfe {
 			Vec4f ambientColor;
 			/// @brief The color affected by diffuse lighting.
 			Vec4f diffuseColor;
+			/// @brief The color affected by specular lighting.
+			Vec3f specularColor;
+			/// @brief The exponent for the specular component.
+			float specularExponent;
 		};
 		/// @brief A struct that contains all image textures used by the material.
 		struct MaterialTextures {
@@ -78,6 +83,10 @@ namespace wfe {
 			ImageTexture* ambientTexture;
 			/// @brief The texture used for the diffuse color.
 			ImageTexture* diffuseTexture;
+			/// @brief The texture used for the specular color.
+			ImageTexture* specularTexture;
+			/// @brief The texture map used for the specular exponent.
+			ImageTexture* specularExponentMap;
 		};
 
 		/// @brief Creates a new material.

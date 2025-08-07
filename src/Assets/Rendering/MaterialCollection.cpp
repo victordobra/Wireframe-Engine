@@ -47,9 +47,16 @@ namespace wfe {
 			materialData.diffuseColor.z = BinaryReadFloat(stream);
 			materialData.diffuseColor.w = BinaryReadFloat(stream);
 
+			materialData.specularColor.x = BinaryReadFloat(stream);
+			materialData.specularColor.y = BinaryReadFloat(stream);
+			materialData.specularColor.z = BinaryReadFloat(stream);
+			materialData.specularExponent = BinaryReadFloat(stream);
+
 			// Read the material texture IDs
 			uint64_t ambientTextureID = BinaryReadUint64(stream);
 			uint64_t diffuseTextureID = BinaryReadUint64(stream);
+			uint64_t specularTextureID = BinaryReadUint64(stream);
+			uint64_t specularExponentMapID = BinaryReadUint64(stream);
 
 			// Set the material's textures
 			Material::MaterialTextures materialTextures;
@@ -66,6 +73,20 @@ namespace wfe {
 			} else {
 				materialTextures.diffuseTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
 				if(!materialTextures.diffuseTexture)
+					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			}
+			if(specularTextureID == UINT64_T_MAX) {
+				materialTextures.specularTexture = defaultTexture;
+			} else {
+				materialTextures.specularTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
+				if(!materialTextures.specularTexture)
+					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			}
+			if(specularExponentMapID == UINT64_T_MAX) {
+				materialTextures.specularExponentMap = defaultTexture;
+			} else {
+				materialTextures.specularExponentMap = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
+				if(!materialTextures.specularExponentMap)
 					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
 			}
 			
@@ -104,11 +125,18 @@ namespace wfe {
 			BinaryWriteFloat(stream, materialData.diffuseColor.z);
 			BinaryWriteFloat(stream, materialData.diffuseColor.w);
 
+			BinaryWriteFloat(stream, materialData.specularColor.x);
+			BinaryWriteFloat(stream, materialData.specularColor.y);
+			BinaryWriteFloat(stream, materialData.specularColor.z);
+			BinaryWriteFloat(stream, materialData.specularExponent);
+
 			// Write the material texture IDs
 			const Material::MaterialTextures& materialTextures = items[i].material->GetTextures();
 
 			BinaryWriteUint64(stream, materialTextures.ambientTexture->GetID());
 			BinaryWriteUint64(stream, materialTextures.diffuseTexture->GetID());
+			BinaryWriteUint64(stream, materialTextures.specularTexture->GetID());
+			BinaryWriteUint64(stream, materialTextures.specularExponentMap->GetID());
 		}
 
 		// Close the file stream
@@ -187,9 +215,13 @@ namespace wfe {
 				// Reset the material info
 				currentData.ambientColor = VEC4F_ONE;
 				currentData.diffuseColor = VEC4F_ONE;
+				currentData.specularColor = VEC3F_ONE;
+				currentData.specularExponent = 32.0f;
 
 				currentTextures.ambientTexture = defaultTexture;
 				currentTextures.diffuseTexture = defaultTexture;
+				currentTextures.specularTexture = defaultTexture;
+				currentTextures.specularExponentMap = defaultTexture;
 
 				// Read the material's name
 				strStream >> currentName;
@@ -199,6 +231,12 @@ namespace wfe {
 			} else if(keyword == "Kd") {
 				// Read the diffuse color's new values
 				strStream >> currentData.diffuseColor.x >> currentData.diffuseColor.y >> currentData.diffuseColor.z;
+			} else if(keyword == "Ks") {
+				// Read the specular color's new values
+				strStream >> currentData.specularColor.x >> currentData.specularColor.y >> currentData.specularColor.z;
+			} else if(keyword == "Ns") {
+				// Read the specular exponent's new value
+				strStream >> currentData.specularExponent;
 			} else if(keyword == "map_Ka") {
 				// Read the image file name
 				std::string imageRelPath;
@@ -218,6 +256,26 @@ namespace wfe {
 				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
 				currentTextures.diffuseTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
 				if(!currentTextures.diffuseTexture)
+					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
+			} else if(keyword == "map_Ks") {
+				// Read the image file name
+				std::string imageRelPath;
+				strStream >> imageRelPath;
+				
+				// Get the image with the given path
+				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
+				currentTextures.specularTexture = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.specularTexture)
+					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
+			} else if(keyword == "map_Ns") {
+				// Read the image file name
+				std::string imageRelPath;
+				strStream >> imageRelPath;
+				
+				// Get the image with the given path
+				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
+				currentTextures.specularExponentMap = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.specularExponentMap)
 					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
 			}
 		}
@@ -252,6 +310,8 @@ namespace wfe {
 
 			stream << "\tKa " << data.ambientColor.x << ' ' << data.ambientColor.y << ' ' << data.ambientColor.z << '\n';
 			stream << "\tKd " << data.diffuseColor.x << ' ' << data.diffuseColor.y << ' ' << data.diffuseColor.z << '\n';
+			stream << "\tKs " << data.specularColor.x << ' ' << data.specularColor.y << ' ' << data.specularColor.z << '\n';
+			stream << "\tNs " << data.specularExponent << '\n';
 
 			stream << '\n';
 
@@ -267,6 +327,14 @@ namespace wfe {
 				std::filesystem::path diffuseTexturePath = textures.diffuseTexture->GetPath().lexically_relative(fileDir);
 				stream << "\tmap_Kd " << diffuseTexturePath.string() << '\n';
 			}
+			if(textures.specularTexture != defaultTexture) {
+				std::filesystem::path specularTexturePath = textures.specularTexture->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Kd " << specularTexturePath.string() << '\n';
+			}
+			if(textures.specularExponentMap != defaultTexture) {
+				std::filesystem::path specularExponentMapPath = textures.specularExponentMap->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Kd " << specularExponentMapPath.string() << '\n';
+			}
 
 			stream << '\n';
 		}
@@ -281,6 +349,8 @@ namespace wfe {
 			// Add all of the current material's textures
 			dependencies.insert(items[i].material->GetTextures().ambientTexture);
 			dependencies.insert(items[i].material->GetTextures().diffuseTexture);
+			dependencies.insert(items[i].material->GetTextures().specularTexture);
+			dependencies.insert(items[i].material->GetTextures().specularExponentMap);
 		}
 
 		// Move all dependencies to a vector

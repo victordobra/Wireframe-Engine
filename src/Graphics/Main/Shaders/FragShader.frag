@@ -49,28 +49,38 @@ layout(set = 0, binding = 0) uniform SceneInfo {
 layout(set = 1, binding = 0) uniform MaterialInfo {
 	vec4 ambientColor;
 	vec4 diffuseColor;
+	vec3 specularColor;
+	float specularExp;
 };
 layout(set = 1, binding = 1) uniform sampler2D ambientTex;
 layout(set = 1, binding = 2) uniform sampler2D diffuseTex;
+layout(set = 1, binding = 3) uniform sampler2D specularTex;
+layout(set = 1, binding = 4) uniform sampler2D specularExpMap;
 
 // Shader output
 layout(location = 0) out vec4 outColor;
 
-// Functions
-vec4 GetAmbientValue() {
-	return texture(ambientTex, uv) * ambientColor * ambientLightColor;
-}
-vec4 GetDiffuseValue() {
-	// Store the light value
-	vec3 lightValue = vec3(0.0);
+void main() {
+	// Store the diffuse and specular light values
+	vec3 diffuseLightValue = vec3(0.0);
+	vec3 specularLightValue = vec3(0.0);
+
+	// Get the specular exponent and view vector for the current fragment
+	float localSpecExp = specularExp * texture(specularExpMap, uv).r;
+	vec3 viewVec = normalize(pos - cameraPos.xyz);
 
 	// Calculate the sun light contribution
 	for(uint i = 0; i != sunLightCount; ++i) {
-		// Calculate the dot product between the light direction and the normal
+		// Calculate the diffuse light value
 		float normalDot = max(-dot(norm, sunLights[i].direction.xyz), 0.0);
 
-		// Add the sun light contribution
-		lightValue += sunLights[i].color.rgb * sunLights[i].color.a * normalDot;
+		diffuseLightValue += sunLights[i].color.rgb * sunLights[i].color.a * normalDot;
+
+		// Get the reflection vector and calculate the specular light value
+		vec3 reflVec = reflect(sunLights[i].direction.xyz, norm);
+		float reflDot = max(-dot(viewVec, reflVec), 0.0);
+
+		specularLightValue += sunLights[i].color.rgb * sunLights[i].color.a * pow(reflDot, localSpecExp);
 	}
 
 	// Calculate the point light contribution
@@ -84,11 +94,16 @@ vec4 GetDiffuseValue() {
 		// Calculate the light's intensity
 		float lightIntensity = pointLights[i].color.a / (pointLights[i].constantScaling + pointLights[i].linearScaling * dist + pointLights[i].quadraticScaling * distSqr);
 
-		// Calculate the dot product between the light direction and the normal
+		// Calculate the diffuse light value
 		float normalDot = max(dot(norm, distVec), 0.0);
 
-		// Add the point light contribution
-		lightValue += pointLights[i].color.rgb * normalDot * lightIntensity;
+		diffuseLightValue += pointLights[i].color.rgb * lightIntensity * normalDot;
+
+		// Get the reflection vector and calculate the specular light value
+		vec3 reflVec = reflect(-distVec, norm);
+		float reflDot = max(-dot(viewVec, reflVec), 0.0);
+
+		specularLightValue += pointLights[i].color.rgb * lightIntensity * pow(reflDot, localSpecExp);
 	}
 
 	// Calculate the spot light contribution
@@ -100,21 +115,23 @@ vec4 GetDiffuseValue() {
 		// Calculate the light's intensity
 		float lightIntensity = spotLights[i].color.a * clamp((pointDot - spotLights[i].outerCutoff) / (spotLights[i].innerCutoff - spotLights[i].outerCutoff), 0.0, 1.0);
 
-		// Calculate the dot product between the light direction and the normal
+		// Calculate the diffuse light value
 		float normalDot = max(-dot(norm, pointDir), 0.0);
 
-		// Add the point light contribution
-		lightValue += spotLights[i].color.rgb * normalDot * lightIntensity;
+		diffuseLightValue += spotLights[i].color.rgb * lightIntensity * normalDot;
+
+		// Get the reflection vector and calculate the specular light value
+		vec3 reflVec = reflect(pointDir, norm);
+		float reflDot = max(-dot(viewVec, reflVec), 0.0);
+
+		specularLightValue += spotLights[i].color.rgb * lightIntensity * pow(reflDot, localSpecExp);
 	}
 
-	return texture(diffuseTex, uv) * diffuseColor * vec4(lightValue, 1.0);
-}
-
-void main() {
-	// Get the ambient and diffuse values
-	vec4 ambientValue = GetAmbientValue();
-	vec4 diffuseValue = GetDiffuseValue();
+	// Calculate the color values
+	vec3 ambientValue = (texture(ambientTex, uv) * ambientColor * ambientLightColor).rgb;
+	vec3 diffuseValue = (texture(diffuseTex, uv) * diffuseColor).rgb * diffuseLightValue;
+	vec3 specularValue = texture(specularTex, uv).rgb * specularColor * specularLightValue;
 
 	// Set the output color
-	outColor = vec4((ambientValue + diffuseValue).rgb, 1.0);
+	outColor = vec4(ambientValue + diffuseValue + specularValue, 1.0);
 }
