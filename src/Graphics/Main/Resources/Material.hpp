@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Assets/Rendering/ImageTexture.hpp"
+#include "Assets/Rendering/Core/ImageTexture.hpp"
 #include "Core/Math/Templates/Vec3.hpp"
 #include "Core/Math/Templates/Vec4.hpp"
 #include "Core/Types/Defines.hpp"

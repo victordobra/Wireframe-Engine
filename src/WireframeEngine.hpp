@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Assets/Rendering/ImageCubemap.hpp"
-#include "Assets/Rendering/ImageTexture.hpp"
-#include "Assets/Rendering/MaterialCollection.hpp"
-#include "Assets/Rendering/RenderObject.hpp"
+#include "Assets/Rendering/Core/ImageCubemap.hpp"
+#include "Assets/Rendering/Core/ImageTexture.hpp"
+#include "Assets/Rendering/Main/MaterialCollection.hpp"
+#include "Assets/Rendering/Main/RenderObject.hpp"
 
 #include "Core/Assets/Asset.hpp"
 #include "Core/Assets/AssetDirectory.hpp"

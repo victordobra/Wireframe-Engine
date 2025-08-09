@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Assets/Rendering/ImageCubemap.hpp"
+#include "Assets/Rendering/Core/ImageCubemap.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 #include <vulkan/vk_platform.h>
