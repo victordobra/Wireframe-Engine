@@ -7,6 +7,8 @@ const uint MAX_LIGHT_COUNT = 64;
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 norm;
+layout(location = 3) in vec3 tangent;
+layout(location = 4) in vec3 bitan;
 
 // Light structures
 struct SunLightInfo {
@@ -59,11 +61,18 @@ layout(set = 1, binding = 1) uniform sampler2D ambientTex;
 layout(set = 1, binding = 2) uniform sampler2D diffuseTex;
 layout(set = 1, binding = 3) uniform sampler2D specularTex;
 layout(set = 1, binding = 4) uniform sampler2D specularExpMap;
+layout(set = 1, binding = 5) uniform sampler2D normalMap;
 
 // Shader output
 layout(location = 0) out vec4 outColor;
 
 void main() {
+	// Build the TBN matrix
+	mat3 tbnMat = mat3(normalize(tangent), normalize(bitan), normalize(norm));
+
+	// Calculate the local normal
+	vec3 localNorm = tbnMat * (texture(normalMap, uv).rgb * 2.0 - vec3(1.0));
+
 	// Store the diffuse and specular light values
 	vec3 diffuseLightValue = vec3(0.0);
 	vec3 specularLightValue = vec3(0.0);
@@ -75,12 +84,12 @@ void main() {
 	// Calculate the sun light contribution
 	for(uint i = 0; i != sunLightCount; ++i) {
 		// Calculate the diffuse light value
-		float normalDot = max(-dot(norm, sunLights[i].direction.xyz), 0.0);
+		float normalDot = max(-dot(localNorm, sunLights[i].direction.xyz), 0.0);
 
 		diffuseLightValue += sunLights[i].color * sunLights[i].intensity * normalDot;
 
 		// Get the reflection vector and calculate the specular light value
-		vec3 reflVec = reflect(sunLights[i].direction, norm);
+		vec3 reflVec = reflect(sunLights[i].direction, localNorm);
 		float reflDot = max(-dot(viewVec, reflVec), 0.0);
 
 		specularLightValue += sunLights[i].color * sunLights[i].intensity * pow(reflDot, localSpecExp);
@@ -98,12 +107,12 @@ void main() {
 		float lightIntensity = pointLights[i].intensity / (pointLights[i].constantScaling + pointLights[i].linearScaling * dist + pointLights[i].quadraticScaling * distSqr);
 
 		// Calculate the diffuse light value
-		float normalDot = max(dot(norm, distVec), 0.0);
+		float normalDot = max(dot(localNorm, distVec), 0.0);
 
 		diffuseLightValue += pointLights[i].color * lightIntensity * normalDot;
 
 		// Get the reflection vector and calculate the specular light value
-		vec3 reflVec = reflect(-distVec, norm);
+		vec3 reflVec = reflect(-distVec, localNorm);
 		float reflDot = max(-dot(viewVec, reflVec), 0.0);
 
 		specularLightValue += pointLights[i].color * lightIntensity * pow(reflDot, localSpecExp);
@@ -119,12 +128,12 @@ void main() {
 		float lightIntensity = spotLights[i].intensity * clamp((pointDot - spotLights[i].outerCutoff) / (spotLights[i].innerCutoff - spotLights[i].outerCutoff), 0.0, 1.0);
 
 		// Calculate the diffuse light value
-		float normalDot = max(-dot(norm, pointDir), 0.0);
+		float normalDot = max(-dot(localNorm, pointDir), 0.0);
 
 		diffuseLightValue += spotLights[i].color * lightIntensity * normalDot;
 
 		// Get the reflection vector and calculate the specular light value
-		vec3 reflVec = reflect(pointDir, norm);
+		vec3 reflVec = reflect(pointDir, localNorm);
 		float reflDot = max(-dot(viewVec, reflVec), 0.0);
 
 		specularLightValue += spotLights[i].color * lightIntensity * pow(reflDot, localSpecExp);

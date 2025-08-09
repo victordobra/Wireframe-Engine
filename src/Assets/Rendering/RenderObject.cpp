@@ -16,9 +16,11 @@ namespace wfe {
 		uint32_t posIndex;
 		uint32_t uvIndex;
 		uint32_t normIndex;
+		uint32_t tanIndex;
+		uint32_t bitanIndex;
 
 		bool operator==(const ArrVertex& other) const {
-			return posIndex == other.posIndex && uvIndex == other.uvIndex && normIndex == other.normIndex;
+			return posIndex == other.posIndex && uvIndex == other.uvIndex && normIndex == other.normIndex && tanIndex == other.tanIndex && bitanIndex == other.bitanIndex;
 		}
 	};
 }
@@ -29,9 +31,11 @@ struct std::hash<wfe::ArrVertex> {
 	std::size_t operator()(const wfe::ArrVertex& vert) const {
 		// Use the boost library hash combine to mix all hashes
 		std::hash<uint32_t> hasher;
-		size_t res = hasher(vert.posIndex) + 0x9e3779b9 ;
+		size_t res = hasher(vert.posIndex) + 0x9e3779b9;
 		res ^= hasher(vert.uvIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
 		res ^= hasher(vert.normIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		res ^= hasher(vert.tanIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
+		res ^= hasher(vert.bitanIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
 		
 		return res;
 	}
@@ -88,6 +92,14 @@ namespace wfe {
 				vertices[j].normal.x = BinaryReadFloat(stream);
 				vertices[j].normal.y = BinaryReadFloat(stream);
 				vertices[j].normal.z = BinaryReadFloat(stream);
+
+				vertices[j].tangent.x = BinaryReadFloat(stream);
+				vertices[j].tangent.y = BinaryReadFloat(stream);
+				vertices[j].tangent.z = BinaryReadFloat(stream);
+
+				vertices[j].bitangent.x = BinaryReadFloat(stream);
+				vertices[j].bitangent.y = BinaryReadFloat(stream);
+				vertices[j].bitangent.z = BinaryReadFloat(stream);
 			}
 
 			// Read the number of indices
@@ -166,6 +178,14 @@ namespace wfe {
 				BinaryWriteFloat(stream, vertices[j].normal.x);
 				BinaryWriteFloat(stream, vertices[j].normal.y);
 				BinaryWriteFloat(stream, vertices[j].normal.z);
+
+				BinaryWriteFloat(stream, vertices[j].tangent.x);
+				BinaryWriteFloat(stream, vertices[j].tangent.y);
+				BinaryWriteFloat(stream, vertices[j].tangent.z);
+
+				BinaryWriteFloat(stream, vertices[j].bitangent.x);
+				BinaryWriteFloat(stream, vertices[j].bitangent.y);
+				BinaryWriteFloat(stream, vertices[j].bitangent.z);
 			}
 
 			// Write all indices
@@ -248,9 +268,13 @@ namespace wfe {
 		// Save the current render mesh's info
 		std::string currentName;
 		std::string currentMaterialName;
+
 		std::vector<Vec3f> positions;
 		std::vector<Vec2f> uvCoords;
 		std::vector<Vec3f> normals;
+		std::unordered_map<Vec3f, uint32_t> tangentsMap;
+		std::unordered_map<Vec3f, uint32_t> bitangentsMap;
+
 		std::unordered_map<ArrVertex, uint32_t> arrVertices;
 		std::vector<uint32_t> indices;
 
@@ -276,6 +300,15 @@ namespace wfe {
 			} else if(keyword == "o") {
 				// Build the current mesh, if it exists
 				if(!currentName.empty()) {
+					// Build the tangent and bitangent vectors
+					std::vector<Vec3f> tangents(tangentsMap.size());
+					for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
+						tangents[tangentPair.second] = tangentPair.first;
+
+					std::vector<Vec3f> bitangents(bitangentsMap.size());
+					for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
+						bitangents[bitangentPair.second] = bitangentPair.first;
+
 					// Build the array of vertices
 					std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
 
@@ -288,6 +321,8 @@ namespace wfe {
 						vertices[index].position = positions[arrVertex.posIndex];
 						vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
 						vertices[index].normal = normals[arrVertex.normIndex];
+						vertices[index].tangent = tangents[arrVertex.tanIndex];
+						vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
 					}
 
 					// Create the mesh
@@ -312,9 +347,13 @@ namespace wfe {
 					// Clear all of the current mesh's info
 					currentName.clear();
 					currentMaterialName.clear();
+
 					positions.clear();
 					uvCoords.clear();
 					normals.clear();
+					tangentsMap.clear();
+					bitangentsMap.clear();
+
 					arrVertices.clear();
 					indices.clear();
 				}
@@ -348,76 +387,105 @@ namespace wfe {
 				strStream >> face1 >> face2 >> face3;
 
 				// Get the indices for each of the three vertices
+				ArrVertex verts[3];
+
 				char* str = face1.data();
-				ArrVertex vert1 {
-					.posIndex = (uint32_t)strtoul(str, &str, 10) - 1,
-					.uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1,
-					.normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1
-				};
+				verts[0].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
+				verts[0].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
+				verts[0].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
 				
 				str = face2.data();
-				ArrVertex vert2 {
-					.posIndex = (uint32_t)strtoul(str, &str, 10) - 1,
-					.uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1,
-					.normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1
-				};
+				verts[1].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
+				verts[1].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
+				verts[1].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
 
 				str = face3.data();
-				ArrVertex vert3 {
-					.posIndex = (uint32_t)strtoul(str, &str, 10) - 1,
-					.uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1,
-					.normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1
-				};
+				verts[2].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
+				verts[2].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
+				verts[2].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
 
 				// Check if the face was defined counter-clockwise, as required by the pipeline
-				Vec3f totalNormal = normals[vert1.normIndex] + normals[vert2.normIndex] + normals[vert3.normIndex];
-				Vec3f crossNormal = VecCross(positions[vert2.posIndex] - positions[vert1.posIndex], positions[vert3.posIndex] - positions[vert1.posIndex]);
+				Vec3f totalNormal = normals[verts[0].normIndex] + normals[verts[1].normIndex] + normals[verts[2].normIndex];
+
+				Vec3f edge1 = positions[verts[1].posIndex] - positions[verts[0].posIndex];
+				Vec3f edge2 = positions[verts[2].posIndex] - positions[verts[0].posIndex];
+				Vec3f crossNormal = VecCross(edge1, edge2);
 
 				if(VecDot(totalNormal, crossNormal) < 0.0f) {
-					// Swap to of the vertices
-					ArrVertex aux = vert2;
-					vert2 = vert3;
-					vert3 = aux;
+					// Swap two of the vertices
+					ArrVertex aux = verts[1];
+					verts[1] = verts[2];
+					verts[2] = aux;
+
+					// Swap the edges
+					Vec3f edgeAux = edge1;
+					edge1 = edge2;
+					edge2 = edgeAux;
 				}
 
-				// Get the indices for the three vertices
-				uint32_t index1;
-				auto iter = arrVertices.find(vert1);
-				if(iter == arrVertices.end()) {
-					// Add the vertex to the map and set its index
-					index1 = (uint32_t)arrVertices.size();
-					arrVertices.insert({ vert1, index1 });
+				// Calculate the face's tangent and bitangent			
+				Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
+				Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
+				
+				float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
+
+				Vec3f tangent = {
+					(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
+					(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
+					(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
+				};
+				Vec3f bitangent = {
+					(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
+					(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
+					(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
+				};
+
+				// Get the indices for the tangent and bitangent
+				uint32_t tanIndex;
+				auto tanIter = tangentsMap.find(tangent);
+				if(tanIter == tangentsMap.end()) {
+					// Add the tangent to the map and set its index
+					tanIndex = (uint32_t)tangentsMap.size();
+					tangentsMap.insert({ tangent, tanIndex });
 				} else {
-					// Get the vertex's index
-					index1 = iter->second;
+					// Get the tangent's index
+					tanIndex = tanIter->second;
 				}
 
-				uint32_t index2;
-				iter = arrVertices.find(vert2);
-				if(iter == arrVertices.end()) {
-					// Add the vertex to the map and set its index
-					index2 = (uint32_t)arrVertices.size();
-					arrVertices.insert({ vert2, index2 });
+				uint32_t bitanIndex;
+				auto bitanIter = bitangentsMap.find(bitangent);
+				if(bitanIter == bitangentsMap.end()) {
+					// Add the bitangent to the map and set its index
+					bitanIndex = (uint32_t)bitangentsMap.size();
+					bitangentsMap.insert({ bitangent, bitanIndex });
 				} else {
-					// Get the vertex's index
-					index2 = iter->second;
+					// Get the bitangent's index
+					bitanIndex = bitanIter->second;
 				}
 
-				uint32_t index3;
-				iter = arrVertices.find(vert3);
-				if(iter == arrVertices.end()) {
-					// Add the vertex to the map and set its index
-					index3 = (uint32_t)arrVertices.size();
-					arrVertices.insert({ vert3, index3 });
-				} else {
-					// Get the vertex's index
-					index3 = iter->second;
+				// Set the tangent and bitantent index in the array vertices
+				for(uint32_t i = 0; i != 3; ++i) {
+					verts[i].tanIndex = tanIndex;
+					verts[i].bitanIndex = bitanIndex;
 				}
 
-				// Add the indices to the index array
-				indices.push_back(index1);
-				indices.push_back(index2);
-				indices.push_back(index3);
+				for(uint32_t i = 0; i != 3; ++i) {
+					// Get the index for the current vertex
+					uint32_t index;
+
+					auto iter = arrVertices.find(verts[i]);
+					if(iter == arrVertices.end()) {
+						// Add the vertex to the map and set its index
+						index = (uint32_t)arrVertices.size();
+						arrVertices.insert({ verts[i], index });
+					} else {
+						// Get the vertex's index
+						index = iter->second;
+					}
+
+					// Add the index to the array
+					indices.push_back(index);
+				}
 			} else if(keyword == "usemtl") {
 				// Get the material's name
 				strStream >> currentMaterialName;
@@ -426,6 +494,15 @@ namespace wfe {
 
 		// Build the last mesh, if it exists
 		if(!currentName.empty()) {
+			// Build the tangent and bitangent vectors
+			std::vector<Vec3f> tangents(tangentsMap.size());
+			for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
+				tangents[tangentPair.second] = tangentPair.first;
+
+			std::vector<Vec3f> bitangents(bitangentsMap.size());
+			for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
+				bitangents[bitangentPair.second] = bitangentPair.first;
+
 			// Build the array of vertices
 			std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
 
@@ -438,6 +515,8 @@ namespace wfe {
 				vertices[index].position = positions[arrVertex.posIndex];
 				vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
 				vertices[index].normal = normals[arrVertex.normIndex];
+				vertices[index].tangent = tangents[arrVertex.tanIndex];
+				vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
 			}
 
 			// Create the mesh

@@ -321,8 +321,6 @@ namespace wfe {
 			if(dependenciesValue.type != WFEONObject::VALUE_TYPE_COUNT) {
 				if(dependenciesValue.type != WFEONObject::VALUE_TYPE_INT)
 					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"dependencies\" value is not an object!");
-				if(dependenciesValue.count != 1)
-					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"dependencies\" value is not a single object!");
 				
 				dependencies[i].resize(dependenciesValue.count);
 				for(size_t j = 0; j != dependenciesValue.count; ++j)

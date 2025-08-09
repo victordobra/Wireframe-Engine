@@ -97,6 +97,13 @@ namespace wfe {
 				.descriptorCount = 1,
 				.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
 				.pImmutableSamplers = &textureSampler
+			},
+			{
+				.binding = 5,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.descriptorCount = 1,
+				.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
+				.pImmutableSamplers = &textureSampler
 			}
 		};
 
@@ -105,7 +112,7 @@ namespace wfe {
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0,
-			.bindingCount = 5,
+			.bindingCount = 6,
 			.pBindings = setLayoutBindings
 		};
 
@@ -117,11 +124,17 @@ namespace wfe {
 		// Create the default image texture
 		uint8_t textureData[] { 0xff, 0xff, 0xff, 0xff };
 		defaultImageTexture = new ImageTexture(program, 1, 1, &textureData);
+
+		// Create the default normal map
+		uint8_t normalMapData[] { 0x7f, 0x7f, 0xff, 0xff };
+		defaultNormalMap = new ImageTexture(program, 1, 1, &normalMapData);
 	}
 
 	MaterialManager::~MaterialManager() {
 		// Destroy the manager's components
 		delete defaultImageTexture;
+		delete defaultNormalMap;
+
 		renderer->GetLoader()->vkDestroyDescriptorSetLayout(renderer->GetDevice()->GetDevice(), materialSetLayout, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		renderer->GetLoader()->vkDestroyDescriptorPool(renderer->GetDevice()->GetDevice(), descriptorPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		renderer->GetLoader()->vkDestroySampler(renderer->GetDevice()->GetDevice(), textureSampler, &VulkanRenderer::ALLOCATION_CALLBACKS);
@@ -331,6 +344,11 @@ namespace wfe {
 			.imageView = textures.specularExponentMap->GetLinearImageView(),
 			.imageLayout = textures.specularExponentMap->GetImageLayout()
 		};
+		VkDescriptorImageInfo normalMapInfo {
+			.sampler = VK_NULL_HANDLE,
+			.imageView = textures.normalMap->GetLinearImageView(),
+			.imageLayout = textures.normalMap->GetImageLayout()
+		};
 
 		// Set the descriptor writes
 		VkWriteDescriptorSet descriptorWrites[] {
@@ -393,11 +411,23 @@ namespace wfe {
 				.pImageInfo = &specularExponentMapInfo,
 				.pBufferInfo = nullptr,
 				.pTexelBufferView = nullptr
+			},
+			{
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.pNext = nullptr,
+				.dstSet = descriptorSet,
+				.dstBinding = 5,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.pImageInfo = &normalMapInfo,
+				.pBufferInfo = nullptr,
+				.pTexelBufferView = nullptr
 			}
 		};
 
 		// Update the material's descriptor set
-		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), 5, descriptorWrites, 0, nullptr);
+		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), 6, descriptorWrites, 0, nullptr);
 	}
 
 	Material::~Material() {

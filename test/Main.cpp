@@ -116,11 +116,11 @@ int main(int argc, char** args) {
 	assetDir->Import();
 
 	// Create and set the skybox
-	wfe::Skybox* skybox = new wfe::Skybox(program->GetEngineGraphics()->GetSkyboxManager(), (wfe::ImageCubemap*)program->GetAssetManager()->GetAsset(3));
+	wfe::Skybox* skybox = new wfe::Skybox(program->GetEngineGraphics()->GetSkyboxManager(), (wfe::ImageCubemap*)program->GetAssetManager()->GetAsset(4));
 	program->GetEngineGraphics()->GetSkyboxPipeline()->SetSkybox(skybox);
 
 	// Get the render object from the directory
-	wfe::RenderObject* renderObject = (wfe::RenderObject*)program->GetAssetManager()->GetAsset(2);
+	wfe::RenderObject* renderObject = (wfe::RenderObject*)program->GetAssetManager()->GetAsset(3);
 
 	// Get the mesh and its material
 	wfe::RenderMesh* mesh = renderObject->GetItems()[0].mesh;

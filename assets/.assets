@@ -6,16 +6,21 @@ assets = [
     }
     {
         id = 1
-        path = "TestCube.mtl"
-        dependencies = [ 0 ]
+        path = "TestNormalMap.png"
+        dependencies = []
     }
     {
         id = 2
-        path = "TestCube.obj"
-        dependencies = [ 1 ]
+        path = "TestCube.mtl"
+        dependencies = [ 0 1 ]
     }
     {
         id = 3
+        path = "TestCube.obj"
+        dependencies = [ 2 ]
+    }
+    {
+        id = 4
         path = "Skybox.png"
         type = "ImageCubemap"
         dependencies = []

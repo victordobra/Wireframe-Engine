@@ -56,6 +56,7 @@ namespace wfe {
 			uint64_t diffuseTextureID = BinaryReadUint64(stream);
 			uint64_t specularTextureID = BinaryReadUint64(stream);
 			uint64_t specularExponentMapID = BinaryReadUint64(stream);
+			uint64_t normalMapID = BinaryReadUint64(stream);
 
 			// Set the material's textures
 			Material::MaterialTextures materialTextures;
@@ -86,6 +87,13 @@ namespace wfe {
 			} else {
 				materialTextures.specularExponentMap = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
 				if(!materialTextures.specularExponentMap)
+					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+			}
+			if(normalMapID == UINT64_T_MAX) {
+				materialTextures.normalMap = defaultTexture;
+			} else {
+				materialTextures.normalMap = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
+				if(!materialTextures.normalMap)
 					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
 			}
 			
@@ -135,6 +143,7 @@ namespace wfe {
 			BinaryWriteUint64(stream, materialTextures.diffuseTexture->GetID());
 			BinaryWriteUint64(stream, materialTextures.specularTexture->GetID());
 			BinaryWriteUint64(stream, materialTextures.specularExponentMap->GetID());
+			BinaryWriteUint64(stream, materialTextures.normalMap->GetID());
 		}
 
 		// Close the file stream
@@ -193,8 +202,9 @@ namespace wfe {
 		Material::MaterialData currentData;
 		Material::MaterialTextures currentTextures;
 
-		// Query the default texture
+		// Query the default textures
 		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultNormalMap = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultNormalMap();
 
 		// Parse every line in the file
 		for(const std::string& line : lines) {
@@ -220,6 +230,7 @@ namespace wfe {
 				currentTextures.diffuseTexture = defaultTexture;
 				currentTextures.specularTexture = defaultTexture;
 				currentTextures.specularExponentMap = defaultTexture;
+				currentTextures.normalMap = defaultNormalMap;
 
 				// Read the material's name
 				strStream >> currentName;
@@ -275,6 +286,16 @@ namespace wfe {
 				currentTextures.specularExponentMap = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
 				if(!currentTextures.specularExponentMap)
 					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
+			} else if(keyword == "map_Bump") {
+				// Read the image file name
+				std::string imageRelPath;
+				strStream >> imageRelPath;
+				
+				// Get the image with the given path
+				std::filesystem::path imagePath = (fileDir / imageRelPath).lexically_normal();
+				currentTextures.normalMap = dynamic_cast<wfe::ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(imagePath));
+				if(!currentTextures.normalMap)
+					throw std::runtime_error("Image file with path \"" + imagePath.string() + "\" not found!");
 			}
 		}
 
@@ -298,6 +319,9 @@ namespace wfe {
 		// Get the directory the material collection file is in
 		std::filesystem::path fileDir = GetPath().lexically_normal().parent_path();
 
+		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultNormalMap = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultNormalMap();
+
 		// Write every material's info to the file
 		for(size_t i = 0; i != items.size(); ++i) {
 			// Write the item's name
@@ -315,7 +339,6 @@ namespace wfe {
 
 			// Write the material's textures
 			const Material::MaterialTextures textures = items[i].material->GetTextures();
-			ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
 
 			if(textures.ambientTexture != defaultTexture) {
 				std::filesystem::path ambientTexturePath = textures.ambientTexture->GetPath().lexically_relative(fileDir);
@@ -327,11 +350,15 @@ namespace wfe {
 			}
 			if(textures.specularTexture != defaultTexture) {
 				std::filesystem::path specularTexturePath = textures.specularTexture->GetPath().lexically_relative(fileDir);
-				stream << "\tmap_Kd " << specularTexturePath.string() << '\n';
+				stream << "\tmap_Ks " << specularTexturePath.string() << '\n';
 			}
 			if(textures.specularExponentMap != defaultTexture) {
 				std::filesystem::path specularExponentMapPath = textures.specularExponentMap->GetPath().lexically_relative(fileDir);
-				stream << "\tmap_Kd " << specularExponentMapPath.string() << '\n';
+				stream << "\tmap_Ns " << specularExponentMapPath.string() << '\n';
+			}
+			if(textures.normalMap != defaultNormalMap) {
+				std::filesystem::path normalMapPath = textures.normalMap->GetPath().lexically_relative(fileDir);
+				stream << "\tmap_Bump " << normalMapPath.string() << '\n';
 			}
 
 			stream << '\n';
@@ -349,6 +376,7 @@ namespace wfe {
 			dependencies.insert(items[i].material->GetTextures().diffuseTexture);
 			dependencies.insert(items[i].material->GetTextures().specularTexture);
 			dependencies.insert(items[i].material->GetTextures().specularExponentMap);
+			dependencies.insert(items[i].material->GetTextures().normalMap);
 		}
 
 		// Move all dependencies to a vector

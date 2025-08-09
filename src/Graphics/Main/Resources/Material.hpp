@@ -50,6 +50,11 @@ namespace wfe {
 		ImageTexture* GetDefaultImageTexture() const {
 			return defaultImageTexture;
 		}
+		/// @brief Gets the default normal map texture, used when no normal map is specified.
+		/// @return The default normal map texture, used when no normal map is specified.
+		ImageTexture* GetDefaultNormalMap() const {
+			return defaultNormalMap;
+		}
 
 		/// @brief Destroys the material manager.
 		~MaterialManager();
@@ -61,6 +66,7 @@ namespace wfe {
 		VkDescriptorPool descriptorPool;
 		VkDescriptorSetLayout materialSetLayout;
 		ImageTexture* defaultImageTexture;
+		ImageTexture* defaultNormalMap;
 	};
 
 	/// @brief A class that contains all data and textures for a 3D material.
@@ -87,6 +93,8 @@ namespace wfe {
 			ImageTexture* specularTexture;
 			/// @brief The texture map used for the specular exponent.
 			ImageTexture* specularExponentMap;
+			/// @brief The texture map used to change the surface normals.
+			ImageTexture* normalMap;
 		};
 
 		/// @brief Creates a new material.

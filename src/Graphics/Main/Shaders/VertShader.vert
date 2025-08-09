@@ -7,6 +7,8 @@ const uint MAX_LIGHT_COUNT = 64;
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 norm;
+layout(location = 3) in vec3 tangent;
+layout(location = 4) in vec3 bitan;
 
 // Light structures
 struct SunLightInfo {
@@ -58,12 +60,16 @@ layout(push_constant) uniform PushConstants {
 layout(location = 0) out vec3 globalPos;
 layout(location = 1) out vec2 globalUV;
 layout(location = 2) out vec3 globalNorm;
+layout(location = 3) out vec3 globalTan;
+layout(location = 4) out vec3 globalBitan;
 
 void main() {
-	// Pass on the global position, normal and UV coordinates to the fragment shader
+	// Pass on the global vector parameters to the fragment shader
 	globalPos = (objectTransform * vec4(pos, 1.0)).xyz;
 	globalUV = uv;
 	globalNorm = (normalTransform * vec4(norm, 1.0)).xyz;
+	globalTan = (normalTransform * vec4(tangent, 1.0)).xyz;
+	globalBitan = (normalTransform * vec4(bitan, 1.0)).xyz;
 
 	// Calculate the vertex's camera position
 	gl_Position = cameraTransform * vec4(globalPos, 1.0);

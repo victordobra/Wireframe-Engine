@@ -14,8 +14,12 @@ namespace wfe {
 			Vec3f position;
 			/// @brief The vertex's UV coordinates.
 			Vec2f uvCoord;
-			/// @brief THe vertex's unit normal vector.
+			/// @brief The vertex's unit normal vector.
 			Vec3f normal;
+			/// @brief The vertex's unit tangent vector.
+			Vec3f tangent;
+			/// @brief The vertex's unit bitangent vector.
+			Vec3f bitangent;
 		};
 
 		/// @brief Creates a new render mesh.
