@@ -1,4 +1,5 @@
 #include "RenderObject.hpp"
+#include "Core/Math/General/VecUtils.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
 #include <fstream>
@@ -132,6 +133,9 @@ namespace wfe {
 				if(!items[i].material)
 					throw std::runtime_error("Invalid material name stored in render object file!");
 			}
+
+			// Read the flat index count
+			items[i].flatIndexCount = BinaryReadUint64(stream);
 		}
 
 		// Close the file stream
@@ -211,6 +215,9 @@ namespace wfe {
 				// Write the material name's length as 0, to indicate that no material exists
 				BinaryWriteUint64(stream, 0);
 			}
+
+			// Write the flat index count
+			BinaryWriteUint64(stream, items[i].flatIndexCount);
 		}
 
 		// Close the file stream
@@ -277,11 +284,14 @@ namespace wfe {
 
 		std::unordered_map<ArrVertex, uint32_t> arrVertices;
 		std::vector<uint32_t> indices;
+		std::vector<uint32_t> smoothIndices;
+
+		bool smoothShading = false;
 
 		// Parse every line in the file
-		for(const std::string& line : lines) {
+		for(size_t i = 0; i != lines.size(); ++i) {
 			// Create an input string stream
-			std::istringstream strStream(line);
+			std::istringstream strStream(lines[i]);
 
 			// Read the first keyword
 			std::string keyword;
@@ -297,69 +307,6 @@ namespace wfe {
 				materialCollection = dynamic_cast<MaterialCollection*>(GetProgram()->GetAssetManager()->GetAsset(materialCollectionPath));
 				if(!materialCollection)
 					throw std::runtime_error("Material collection file with path \"" + materialCollectionPath.string() + "\" not found!");
-			} else if(keyword == "o") {
-				// Build the current mesh, if it exists
-				if(!currentName.empty()) {
-					// Build the tangent and bitangent vectors
-					std::vector<Vec3f> tangents(tangentsMap.size());
-					for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
-						tangents[tangentPair.second] = tangentPair.first;
-
-					std::vector<Vec3f> bitangents(bitangentsMap.size());
-					for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
-						bitangents[bitangentPair.second] = bitangentPair.first;
-
-					// Build the array of vertices
-					std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
-
-					for(const std::pair<const ArrVertex, uint32_t>& arrVertexPair : arrVertices) {
-						// Get the array vertex and target index
-						ArrVertex arrVertex = arrVertexPair.first;
-						uint32_t index = arrVertexPair.second;
-
-						// Set the vertex's info
-						vertices[index].position = positions[arrVertex.posIndex];
-						vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
-						vertices[index].normal = normals[arrVertex.normIndex];
-						vertices[index].tangent = tangents[arrVertex.tanIndex];
-						vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
-					}
-
-					// Create the mesh
-					RenderMesh* mesh = new RenderMesh(GetProgram()->GetRenderer(), vertices, indices);
-
-					// Get the material with the current name
-					Material* material = nullptr;
-					if(!currentMaterialName.empty()) {
-						for(const MaterialCollection::Item& item : materialCollection->GetItems()) {
-							if(item.name == currentMaterialName) {
-								material = item.material;
-								break;
-							}
-						}
-						if(!material)
-							throw std::runtime_error("Invalid material name stored in render object file!");
-					}
-					
-					// Add the new item to the vector
-					items.push_back({ currentName, mesh, material });
-
-					// Clear all of the current mesh's info
-					currentName.clear();
-					currentMaterialName.clear();
-
-					positions.clear();
-					uvCoords.clear();
-					normals.clear();
-					tangentsMap.clear();
-					bitangentsMap.clear();
-
-					arrVertices.clear();
-					indices.clear();
-				}
-
-				// Read the new mesh's name
-				strStream >> currentName;
 			} else if(keyword == "v") {
 				// Read the current position
 				Vec3f position;
@@ -423,120 +370,244 @@ namespace wfe {
 					edge2 = edgeAux;
 				}
 
-				// Calculate the face's tangent and bitangent			
-				Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
-				Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
-				
-				float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
-
-				Vec3f tangent = {
-					(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
-					(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
-					(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
-				};
-				Vec3f bitangent = {
-					(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
-					(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
-					(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
-				};
-
-				// Get the indices for the tangent and bitangent
-				uint32_t tanIndex;
-				auto tanIter = tangentsMap.find(tangent);
-				if(tanIter == tangentsMap.end()) {
-					// Add the tangent to the map and set its index
-					tanIndex = (uint32_t)tangentsMap.size();
-					tangentsMap.insert({ tangent, tanIndex });
-				} else {
-					// Get the tangent's index
-					tanIndex = tanIter->second;
-				}
-
-				uint32_t bitanIndex;
-				auto bitanIter = bitangentsMap.find(bitangent);
-				if(bitanIter == bitangentsMap.end()) {
-					// Add the bitangent to the map and set its index
-					bitanIndex = (uint32_t)bitangentsMap.size();
-					bitangentsMap.insert({ bitangent, bitanIndex });
-				} else {
-					// Get the bitangent's index
-					bitanIndex = bitanIter->second;
-				}
-
-				// Set the tangent and bitantent index in the array vertices
-				for(uint32_t i = 0; i != 3; ++i) {
-					verts[i].tanIndex = tanIndex;
-					verts[i].bitanIndex = bitanIndex;
-				}
-
-				for(uint32_t i = 0; i != 3; ++i) {
-					// Get the index for the current vertex
-					uint32_t index;
-
-					auto iter = arrVertices.find(verts[i]);
-					if(iter == arrVertices.end()) {
-						// Add the vertex to the map and set its index
-						index = (uint32_t)arrVertices.size();
-						arrVertices.insert({ verts[i], index });
-					} else {
-						// Get the vertex's index
-						index = iter->second;
+				if(smoothShading) {
+					// Set the tangent and bitangent indices to an undefined value
+					for(uint32_t j = 0; j != 3; ++j) {
+						verts[j].tanIndex = UINT32_T_MAX;
+						verts[j].bitanIndex = UINT32_T_MAX;
 					}
 
-					// Add the index to the array
-					indices.push_back(index);
+					for(uint32_t j = 0; j != 3; ++j) {
+						// Get the index for the current vertex
+						uint32_t index;
+
+						auto iter = arrVertices.find(verts[j]);
+						if(iter == arrVertices.end()) {
+							// Add the vertex to the map and set its index
+							index = (uint32_t)arrVertices.size();
+							arrVertices.insert({ verts[j], index });
+						} else {
+							// Get the vertex's index
+							index = iter->second;
+						}
+
+						// Add the index to the array
+						smoothIndices.push_back(index);
+					}
+				} else {
+					// Calculate the face's tangent and bitangent			
+					Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
+					Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
+					
+					float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
+
+					Vec3f tangent = {
+						(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
+						(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
+						(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
+					};
+					Vec3f bitangent = {
+						(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
+						(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
+						(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
+					};
+
+					// Normalize the tangent and bitangent vectors
+					tangent = VecNormalized(tangent);
+					bitangent = VecNormalized(bitangent);
+
+					// Get the indices for the tangent and bitangent
+					uint32_t tanIndex;
+					auto tanIter = tangentsMap.find(tangent);
+					if(tanIter == tangentsMap.end()) {
+						// Add the tangent to the map and set its index
+						tanIndex = (uint32_t)tangentsMap.size();
+						tangentsMap.insert({ tangent, tanIndex });
+					} else {
+						// Get the tangent's index
+						tanIndex = tanIter->second;
+					}
+
+					uint32_t bitanIndex;
+					auto bitanIter = bitangentsMap.find(bitangent);
+					if(bitanIter == bitangentsMap.end()) {
+						// Add the bitangent to the map and set its index
+						bitanIndex = (uint32_t)bitangentsMap.size();
+						bitangentsMap.insert({ bitangent, bitanIndex });
+					} else {
+						// Get the bitangent's index
+						bitanIndex = bitanIter->second;
+					}
+
+					// Set the tangent and bitantent index in the array vertices
+					for(uint32_t j = 0; j != 3; ++j) {
+						verts[j].tanIndex = tanIndex;
+						verts[j].bitanIndex = bitanIndex;
+					}
+
+					for(uint32_t j = 0; j != 3; ++j) {
+						// Get the index for the current vertex
+						uint32_t index;
+
+						auto iter = arrVertices.find(verts[j]);
+						if(iter == arrVertices.end()) {
+							// Add the vertex to the map and set its index
+							index = (uint32_t)arrVertices.size();
+							arrVertices.insert({ verts[j], index });
+						} else {
+							// Get the vertex's index
+							index = iter->second;
+						}
+
+						// Add the index to the array
+						indices.push_back(index);
+					}
 				}
 			} else if(keyword == "usemtl") {
 				// Get the material's name
 				strStream >> currentMaterialName;
-			}
-		}
+			} else if(keyword == "s") {
+				// Get the smooth shading property
+				std::string enabled;
+				strStream >> enabled;
 
-		// Build the last mesh, if it exists
-		if(!currentName.empty()) {
-			// Build the tangent and bitangent vectors
-			std::vector<Vec3f> tangents(tangentsMap.size());
-			for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
-				tangents[tangentPair.second] = tangentPair.first;
-
-			std::vector<Vec3f> bitangents(bitangentsMap.size());
-			for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
-				bitangents[bitangentPair.second] = bitangentPair.first;
-
-			// Build the array of vertices
-			std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
-
-			for(const std::pair<const ArrVertex, uint32_t>& arrVertexPair : arrVertices) {
-				// Get the array vertex and target index
-				ArrVertex arrVertex = arrVertexPair.first;
-				uint32_t index = arrVertexPair.second;
-
-				// Set the vertex's info
-				vertices[index].position = positions[arrVertex.posIndex];
-				vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
-				vertices[index].normal = normals[arrVertex.normIndex];
-				vertices[index].tangent = tangents[arrVertex.tanIndex];
-				vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
+				smoothShading = enabled == "1";
 			}
 
-			// Create the mesh
-			RenderMesh* mesh = new RenderMesh(GetProgram()->GetRenderer(), vertices, indices);
+			// Check if the current mesh needs to be build			
+			if(keyword == "o" || i == lines.size() - 1) {
+				// Build the current mesh, if it exists
+				if(!currentName.empty()) {
+					// Build the tangent and bitangent vectors
+					std::vector<Vec3f> tangents(tangentsMap.size());
+					for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
+						tangents[tangentPair.second] = tangentPair.first;
 
-			// Get the material with the current name
-			Material* material = nullptr;
-			if(!currentMaterialName.empty()) {
-				for(const MaterialCollection::Item& item : materialCollection->GetItems()) {
-					if(item.name == currentMaterialName) {
-						material = item.material;
-						break;
+					std::vector<Vec3f> bitangents(bitangentsMap.size());
+					for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
+						bitangents[bitangentPair.second] = bitangentPair.first;
+
+					// Build the array of vertices
+					std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
+
+					for(const std::pair<const ArrVertex, uint32_t>& arrVertexPair : arrVertices) {
+						// Get the array vertex and target index
+						ArrVertex arrVertex = arrVertexPair.first;
+						uint32_t index = arrVertexPair.second;
+
+						// Set the vertex's info
+						vertices[index].position = positions[arrVertex.posIndex];
+						vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
+						vertices[index].normal = normals[arrVertex.normIndex];
+
+						if(arrVertex.tanIndex != UINT32_T_MAX && arrVertex.tanIndex != UINT32_T_MAX) {
+							vertices[index].tangent = tangents[arrVertex.tanIndex];
+							vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
+						} else {
+							vertices[index].tangent = VEC3F_ZERO;
+							vertices[index].bitangent = VEC3F_ZERO;
+						}
 					}
+
+					// Calculate the tangents and bitangents of the smooth shaded vertices
+					std::vector<float> totalAngle(vertices.size(), 0.0f);
+
+					for(size_t j = 0; j != smoothIndices.size(); j += 3) {
+						// Calculate the tangent and bitangent for the current face
+						size_t ind1 = smoothIndices[j], ind2 = smoothIndices[j + 1], ind3 = smoothIndices[j + 2];
+
+						Vec3f edge1 = vertices[ind2].position - vertices[ind1].position;
+						Vec3f edge2 = vertices[ind3].position - vertices[ind1].position;
+
+						Vec2f uvEdge1 = vertices[ind2].uvCoord - vertices[ind1].uvCoord;
+						Vec2f uvEdge2 = vertices[ind3].uvCoord - vertices[ind1].uvCoord;
+						
+						float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
+
+						Vec3f tangent = {
+							(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
+							(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
+							(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
+						};
+						Vec3f bitangent = {
+							(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
+							(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
+							(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
+						};
+
+						// Add the tangent and bitangent to the weighted average in every vertex
+						float angle1 = VecAngle(edge1, edge2);
+						float angle2 = VecAngle(-edge1, vertices[ind3].position - vertices[ind2].position);
+						float angle3 = PI_F - angle1 - angle2;
+
+						vertices[ind1].tangent += tangent * angle1;
+						vertices[ind1].bitangent += bitangent * angle1;
+						totalAngle[ind1] += angle1;
+
+						vertices[ind2].tangent += tangent * angle2;
+						vertices[ind2].bitangent += bitangent * angle2;
+						totalAngle[ind2] += angle2;
+
+						vertices[ind3].tangent += tangent * angle3;
+						vertices[ind3].bitangent += bitangent * angle3;
+						totalAngle[ind3] += angle3;
+					}
+					for(size_t j = 0; j != vertices.size(); ++j) {
+						// Skip the current vertex if its tangent space is flat shaded
+						if(!totalAngle[j])
+							continue;
+						
+						// Average out the tangent and bitangent
+						vertices[j].tangent /= totalAngle[j];
+						vertices[j].bitangent /= totalAngle[j];
+
+						// Modify the tangent and bitangent to be perpendicular to the normal
+						vertices[j].bitangent = VecNormalized(VecCross(vertices[j].normal, vertices[j].tangent));
+						vertices[j].tangent = VecNormalized(VecCross(vertices[j].bitangent, vertices[j].normal));
+					}
+
+					// Add the smooth indices to the index vector
+					indices.insert(indices.end(), smoothIndices.begin(), smoothIndices.end());
+
+					// Create the mesh
+					RenderMesh* mesh = new RenderMesh(GetProgram()->GetRenderer(), vertices, indices);
+
+					// Get the material with the current name
+					Material* material = nullptr;
+					if(!currentMaterialName.empty()) {
+						for(const MaterialCollection::Item& item : materialCollection->GetItems()) {
+							if(item.name == currentMaterialName) {
+								material = item.material;
+								break;
+							}
+						}
+						if(!material)
+							throw std::runtime_error("Invalid material name stored in render object file!");
+					}
+					
+					// Add the new item to the vector
+					items.push_back({ currentName, mesh, material, indices.size() - smoothIndices.size() });
+
+					// Clear all of the current mesh's info
+					currentName.clear();
+					currentMaterialName.clear();
+
+					positions.clear();
+					uvCoords.clear();
+					normals.clear();
+					tangentsMap.clear();
+					bitangentsMap.clear();
+
+					arrVertices.clear();
+					indices.clear();
+					smoothIndices.clear();
 				}
-				if(!material)
-					throw std::runtime_error("Invalid material name stored in render object file!");
+
+				if(keyword == "o") {
+					// Read the new mesh's name
+					strStream >> currentName;
+				}
 			}
-			
-			// Add the new item to the vector
-			items.push_back({ currentName, mesh, material });
 		}
 	}
 	void RenderObject::Export() const {
@@ -631,17 +702,35 @@ namespace wfe {
 				arrVertices[j].normIndex = normals[vertices[j].normal];
 			}
 
-			// Output all faces
-			for(size_t j = 0; j != indices.size(); j += 3) {
-				stream << "\tf ";
-				for(size_t k = j; k != j + 3; ++k) {
-					// Output the current array vertex
-					ArrVertex arrVertex = arrVertices[indices[k]];
-					stream << arrVertex.posIndex << '/' << arrVertex.uvIndex << '/' << arrVertex.normIndex << ' ';
+			if(items[i].flatIndexCount) {
+				// Output all flat faces
+				stream << "\ts 0\n";
+				for(size_t j = 0; j != items[i].flatIndexCount; j += 3) {
+					stream << "\tf ";
+					for(size_t k = j; k != j + 3; ++k) {
+						// Output the current array vertex
+						ArrVertex arrVertex = arrVertices[indices[k]];
+						stream << arrVertex.posIndex << '/' << arrVertex.uvIndex << '/' << arrVertex.normIndex << ' ';
+					}
+					stream << '\n';
 				}
 				stream << '\n';
 			}
-			stream << '\n';
+
+			if(items[i].flatIndexCount != indices.size()) {
+				// Output all smooth faces
+				stream << "\ts 1\n";
+				for(size_t j = 0; j != items[i].flatIndexCount; j += 3) {
+					stream << "\tf ";
+					for(size_t k = j; k != j + 3; ++k) {
+						// Output the current array vertex
+						ArrVertex arrVertex = arrVertices[indices[k]];
+						stream << arrVertex.posIndex << '/' << arrVertex.uvIndex << '/' << arrVertex.normIndex << ' ';
+					}
+					stream << '\n';
+				}
+				stream << '\n';
+			}
 		}
 
 		// Close the file stream

@@ -20,6 +20,8 @@ namespace wfe {
 			RenderMesh* mesh;
 			/// @brief The material associated to the render mesh, or nullptr if the material does not exist.
 			Material* material;
+			/// @brief The number of indices in the mesh which use flat shading. Useful for saving.
+			size_t flatIndexCount;
 		};
 
 		/// @brief Creates a new blank render object. The object must be subsequentally loaded or imported.
