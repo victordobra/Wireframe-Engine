@@ -404,8 +404,8 @@ namespace wfe {
 			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for reading!");
 
 		// Load the image's width and height
-		width = BinaryReadUint32(stream);
-		height = BinaryReadUint32(stream);
+		width = BinaryReadUint32BE(stream);
+		height = BinaryReadUint32BE(stream);
 
 		// Allocate the image's data buffer
 		size_t dataSize = width * height * 4;
@@ -442,8 +442,8 @@ namespace wfe {
 		InternalGetImageData(imageData, imageLayout);
 
 		// Write the image's width and height to the stream
-		BinaryWriteUint32(stream, width);
-		BinaryWriteUint32(stream, height);
+		BinaryWriteUint32BE(stream, width);
+		BinaryWriteUint32BE(stream, height);
 		
 		// Write the image's data to the stream
 		stream.write((const char*)imageData, dataSize);

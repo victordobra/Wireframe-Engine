@@ -131,7 +131,7 @@ namespace wfe {
 			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for reading!");
 		
 		// Read the asset count
-		uint64_t assetCount = BinaryReadUint64(stream);
+		uint64_t assetCount = BinaryReadUint64BE(stream);
 
 		// Read every asset
 		assets.resize(assetCount);
@@ -143,16 +143,16 @@ namespace wfe {
 
 		for(size_t i = 0; i != assetCount; ++i) {
 			// Read the asset's ID
-			ids[i] = BinaryReadUint64(stream);
+			ids[i] = BinaryReadUint64BE(stream);
 
 			// Read the asset's path
-			uint64_t pathLength = BinaryReadUint64(stream);
+			uint64_t pathLength = BinaryReadUint64BE(stream);
 			std::string relativePath(pathLength, 0);
 			stream.read(relativePath.data(), pathLength);
 			paths[i] = (path / relativePath).lexically_normal();
 
 			// Read the asset's type
-			uint64_t typeNameLength = BinaryReadUint64(stream);
+			uint64_t typeNameLength = BinaryReadUint64BE(stream);
 			std::string typeName(typeNameLength, 0);
 			stream.read(typeName.data(), typeNameLength);
 
@@ -161,11 +161,11 @@ namespace wfe {
 				throw std::runtime_error("Failed to find asset type \"" + typeName + "\"!");
 
 			// Read the asset's dependencies
-			uint64_t dependencyCount = BinaryReadUint64(stream);
+			uint64_t dependencyCount = BinaryReadUint64BE(stream);
 			dependencies[i].resize(dependencyCount);
 
 			for(size_t j = 0; j != dependencyCount; ++j)
-				dependencies[i][j] = BinaryReadUint64(stream);
+				dependencies[i][j] = BinaryReadUint64BE(stream);
 		}
 
 		stream.close();
@@ -218,29 +218,29 @@ namespace wfe {
 		}
 		
 		// Write the asset count
-		BinaryWriteUint64(stream, assets.size());
+		BinaryWriteUint64BE(stream, assets.size());
 
 		// Write every asset
 		for(size_t i = 0; i != assets.size(); ++i) {
 			// Write the asset's ID
-			BinaryWriteUint64(stream, assets[i]->GetID());
+			BinaryWriteUint64BE(stream, assets[i]->GetID());
 
 			// Write the asset's path
 			std::string relativePath = assets[i]->GetPath().lexically_relative(path).string();
-			BinaryWriteUint64(stream, relativePath.size());
+			BinaryWriteUint64BE(stream, relativePath.size());
 			stream.write(relativePath.data(), relativePath.size());
 
 			// Write the asset's type
 			std::string typeName = AssetType::GetAssetType(assets[i]).name;
-			BinaryWriteUint64(stream, typeName.size());
+			BinaryWriteUint64BE(stream, typeName.size());
 			stream.write(typeName.data(), typeName.size());
 
 			// Write the asset's dependencies
 			std::vector<Asset*> assetDependencies = assets[i]->GetDependencies();
-			BinaryWriteUint64(stream, assetDependencies.size());
+			BinaryWriteUint64BE(stream, assetDependencies.size());
 			
 			for(size_t j = 0; j != assetDependencies.size(); ++j)
-				BinaryWriteUint64(stream, assetDependencies[j]->GetID());
+				BinaryWriteUint64BE(stream, assetDependencies[j]->GetID());
 		}
 
 		stream.close();

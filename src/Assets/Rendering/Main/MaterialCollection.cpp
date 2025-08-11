@@ -25,38 +25,38 @@ namespace wfe {
 		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
 	
 		// Read the number of items
-		uint64_t itemCount = BinaryReadUint64(stream);
+		uint64_t itemCount = BinaryReadUint64BE(stream);
 		items.resize(itemCount);
 
 		for(size_t i = 0; i != itemCount; ++i) {
 			// Read the material's name
-			uint64_t nameLength = BinaryReadUint64(stream);
+			uint64_t nameLength = BinaryReadUint64BE(stream);
 			items[i].name.resize(nameLength);
 			stream.read(items[i].name.data(), nameLength);
 
 			// Read the material's data
 			Material::MaterialData materialData;
 
-			materialData.ambientColor.x = BinaryReadFloat(stream);
-			materialData.ambientColor.y = BinaryReadFloat(stream);
-			materialData.ambientColor.z = BinaryReadFloat(stream);
+			materialData.ambientColor.x = BinaryReadFloatBE(stream);
+			materialData.ambientColor.y = BinaryReadFloatBE(stream);
+			materialData.ambientColor.z = BinaryReadFloatBE(stream);
 
-			materialData.diffuseColor.x = BinaryReadFloat(stream);
-			materialData.diffuseColor.y = BinaryReadFloat(stream);
-			materialData.diffuseColor.z = BinaryReadFloat(stream);
+			materialData.diffuseColor.x = BinaryReadFloatBE(stream);
+			materialData.diffuseColor.y = BinaryReadFloatBE(stream);
+			materialData.diffuseColor.z = BinaryReadFloatBE(stream);
 
-			materialData.specularColor.x = BinaryReadFloat(stream);
-			materialData.specularColor.y = BinaryReadFloat(stream);
-			materialData.specularColor.z = BinaryReadFloat(stream);
+			materialData.specularColor.x = BinaryReadFloatBE(stream);
+			materialData.specularColor.y = BinaryReadFloatBE(stream);
+			materialData.specularColor.z = BinaryReadFloatBE(stream);
 
-			materialData.specularExponent = BinaryReadFloat(stream);
+			materialData.specularExponent = BinaryReadFloatBE(stream);
 
 			// Read the material texture IDs
-			uint64_t ambientTextureID = BinaryReadUint64(stream);
-			uint64_t diffuseTextureID = BinaryReadUint64(stream);
-			uint64_t specularTextureID = BinaryReadUint64(stream);
-			uint64_t specularExponentMapID = BinaryReadUint64(stream);
-			uint64_t normalMapID = BinaryReadUint64(stream);
+			uint64_t ambientTextureID = BinaryReadUint64BE(stream);
+			uint64_t diffuseTextureID = BinaryReadUint64BE(stream);
+			uint64_t specularTextureID = BinaryReadUint64BE(stream);
+			uint64_t specularExponentMapID = BinaryReadUint64BE(stream);
+			uint64_t normalMapID = BinaryReadUint64BE(stream);
 
 			// Set the material's textures
 			Material::MaterialTextures materialTextures;
@@ -111,39 +111,39 @@ namespace wfe {
 			throw std::runtime_error("Failed to open material collection file \"" + GetPath().string() + "\" for writing!");
 
 		// Write the number of items
-		BinaryWriteUint64(stream, items.size());
+		BinaryWriteUint64BE(stream, items.size());
 
 		// Write all of the items
 		for(size_t i = 0; i != items.size(); ++i) {
 			// Write the material's name
-			BinaryWriteUint64(stream, items[i].name.size());
+			BinaryWriteUint64BE(stream, items[i].name.size());
 			stream.write(items[i].name.data(), items[i].name.size());
 
 			// Write the material's data
 			const Material::MaterialData& materialData = items[i].material->GetData();
 
-			BinaryWriteFloat(stream, materialData.ambientColor.x);
-			BinaryWriteFloat(stream, materialData.ambientColor.y);
-			BinaryWriteFloat(stream, materialData.ambientColor.z);
+			BinaryWriteFloatBE(stream, materialData.ambientColor.x);
+			BinaryWriteFloatBE(stream, materialData.ambientColor.y);
+			BinaryWriteFloatBE(stream, materialData.ambientColor.z);
 
-			BinaryWriteFloat(stream, materialData.diffuseColor.x);
-			BinaryWriteFloat(stream, materialData.diffuseColor.y);
-			BinaryWriteFloat(stream, materialData.diffuseColor.z);
+			BinaryWriteFloatBE(stream, materialData.diffuseColor.x);
+			BinaryWriteFloatBE(stream, materialData.diffuseColor.y);
+			BinaryWriteFloatBE(stream, materialData.diffuseColor.z);
 
-			BinaryWriteFloat(stream, materialData.specularColor.x);
-			BinaryWriteFloat(stream, materialData.specularColor.y);
-			BinaryWriteFloat(stream, materialData.specularColor.z);
+			BinaryWriteFloatBE(stream, materialData.specularColor.x);
+			BinaryWriteFloatBE(stream, materialData.specularColor.y);
+			BinaryWriteFloatBE(stream, materialData.specularColor.z);
 
-			BinaryWriteFloat(stream, materialData.specularExponent);
+			BinaryWriteFloatBE(stream, materialData.specularExponent);
 
 			// Write the material texture IDs
 			const Material::MaterialTextures& materialTextures = items[i].material->GetTextures();
 
-			BinaryWriteUint64(stream, materialTextures.ambientTexture->GetID());
-			BinaryWriteUint64(stream, materialTextures.diffuseTexture->GetID());
-			BinaryWriteUint64(stream, materialTextures.specularTexture->GetID());
-			BinaryWriteUint64(stream, materialTextures.specularExponentMap->GetID());
-			BinaryWriteUint64(stream, materialTextures.normalMap->GetID());
+			BinaryWriteUint64BE(stream, materialTextures.ambientTexture->GetID());
+			BinaryWriteUint64BE(stream, materialTextures.diffuseTexture->GetID());
+			BinaryWriteUint64BE(stream, materialTextures.specularTexture->GetID());
+			BinaryWriteUint64BE(stream, materialTextures.specularExponentMap->GetID());
+			BinaryWriteUint64BE(stream, materialTextures.normalMap->GetID());
 		}
 
 		// Close the file stream

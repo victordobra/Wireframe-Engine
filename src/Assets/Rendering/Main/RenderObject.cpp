@@ -56,7 +56,7 @@ namespace wfe {
 			throw std::runtime_error("Failed to open render object file \"" + GetPath().string() + "\" for reading!");
 
 		// Read the material collection's ID
-		uint64_t materialCollectionID = BinaryReadUint64(stream);
+		uint64_t materialCollectionID = BinaryReadUint64BE(stream);
 
 		if(materialCollectionID != UINT64_T_MAX) {
 			// Get the material collection
@@ -68,54 +68,54 @@ namespace wfe {
 		}
 
 		// Read the number of items
-		uint64_t itemCount = BinaryReadUint64(stream);
+		uint64_t itemCount = BinaryReadUint64BE(stream);
 		items.resize(itemCount);
 
 		for(size_t i = 0; i != itemCount; ++i) {
 			// Read the item's name
-			uint64_t nameLength = BinaryReadUint64(stream);
+			uint64_t nameLength = BinaryReadUint64BE(stream);
 			items[i].name.resize(nameLength);
 			stream.read(items[i].name.data(), nameLength);
 
 			// Read the number of vertices
-			uint64_t vertexCount = BinaryReadUint64(stream);
+			uint64_t vertexCount = BinaryReadUint64BE(stream);
 			std::vector<RenderMesh::Vertex> vertices(vertexCount);
 
 			// Read all vertices
 			for(size_t j = 0; j != vertexCount; ++j) {
-				vertices[j].position.x = BinaryReadFloat(stream);
-				vertices[j].position.y = BinaryReadFloat(stream);
-				vertices[j].position.z = BinaryReadFloat(stream);
+				vertices[j].position.x = BinaryReadFloatBE(stream);
+				vertices[j].position.y = BinaryReadFloatBE(stream);
+				vertices[j].position.z = BinaryReadFloatBE(stream);
 
-				vertices[j].uvCoord.x = BinaryReadFloat(stream);
-				vertices[j].uvCoord.y = BinaryReadFloat(stream);
+				vertices[j].uvCoord.x = BinaryReadFloatBE(stream);
+				vertices[j].uvCoord.y = BinaryReadFloatBE(stream);
 
-				vertices[j].normal.x = BinaryReadFloat(stream);
-				vertices[j].normal.y = BinaryReadFloat(stream);
-				vertices[j].normal.z = BinaryReadFloat(stream);
+				vertices[j].normal.x = BinaryReadFloatBE(stream);
+				vertices[j].normal.y = BinaryReadFloatBE(stream);
+				vertices[j].normal.z = BinaryReadFloatBE(stream);
 
-				vertices[j].tangent.x = BinaryReadFloat(stream);
-				vertices[j].tangent.y = BinaryReadFloat(stream);
-				vertices[j].tangent.z = BinaryReadFloat(stream);
+				vertices[j].tangent.x = BinaryReadFloatBE(stream);
+				vertices[j].tangent.y = BinaryReadFloatBE(stream);
+				vertices[j].tangent.z = BinaryReadFloatBE(stream);
 
-				vertices[j].bitangent.x = BinaryReadFloat(stream);
-				vertices[j].bitangent.y = BinaryReadFloat(stream);
-				vertices[j].bitangent.z = BinaryReadFloat(stream);
+				vertices[j].bitangent.x = BinaryReadFloatBE(stream);
+				vertices[j].bitangent.y = BinaryReadFloatBE(stream);
+				vertices[j].bitangent.z = BinaryReadFloatBE(stream);
 			}
 
 			// Read the number of indices
-			uint64_t indexCount = BinaryReadUint64(stream);
+			uint64_t indexCount = BinaryReadUint64BE(stream);
 			std::vector<uint32_t> indices(indexCount);
 
 			// Read all indices
 			for(size_t j = 0; j != indexCount; ++j)
-				indices[j] = BinaryReadUint32(stream);
+				indices[j] = BinaryReadUint32BE(stream);
 
 			// Create the mesh
 			items[i].mesh = new RenderMesh(GetProgram()->GetRenderer(), vertices, indices);
 			
 			// Read the material name's length
-			uint64_t materialNameLength = BinaryReadUint64(stream);
+			uint64_t materialNameLength = BinaryReadUint64BE(stream);
 
 			items[i].material = nullptr;
 			if(materialNameLength) {
@@ -135,7 +135,7 @@ namespace wfe {
 			}
 
 			// Read the flat index count
-			items[i].flatIndexCount = BinaryReadUint64(stream);
+			items[i].flatIndexCount = BinaryReadUint64BE(stream);
 		}
 
 		// Close the file stream
@@ -149,17 +149,17 @@ namespace wfe {
 
 		// Write the material collection's ID
 		if(materialCollection) {
-			BinaryWriteUint64(stream, materialCollection->GetID());
+			BinaryWriteUint64BE(stream, materialCollection->GetID());
 		} else {
-			BinaryWriteUint64(stream, UINT64_T_MAX);
+			BinaryWriteUint64BE(stream, UINT64_T_MAX);
 		}
 
 		// Write the number of items
-		BinaryWriteUint64(stream, items.size());
+		BinaryWriteUint64BE(stream, items.size());
 
 		for(size_t i = 0; i != items.size(); ++i) {
 			// Write the item's name
-			BinaryWriteUint64(stream, items[i].name.size());
+			BinaryWriteUint64BE(stream, items[i].name.size());
 			stream.write(items[i].name.data(), items[i].name.size());
 
 			// Get the mesh's vertices and indices
@@ -169,34 +169,34 @@ namespace wfe {
 			items[i].mesh->GetMeshData(vertices.data(), indices.data());
 
 			// Write all vertices
-			BinaryWriteUint64(stream, vertices.size());
+			BinaryWriteUint64BE(stream, vertices.size());
 
 			for(size_t j = 0; j != vertices.size(); ++j) {
-				BinaryWriteFloat(stream, vertices[j].position.x);
-				BinaryWriteFloat(stream, vertices[j].position.y);
-				BinaryWriteFloat(stream, vertices[j].position.z);
+				BinaryWriteFloatBE(stream, vertices[j].position.x);
+				BinaryWriteFloatBE(stream, vertices[j].position.y);
+				BinaryWriteFloatBE(stream, vertices[j].position.z);
 
-				BinaryWriteFloat(stream, vertices[j].uvCoord.x);
-				BinaryWriteFloat(stream, vertices[j].uvCoord.y);
+				BinaryWriteFloatBE(stream, vertices[j].uvCoord.x);
+				BinaryWriteFloatBE(stream, vertices[j].uvCoord.y);
 
-				BinaryWriteFloat(stream, vertices[j].normal.x);
-				BinaryWriteFloat(stream, vertices[j].normal.y);
-				BinaryWriteFloat(stream, vertices[j].normal.z);
+				BinaryWriteFloatBE(stream, vertices[j].normal.x);
+				BinaryWriteFloatBE(stream, vertices[j].normal.y);
+				BinaryWriteFloatBE(stream, vertices[j].normal.z);
 
-				BinaryWriteFloat(stream, vertices[j].tangent.x);
-				BinaryWriteFloat(stream, vertices[j].tangent.y);
-				BinaryWriteFloat(stream, vertices[j].tangent.z);
+				BinaryWriteFloatBE(stream, vertices[j].tangent.x);
+				BinaryWriteFloatBE(stream, vertices[j].tangent.y);
+				BinaryWriteFloatBE(stream, vertices[j].tangent.z);
 
-				BinaryWriteFloat(stream, vertices[j].bitangent.x);
-				BinaryWriteFloat(stream, vertices[j].bitangent.y);
-				BinaryWriteFloat(stream, vertices[j].bitangent.z);
+				BinaryWriteFloatBE(stream, vertices[j].bitangent.x);
+				BinaryWriteFloatBE(stream, vertices[j].bitangent.y);
+				BinaryWriteFloatBE(stream, vertices[j].bitangent.z);
 			}
 
 			// Write all indices
-			BinaryWriteUint64(stream, indices.size());
+			BinaryWriteUint64BE(stream, indices.size());
 
 			for(size_t j = 0; j != indices.size(); ++j)
-				BinaryWriteUint32(stream, indices[j]);
+				BinaryWriteUint32BE(stream, indices[j]);
 			
 			if(items[i].material) {
 				// Get the material's name from the material manager
@@ -209,15 +209,15 @@ namespace wfe {
 				}
 
 				// Write the material's name
-				BinaryWriteUint64(stream, materialName.size());
+				BinaryWriteUint64BE(stream, materialName.size());
 				stream.write(materialName.data(), materialName.size());
 			} else {
 				// Write the material name's length as 0, to indicate that no material exists
-				BinaryWriteUint64(stream, 0);
+				BinaryWriteUint64BE(stream, 0);
 			}
 
 			// Write the flat index count
-			BinaryWriteUint64(stream, items[i].flatIndexCount);
+			BinaryWriteUint64BE(stream, items[i].flatIndexCount);
 		}
 
 		// Close the file stream
