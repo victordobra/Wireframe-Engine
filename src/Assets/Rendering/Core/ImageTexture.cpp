@@ -1,4 +1,5 @@
 #include "ImageTexture.hpp"
+#include "Core/Parsers/Image/ImageParser.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
 #include <vulkan/vk_enum_string_helper.h>
@@ -503,13 +504,7 @@ namespace wfe {
 			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for writing!");
 		
 		// Write the image to the stream
-		if(extension == ".bmp") {
-			if(!WriteBMPFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write BMP image file \"" + GetPath().string() + "\"!");
-		} else if(extension == ".jpg" || extension == ".jpeg") {
-			if(!WriteJPEGFile(stream, width, height, imageData))
-				throw std::runtime_error("Failed to write JPEG image file \"" + GetPath().string() + "\"!");
-		} else if(extension == ".png") {
+		if(extension == ".png") {
 			if(!WritePNGFile(stream, width, height, imageData))
 				throw std::runtime_error("Failed to write PNG image file \"" + GetPath().string() + "\"!");
 		} else {

@@ -1,4 +1,5 @@
 #include "ImageCubemap.hpp"
+#include "Core/Parsers/Image/ImageParser.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
 #include <vulkan/vk_enum_string_helper.h>
@@ -571,7 +572,7 @@ namespace wfe {
 
 		// Allocate the unwrapped image's data buffer
 		size_t unwrappedDataSize = unwrappedWidth * unwrappedHeight * 4;
-		uint8_t* unwrappedData = (uint8_t*)AllocMemory(dataSize);
+		uint8_t* unwrappedData = (uint8_t*)AllocMemory(unwrappedDataSize);
 		if(!imageData)
 			throw std::bad_alloc();
 		
@@ -630,13 +631,7 @@ namespace wfe {
 			throw std::runtime_error("Failed to open image file \"" + GetPath().string() + "\" for writing!");
 		
 		// Write the unwrapped image to the stream
-		if(extension == ".bmp") {
-			if(!WriteBMPFile(stream, unwrappedWidth, unwrappedHeight, unwrappedData))
-				throw std::runtime_error("Failed to write BMP image file \"" + GetPath().string() + "\"!");
-		} else if(extension == ".jpg" || extension == ".jpeg") {
-			if(!WriteJPEGFile(stream, unwrappedWidth, unwrappedHeight, unwrappedData))
-				throw std::runtime_error("Failed to write JPEG image file \"" + GetPath().string() + "\"!");
-		} else if(extension == ".png") {
+		if(extension == ".png") {
 			if(!WritePNGFile(stream, unwrappedWidth, unwrappedHeight, unwrappedData))
 				throw std::runtime_error("Failed to write PNG image file \"" + GetPath().string() + "\"!");
 		} else {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/Assets/Asset.hpp"
-#include "Core/Parsers/ImageParser.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Vulkan/Instance/VulkanAllocator.hpp"
 #include <vulkan/vk_platform.h>
@@ -124,7 +123,7 @@ namespace wfe {
 			DestroyVulkanComponents();
 		}
 	private:
-		WFE_ASSET_TYPE(ImageTexture, ".bmp", ".jpg", ".jpeg", ".png")
+		WFE_ASSET_TYPE(ImageTexture, ".png")
 
 		void CreateVulkanComponents();
 		void DestroyVulkanComponents();
