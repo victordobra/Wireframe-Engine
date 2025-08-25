@@ -1067,8 +1067,8 @@ namespace wfe {
 		// Write the ZLIB header
 		CompressedOutputBuffer compressedBuffer;
 
-		compressedBuffer.data.push_back(0x48); // CMF
-		compressedBuffer.data.push_back(0x4b); // FLG
+		compressedBuffer.data.push_back(0x78); // CMF
+		compressedBuffer.data.push_back(0x5e); // FLG
 
 		// Write the block's info
 		WriteBitValue(3, 0b011, compressedBuffer);
