@@ -296,7 +296,9 @@ namespace wfe {
 		};
 
 		// Submit the command buffer
+		renderer->GetDevice()->GetDeviceQueues().graphicsQueueMutex.lock();
 		result = renderer->GetLoader()->vkQueueSubmit2KHR(renderer->GetDevice()->GetDeviceQueues().graphicsQueue, 1, &submitInfo, renderingFences[frameIndex]);
+		renderer->GetDevice()->GetDeviceQueues().graphicsQueueMutex.unlock();
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to submit Vulkan graphics command buffer! Error code: " + string_VkResult(result));
 		

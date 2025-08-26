@@ -8,6 +8,7 @@
 #include <vulkan/vulkan_core.h>
 #include <string>
 #include <vector>
+#include <mutex>
 
 namespace wfe {
 	/// @brief A class implementing a Vulkan logical device.
@@ -31,6 +32,14 @@ namespace wfe {
 			VkQueue transferQueue;
 			/// @brief The compute queue.
 			VkQueue computeQueue;
+			/// @brief The mutex for graphics queue access synchronization.
+			mutable std::mutex graphicsQueueMutex;
+			/// @brief The mutex for present queue access synchronization.
+			mutable std::mutex presentQueueMutex;
+			/// @brief The mutex for transfer queue access synchronization.
+			mutable std::mutex transferQueueMutex;
+			/// @brief The cmutex for ompute queue access synchronization.
+			mutable std::mutex computeQueueMutex;
 		};
 
 		/// @brief A struct chain containing all required features for the Vulkan device.

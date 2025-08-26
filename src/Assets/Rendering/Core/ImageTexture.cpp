@@ -232,7 +232,9 @@ namespace wfe {
 		};
 
 		// Submit the command buffer
+		device->GetDeviceQueues().transferQueueMutex.lock();
 		result = device->GetLoader()->vkQueueSubmit2KHR(device->GetDeviceQueues().transferQueue, 1, &submitInfo, copyFence);
+		device->GetDeviceQueues().transferQueueMutex.unlock();
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to submit Vulkan command buffer for image copy! Error code: " + string_VkResult(result));
 		
@@ -376,7 +378,9 @@ namespace wfe {
 		};
 
 		// Submit the command buffer
+		device->GetDeviceQueues().transferQueueMutex.lock();
 		result = device->GetLoader()->vkQueueSubmit2KHR(device->GetDeviceQueues().transferQueue, 1, &submitInfo, copyFence);
+		device->GetDeviceQueues().transferQueueMutex.unlock();
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to submit Vulkan command buffer for image copy! Error code: " + string_VkResult(result));
 		
@@ -618,7 +622,9 @@ namespace wfe {
 		};
 
 		// Submit the command buffer
+		device->GetDeviceQueues().transferQueueMutex.lock();
 		result = device->GetLoader()->vkQueueSubmit2KHR(device->GetDeviceQueues().transferQueue, 1, &submitInfo, transitionFence);
+		device->GetDeviceQueues().transferQueueMutex.unlock();
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to submit Vulkan command buffer for image layout transition! Error code: " + string_VkResult(result));
 		
