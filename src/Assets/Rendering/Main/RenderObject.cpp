@@ -43,6 +43,12 @@ struct std::hash<wfe::ArrVertex> {
 };
 
 namespace wfe {
+	// Structs
+	struct MeshData {
+		std::vector<RenderMesh::Vertex> vertices;
+		std::vector<uint32_t> indices;
+	};
+
 	// Virtual function definitions
 	void RenderObject::Load() {
 		// Destroy all previous items
@@ -592,12 +598,6 @@ namespace wfe {
 					currentName.clear();
 					currentMaterialName.clear();
 
-					positions.clear();
-					uvCoords.clear();
-					normals.clear();
-					tangentsMap.clear();
-					bitangentsMap.clear();
-
 					arrVertices.clear();
 					indices.clear();
 					smoothIndices.clear();
@@ -632,6 +632,53 @@ namespace wfe {
 			stream << "mtllib " << materialCollectionPath.string() << "\n\n";
 		}
 
+		// Get the vertices and indices for all meshes
+		std::vector<MeshData> meshes(items.size());
+		for(size_t i = 0; i != items.size(); ++i) {
+			// Get the mesh's vertices and indices
+			meshes[i].vertices.resize(items[i].mesh->GetVertexCount());
+			meshes[i].indices.resize(items[i].mesh->GetIndexCount());
+
+			items[i].mesh->GetMeshData(meshes[i].vertices.data(), meshes[i].indices.data());
+		}
+
+		// Get all unique positions, UV coordinates and normals
+		std::unordered_map<Vec3f, uint32_t> positions;
+		std::unordered_map<Vec2f, uint32_t> uvCoords;
+		std::unordered_map<Vec3f, uint32_t> normals;
+
+		for(size_t i = 0; i != meshes.size(); ++i) {
+			for(size_t j = 0; j != meshes[i].vertices.size(); ++j) {
+				positions.insert({ meshes[i].vertices[j].position, 0 });
+				uvCoords.insert({ meshes[i].vertices[j].uvCoord, 0 });
+				normals.insert({ meshes[i].vertices[j].normal, 0 });
+			}
+		}
+
+		// Output all positions and set their indices
+		size_t ind = 0;
+		for(auto iter = positions.begin(); iter != positions.end(); ++iter) {
+			stream << "v " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
+			iter->second = (uint32_t)++ind;
+		}
+		stream << '\n';
+
+		// Output all UV coordinates and set their indices
+		ind = 0;
+		for(auto iter = uvCoords.begin(); iter != uvCoords.end(); ++iter) {
+			stream << "vt " << iter->first.x << ' ' << iter->first.y << '\n';
+			iter->second = (uint32_t)++ind;
+		}
+		stream << '\n';
+
+		// Output all normals and set their indices
+		ind = 0;
+		for(auto iter = normals.begin(); iter != normals.end(); ++iter) {
+			stream << "vn " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
+			iter->second = (uint32_t)++ind;
+		}
+		stream << '\n';
+
 		// Write every item's info
 		for(size_t i = 0; i != items.size(); ++i) {
 			// Write the object's name
@@ -651,55 +698,14 @@ namespace wfe {
 				stream << "\tusemtl " << materialName << "\n\n";
 			}
 
-			// Get the mesh's vertices and indices
-			std::vector<RenderMesh::Vertex> vertices(items[i].mesh->GetVertexCount());
-			std::vector<uint32_t> indices(items[i].mesh->GetIndexCount());
-
-			items[i].mesh->GetMeshData(vertices.data(), indices.data());
-
-			// Get all unique positions, UV coordinates and normals
-			std::unordered_map<Vec3f, uint32_t> positions;
-			std::unordered_map<Vec2f, uint32_t> uvCoords;
-			std::unordered_map<Vec3f, uint32_t> normals;
-
-			for(size_t j = 0; j != vertices.size(); ++j) {
-				positions.insert({ vertices[j].position, 0 });
-				uvCoords.insert({ vertices[j].uvCoord, 0 });
-				normals.insert({ vertices[j].normal, 0 });
-			}
-
-			// Output all positions and set their indices
-			size_t ind = 0;
-			for(auto iter = positions.begin(); iter != positions.end(); ++iter) {
-				stream << "\tv " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
-				iter->second = (uint32_t)++ind;
-			}
-			stream << '\n';
-
-			// Output all UV coordinates and set their indices
-			ind = 0;
-			for(auto iter = uvCoords.begin(); iter != uvCoords.end(); ++iter) {
-				stream << "\tvt " << iter->first.x << ' ' << iter->first.y << '\n';
-				iter->second = (uint32_t)++ind;
-			}
-			stream << '\n';
-
-			// Output all normals and set their indices
-			ind = 0;
-			for(auto iter = normals.begin(); iter != normals.end(); ++iter) {
-				stream << "\tvn " << iter->first.x << ' ' << iter->first.y << ' ' << iter->first.z << '\n';
-				iter->second = (uint32_t)++ind;
-			}
-			stream << '\n';
-
 			// Generate all array vertices
-			std::vector<ArrVertex> arrVertices(vertices.size());
+			std::vector<ArrVertex> arrVertices(meshes[i].vertices.size());
 
 			for(size_t j = 0; j != arrVertices.size(); ++j) {
 				// Get the position, UV and normal index
-				arrVertices[j].posIndex = positions[vertices[j].position];
-				arrVertices[j].uvIndex = uvCoords[vertices[j].uvCoord];
-				arrVertices[j].normIndex = normals[vertices[j].normal];
+				arrVertices[j].posIndex = positions[meshes[i].vertices[j].position];
+				arrVertices[j].uvIndex = uvCoords[meshes[i].vertices[j].uvCoord];
+				arrVertices[j].normIndex = normals[meshes[i].vertices[j].normal];
 			}
 
 			if(items[i].flatIndexCount) {
@@ -709,7 +715,7 @@ namespace wfe {
 					stream << "\tf ";
 					for(size_t k = j; k != j + 3; ++k) {
 						// Output the current array vertex
-						ArrVertex arrVertex = arrVertices[indices[k]];
+						ArrVertex arrVertex = arrVertices[meshes[i].indices[k]];
 						stream << arrVertex.posIndex << '/' << arrVertex.uvIndex << '/' << arrVertex.normIndex << ' ';
 					}
 					stream << '\n';
@@ -717,14 +723,14 @@ namespace wfe {
 				stream << '\n';
 			}
 
-			if(items[i].flatIndexCount != indices.size()) {
+			if(items[i].flatIndexCount != meshes[i].indices.size()) {
 				// Output all smooth faces
 				stream << "\ts 1\n";
-				for(size_t j = 0; j != items[i].flatIndexCount; j += 3) {
+				for(size_t j = items[i].flatIndexCount; j != meshes[i].indices.size(); j += 3) {
 					stream << "\tf ";
 					for(size_t k = j; k != j + 3; ++k) {
 						// Output the current array vertex
-						ArrVertex arrVertex = arrVertices[indices[k]];
+						ArrVertex arrVertex = arrVertices[meshes[i].indices[k]];
 						stream << arrVertex.posIndex << '/' << arrVertex.uvIndex << '/' << arrVertex.normIndex << ' ';
 					}
 					stream << '\n';
