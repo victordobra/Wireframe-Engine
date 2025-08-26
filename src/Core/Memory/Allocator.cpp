@@ -215,6 +215,9 @@ namespace wfe {
 					heap->mutex = 0;
 					return (void*)alignedPos;
 				}
+
+				// Unlock the heap's mutex
+				heap->mutex = 0;
 			}
 
 			// No suitable heap was found; create a new one
