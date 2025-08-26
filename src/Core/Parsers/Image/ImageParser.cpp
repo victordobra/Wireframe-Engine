@@ -7,6 +7,8 @@ namespace wfe {
 		// Check for the file's type and parse it accordingly
 		if(CheckPNGSignature(stream)) {
 			return ReadPNGFile(stream, width, height);
+		} else if(CheckTGASignature(stream)) {
+			return ReadTGAFile(stream, width, height);
 		} else {
 			return nullptr;
 		}

@@ -507,6 +507,9 @@ namespace wfe {
 		if(extension == ".png") {
 			if(!WritePNGFile(stream, width, height, imageData))
 				throw std::runtime_error("Failed to write PNG image file \"" + GetPath().string() + "\"!");
+		} else if(extension == ".tga") {
+			if(!WriteTGAFile(stream, width, height, imageData))
+				throw std::runtime_error("Failed to write TGA image file \"" + GetPath().string() + "\"!");
 		} else {
 			throw std::invalid_argument("Unsupported image file format \"" + extension + "\" for image export!");
 		}

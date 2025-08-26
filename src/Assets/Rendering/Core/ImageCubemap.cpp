@@ -634,6 +634,9 @@ namespace wfe {
 		if(extension == ".png") {
 			if(!WritePNGFile(stream, unwrappedWidth, unwrappedHeight, unwrappedData))
 				throw std::runtime_error("Failed to write PNG image file \"" + GetPath().string() + "\"!");
+		} else if(extension == ".tga") {
+			if(!WriteTGAFile(stream, unwrappedWidth, unwrappedHeight, unwrappedData))
+				throw std::runtime_error("Failed to write TGA image file \"" + GetPath().string() + "\"!");
 		} else {
 			throw std::invalid_argument("Unsupported image file format \"" + extension + "\" for cubemap export!");
 		}

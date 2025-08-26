@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PNGParser.hpp"
+#include "TGAParser.hpp"
 #include "Core/Types/Defines.hpp"
 #include <istream>
 #include <ostream>

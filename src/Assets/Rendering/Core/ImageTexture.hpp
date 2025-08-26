@@ -123,7 +123,7 @@ namespace wfe {
 			DestroyVulkanComponents();
 		}
 	private:
-		WFE_ASSET_TYPE(ImageTexture, ".png")
+		WFE_ASSET_TYPE(ImageTexture, ".png", ".tga")
 
 		void CreateVulkanComponents();
 		void DestroyVulkanComponents();
