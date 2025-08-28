@@ -55,7 +55,7 @@ namespace wfe {
 					valueType = VALUE_TYPE_STRING;
 
 					// Loop through the string and format all special characters
-					std::string str = "";
+					std::string str;
 					for(size_t i = 1; i != tokens.at(index).size() - 1; ++i) {
 						// Check if the next character is special
 						if(tokens.at(index)[i] == '\\') {
@@ -103,7 +103,7 @@ namespace wfe {
 					}
 
 					// Append the string to its array
-					stringValues.push_back(str);
+					stringValues.emplace_back(std::move(str));
 				} else if(tokens.at(index) == "true" || tokens.at(index) == "false") {
 					// Throw an error if the previous values in the array are not booleans
 					if(valueType != VALUE_TYPE_COUNT && valueType != VALUE_TYPE_BOOL)
@@ -145,7 +145,7 @@ namespace wfe {
 					newObject.InternalParse(tokens, index, false);
 					
 					// Append the object to its array
-					objectValues.push_back(newObject);
+					objectValues.emplace_back(std::move(newObject));
 				} else {
 					// Throw an error if the value is not a valid type
 					throw std::runtime_error("Error parsing WFEON file! Expected value, but found '" + tokens.at(index) + "'.");
@@ -214,7 +214,7 @@ namespace wfe {
 			case VALUE_TYPE_STRING:
 				for(size_t i = 0; i != value.second.count; ++i) {
 					// Build the result string
-					std::string str = "";
+					std::string str;
 
 					for(size_t j = 0; j != stringValues[value.second.startIndex + i].size(); ++j) {
 						// Add the following character, with considerations for special characters
@@ -298,7 +298,7 @@ namespace wfe {
 	void WFEONObject::Parse(std::istream& stream) {
 		// Get all the tokens from the stream
 		std::vector<std::string> tokens;
-		std::string token = "";
+		std::string token;
 		bool readingString = false, readingLineComment = false, readingBlockComment = false;
 		bool stringSpecial = false;
 
@@ -310,8 +310,8 @@ namespace wfe {
 				// Check if the string is finished
 				if(c == '\"' && !stringSpecial) {
 					readingString = false;
-					tokens.push_back(token);
-					token = "";
+					tokens.emplace_back(std::move(token));
+					token.clear();
 				}
 
 				// Check if the next character is special
@@ -328,21 +328,21 @@ namespace wfe {
 				// Check if the comment is finished
 				if(c == '/' && token == "*") {
 					readingBlockComment = false;
-					token = "";
+					token.clear();
 				} else {
 					token = c;
 				}
 			} else if(std::isspace(c)) {
 				// Add the previous token to the vector, if it exists
 				if(!token.empty()) {
-					tokens.push_back(token);
-					token = "";
+					tokens.emplace_back(std::move(token));
+					token.clear();
 				}
 			} else if(std::isalnum(c) || c == '_' || c == '-' || c == '.') {
 				// Insert the previous token if leftover from comment checking
 				if(token == "/") {
-					tokens.push_back(token);
-					token = "";
+					tokens.emplace_back(std::move(token));
+					token.clear();
 				}
 
 				// Add the character to the token
@@ -350,7 +350,7 @@ namespace wfe {
 			} else if(c == '"') {
 				// Insert the previous token, if it exists
 				if(!token.empty())
-					tokens.push_back(token);
+					tokens.emplace_back(std::move(token));
 				token = "\"";
 
 				// Start reading a string
@@ -359,33 +359,33 @@ namespace wfe {
 				// Check if a line comment is being started
 				if(token == "/") {
 					readingLineComment = true;
-					token = "";
+					token.clear();
 				} else {
 					// Insert the previous token, if it exists
 					if(!token.empty())
-						tokens.push_back(token);
+						tokens.emplace_back(std::move(token));
 					token = "/";
 				}
 			} else if(c == '*') {
 				// Check if a block comment is being started
 				if(token == "/") {
 					readingBlockComment = true;
-					token = "";
+					token.clear();
 				} else {
 					// Insert the previous token, if it exists
 					if(!token.empty()) {
-						tokens.push_back(token);
-						token = "";
+						tokens.emplace_back(std::move(token));
+						token.clear();
 					}
 					
 					// Insert the current token
-					tokens.push_back("*");
+					tokens.emplace_back("*");
 				}
 			} else {
 				// Insert the previous token, if it exists
 				if(!token.empty()) {
-					tokens.push_back(token);
-					token = "";
+					tokens.emplace_back(std::move(token));
+					token.clear();
 				}
 					
 				// Insert the current token
@@ -395,7 +395,7 @@ namespace wfe {
 
 		// Add the last token, if it exists
 		if(!token.empty())
-			tokens.push_back(token);
+			tokens.emplace_back(std::move(token));
 		
 		// Load the object
 		size_t index = 0;

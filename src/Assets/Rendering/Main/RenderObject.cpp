@@ -325,21 +325,21 @@ namespace wfe {
 				strStream >> position.x >> position.y >> position.z;
 
 				// Add the position to the array
-				positions.push_back(position);
+				positions.emplace_back(std::move(position));
 			} else if(keyword == "vt") {
 				// Read the current UV coordinate
 				Vec2f uvCoord;
 				strStream >> uvCoord.x >> uvCoord.y;
 				
 				// Add the UV coordinate to the array
-				uvCoords.push_back(uvCoord);
+				uvCoords.emplace_back(std::move(uvCoord));
 			} else if(keyword == "vn") {
 				// Read the current normal and reduce it to a unit vector (not guaranteed by the Wavefront specification!)
 				Vec3f normal;
 				strStream >> normal.x >> normal.y >> normal.z;
 
 				// Add the normal to the array
-				normals.push_back(VecNormalized(normal));
+				normals.emplace_back(std::move(VecNormalized(normal)));
 			} else if(keyword == "f") {
 				// Read the three index strings
 				std::string face1, face2, face3;
