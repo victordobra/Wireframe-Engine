@@ -2,12 +2,14 @@
 #include "Core/Math/General/VecUtils.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
+#include <cctype>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 namespace wfe {
@@ -244,6 +246,19 @@ namespace wfe {
 		std::vector<std::string> lines;
 
 		while(stream) {
+			// Read all trailing whitespace characters
+			for(char ch; stream.get(ch);) {
+				if(!std::isspace(ch)) {
+					// Add the current character back to the stream and exit the loop
+					stream.unget();
+					break;
+				}
+			}
+
+			// Exit the loop if the end of the file has been reached
+			if(!stream)
+				break;
+
 			// Read the current line
 			std::string line;
 			for(char ch; stream.get(ch);) {
@@ -252,23 +267,15 @@ namespace wfe {
 					break;
 				
 				// Add the character to the line
-				line += ch;
+				line.push_back(ch);
 			}
 
-			// Get all whitespace characters at the start or end of the line
-			size_t lineStart = line.find_first_not_of(" \f\n\r\t\v");
-			size_t lineEnd = line.find_last_not_of(" \f\n\r\t\v");
-
-			// Skip the current line if it is full of whitespace
-			if(lineStart == std::string::npos || lineEnd == std::string::npos)
-				continue;
-
 			// Skip the current line if it is a comment
-			if(line[lineStart] == '#')
+			if(line[0] == '#')
 				continue;
 			
 			// Add the new line, with all whitespace trimmed, to the vector
-			lines.push_back(line.substr(lineStart, lineEnd - lineStart + 1));
+			lines.emplace_back(std::move(line));
 		}
 
 		// Close the file stream
