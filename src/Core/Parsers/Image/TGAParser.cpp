@@ -468,9 +468,9 @@ namespace wfe {
 
 					// Swap the pixels
 					uint8_t temp[4];
-					memcpy(temp, imageData + oldIndex, 4);
-					memcpy(imageData + oldIndex, imageData + newIndex, 4);
-					memcpy(imageData + newIndex, temp, 4);
+					std::memcpy(temp, imageData + oldIndex, 4);
+					std::memcpy(imageData + oldIndex, imageData + newIndex, 4);
+					std::memcpy(imageData + newIndex, temp, 4);
 				}
 			}
 		}
@@ -485,9 +485,9 @@ namespace wfe {
 
 					// Swap the pixels
 					uint8_t temp[4];
-					memcpy(temp, imageData + oldIndex, 4);
-					memcpy(imageData + oldIndex, imageData + newIndex, 4);
-					memcpy(imageData + newIndex, temp, 4);
+					std::memcpy(temp, imageData + oldIndex, 4);
+					std::memcpy(imageData + oldIndex, imageData + newIndex, 4);
+					std::memcpy(imageData + newIndex, temp, 4);
 				}
 			}
 		}

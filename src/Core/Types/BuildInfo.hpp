@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Info/EngineInfo.hpp"
-#include <stddef.h>
+#include <cstddef>
 
 // Windows
 #if defined(WIN32) | defined(_WIN32) | defined(__WIN32__)

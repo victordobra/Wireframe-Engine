@@ -4,7 +4,6 @@
 #include "TGAParser.hpp"
 #include "Core/Types/Defines.hpp"
 #include <istream>
-#include <ostream>
 
 namespace wfe {
 	/// @brief Reads an image file, outputting its raw color values.

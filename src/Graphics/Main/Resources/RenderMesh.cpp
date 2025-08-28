@@ -1,4 +1,5 @@
 #include "RenderMesh.hpp"
+#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>
@@ -102,7 +103,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh vertex staging buffer to its memory! Error code: " + string_VkResult(result));
 
 		// Set the vertex staging buffer's info
-		memcpy(device->GetAllocator()->GetMappedMemory(vertexStagingBufferMemory), vertices.data(), sizeof(Vertex) * vertices.size());
+		std::memcpy(device->GetAllocator()->GetMappedMemory(vertexStagingBufferMemory), vertices.data(), sizeof(Vertex) * vertices.size());
 		
 		// Set the index staging buffer create info
 		VkBufferCreateInfo indexStagingBufferInfo {
@@ -135,7 +136,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan mesh index staging buffer to its memory! Error code: " + string_VkResult(result));
 
 		// Set the index staging buffer's info
-		memcpy(device->GetAllocator()->GetMappedMemory(indexStagingBufferMemory), indices.data(), sizeof(uint32_t) * indices.size());
+		std::memcpy(device->GetAllocator()->GetMappedMemory(indexStagingBufferMemory), indices.data(), sizeof(uint32_t) * indices.size());
 
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {
@@ -393,8 +394,8 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for mesh vertex and copy! Error code: " + string_VkResult(result));
 
 		// Get the vertices and indices from the staging buffers
-		memcpy(vertices, device->GetAllocator()->GetMappedMemory(vertexStagingBufferMemory), sizeof(Vertex) * vertexCount);
-		memcpy(indices, device->GetAllocator()->GetMappedMemory(indexStagingBufferMemory), sizeof(uint32_t) * indexCount);
+		std::memcpy(vertices, device->GetAllocator()->GetMappedMemory(vertexStagingBufferMemory), sizeof(Vertex) * vertexCount);
+		std::memcpy(indices, device->GetAllocator()->GetMappedMemory(indexStagingBufferMemory), sizeof(uint32_t) * indexCount);
 		
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);

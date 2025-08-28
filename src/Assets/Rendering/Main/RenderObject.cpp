@@ -5,7 +5,6 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
-#include <stdlib.h>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>

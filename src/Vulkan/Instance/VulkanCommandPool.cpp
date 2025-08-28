@@ -1,5 +1,6 @@
 #include "VulkanCommandPool.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
+#include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {

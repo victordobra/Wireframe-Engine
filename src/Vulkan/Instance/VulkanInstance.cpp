@@ -1,7 +1,7 @@
 #include "VulkanInstance.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
+#include <cstring>
 #include <stdexcept>
-#include <string.h>
 #include <vulkan/vk_enum_string_helper.h>
 
 #if defined(WFE_PLATFORM_WINDOWS)
@@ -84,7 +84,7 @@ namespace wfe {
 			// Compare all extension names
 			bool supported = false;
 			for(size_t i = 0; i != extensions.size() && !supported; ++i)
-				supported = !strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
+				supported = !std::strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
 			
 			// Add the exception to the vector, if supported
 			if(supported)
@@ -101,7 +101,7 @@ namespace wfe {
 		// Check if the debug extension is supported
 		bool debugSupported = false;
 		for(size_t i = 0; i != extensions.size() && !debugSupported; ++i)
-			debugSupported = !strncmp(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
+			debugSupported = !std::strncmp(VK_EXT_DEBUG_UTILS_EXTENSION_NAME, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
 		
 		// Exit the function if the extension is not supported
 		if(!debugSupported)
@@ -118,7 +118,7 @@ namespace wfe {
 			// Compare all layer names
 			debugSupported = false;
 			for(size_t i = 0; i != layers.size() && !debugSupported; ++i)
-				debugSupported = !strncmp(layer, layers[i].layerName, VK_MAX_EXTENSION_NAME_SIZE);
+				debugSupported = !std::strncmp(layer, layers[i].layerName, VK_MAX_EXTENSION_NAME_SIZE);
 			
 			// Exit the function if the layer is not supported
 			if(!debugSupported)

@@ -2,8 +2,9 @@
 #include "Core/Memory/Allocator.hpp"
 #include "Vulkan/API/VulkanStructSize.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
-#include <unordered_map>
+#include <cstring>
 #include <stdexcept>
+#include <unordered_map>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
@@ -372,7 +373,7 @@ namespace wfe {
 			// Compare all extension names
 			bool supported = false;
 			for(size_t i = 0; i != extensions.size() && !supported; ++i)
-				supported = !strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
+				supported = !std::strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
 			
 			// Throw an exception if the extension is not supported
 			if(!supported)
@@ -387,7 +388,7 @@ namespace wfe {
 			// Compare all extension names
 			bool supported = false;
 			for(size_t i = 0; i != extensions.size() && !supported; ++i)
-				supported = !strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
+				supported = !std::strncmp(extension, extensions[i].extensionName, VK_MAX_EXTENSION_NAME_SIZE);
 			
 			// Add the exception to the vector, if supported
 			if(supported)

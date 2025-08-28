@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
-#include <math.h>
+#include <cmath>
 
 namespace wfe {
 	/// @brief Single precision floating point constant for pi.
@@ -69,13 +69,13 @@ namespace wfe {
 	/// @param val The value to get the square root of.
 	/// @return The square root of the value.
 	inline float Sqrt(float val) {
-		return sqrtf(val);
+		return std::sqrtf(val);
 	}
 	/// @brief Gets the square root of the given value.
 	/// @param val The value to get the square root of.
 	/// @return The square root of the value.
 	inline double Sqrt(double val) {
-		return sqrt(val);
+		return std::sqrt(val);
 	}
 	/// @brief Gets the inverse square root of the given value.
 	/// @param val The value to get the inverse square root of.
@@ -94,100 +94,100 @@ namespace wfe {
 	/// @param exp The exponent to raise the value to.
 	/// @return The result of the operation.
 	inline float Pow(float base, float exp) {
-		return powf(base, exp);
+		return std::powf(base, exp);
 	}
 	/// @brief Raises a value to the given exponent.
 	/// @param base The value to raise.
 	/// @param exp The exponent to raise the value to.
 	/// @return The result of the operation.
 	inline double Pow(double base, double exp) {
-		return pow(base, exp);
+		return std::pow(base, exp);
 	}
 
 	/// @brief Computes the sine of the given value.
 	/// @param val The value to use.
 	/// @return The sine of the value.
 	inline float Sin(float val) {
-		return sinf(val);
+		return std::sinf(val);
 	}
 	/// @brief Computes the sine of the given value.
 	/// @param val The value to use.
 	/// @return The sine of the value.
 	inline double Sin(double val) {
-		return sin(val);
+		return std::sin(val);
 	}
 	/// @brief Computes the cosine of the given value.
 	/// @param val The value to use.
 	/// @return The cosine of the value.
 	inline float Cos(float val) {
-		return cosf(val);
+		return std::cosf(val);
 	}
 	/// @brief Computes the cosine of the given value.
 	/// @param val The value to use.
 	/// @return The cosine of the value.
 	inline double Cos(double val) {
-		return cos(val);
+		return std::cos(val);
 	}
 	/// @brief Computes the tangent of the given value.
 	/// @param val The value to use.
 	/// @return The tangent of the value.
 	inline float Tan(float val) {
-		return tanf(val);
+		return std::tanf(val);
 	}
 	/// @brief Computes the tangent of the given value.
 	/// @param val The value to use.
 	/// @return The tangent of the value.
 	inline double Tan(double val) {
-		return tan(val);
+		return std::tan(val);
 	}
 	/// @brief Computes the arc sine of the given value.
 	/// @param val The value to use.
 	/// @return The arc sine of the value.
 	inline float Asin(float val) {
-		return asinf(val);
+		return std::asinf(val);
 	}
 	/// @brief Computes the arc sine of the given value.
 	/// @param val The value to use.
 	/// @return The arc sine of the value.
 	inline double Asin(double val) {
-		return asin(val);
+		return std::asin(val);
 	}
 	/// @brief Computes the arc cosine of the given value.
 	/// @param val The value to use.
 	/// @return The arc cosine of the value.
 	inline float Acos(float val) {
-		return acosf(val);
+		return std::acosf(val);
 	}
 	/// @brief Computes the arc cosine of the given value.
 	/// @param val The value to use.
 	/// @return The arc cosine of the value.
 	inline double Acos(double val) {
-		return acos(val);
+		return std::acos(val);
 	}
 	/// @brief Computes the arc tangent of the given value.
 	/// @param val The value to use.
 	/// @return The arc tangent of the value.
 	inline float Atan(float val) {
-		return atanf(val);
+		return std::atanf(val);
 	}
 	/// @brief Computes the arc tangent of the given value.
 	/// @param val The value to use.
 	/// @return The arc tangent of the value.
 	inline double Atan(double val) {
-		return atan(val);
+		return std::atan(val);
 	}
 	/// @brief Computes the arc tangent for the two given coordinates.
 	/// @param y The Y coordinate.
 	/// @param x The X coordinate.
 	/// @return The arc tangent for the two coordinates.
 	inline float Atan2(float y, float x) {
-		return atan2f(y, x);
+		return std::atan2f(y, x);
 	}
 	/// @brief Computes the arc tangent for the two given coordinates.
 	/// @param y The Y coordinate.
 	/// @param x The X coordinate.
 	/// @return The arc tangent for the two coordinates.
 	inline double Atan2(double y, double x) {
-		return atan2(y, x);
+		return std::atan2(y, x);
 	}
 }

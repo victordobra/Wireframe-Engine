@@ -1,5 +1,4 @@
 #include "Program.hpp"
-#include <math.h>
 
 namespace wfe {
 	// Close event listener

@@ -4,6 +4,7 @@
 #include "Graphics/Main/Components/SceneLight.hpp"
 #include "Graphics/EngineGraphics.hpp"
 #include "Main/Program.hpp"
+#include <cstddef>
 #include <stdexcept>
 #include <string>
 #include <vulkan/vk_enum_string_helper.h>

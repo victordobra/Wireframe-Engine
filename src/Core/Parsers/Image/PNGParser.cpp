@@ -1,7 +1,8 @@
 #include "PNGParser.hpp"
 #include "Core/Memory/Allocator.hpp"
 #include "Core/Utils/BinaryIO.hpp"
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 namespace wfe {
@@ -594,7 +595,7 @@ namespace wfe {
 
 				// Add the block's data to the decompressed list
 				uint8_t* blockData = compressedBuffer.data + compressedBuffer.byteIndex;
-				memcpy(rawImageData + rawImageDataTop, blockData, dataLength);
+				std::memcpy(rawImageData + rawImageDataTop, blockData, dataLength);
 				rawImageDataTop += dataLength;
 				compressedBuffer.byteIndex += dataLength;
 
@@ -956,15 +957,15 @@ namespace wfe {
 			uint32_t bestFilter = 0;
 
 			for(uint32_t j = 0; j != width * 4; ++j)
-				bestFilterEntropy += (uint32_t)abs((int8_t)scanline[j]);
+				bestFilterEntropy += (uint32_t)std::abs((int8_t)scanline[j]);
 			
 			// Estimate the sub filter's entropy
 			uint32_t filterEntropy = 0;
 
 			for(uint32_t j = 0; j != 4; ++j)
-				filterEntropy += (uint32_t)abs((int8_t)scanline[j]);
+				filterEntropy += (uint32_t)std::abs((int8_t)scanline[j]);
 			for(uint32_t j = 4; j != width * 4; ++j)
-				filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - scanline[j - 4]));
+				filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - scanline[j - 4]));
 			
 			if(filterEntropy < bestFilterEntropy) {
 				bestFilterEntropy = filterEntropy;
@@ -976,7 +977,7 @@ namespace wfe {
 				filterEntropy = 0;
 
 				for(uint32_t j = 0; j != width * 4; ++j)
-					filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - prevScanline[j]));
+					filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - prevScanline[j]));
 				
 				if(filterEntropy < bestFilterEntropy) {
 					bestFilterEntropy = filterEntropy;
@@ -987,9 +988,9 @@ namespace wfe {
 				filterEntropy = 0;
 
 				for(uint32_t j = 0; j != 4; ++j)
-					filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - (prevScanline[j] >> 1)));
+					filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - (prevScanline[j] >> 1)));
 				for(uint32_t j = 4; j != width * 4; ++j)
-					filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - (uint8_t)(((uint16_t)scanline[j - 4] + prevScanline[j]) >> 1)));
+					filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - (uint8_t)(((uint16_t)scanline[j - 4] + prevScanline[j]) >> 1)));
 
 				if(filterEntropy < bestFilterEntropy) {
 					bestFilterEntropy = filterEntropy;
@@ -1000,9 +1001,9 @@ namespace wfe {
 				filterEntropy = 0;
 
 				for(uint32_t j = 0; j != 4; ++j)
-					filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - prevScanline[j]));
+					filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - prevScanline[j]));
 				for(uint32_t j = 4; j != width * 4; ++j)
-					filterEntropy += (uint32_t)abs((int8_t)(scanline[j] - (uint8_t)PaethPredictor(scanline[j - 4], prevScanline[j], prevScanline[j - 4])));
+					filterEntropy += (uint32_t)std::abs((int8_t)(scanline[j] - (uint8_t)PaethPredictor(scanline[j - 4], prevScanline[j], prevScanline[j - 4])));
 
 				if(filterEntropy < bestFilterEntropy) {
 					bestFilterEntropy = filterEntropy;

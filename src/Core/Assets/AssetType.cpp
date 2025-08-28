@@ -1,6 +1,6 @@
 #include "AssetType.hpp"
+#include <cstring>
 #include <stdexcept>
-#include <string.h>
 
 namespace wfe {
 	// Asset type vector definition
@@ -13,7 +13,7 @@ namespace wfe {
 		const char* platformName = typeid(*asset).name();
 
 		for(size_t i = 0; i != assetTypeCount; ++i) {
-			if(!strcmp(assetTypes[i].platformName, platformName))
+			if(!std::strcmp(assetTypes[i].platformName, platformName))
 				return assetTypes[i];
 		}
 
@@ -44,7 +44,7 @@ namespace wfe {
 	void AssetType::RegisterAssetType(const AssetType& assetType) {
 		// Check if the asset type is already registered
 		for(size_t i = 0; i != assetTypeCount; ++i) {
-			if(!strcmp(assetTypes[i].name, assetType.name))
+			if(!std::strcmp(assetTypes[i].name, assetType.name))
 				throw std::invalid_argument((std::string)"Asset type with name \"" + assetType.name + "\" is already registered!");
 		}
 
@@ -52,7 +52,7 @@ namespace wfe {
 		for(size_t i = 0; i != assetType.importExtensionCount; ++i) {
 			for(size_t j = 0; j != assetTypeCount; ++j) {
 				for(size_t k = 0; k != assetTypes[j].importExtensionCount; ++k)
-					if(!strcmp(assetTypes[j].importExtensions[k], assetType.importExtensions[i]))
+					if(!std::strcmp(assetTypes[j].importExtensions[k], assetType.importExtensions[i]))
 						throw std::invalid_argument((std::string)"Asset type with extension \"" + assetType.importExtensions[i] + "\" is already registered!");
 			}
 		}

@@ -2,9 +2,8 @@
 #include "VirtualMemory.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include <bit>
+#include <cstring>
 #include <new>
-#include <stdlib.h>
-#include <string.h>
 
 namespace wfe {
 	// Constants
@@ -397,7 +396,7 @@ namespace wfe {
 		size_t oldSize = (*((size_t*)memory - 1) - (sizeof(size_t) << 1));
 		size_t minSize = ((oldSize < size) ? oldSize : size);
 
-		memcpy(newMemory, memory, minSize);
+		std::memcpy(newMemory, memory, minSize);
 
 		// Free the old memory
 		FreeMemory(memory);

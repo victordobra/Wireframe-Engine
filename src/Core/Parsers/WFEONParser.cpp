@@ -1,4 +1,5 @@
 #include "WFEONParser.hpp"
+#include <cctype>
 #include <iomanip>
 
 namespace wfe {

@@ -1,4 +1,5 @@
 #include "ComponentType.hpp"
+#include <cstring>
 #include <stdexcept>
 
 namespace wfe {
@@ -20,7 +21,7 @@ namespace wfe {
 	void ComponentType::RegisterComponentType(const ComponentType& componentType) {
 		// Check if the component type is already registered
 		for(size_t i = 0; i != componentTypeCount; ++i) {
-			if(!strcmp(componentTypes[i].name, componentType.name))
+			if(!std::strcmp(componentTypes[i].name, componentType.name))
 				throw std::invalid_argument((std::string)"Component type with name \"" + componentType.name + "\" is already registered!");
 		}
 

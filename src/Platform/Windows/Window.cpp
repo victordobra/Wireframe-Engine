@@ -301,7 +301,6 @@ namespace wfe {
 			// Show the window as normal
 			ShowWindow(platformData.hWnd, SW_SHOWNORMAL);
 		}
-		ShowWindow(platformData.hWnd, SW_SHOW);
 	}
 
 	void Window::SetPos(int32_t x, int32_t y) {

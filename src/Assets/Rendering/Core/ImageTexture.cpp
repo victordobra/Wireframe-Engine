@@ -2,6 +2,7 @@
 #include "Core/Parsers/Image/ImageParser.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
+#include <cstring>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
@@ -244,7 +245,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for image copy! Error code: " + string_VkResult(result));
 		
 		// Read the image data from the staging buffer
-		memcpy(data, device->GetAllocator()->GetMappedMemory(stagingBufferMemory), (size_t)stagingBufferInfo.size);
+		std::memcpy(data, device->GetAllocator()->GetMappedMemory(stagingBufferMemory), (size_t)stagingBufferInfo.size);
 
 		// Destroy the command objects
 		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
@@ -289,7 +290,7 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to bind Vulkan staging buffer to its memory! Error code: " + string_VkResult(result));
 		
 		// Write the image data to the staging buffer
-		memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
+		std::memcpy(device->GetAllocator()->GetMappedMemory(stagingBufferMemory), data, (size_t)stagingBufferInfo.size);
 
 		// Set the fence create info
 		VkFenceCreateInfo fenceInfo {
