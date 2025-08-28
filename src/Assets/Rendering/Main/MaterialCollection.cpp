@@ -9,6 +9,20 @@
 #include <vector>
 
 namespace wfe {
+	// Internal helper functions
+	ImageTexture* MaterialCollection::LoadMaterialTexture(uint64_t id, ImageTexture* defaultTexture) {
+		// Check if the texture does not exist
+		if(id == UINT64_T_MAX)
+			return defaultTexture;
+		
+		// Get the texture from the asset manager
+		ImageTexture* texture = dynamic_cast<ImageTexture*>(GetProgram()->GetAssetManager()->GetAsset(id));
+		if(!texture)
+			throw std::runtime_error("Invalid image texture ID stored in material collection file!");
+		
+		return texture;
+	}
+
 	// Virtual function definitions
 	void MaterialCollection::Load() {
 		// Destroy all previous items
@@ -23,6 +37,7 @@ namespace wfe {
 
 		// Query the default texture
 		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultNormalMap = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultNormalMap();
 	
 		// Read the number of items
 		uint64_t itemCount = BinaryReadUint64BE(stream);
@@ -61,41 +76,11 @@ namespace wfe {
 			// Set the material's textures
 			Material::MaterialTextures materialTextures;
 
-			if(ambientTextureID == UINT64_T_MAX) {
-				materialTextures.ambientTexture = defaultTexture;
-			} else {
-				materialTextures.ambientTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(ambientTextureID);
-				if(!materialTextures.ambientTexture)
-					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
-			}
-			if(diffuseTextureID == UINT64_T_MAX) {
-				materialTextures.diffuseTexture = defaultTexture;
-			} else {
-				materialTextures.diffuseTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
-				if(!materialTextures.diffuseTexture)
-					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
-			}
-			if(specularTextureID == UINT64_T_MAX) {
-				materialTextures.specularTexture = defaultTexture;
-			} else {
-				materialTextures.specularTexture = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
-				if(!materialTextures.specularTexture)
-					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
-			}
-			if(specularExponentMapID == UINT64_T_MAX) {
-				materialTextures.specularExponentMap = defaultTexture;
-			} else {
-				materialTextures.specularExponentMap = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
-				if(!materialTextures.specularExponentMap)
-					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
-			}
-			if(normalMapID == UINT64_T_MAX) {
-				materialTextures.normalMap = defaultTexture;
-			} else {
-				materialTextures.normalMap = (ImageTexture*)GetProgram()->GetAssetManager()->GetAsset(diffuseTextureID);
-				if(!materialTextures.normalMap)
-					throw std::runtime_error("Invalid image texture ID stored in material collection file!");
-			}
+			materialTextures.ambientTexture = LoadMaterialTexture(ambientTextureID, defaultTexture);
+			materialTextures.diffuseTexture = LoadMaterialTexture(diffuseTextureID, defaultTexture);
+			materialTextures.specularTexture = LoadMaterialTexture(specularTextureID, defaultTexture);
+			materialTextures.specularExponentMap = LoadMaterialTexture(specularExponentMapID, defaultTexture);
+			materialTextures.normalMap = LoadMaterialTexture(normalMapID, defaultNormalMap);
 			
 			// Create the material
 			items[i].material = new Material(GetProgram()->GetEngineGraphics()->GetMaterialManager(), materialData, materialTextures);

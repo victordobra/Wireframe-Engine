@@ -57,6 +57,8 @@ namespace wfe {
 	private:
 		WFE_ASSET_TYPE(MaterialCollection, ".mtl")
 
+		ImageTexture* LoadMaterialTexture(uint64_t id, ImageTexture* defaultTexture);
+
 		std::vector<Item> items;
 	};
 }
