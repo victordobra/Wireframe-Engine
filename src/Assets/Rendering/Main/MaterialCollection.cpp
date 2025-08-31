@@ -360,15 +360,25 @@ namespace wfe {
 		stream.close();
 	}
 	std::vector<Asset*> MaterialCollection::GetDependencies() const {
+		// Get the default textures
+		ImageTexture* defaultTexture = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultImageTexture();
+		ImageTexture* defaultNormalMap = GetProgram()->GetEngineGraphics()->GetMaterialManager()->GetDefaultNormalMap();
+
 		// Loop through all images and get all unique assets
 		std::unordered_set<Asset*> dependencies;
 		for(size_t i = 0; i != items.size(); ++i) {
-			// Add all of the current material's textures
-			dependencies.insert(items[i].material->GetTextures().ambientTexture);
-			dependencies.insert(items[i].material->GetTextures().diffuseTexture);
-			dependencies.insert(items[i].material->GetTextures().specularTexture);
-			dependencies.insert(items[i].material->GetTextures().specularExponentMap);
-			dependencies.insert(items[i].material->GetTextures().normalMap);
+			// Add all of the current material's textures (that aren't at their default values)
+			const Material::MaterialTextures& textures = items[i].material->GetTextures();
+			if(textures.ambientTexture != defaultTexture)
+				dependencies.insert(textures.ambientTexture);
+			if(textures.diffuseTexture != defaultTexture)
+				dependencies.insert(textures.diffuseTexture);
+			if(textures.specularTexture != defaultTexture)
+				dependencies.insert(textures.specularTexture);
+			if(textures.specularExponentMap != defaultTexture)
+				dependencies.insert(textures.specularExponentMap);
+			if(textures.normalMap != defaultNormalMap)
+				dependencies.insert(textures.normalMap);
 		}
 
 		// Move all dependencies to a vector
