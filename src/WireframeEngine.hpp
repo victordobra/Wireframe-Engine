@@ -28,7 +28,7 @@
 #include "Core/Parsers/Image/ImageParser.hpp"
 #include "Core/Parsers/Image/PNGParser.hpp"
 #include "Core/Parsers/Image/TGAParser.hpp"
-#include "Core/Parsers/WFEONParser.hpp"
+#include "Core/Parsers/Utils/JSONParser.hpp"
 #include "Core/Types/BuildInfo.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Core/Utils/BinaryIO.hpp"

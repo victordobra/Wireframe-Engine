@@ -1,5 +1,7 @@
 #include "AssetDirectory.hpp"
+#include "Core/Parsers/Utils/JSONParser.hpp"
 #include <future>
+#include <utility>
 
 namespace wfe {
 	// Asset jobs
@@ -258,22 +260,21 @@ namespace wfe {
 		assets.clear();
 
 		// Open the directory's info file
-		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
-		std::ifstream stream(infoFilePath, std::ios::binary);
+		std::filesystem::path infoFilePath = (path / "assets.json").lexically_normal();
+		std::ifstream stream(infoFilePath);
 		if(!stream)
 			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for reading!");
 		
-		// Parse the WFEON file
-		WFEONObject wfeonObject;
-		wfeonObject.Parse(stream);
+		// Parse the JSON asset file
+		JSONObject jsonObject;
+		if(!jsonObject.ReadObject(stream))
+			throw std::runtime_error("Failed to read asset directory info file \"" + infoFilePath.string() + "\"!");
 
 		stream.close();
 
 		// Get the asset count
-		const WFEONObject::WFEONValue& assetValue = wfeonObject.values.at("assets");
-		if(assetValue.type != WFEONObject::VALUE_TYPE_OBJECT)
-			throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"assets\" value is not an object!");
-		size_t assetCount = assetValue.count;
+		const JSONArray& assetArray = jsonObject.GetJSONArrayValue("assets");
+		size_t assetCount = assetArray.GetValueCount();
 
 		// Get every asset
 		assets.resize(assetCount);
@@ -285,31 +286,17 @@ namespace wfe {
 
 		for(size_t i = 0; i != assetCount; ++i) {
 			// Get the asset's object
-			const WFEONObject& assetObject = wfeonObject.objectValues[assetValue.startIndex + i];
+			const JSONObject& assetObject = assetArray.GetJSONObjectValue(i);
 
 			// Get the asset's ID
-			const WFEONObject::WFEONValue& idValue = assetObject.values.at("id");
-			if(idValue.type != WFEONObject::VALUE_TYPE_INT)
-				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"id\" value is not an integer!");
-			if(idValue.count != 1)
-				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"id\" value is not a single integer!");
-			ids[i] = (uint64_t)assetObject.intValues[idValue.startIndex];
+			ids[i] = (uint64_t)assetObject.GetIntValue("id");
 
 			// Get the asset's path
-			const WFEONObject::WFEONValue& pathValue = assetObject.values.at("path");
-			if(pathValue.type != WFEONObject::VALUE_TYPE_STRING)
-				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"path\" value is not a string!");
-			if(pathValue.count != 1)
-				throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"path\" value is not a single string!");
-			paths[i] = (path / assetObject.stringValues[pathValue.startIndex]).lexically_normal();
+			paths[i] = (path / assetObject.GetStringValue("path")).lexically_normal();
 
-			if(assetObject.values.count("type")) {
+			if(assetObject.HasValue("type")) {
 				// Get the asset's type
-				const WFEONObject::WFEONValue& typeValue = assetObject.values.at("type");
-				if(typeValue.type != WFEONObject::VALUE_TYPE_STRING)
-					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"type\" value is not a string!");
-				
-				assetTypes[i] = &AssetType::GetAssetTypeName(assetObject.stringValues[typeValue.startIndex]);
+				assetTypes[i] = &AssetType::GetAssetTypeName(assetObject.GetStringValue("type"));
 			} else {
 				// Deduce the asset's type from its file extension
 				std::string extension = paths[i].extension().string();
@@ -317,15 +304,11 @@ namespace wfe {
 			}
 	
 			// Get the asset's dependencies
-			const WFEONObject::WFEONValue& dependenciesValue = assetObject.values.at("dependencies");
-			if(dependenciesValue.type != WFEONObject::VALUE_TYPE_COUNT) {
-				if(dependenciesValue.type != WFEONObject::VALUE_TYPE_INT)
-					throw std::runtime_error("Failed to load asset directory \"" + path.string() + "\": \"dependencies\" value is not an object!");
-				
-				dependencies[i].resize(dependenciesValue.count);
-				for(size_t j = 0; j != dependenciesValue.count; ++j)
-					dependencies[i][j] = (uint64_t)assetObject.intValues[dependenciesValue.startIndex + j];
-			}
+			const JSONArray& dependenciesArray = assetObject.GetJSONArrayValue("dependencies");
+
+			dependencies[i].resize(dependenciesArray.GetValueCount());
+			for(size_t j = 0; j != dependencies[i].size(); ++j)
+				dependencies[i][j] = (uint64_t)dependenciesArray.GetIntValue(j);
 		}
 
 		// Get the asset load order
@@ -365,43 +348,40 @@ namespace wfe {
 		}
 
 		// Generate the directory's info object
-		WFEONObject wfeonObject;
-		wfeonObject.values.insert({ "assets", { WFEONObject::VALUE_TYPE_OBJECT, (uint64_t)assets.size(), 0 } });
-		wfeonObject.objectValues.resize(assets.size());
+		JSONArray assetArray;
 
 		// Generate the asset objects
 		for(size_t i = 0; i != assets.size(); ++i) {
-			// Get the asset's object
-			WFEONObject& assetObject = wfeonObject.objectValues[i];
+			// Create the asset's object
+			JSONObject assetObject;
 
 			// Get the asset's dependencies
 			std::vector<Asset*> assetDependencies = assets[i]->GetDependencies();
 
-			// Set all value vector counts
-			assetObject.intValues.resize(1 + assetDependencies.size());
-			assetObject.stringValues.resize(2);
+			// Add the ID, path and type values
+			assetObject.AddIntValue("id", assets[i]->GetID());
+			assetObject.AddStringValue("path", assets[i]->GetPath().lexically_relative(path).string());
+			assetObject.AddStringValue("type", AssetType::GetAssetType(assets[i]).name);
 
-			// Create the ID value
-			assetObject.values.insert({ "id", { WFEONObject::VALUE_TYPE_INT, 1, 0 } });
-			assetObject.intValues[0] = (int64_t)assets[i]->GetID();
+			// Create the dependencies array
+			JSONArray dependenciesArray;
+			for(size_t j = 0; j != assetDependencies.size(); ++j) {
+				if(assetDependencies[j]->GetID() != UINT64_T_MAX)
+					dependenciesArray.AddIntValue(assetDependencies[j]->GetID());
+			}
+			assetObject.AddJSONArrayValue("dependencies", std::move(dependenciesArray));
 
-			// Create the path value
-			assetObject.values.insert({ "path", { WFEONObject::VALUE_TYPE_STRING, 1, 0 } });
-			assetObject.stringValues[0] = assets[i]->GetPath().lexically_relative(path).string();
-
-			// Create the type value
-			assetObject.values.insert({ "type", { WFEONObject::VALUE_TYPE_STRING, 1, 1 } });
-			assetObject.stringValues[1] = AssetType::GetAssetType(assets[i]).name;
-
-			// Create the dependencies value
-			assetObject.values.insert({ "dependencies", { WFEONObject::VALUE_TYPE_INT, (uint64_t)assetDependencies.size(), 1 } });
-			for(size_t j = 0; j != assetDependencies.size(); ++j)
-				assetObject.intValues[j + 1] = (int64_t)assetDependencies[j]->GetID();
+			// Add the asset object to the array
+			assetArray.AddJSONObjectValue(std::move(assetObject));
 		}
 
+		// Create the total JSON object
+		JSONObject jsonObject;
+		jsonObject.AddJSONArrayValue("assets", std::move(assetArray));
+
 		// Open the directory's info file
-		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
-		std::ofstream stream(infoFilePath, std::ios::binary);
+		std::filesystem::path infoFilePath = (path / "assets.json").lexically_normal();
+		std::ofstream stream(infoFilePath);
 		if(!stream) {
 			// Wait for all assets to finish saving
 			for(size_t i = 0; i != exportFutures.size(); ++i)
@@ -410,8 +390,8 @@ namespace wfe {
 			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for writing!");
 		}
 		
-		// Write the WFEON object
-		wfeonObject.Write(stream);
+		// Write the JSON object
+		jsonObject.WriteObject(stream);
 
 		stream.close();
 
