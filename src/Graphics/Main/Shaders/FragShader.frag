@@ -71,7 +71,7 @@ void main() {
 	mat3 tbnMat = mat3(normalize(tangent), normalize(bitan), normalize(norm));
 
 	// Calculate the local normal
-	vec3 localNorm = tbnMat * (texture(normalMap, uv).rgb * 2.0 - vec3(1.0));
+	vec3 localNorm = normalize(tbnMat * (texture(normalMap, uv).rgb * 2.0 - vec3(1.0)));
 
 	// Store the diffuse and specular light values
 	vec3 diffuseLightValue = vec3(0.0);
