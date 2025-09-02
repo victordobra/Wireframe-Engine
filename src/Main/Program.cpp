@@ -49,6 +49,9 @@ namespace wfe {
 			// Trigger the frame update event
 			frameEvent.TriggerEvent(nullptr);
 
+			// Update all entity transforms
+			entityManager->UpdateGlobalTransforms();
+
 			// Render to the window's surface
 			graphicsSystem->Render();
 		}

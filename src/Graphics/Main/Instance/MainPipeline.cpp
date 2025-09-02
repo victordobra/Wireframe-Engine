@@ -656,19 +656,14 @@ namespace wfe {
 		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
 
 		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
-			// Get the transform and the renderer component
-			Transform transform = program->GetEntityManager()->GetEntityTransform(entity);
-			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
-
-			// Calculate the object's transformation matrix
-			Mat4x4f objectTransform = Mat4x4Translate(transform.pos) * Mat4x4Rotate(transform.rot) * Mat4x4Scale(transform.scale);
-			Mat4x4f normalTransform = MatTranspose(Mat4x4Scale(1.0f / transform.scale) * Mat4x4Rotate(QuatConjugate(transform.rot)));
-
 			// Set the push constants
 			PushConstants pushConstants {
-				.objectTransform = MatTranspose(objectTransform),
-				.normalTransform = MatTranspose(normalTransform)
+				.objectTransform = MatTranspose(program->GetEntityManager()->GetGlobalTransform(entity)),
+				.normalTransform = MatTranspose(program->GetEntityManager()->GetGlobalNormalTransform(entity))
 			};
+
+			// Get the renderer component
+			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
 
 			// Bind the descriptor sets and set the push constants
 			VkDescriptorSet descriptorSets[] { sceneInfoDescriptorSets[frameIndex], meshRenderer.material->GetDescriptorSet() };

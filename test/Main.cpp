@@ -126,14 +126,32 @@ int main(int argc, char** args) {
 	wfe::RenderMesh* mesh = renderObject->GetItems()[0].mesh;
 	wfe::Material* material = renderObject->GetItems()[0].material;
 
-	// Create the rendered entity and add a render mesh component
-	wfe::Entity meshRendererEntity = program->GetEntityManager()->CreateEntity();
+	// Create the renderer parent entity
+	wfe::Entity rendererParentEntity = program->GetEntityManager()->CreateEntity();
 
+	program->GetEntityManager()->GetEntityTransform(rendererParentEntity).rot = wfe::QuatRotAroundAxis(wfe::QUARTER_PI_F, wfe::VEC3F_UP);
+	program->GetEntityManager()->GetEntityTransform(rendererParentEntity).scale = { 2.0f, 2.0f, 2.0f };
+
+	// Create the rendered entities and add their render mesh components
 	wfe::size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();
-	wfe::MeshRenderer* meshRenderer = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->CreateComponent(meshRendererEntity);
 
-	meshRenderer->mesh = mesh;
-	meshRenderer->material = material;
+	wfe::Entity meshRendererEntity1 = program->GetEntityManager()->CreateEntity();
+	wfe::MeshRenderer* meshRenderer1 = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->CreateComponent(meshRendererEntity1);
+
+	meshRenderer1->mesh = mesh;
+	meshRenderer1->material = material;
+
+	program->GetEntityManager()->GetEntityTransform(meshRendererEntity1).pos = { 1.5f, 0.0f, 0.0f };
+	program->GetEntityManager()->SetParent(meshRendererEntity1, rendererParentEntity);
+
+	wfe::Entity meshRendererEntity2 = program->GetEntityManager()->CreateEntity();
+	wfe::MeshRenderer* meshRenderer2 = (wfe::MeshRenderer*)program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->CreateComponent(meshRendererEntity2);
+
+	meshRenderer2->mesh = mesh;
+	meshRenderer2->material = material;
+
+	program->GetEntityManager()->GetEntityTransform(meshRendererEntity2).pos = { -1.5f, 0.0f, 0.0f };
+	program->GetEntityManager()->SetParent(meshRendererEntity2, rendererParentEntity);
 
 	// Create the sun light entity
 	wfe::Entity sunLightEntity = program->GetEntityManager()->CreateEntity();
@@ -178,7 +196,9 @@ int main(int argc, char** args) {
 	wfe::int32_t returnCode = program->Run();
 
 	// Destroy all created entities
-	program->GetEntityManager()->DestroyEntity(meshRendererEntity);
+	program->GetEntityManager()->DestroyEntity(rendererParentEntity);
+	program->GetEntityManager()->DestroyEntity(meshRendererEntity1);
+	program->GetEntityManager()->DestroyEntity(meshRendererEntity2);
 	program->GetEntityManager()->DestroyEntity(sunLightEntity);
 	program->GetEntityManager()->DestroyEntity(pointLightEntity);
 

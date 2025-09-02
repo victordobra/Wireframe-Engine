@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Math/General/MatUtils.hpp"
 #include "Core/Types/Defines.hpp"
 #include "ComponentList.hpp"
 #include "ComponentType.hpp"
@@ -51,7 +52,58 @@ namespace wfe {
 		/// @return The entity's signature.
 		const Signature& GetEntitySignature(Entity entity) const {
 			return signatures[entity];
-		} 
+		}
+
+		/// @brief Gets the parent of the given entity.
+		/// @param entity The entity whose parent to get.
+		/// @return The parent of the given entity, or INVALID_ENTITY if the entity has no parent.
+		Entity GetParent(Entity entity) const {
+			return parents[entity];
+		}
+		/// @brief Gets the children of the given entity.
+		/// @param entity The entity whose children to get.
+		/// @return A vector containing the children of the given entity.
+		const std::vector<Entity>& GetChildren(Entity entity) const {
+			return children[entity];
+		}
+		/// @brief Sets the parent of the given entity.
+		/// @param entity The entity whose parent to set.
+		/// @param newParent The new parent of the entity, or INVALID_ENTITY if the entity should not have a parent.
+		void SetParent(Entity entity, Entity newParent) {
+			// Exit the function if the parent isn't changed
+			if(parents[entity] == newParent)
+				return;
+
+			// Remove the entity from the old children vector
+			RemoveEntityFromParent(entity);
+
+			// Set the entity's parent and and it to the children vector
+			parents[entity] = newParent;
+			if(newParent != EntityManager::INVALID_ENTITY)
+				children[newParent].push_back(entity);
+		}
+
+		/// @brief Updates the global transform maitrices for every entity.
+		void UpdateGlobalTransforms();
+		/// @brief Gets the global transform matrix of the given entity at the time the global transforms were last updated.
+		/// @param entity The entity whose transform to get.
+		/// @return The 4x4 single-precision floating point matrix describing the global transform of the entity.
+		const Mat4x4f& GetGlobalTransform(Entity entity) const {
+			return globalTransforms[entity];
+		}
+		/// @brief Gets the global inverse transform matrix of the given entity at the time the global transforms were last updated.
+		/// @param entity The entity whose inverse transform to get.
+		/// @return The 4x4 single-precision floating point matrix describing the global inverse transform of the entity.
+		const Mat4x4f& GetGlobalInvTransform(Entity entity) const {
+			return globalInvTransforms[entity];
+		}
+		/// @brief Gets the global normal transform matrix of the given entity at the time the global transforms were last updated.
+		/// @param entity The entity whose normal transform to get.
+		/// @return The 4x4 single-precision floating point matrix describing the global normal transform of the entity.
+		const Mat4x4f& GetGlobalNormalTransform(Entity entity) const {
+			return globalNormalTransforms[entity];
+		}
+
 		/// @brief Gets the given type's component list.
 		/// @param typeIndex The component list type's index.
 		/// @return The given type's component list.
@@ -89,10 +141,21 @@ namespace wfe {
 	private:
 		friend ComponentList;
 
+		void RemoveEntityFromParent(Entity entity);
+		void UpdateEntityGlobalTransform(Entity entity, const Mat4x4f& parentTransform, const Mat4x4f& parentInvTransform);
+
 		size_t maxEntityCount;
 		Entity firstFree;
 		Entity* freeList;
 		std::bitset<ComponentType::MAX_COMPONENT_TYPE_COUNT>* signatures;
+
+		Entity* parents;
+		std::vector<Entity>* children;
+
+		Mat4x4f* globalTransforms;
+		Mat4x4f* globalInvTransforms;
+		Mat4x4f* globalNormalTransforms;
+
 		Transform* transforms;
 		std::vector<ComponentList*> componentLists;
 
