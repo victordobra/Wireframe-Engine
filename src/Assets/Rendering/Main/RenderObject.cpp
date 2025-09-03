@@ -19,10 +19,9 @@ namespace wfe {
 		uint32_t uvIndex;
 		uint32_t normIndex;
 		uint32_t tanIndex;
-		uint32_t bitanIndex;
 
 		bool operator==(const ArrVertex& other) const {
-			return posIndex == other.posIndex && uvIndex == other.uvIndex && normIndex == other.normIndex && tanIndex == other.tanIndex && bitanIndex == other.bitanIndex;
+			return posIndex == other.posIndex && uvIndex == other.uvIndex && normIndex == other.normIndex && tanIndex == other.tanIndex;
 		}
 	};
 }
@@ -37,7 +36,6 @@ struct std::hash<wfe::ArrVertex> {
 		res ^= hasher(vert.uvIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
 		res ^= hasher(vert.normIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
 		res ^= hasher(vert.tanIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
-		res ^= hasher(vert.bitanIndex) + 0x9e3779b9 + (res << 6) + (res >> 2);
 		
 		return res;
 	}
@@ -104,10 +102,6 @@ namespace wfe {
 				vertices[j].tangent.x = BinaryReadFloatBE(stream);
 				vertices[j].tangent.y = BinaryReadFloatBE(stream);
 				vertices[j].tangent.z = BinaryReadFloatBE(stream);
-
-				vertices[j].bitangent.x = BinaryReadFloatBE(stream);
-				vertices[j].bitangent.y = BinaryReadFloatBE(stream);
-				vertices[j].bitangent.z = BinaryReadFloatBE(stream);
 			}
 
 			// Read the number of indices
@@ -193,10 +187,6 @@ namespace wfe {
 				BinaryWriteFloatBE(stream, vertices[j].tangent.x);
 				BinaryWriteFloatBE(stream, vertices[j].tangent.y);
 				BinaryWriteFloatBE(stream, vertices[j].tangent.z);
-
-				BinaryWriteFloatBE(stream, vertices[j].bitangent.x);
-				BinaryWriteFloatBE(stream, vertices[j].bitangent.y);
-				BinaryWriteFloatBE(stream, vertices[j].bitangent.z);
 			}
 
 			// Write all indices
@@ -292,7 +282,6 @@ namespace wfe {
 		std::vector<Vec2f> uvCoords;
 		std::vector<Vec3f> normals;
 		std::unordered_map<Vec3f, uint32_t> tangentsMap;
-		std::unordered_map<Vec3f, uint32_t> bitangentsMap;
 
 		std::unordered_map<ArrVertex, uint32_t> arrVertices;
 		std::vector<uint32_t> indices;
@@ -383,11 +372,9 @@ namespace wfe {
 				}
 
 				if(smoothShading) {
-					// Set the tangent and bitangent indices to an undefined value
-					for(uint32_t j = 0; j != 3; ++j) {
+					// Set the tangent indices to an undefined value
+					for(uint32_t j = 0; j != 3; ++j)
 						verts[j].tanIndex = UINT32_T_MAX;
-						verts[j].bitanIndex = UINT32_T_MAX;
-					}
 
 					for(uint32_t j = 0; j != 3; ++j) {
 						// Get the index for the current vertex
@@ -407,7 +394,7 @@ namespace wfe {
 						smoothIndices.push_back(index);
 					}
 				} else {
-					// Calculate the face's tangent and bitangent			
+					// Calculate the face's tangent
 					Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
 					Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
 					
@@ -418,17 +405,9 @@ namespace wfe {
 						(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
 						(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
 					};
-					Vec3f bitangent = {
-						(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
-						(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
-						(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
-					};
-
-					// Normalize the tangent and bitangent vectors
 					tangent = VecNormalized(tangent);
-					bitangent = VecNormalized(bitangent);
 
-					// Get the indices for the tangent and bitangent
+					// Get the index for the tangent
 					uint32_t tanIndex;
 					auto tanIter = tangentsMap.find(tangent);
 					if(tanIter == tangentsMap.end()) {
@@ -440,22 +419,9 @@ namespace wfe {
 						tanIndex = tanIter->second;
 					}
 
-					uint32_t bitanIndex;
-					auto bitanIter = bitangentsMap.find(bitangent);
-					if(bitanIter == bitangentsMap.end()) {
-						// Add the bitangent to the map and set its index
-						bitanIndex = (uint32_t)bitangentsMap.size();
-						bitangentsMap.insert({ bitangent, bitanIndex });
-					} else {
-						// Get the bitangent's index
-						bitanIndex = bitanIter->second;
-					}
-
-					// Set the tangent and bitantent index in the array vertices
-					for(uint32_t j = 0; j != 3; ++j) {
+					// Set the tangent index in the array vertices
+					for(uint32_t j = 0; j != 3; ++j)
 						verts[j].tanIndex = tanIndex;
-						verts[j].bitanIndex = bitanIndex;
-					}
 
 					for(uint32_t j = 0; j != 3; ++j) {
 						// Get the index for the current vertex
@@ -490,14 +456,10 @@ namespace wfe {
 			if(keyword == "o" || i == lines.size() - 1) {
 				// Build the current mesh, if it exists
 				if(!currentName.empty()) {
-					// Build the tangent and bitangent vectors
+					// Build the tangent vector
 					std::vector<Vec3f> tangents(tangentsMap.size());
 					for(const std::pair<const Vec3f, uint32_t>& tangentPair : tangentsMap)
 						tangents[tangentPair.second] = tangentPair.first;
-
-					std::vector<Vec3f> bitangents(bitangentsMap.size());
-					for(const std::pair<const Vec3f, uint32_t>& bitangentPair : bitangentsMap)
-						bitangents[bitangentPair.second] = bitangentPair.first;
 
 					// Build the array of vertices
 					std::vector<RenderMesh::Vertex> vertices(arrVertices.size());
@@ -512,20 +474,18 @@ namespace wfe {
 						vertices[index].uvCoord = uvCoords[arrVertex.uvIndex];
 						vertices[index].normal = normals[arrVertex.normIndex];
 
-						if(arrVertex.tanIndex != UINT32_T_MAX && arrVertex.tanIndex != UINT32_T_MAX) {
+						if(arrVertex.tanIndex != UINT32_T_MAX) {
 							vertices[index].tangent = tangents[arrVertex.tanIndex];
-							vertices[index].bitangent = bitangents[arrVertex.bitanIndex];
 						} else {
 							vertices[index].tangent = VEC3F_ZERO;
-							vertices[index].bitangent = VEC3F_ZERO;
 						}
 					}
 
-					// Calculate the tangents and bitangents of the smooth shaded vertices
+					// Calculate the tangents of the smooth shaded vertices
 					std::vector<float> totalAngle(vertices.size(), 0.0f);
 
 					for(size_t j = 0; j != smoothIndices.size(); j += 3) {
-						// Calculate the tangent and bitangent for the current face
+						// Calculate the tangent for the current face
 						size_t ind1 = smoothIndices[j], ind2 = smoothIndices[j + 1], ind3 = smoothIndices[j + 2];
 
 						Vec3f edge1 = vertices[ind2].position - vertices[ind1].position;
@@ -541,27 +501,20 @@ namespace wfe {
 							(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
 							(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
 						};
-						Vec3f bitangent = {
-							(-uvEdge2.x * edge1.x + uvEdge1.x * edge2.x) * invDet,
-							(-uvEdge2.x * edge1.y + uvEdge1.x * edge2.y) * invDet,
-							(-uvEdge2.x * edge1.z + uvEdge1.x * edge2.z) * invDet
-						};
+						tangent = VecNormalized(tangent);
 
-						// Add the tangent and bitangent to the weighted average in every vertex
+						// Add the tangent to the weighted average in every vertex
 						float angle1 = VecAngle(edge1, edge2);
 						float angle2 = VecAngle(-edge1, vertices[ind3].position - vertices[ind2].position);
 						float angle3 = PI_F - angle1 - angle2;
 
 						vertices[ind1].tangent += tangent * angle1;
-						vertices[ind1].bitangent += bitangent * angle1;
 						totalAngle[ind1] += angle1;
 
 						vertices[ind2].tangent += tangent * angle2;
-						vertices[ind2].bitangent += bitangent * angle2;
 						totalAngle[ind2] += angle2;
 
 						vertices[ind3].tangent += tangent * angle3;
-						vertices[ind3].bitangent += bitangent * angle3;
 						totalAngle[ind3] += angle3;
 					}
 					for(size_t j = 0; j != vertices.size(); ++j) {
@@ -569,13 +522,9 @@ namespace wfe {
 						if(!totalAngle[j])
 							continue;
 						
-						// Average out the tangent and bitangent
+						// Modify the tangent to an unit vector
 						vertices[j].tangent /= totalAngle[j];
-						vertices[j].bitangent /= totalAngle[j];
-
-						// Modify the tangent and bitangent to be perpendicular to the normal
-						vertices[j].bitangent = VecNormalized(VecCross(vertices[j].normal, vertices[j].tangent));
-						vertices[j].tangent = VecNormalized(VecCross(vertices[j].bitangent, vertices[j].normal));
+						vertices[j].tangent = VecNormalized(vertices[j].tangent - VecDot(vertices[i].tangent, vertices[i].normal) * vertices[i].normal);
 					}
 
 					// Add the smooth indices to the index vector

@@ -67,8 +67,13 @@ layout(set = 1, binding = 5) uniform sampler2D normalMap;
 layout(location = 0) out vec4 outColor;
 
 void main() {
+	// Make the tangent perpendicular and calculate the bitangent
+	vec3 surfaceNorm = normalize(norm);
+	vec3 surfaceTan = normalize(tangent - dot(tangent, surfaceNorm) * surfaceNorm);
+	vec3 surfaceBitan = cross(surfaceNorm, surfaceTan);
+
 	// Build the TBN matrix
-	mat3 tbnMat = mat3(normalize(tangent), normalize(bitan), normalize(norm));
+	mat3 tbnMat = mat3(surfaceTan, surfaceBitan, surfaceNorm);
 
 	// Calculate the local normal
 	vec3 localNorm = normalize(tbnMat * (texture(normalMap, uv).rgb * 2.0 - vec3(1.0)));

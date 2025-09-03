@@ -336,12 +336,6 @@ namespace wfe {
 				.binding = 0,
 				.format = VK_FORMAT_R32G32B32_SFLOAT,
 				.offset = offsetof(RenderMesh::Vertex, tangent)
-			},
-			{
-				.location = 4,
-				.binding = 0,
-				.format = VK_FORMAT_R32G32B32_SFLOAT,
-				.offset = offsetof(RenderMesh::Vertex, bitangent)
 			}
 		};
 
@@ -351,7 +345,7 @@ namespace wfe {
 			.flags = 0,
 			.vertexBindingDescriptionCount = 1,
 			.pVertexBindingDescriptions = &vertexInputBinding,
-			.vertexAttributeDescriptionCount = 5,
+			.vertexAttributeDescriptionCount = 4,
 			.pVertexAttributeDescriptions = vertexInputAttributes
 		};
 
