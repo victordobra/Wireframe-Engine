@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cassert>
 #include <cstdint>
+#include <limits>
 
 namespace wfe {
 	// Signed int types
@@ -98,19 +99,15 @@ namespace wfe {
 	/// @brief The maximum value an uint64_t can hold.
 	constexpr uint64_t UINT64_T_MAX = 18446744073709551615ULL;
 
-	/// @brief The minimum absolute value a float can hold.
-	constexpr float float_MIN_ABS = (float)1.17549e-38;
-	/// @brief The minimum value a float can hold.
-	constexpr float float_MIN = (float)-3.40282e+38;
-	/// @brief The maximum value a float can hold.
-	constexpr float float_MAX = (float)3.40282e+38;
+	/// @brief The epsilon value for single-precision floating point numbers.
+	constexpr float FLOAT_EPSILON = std::numeric_limits<float>::epsilon();
+	/// @brief The infinity value for single-precision floating point numbers.
+	constexpr float FLOAT_INFINITY = std::numeric_limits<float>::infinity();
 
-	/// @brief The minimum absolute value a double can hold.
-	constexpr double DOUBLE_MIN_ABS = 2.22507e-308;
-	/// @brief The minimum value a double can hold.
-	constexpr double DOUBLE_MIN = -1.79769e+308;
-	/// @brief The maximum value a double can hold.
-	constexpr double DOUBLE_MAX = 1.79769e+308;
+	/// @brief The epsilon value for double-precision floating point numbers.
+	constexpr double DOUBLE_EPSILON = std::numeric_limits<double>::epsilon();
+	/// @brief The infinity value for double-precision floating point numbers.
+	constexpr double DOUBLE_INFINITY = std::numeric_limits<double>::infinity();
 
 #if defined(WFE_ARCHITECTURE_64_BIT)
 	/// @brief The minimim value a size_t can hold.
