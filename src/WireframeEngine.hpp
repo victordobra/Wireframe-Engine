@@ -34,6 +34,7 @@
 #include "Core/Utils/BinaryIO.hpp"
 #include "Core/Utils/Event.hpp"
 #include "Core/Utils/Logger.hpp"
+#include "Core/Utils/UpdateClock.hpp"
 
 #include "Graphics/Main/Components/MeshRenderer.hpp"
 #include "Graphics/Main/Components/SceneLight.hpp"

@@ -9,11 +9,16 @@ struct ArcballCameraInfo {
 	float yAngle = 0.0f;
 
 	wfe::Vec3f center = wfe::VEC3F_ZERO;
-	float radius = 5.0f;
+	float radius = 6.0f;
 	float cameraVel = 0.002f;
 };
+struct ObjectRotateInfo {
+	wfe::Program* program;
+	wfe::Entity rotationEntity;
+	float rotationSpeed = wfe::HALF_PI_F;
+};
 
-static void* FrameEventCallback(void* userData, void* params) {
+static void* ArcballCameraFrameCallback(void* userData, void* params) {
 	// Get the arcball camera info
 	ArcballCameraInfo& arcballInfo = *(ArcballCameraInfo*)userData;
 
@@ -63,6 +68,16 @@ static void* FrameEventCallback(void* userData, void* params) {
 
 	return nullptr;
 }
+static void* ObjectRotateFrameCallback(void* userData, void* params) {
+	// Get the object rotate info
+	ObjectRotateInfo& rotateInfo = *(ObjectRotateInfo*)userData;
+
+	// Update the given entity's transform by rotating it
+	float deltaTime = rotateInfo.program->GetFrameClock().GetPrevTickDuration();
+	rotateInfo.program->GetEntityManager()->GetEntityTransform(rotateInfo.rotationEntity).rot *= wfe::QuatRotAroundAxis(rotateInfo.rotationSpeed * deltaTime, wfe::VEC3F_UP);
+
+	return nullptr;
+}
 
 int main(int argc, char** args) {
 	// Set the program info
@@ -106,10 +121,10 @@ int main(int argc, char** args) {
 	// Store the start time for test component creation
 	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
 
-	// Add the update listener
+	// Add the arcball camera listener
 	ArcballCameraInfo arcballInfo;
 	arcballInfo.program = program;
-	program->GetFrameEvent().AddListener({ FrameEventCallback, &arcballInfo });
+	program->GetFrameStartEvent().AddListener({ ArcballCameraFrameCallback, &arcballInfo });
 
 	// Import the asset directory
 	wfe::AssetDirectory* assetDir = new wfe::AssetDirectory(program, "assets/");
@@ -130,7 +145,12 @@ int main(int argc, char** args) {
 	wfe::Entity rendererParentEntity = program->GetEntityManager()->CreateEntity();
 
 	program->GetEntityManager()->GetEntityTransform(rendererParentEntity).rot = wfe::QuatRotAroundAxis(wfe::QUARTER_PI_F, wfe::VEC3F_UP);
-	program->GetEntityManager()->GetEntityTransform(rendererParentEntity).scale = { 2.0f, 2.0f, 2.0f };
+
+	// Add the object rotate listener
+	ObjectRotateInfo rotateInfo;
+	rotateInfo.program = program;
+	rotateInfo.rotationEntity = rendererParentEntity;
+	program->GetFrameStartEvent().AddListener({ ObjectRotateFrameCallback, &rotateInfo });
 
 	// Create the rendered entities and add their render mesh components
 	wfe::size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<wfe::MeshRenderer>();

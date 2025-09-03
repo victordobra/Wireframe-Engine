@@ -41,19 +41,25 @@ namespace wfe {
 	}
 
 	int32_t Program::Run() {
+		// Start the frame clock
+		frameClock.StartClock();
+
 		// Run the program as long as the main window is still open
 		while(running) {
 			// Poll the window's events
 			window->PollEvents();
 
-			// Trigger the frame update event
-			frameEvent.TriggerEvent(nullptr);
+			// Trigger the frame start event
+			frameStartEvent.TriggerEvent(nullptr);
 
 			// Update all entity transforms
 			entityManager->UpdateGlobalTransforms();
 
 			// Render to the window's surface
 			graphicsSystem->Render();
+
+			// Update the frame clock
+			frameClock.TickClock();
 		}
 
 		// Wait for all rendering to finish

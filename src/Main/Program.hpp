@@ -4,10 +4,12 @@
 #include "Core/ECS/EntityManager.hpp"
 #include "Core/Types/Defines.hpp"
 #include "Core/Utils/Logger.hpp"
+#include "Core/Utils/UpdateClock.hpp"
 #include "Graphics/EngineGraphics.hpp"
 #include "Graphics/GraphicsSystem.hpp"
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
+#include <chrono>
 
 namespace wfe {
 	/// @brief A class containing an abstraction for the program and its components.
@@ -139,10 +141,20 @@ namespace wfe {
 			return engineGraphics;
 		}
 
-		/// @brief Gets the event triggered on every frame update.
-		/// @return A reference to the event triggered on every frame update.
-		Event& GetFrameEvent() const {
-			return frameEvent;
+		/// @brief Gets the update clock monitoring frame durations.
+		/// @return A reference to the update clock monitoring frame durations.
+		UpdateClock& GetFrameClock() {
+			return frameClock;
+		}
+		/// @brief Gets the update clock monitoring frame durations.
+		/// @return A reference to the update clock monitoring frame durations.
+		const UpdateClock& GetFrameClock() const {
+			return frameClock;
+		}
+		/// @brief Gets the event triggered at the start of every frame process.
+		/// @return A reference to the event triggered at the start of every frame process.
+		Event& GetFrameStartEvent() const {
+			return frameStartEvent;
 		}
 
 		/// @brief Destroys the program and its components.
@@ -162,6 +174,7 @@ namespace wfe {
 		GraphicsSystem* graphicsSystem;
 		EngineGraphics* engineGraphics;
 
-		mutable Event frameEvent;
+		UpdateClock frameClock;
+		mutable Event frameStartEvent;
 	};
 }
