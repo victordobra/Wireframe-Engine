@@ -17,6 +17,7 @@
 #include "Core/Math/General/MatUtils.hpp"
 #include "Core/Math/General/QuatUtils.hpp"
 #include "Core/Math/General/VecUtils.hpp"
+#include "Core/Math/Geometry/Geometry2d.hpp"
 #include "Core/Math/Templates/Mat.hpp"
 #include "Core/Math/Templates/Quat.hpp"
 #include "Core/Math/Templates/Vec.hpp"

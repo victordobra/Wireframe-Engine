@@ -1,5 +1,6 @@
 #include "RenderObject.hpp"
 #include "Core/Math/General/VecUtils.hpp"
+#include "Core/Math/Geometry/Geometry2d.hpp"
 #include "Core/Utils/BinaryIO.hpp"
 #include "Main/Program.hpp"
 #include <cctype>
@@ -287,6 +288,10 @@ namespace wfe {
 		std::vector<uint32_t> indices;
 		std::vector<uint32_t> smoothIndices;
 
+		std::vector<ArrVertex> polygonVerts;
+		std::vector<Vec2f> polygonPoints;
+		std::vector<size_t> polygonIndices;
+
 		bool smoothShading = false;
 
 		// Parse every line in the file
@@ -330,115 +335,142 @@ namespace wfe {
 				// Add the normal to the array
 				normals.emplace_back(std::move(VecNormalized(normal)));
 			} else if(keyword == "f") {
-				// Read the three index strings
-				std::string face1, face2, face3;
-				strStream >> face1 >> face2 >> face3;
+				// Read all of the index strings
+				polygonVerts.clear();
 
-				// Get the indices for each of the three vertices
-				ArrVertex verts[3];
+				while(strStream) {
+					// Skip all whitespace characters
+					for(char ch; strStream.read(&ch, 1);) {
+						if(!std::isspace(ch)) {
+							strStream.unget();
+							break;
+						}
+					}
+					if(!strStream)
+						break;
+					
+					// Read the current vertex's indices
+					ArrVertex vert;
+					strStream >> vert.posIndex;
+					strStream.get();
+					strStream >> vert.uvIndex;
+					strStream.get();
+					strStream >> vert.normIndex;
 
-				char* str = face1.data();
-				verts[0].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
-				verts[0].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
-				verts[0].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
-				
-				str = face2.data();
-				verts[1].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
-				verts[1].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
-				verts[1].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
+					--vert.posIndex;
+					--vert.uvIndex;
+					--vert.normIndex;
 
-				str = face3.data();
-				verts[2].posIndex = (uint32_t)strtoul(str, &str, 10) - 1;
-				verts[2].uvIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
-				verts[2].normIndex = (uint32_t)strtoul(str + 1, &str, 10) - 1;
-
-				// Check if the face was defined counter-clockwise, as required by the pipeline
-				Vec3f totalNormal = normals[verts[0].normIndex] + normals[verts[1].normIndex] + normals[verts[2].normIndex];
-
-				Vec3f edge1 = positions[verts[1].posIndex] - positions[verts[0].posIndex];
-				Vec3f edge2 = positions[verts[2].posIndex] - positions[verts[0].posIndex];
-				Vec3f crossNormal = VecCross(edge1, edge2);
-
-				if(VecDot(totalNormal, crossNormal) < 0.0f) {
-					// Swap two of the vertices
-					ArrVertex aux = verts[1];
-					verts[1] = verts[2];
-					verts[2] = aux;
-
-					// Swap the edges
-					Vec3f edgeAux = edge1;
-					edge1 = edge2;
-					edge2 = edgeAux;
+					polygonVerts.emplace_back(std::move(vert));
 				}
 
-				if(smoothShading) {
-					// Set the tangent indices to an undefined value
-					for(uint32_t j = 0; j != 3; ++j)
-						verts[j].tanIndex = UINT32_T_MAX;
+				// Triangulate the polygon
+				polygonPoints.resize(polygonVerts.size());
+				for(size_t j = 0; j != polygonPoints.size(); ++j)
+					polygonPoints[j] = uvCoords[polygonVerts[j].uvIndex];
 
-					for(uint32_t j = 0; j != 3; ++j) {
-						// Get the index for the current vertex
-						uint32_t index;
+				size_t triangleCount = polygonVerts.size() - 2;
+				polygonIndices.resize(triangleCount * 3);
 
-						auto iter = arrVertices.find(verts[j]);
-						if(iter == arrVertices.end()) {
-							// Add the vertex to the map and set its index
-							index = (uint32_t)arrVertices.size();
-							arrVertices.insert({ verts[j], index });
-						} else {
-							// Get the vertex's index
-							index = iter->second;
-						}
+				TriangulatePolygon(polygonPoints.size(), polygonPoints.data(), polygonIndices.data());
 
-						// Add the index to the array
-						smoothIndices.push_back(index);
-					}
-				} else {
-					// Calculate the face's tangent
-					Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
-					Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
-					
-					float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
-
-					Vec3f tangent = {
-						(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
-						(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
-						(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
+				// Add every triangle
+				for(size_t j = 0; j != polygonIndices.size(); j += 3) {
+					// Get the current triangle's vertices
+					ArrVertex verts[] {
+						polygonVerts[polygonIndices[j]],
+						polygonVerts[polygonIndices[j + 1]],
+						polygonVerts[polygonIndices[j + 2]]
 					};
-					tangent = VecNormalized(tangent);
 
-					// Get the index for the tangent
-					uint32_t tanIndex;
-					auto tanIter = tangentsMap.find(tangent);
-					if(tanIter == tangentsMap.end()) {
-						// Add the tangent to the map and set its index
-						tanIndex = (uint32_t)tangentsMap.size();
-						tangentsMap.insert({ tangent, tanIndex });
-					} else {
-						// Get the tangent's index
-						tanIndex = tanIter->second;
+					// Check if the face was defined counter-clockwise, as required by the pipeline
+					Vec3f totalNormal = normals[verts[0].normIndex] + normals[verts[1].normIndex] + normals[verts[2].normIndex];
+
+					Vec3f edge1 = positions[verts[1].posIndex] - positions[verts[0].posIndex];
+					Vec3f edge2 = positions[verts[2].posIndex] - positions[verts[0].posIndex];
+					Vec3f crossNormal = VecCross(edge1, edge2);
+
+					if(VecDot(totalNormal, crossNormal) < 0.0f) {
+						// Swap two of the vertices
+						ArrVertex aux = verts[1];
+						verts[1] = verts[2];
+						verts[2] = aux;
+
+						// Swap the edges
+						Vec3f edgeAux = edge1;
+						edge1 = edge2;
+						edge2 = edgeAux;
 					}
 
-					// Set the tangent index in the array vertices
-					for(uint32_t j = 0; j != 3; ++j)
-						verts[j].tanIndex = tanIndex;
+					if(smoothShading) {
+						// Set the tangent indices to an undefined value
+						for(uint32_t k = 0; k != 3; ++k)
+							verts[k].tanIndex = UINT32_T_MAX;
 
-					for(uint32_t j = 0; j != 3; ++j) {
-						// Get the index for the current vertex
-						uint32_t index;
+						for(uint32_t k = 0; k != 3; ++k) {
+							// Get the index for the current vertex
+							uint32_t index;
 
-						auto iter = arrVertices.find(verts[j]);
-						if(iter == arrVertices.end()) {
-							// Add the vertex to the map and set its index
-							index = (uint32_t)arrVertices.size();
-							arrVertices.insert({ verts[j], index });
+							auto iter = arrVertices.find(verts[k]);
+							if(iter == arrVertices.end()) {
+								// Add the vertex to the map and set its index
+								index = (uint32_t)arrVertices.size();
+								arrVertices.insert({ verts[k], index });
+							} else {
+								// Get the vertex's index
+								index = iter->second;
+							}
+
+							// Add the index to the array
+							smoothIndices.push_back(index);
+						}
+					} else {
+						// Calculate the face's tangent
+						Vec2f uvEdge1 = uvCoords[verts[1].uvIndex] - uvCoords[verts[0].uvIndex];
+						Vec2f uvEdge2 = uvCoords[verts[2].uvIndex] - uvCoords[verts[0].uvIndex];
+						
+						float invDet = 1.0f / (uvEdge1.x * uvEdge2.y - uvEdge2.x * uvEdge1.y);
+
+						Vec3f tangent = {
+							(uvEdge2.y * edge1.x - uvEdge1.y * edge2.x) * invDet,
+							(uvEdge2.y * edge1.y - uvEdge1.y * edge2.y) * invDet,
+							(uvEdge2.y * edge1.z - uvEdge1.y * edge2.z) * invDet
+						};
+						tangent = VecNormalized(tangent);
+
+						// Get the index for the tangent
+						uint32_t tanIndex;
+						auto tanIter = tangentsMap.find(tangent);
+						if(tanIter == tangentsMap.end()) {
+							// Add the tangent to the map and set its index
+							tanIndex = (uint32_t)tangentsMap.size();
+							tangentsMap.insert({ tangent, tanIndex });
 						} else {
-							// Get the vertex's index
-							index = iter->second;
+							// Get the tangent's index
+							tanIndex = tanIter->second;
 						}
 
-						// Add the index to the array
-						indices.push_back(index);
+						// Set the tangent index in the array vertices
+						for(uint32_t k = 0; k != 3; ++k)
+							verts[k].tanIndex = tanIndex;
+
+						for(uint32_t k = 0; k != 3; ++k) {
+							// Get the index for the current vertex
+							uint32_t index;
+
+							auto iter = arrVertices.find(verts[k]);
+							if(iter == arrVertices.end()) {
+								// Add the vertex to the map and set its index
+								index = (uint32_t)arrVertices.size();
+								arrVertices.insert({ verts[k], index });
+							} else {
+								// Get the vertex's index
+								index = iter->second;
+							}
+
+							// Add the index to the array
+							indices.push_back(index);
+						}
 					}
 				}
 			} else if(keyword == "usemtl") {
