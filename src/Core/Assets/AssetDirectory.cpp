@@ -127,7 +127,7 @@ namespace wfe {
 		assets.clear();
 
 		// Open the directory's info file
-		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::filesystem::path infoFilePath = (path / "assets.bin").lexically_normal();
 		std::ifstream stream(infoFilePath, std::ios::binary);
 		if(!stream)
 			throw std::runtime_error("Failed to open asset directory info file \"" + infoFilePath.string() + "\" for reading!");
@@ -209,7 +209,7 @@ namespace wfe {
 		}
 
 		// Open the directory's info file
-		std::filesystem::path infoFilePath = (path / ".assets").lexically_normal();
+		std::filesystem::path infoFilePath = (path / "assets.bin").lexically_normal();
 		std::ofstream stream(infoFilePath, std::ios::binary);
 		if(!stream) {
 			// Wait for all assets to finish saving
