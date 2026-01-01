@@ -1,5 +1,6 @@
 #include "VulkanSwapChain.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
+#include "Vulkan/Resources/VulkanImage.hpp"
 #include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>
 
@@ -135,10 +136,10 @@ namespace wfe {
 			.viewType = VK_IMAGE_VIEW_TYPE_2D,
 			.format = surfaceFormat.format,
 			.components = {
-				.r = VK_COMPONENT_SWIZZLE_R,
-				.g = VK_COMPONENT_SWIZZLE_G,
-				.b = VK_COMPONENT_SWIZZLE_B,
-				.a = VK_COMPONENT_SWIZZLE_A
+				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.a = VK_COMPONENT_SWIZZLE_IDENTITY
 			},
 			.subresourceRange = {
 				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
@@ -161,20 +162,6 @@ namespace wfe {
 			VkResult result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &imageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &swapChainImages[i].imageView);
 			if(result != VK_SUCCESS)
 				throw std::runtime_error((std::string)"Failed to create Vulkan swap chain image view! Error code: " + string_VkResult(result));
-			
-			// Set the image's attachment info
-			swapChainImages[i].attachmentInfo = {
-				.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-				.pNext = nullptr,
-				.imageView = swapChainImages[i].imageView,
-				.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-				.resolveMode = VK_RESOLVE_MODE_NONE,
-				.resolveImageView = VK_NULL_HANDLE,
-				.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-				.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-				.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-				.clearValue = { 0.0f, 0.0f, 0.0f, 1.0f }
-			};
 		}
 	}
 	void VulkanSwapChain::CreateDepthImages() {
@@ -185,62 +172,23 @@ namespace wfe {
 		if(!(depthFormatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT))
 			throw std::runtime_error("The Vulkan device does not support the depth format VK_FORMAT_D32_SFLOAT!");
 
-		// Set the image sharing mode
-		uint32_t familyIndices[] = { device->GetDeviceQueues().graphicsIndex, device->GetDeviceQueues().presentIndex };
-		uint32_t familyCount = 1 + (uint32_t)(familyIndices[0] != familyIndices[1]);
-		VkSharingMode sharingMode = (familyCount == 1) ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;
-
-		// Set the depth image info
-		VkImageCreateInfo depthImageInfo {
-			.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.imageType = VK_IMAGE_TYPE_2D,
-			.format = VK_FORMAT_D32_SFLOAT,
-			.extent = { extent.width, extent.height, 1 },
-			.mipLevels = 1,
-			.arrayLayers = 1,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.tiling = VK_IMAGE_TILING_OPTIMAL,
-			.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-			.sharingMode = sharingMode,
-			.queueFamilyIndexCount = familyCount,
-			.pQueueFamilyIndices = familyIndices,
-			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
-		};
-
 		// Create all depth images
 		for(SwapChainImage& image : swapChainImages) {
-			// Create the depth image
-			VkResult result = device->GetLoader()->vkCreateImage(device->GetDevice(), &depthImageInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &image.depthImage);
-			if(result != VK_SUCCESS)
-				throw std::runtime_error((std::string)"Failed to create Vulkan swap chain depth image! Error code: " + string_VkResult(result));
-			
-			// Allocate the memory for the depth image
-			try {
-				image.depthImageMemory = device->GetAllocator()->AllocImageMemory(image.depthImage, VK_IMAGE_TILING_OPTIMAL, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-			} catch(const std::bad_alloc&) {
-				throw std::runtime_error("Failed to allocate memory for Vulkan swap chain depth image!");
-			}
+			image.depthImage = new VulkanImage(
+				device,
+				0,
+				VK_IMAGE_TYPE_2D,
+				VK_FORMAT_D32_SFLOAT,
+				{ extent.width, extent.height, 1 }, 1, 1,
+				VK_SAMPLE_COUNT_1_BIT,
+				VK_IMAGE_TILING_OPTIMAL,
+				VK_IMAGE_ASPECT_DEPTH_BIT,
+				VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+				VK_SHARING_MODE_EXCLUSIVE,
+				VulkanDevice::QUEUE_TYPE_GRAPHICS,
+				VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			);
 		}
-
-		// Set the depth image memory bind infos
-		std::vector<VkBindImageMemoryInfo> bindInfos(swapChainImages.size());
-
-		for(size_t i = 0; i != swapChainImages.size(); ++i) {
-			bindInfos[i] = {
-				.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,
-				.pNext = nullptr,
-				.image = swapChainImages[i].depthImage,
-				.memory = swapChainImages[i].depthImageMemory.memory,
-				.memoryOffset = swapChainImages[i].depthImageMemory.offset
-			};
-		}
-
-		// Bind the depth images' memory
-		VkResult result = device->GetLoader()->vkBindImageMemory2(device->GetDevice(), (uint32_t)bindInfos.size(), bindInfos.data());
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to bind Vulkan swap chain depth images' memory! Error code: " + string_VkResult(result));
 		
 		// Set the depth image view info
 		VkImageViewCreateInfo depthImageViewInfo {
@@ -268,24 +216,10 @@ namespace wfe {
 		// Create all depth image views
 		for(SwapChainImage& image : swapChainImages) {
 			// Create the depth image view
-			depthImageViewInfo.image = image.depthImage;
-			result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &depthImageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &image.depthImageView);
+			depthImageViewInfo.image = image.depthImage->GetImage();
+			VkResult result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &depthImageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &image.depthImageView);
 			if(result != VK_SUCCESS)
 				throw std::runtime_error((std::string)"Failed to create Vulkan swap chain depth image view! Error code: " + string_VkResult(result));
-			
-			// Set the depth image's attachment info
-			image.depthAttachmentInfo = {
-				.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-				.pNext = nullptr,
-				.imageView = image.depthImageView,
-				.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-				.resolveMode = VK_RESOLVE_MODE_NONE,
-				.resolveImageView = VK_NULL_HANDLE,
-				.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-				.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-				.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-				.clearValue = { 1.0f, 0 }
-			};
 		}
 	}
 
@@ -329,8 +263,7 @@ namespace wfe {
 			// Destroy the old swap chain's images
 			for(SwapChainImage& image : swapChainImages) {
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.imageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetAllocator()->FreeMemory(image.depthImageMemory);
+				delete image.depthImage;
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
 
@@ -371,8 +304,7 @@ namespace wfe {
 			// Destroy the swap chain's images
 			for(SwapChainImage& image : swapChainImages) {
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.imageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetLoader()->vkDestroyImage(device->GetDevice(), image.depthImage, &VulkanRenderer::ALLOCATION_CALLBACKS);
-				device->GetAllocator()->FreeMemory(image.depthImageMemory);
+				delete image.depthImage;
 				device->GetLoader()->vkDestroyImageView(device->GetDevice(), image.depthImageView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 			}
 

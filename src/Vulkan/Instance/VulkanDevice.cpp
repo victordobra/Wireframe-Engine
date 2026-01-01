@@ -181,7 +181,7 @@ namespace wfe {
 
 		for(uint32_t i = 0; i != queueFamilyCount; ++i) {
 			// Check if the current queue supports graphics and presenting
-			bool graphicsSupport = queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT;
+			bool graphicsSupport = (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (queueFamilies[i].queueFlags & VK_QUEUE_TRANSFER_BIT) && (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT);
 
 			VkBool32 presentSupport;
 			GetLoader()->vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface->GetSurface(), &presentSupport);
@@ -228,7 +228,7 @@ namespace wfe {
 
 		for(uint32_t i = 0; i != queueFamilyCount; ++i) {
 			// Move on to the next queue family if it doesn't support compute pipelines
-			if(!(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT))
+			if(!(queueFamilies[i].queueFlags & VK_QUEUE_TRANSFER_BIT) || !(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT))
 				continue;
 
 			// Calculate the current device's score
@@ -559,15 +559,65 @@ namespace wfe {
 		GetLoader()->vkGetDeviceQueue(device, queues.transferIndex, queueIndices[2], &queues.transferQueue);
 		GetLoader()->vkGetDeviceQueue(device, queues.computeIndex, queueIndices[3], &queues.computeQueue);
 	}
+	void VulkanDevice::CreateCommandPools() {
+		// Create the command pools
+		commandPools.graphicsCommandPool = new VulkanCommandPool(this, queues.graphicsIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+		commandPools.presentCommandPool = new VulkanCommandPool(this, queues.presentIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+		commandPools.transferCommandPool = new VulkanCommandPool(this, queues.transferIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+		commandPools.computeCommandPool = new VulkanCommandPool(this, queues.computeIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+	}
 
 	// Public functions
 	VulkanDevice::VulkanDevice(VulkanInstance* instance, VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions) : instance(instance) {
-		// Get the best physical device and create the logical device
+		// Get the best physical device and create the logical device and command pools
 		SetBestDevice(surface, requiredFeatures, optionalFeatures, requiredExtensions, optionalExtensions);
 		CreateLogicalDevice();
+		CreateCommandPools();
 
 		// Create the memory allocator
 		allocator = new VulkanAllocator(this);
+	}
+
+	void VulkanDevice::GetQueueFamilyIndices(QueueTypeMask mask, uint32_t* indices, uint32_t& indexCount) {
+		// Reset the index count
+		indexCount = 0;
+
+		// Check if the graphics index should be added
+		if(mask & QUEUE_TYPE_GRAPHICS)
+			indices[indexCount++] = queues.graphicsIndex;
+
+		// Check if the present index should be added
+		if(mask & QUEUE_TYPE_PRESENT) {
+			// Check if the index is already in the vector
+			bool good = true;
+			for(uint32_t i = 0; i != indexCount && good; ++i)
+				good = (queues.presentIndex != indices[i]);
+			
+			if(good)
+				indices[indexCount++] = queues.presentIndex;
+		}
+
+		// Check if the transfer index should be added
+		if(mask & QUEUE_TYPE_TRANSFER) {
+			// Check if the index is already in the vector
+			bool good = true;
+			for(uint32_t i = 0; i != indexCount && good; ++i)
+				good = (queues.transferIndex != indices[i]);
+			
+			if(good)
+				indices[indexCount++] = queues.transferIndex;
+		}
+
+		// Check if the compute index should be added
+		if(mask & QUEUE_TYPE_COMPUTE) {
+			// Check if the index is already in the vector
+			bool good = true;
+			for(uint32_t i = 0; i != indexCount && good; ++i)
+				good = (queues.computeIndex != indices[i]);
+			
+			if(good)
+				indices[indexCount++] = queues.computeIndex;
+		}
 	}
 
 	void VulkanDevice::LogInfo(Logger* logger) const {
@@ -610,6 +660,12 @@ namespace wfe {
 	VulkanDevice::~VulkanDevice() {
 		// Destroy the memory allocator
 		delete allocator;
+
+		// Destroy the command pools
+		delete commandPools.graphicsCommandPool;
+		delete commandPools.presentCommandPool;
+		delete commandPools.transferCommandPool;
+		delete commandPools.computeCommandPool;
 
 		// Delete the device features
 		for(VkBaseOutStructure* featureStruct = (VkBaseOutStructure*)deviceFeatures.pNext; featureStruct;) {

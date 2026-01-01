@@ -7,6 +7,8 @@
 #include <vulkan/vulkan_core.h>
 
 namespace wfe {
+	class VulkanImage;
+
 	/// @brief A class implementing a Vulkan swap chain.
 	class VulkanSwapChain {
 	public:
@@ -16,17 +18,13 @@ namespace wfe {
 			VkImage image;
 			/// @brief The color image's view handle.
 			VkImageView imageView;
-			/// @brief The color image's attachment info.
-			VkRenderingAttachmentInfoKHR attachmentInfo;
+			/// @brief The layout of the color image.
+			VkImageLayout imageLayout;
 
-			/// @brief The depth image's handle.
-			VkImage depthImage;
-			/// @brief The depth image's memory block.
-			VulkanAllocator::Memory depthImageMemory;
+			/// @brief The depth image object.
+			VulkanImage* depthImage;
 			/// @brief The depth image's view handle.
 			VkImageView depthImageView;
-			/// @brief The depth image's attachment info.
-			VkRenderingAttachmentInfoKHR depthAttachmentInfo;
 		};
 
 		/// @brief Creates a Vulkan swap chain.
@@ -80,6 +78,11 @@ namespace wfe {
 		/// @return The Vulkan swap chain's internal handle, or VK_NULL_HANDLE if the window is minimized.
 		VkSwapchainKHR GetSwapChain() const {
 			return swapChain;
+		}
+		/// @brief Gets the Vulkan swap chain's images.
+		/// @return A vector containing the Vulkan swap chain's images.
+		std::vector<SwapChainImage>& GetSwapChainImages() {
+			return swapChainImages;
 		}
 		/// @brief Gets the Vulkan swap chain's images.
 		/// @return A vector containing the Vulkan swap chain's images.

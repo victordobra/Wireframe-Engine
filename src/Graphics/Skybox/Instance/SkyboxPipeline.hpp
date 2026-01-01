@@ -9,7 +9,7 @@ namespace wfe {
     class Program;
 
 	/// @brief A class implementing the skybox graphics pipeline, used for skybox rendering.
-    class SkyboxPipeline : public GraphicsPipeline {
+    class SkyboxPipeline {
     public:
         /// @brief Creates a skybox graphics pipeline.
 		/// @param engineGraphics The engine graphics component to register the pipeline in.
@@ -19,10 +19,6 @@ namespace wfe {
 
         SkyboxPipeline& operator=(const SkyboxPipeline&) = delete;
         SkyboxPipeline& operator=(SkyboxPipeline&&) = delete;
-
-		/// @brief Records the skybox pipeline's render commands.
-		/// @return A Vulkan secondary command buffer in which are recorded the rendering commands.
-		VkCommandBuffer RecordCommands() override;
 
 		/// @brief Gets the program that owns the pipeline.
 		/// @return The program that owns the pipeline.
@@ -61,14 +57,18 @@ namespace wfe {
 			skybox = newSkybox;
 		}
 
+		/// @brief Gets the command stage info of the skybox graphics pipeline.
+		/// @return The command stage info of the skybox graphics pipeline.
+		VulkanCommand::CommandStageInfo GetStageInfo();
+		/// @brief Records the main pipeline's render commands.
+		/// @param commandBuffer The Vulkan secondary command buffer in which are recorded the rendering commands.
+		void RecordCommands(VkCommandBuffer commandBuffer);
+
         /// @brief Destroys the skybox graphics pipeline.
         ~SkyboxPipeline();
     private:
 		Program* program;
         Skybox* skybox;
-
-		VkCommandPool commandPool;
-		std::vector<VkCommandBuffer> commandBuffers;
 
 		VkShaderModule vertexShader;
 		VkShaderModule fragmentShader;

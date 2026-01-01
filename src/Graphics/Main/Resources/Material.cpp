@@ -5,6 +5,29 @@
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
+	// Static record callbacks
+	struct TransferUserData {
+		VulkanBuffer* srcBuffer;
+		VulkanBuffer* dstBuffer;
+	};
+
+	static void RecordMaterialDataCopyCallback(void* userData, VkCommandBuffer commandBuffer) {
+		// Get the buffers
+		TransferUserData* transferData = (TransferUserData*)userData;
+		VulkanBuffer* srcBuffer = transferData->srcBuffer;
+		VulkanBuffer* dstBuffer = transferData->dstBuffer;
+
+		// Set the buffer copy info
+		VkBufferCopy bufferCopy {
+			.srcOffset = 0,
+			.dstOffset = 0,
+			.size = srcBuffer->GetBufferSize()
+		};
+
+		// Record the transfer
+		srcBuffer->GetDevice()->GetLoader()->vkCmdCopyBuffer(commandBuffer, srcBuffer->GetBuffer(), dstBuffer->GetBuffer(), 1, &bufferCopy);
+	}
+
 	// Material manager functions
 	MaterialManager::MaterialManager(Program* program, size_t maxMaterialCount) : renderer(program->GetRenderer()) {
 		// Set the texture sampler create info
@@ -140,136 +163,122 @@ namespace wfe {
 		renderer->GetLoader()->vkDestroySampler(renderer->GetDevice()->GetDevice(), textureSampler, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 
+	// Internal material functions
+	VkImageView Material::CreateImageView(VkImage image, VkFormat format) {
+		// Set the image view create info
+		VkImageViewCreateInfo imageViewInfo {
+			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.image = image,
+			.viewType = VK_IMAGE_VIEW_TYPE_2D,
+			.format = format,
+			.components = {
+				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.a = VK_COMPONENT_SWIZZLE_IDENTITY
+			},
+			.subresourceRange = {
+				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+
+		// Create the image view
+		VkImageView imageView;
+		VkResult result = manager->GetRenderer()->GetLoader()->vkCreateImageView(manager->GetRenderer()->GetDevice()->GetDevice(), &imageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &imageView);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan material image view! Error code: " + string_VkResult(result));
+		
+		return imageView;
+	}
+
 	// Material functions
 	Material::Material(MaterialManager* manager, const MaterialData& data, const MaterialTextures& textures) : manager(manager), data(data), textures(textures) {
-		// Set the queue family indices
+		// Create the data buffer
 		VulkanDevice* device = manager->GetRenderer()->GetDevice();
 
-		uint32_t familyIndices[] = { device->GetDeviceQueues().graphicsIndex, device->GetDeviceQueues().transferIndex };
-		uint32_t familyCount = 1 + (uint32_t)(familyIndices[0] != familyIndices[1]);
-		VkSharingMode sharingMode = (familyCount == 1) ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;
+		dataBuffer = new VulkanBuffer(
+			device,
+			sizeof(MaterialData),
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			VK_SHARING_MODE_CONCURRENT,
+			VulkanDevice::QUEUE_TYPE_GRAPHICS | VulkanDevice::QUEUE_TYPE_TRANSFER,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+		);
 		
-		// Set the data buffer create info
-		VkBufferCreateInfo dataBufferInfo {
-			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.size = sizeof(MaterialData),
-			.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-			.sharingMode = sharingMode,
-			.queueFamilyIndexCount = familyCount,
-			.pQueueFamilyIndices = familyIndices
-		};
-		
-		// Create the data buffer 
-		VkResult result = device->GetLoader()->vkCreateBuffer(device->GetDevice(), &dataBufferInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &dataBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create Vulkan material data buffer! Error code: " + string_VkResult(result));
-		
-		// Allocate and bind the data buffer's memory
-		try {
-			dataBufferMemory = device->GetAllocator()->AllocBufferMemory(dataBuffer, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-		} catch(const std::bad_alloc&) {
-			throw std::runtime_error("Failed to allocate memory for Vulkan material data buffer!");
-		}
-
-		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), dataBuffer, dataBufferMemory.memory, dataBufferMemory.offset);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to bind Vulkan memory to material data buffer! Error code: " + string_VkResult(result));
-		
-		// Set the staging buffer create info
-		uint32_t transferIndex = device->GetDeviceQueues().transferIndex;
-
-		VkBufferCreateInfo stagingBufferInfo {
-			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.size = sizeof(MaterialData),
-			.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
-			.queueFamilyIndexCount = 1,
-			.pQueueFamilyIndices = &transferIndex
-		};
-
 		// Create the staging buffer
-		VkBuffer stagingBuffer;
-		result = device->GetLoader()->vkCreateBuffer(device->GetDevice(), &stagingBufferInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &stagingBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create Vulkan staging buffer for material data! Error code: " + string_VkResult(result));
-		
-		// Allocate and bind the staging buffer's memory
-		VulkanAllocator::Memory stagingBufferMemory;
-		try {
-			stagingBufferMemory = device->GetAllocator()->AllocBufferMemory(stagingBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-		} catch(const std::bad_alloc&) {
-			throw std::runtime_error("Failed to allocate memory for Vulkan material staging buffer!");
-		}
-
-		result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), stagingBuffer, stagingBufferMemory.memory, stagingBufferMemory.offset);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to bind Vulkan memory to material staging buffer! Error code: " + string_VkResult(result));
+		VulkanBuffer stagingBuffer {
+			device,
+			sizeof(MaterialData),
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_SHARING_MODE_EXCLUSIVE,
+			VulkanDevice::QUEUE_TYPE_TRANSFER,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+		};
 		
 		// Write the material data to the staging buffer
-		*(MaterialData*)(device->GetAllocator()->GetMappedMemory(stagingBufferMemory)) = data;
+		*(MaterialData*)(device->GetAllocator()->GetMappedMemory(stagingBuffer.GetBufferMemory())) = data;
 
-		// Set the fence create info
+		// Set the command stage info
+		TransferUserData transferData {
+			.srcBuffer = &stagingBuffer,
+			.dstBuffer = dataBuffer
+		};
+
+		VulkanCommand::CommandStageInfo transferStageInfo {
+			.name = "MaterialDataCopyTransfer",
+			.dependencies = {},
+			.resources = {
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+					.stageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_TRANSFER_READ_BIT_KHR,
+					.bufferAccessInfo = {
+						.buffer = &stagingBuffer
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+					.stageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR,
+					.bufferAccessInfo = {
+						.buffer = dataBuffer
+					}
+				}
+			},
+			.recordCallback = RecordMaterialDataCopyCallback,
+			.userData = &transferData
+		};
+
+		// Create and record the command
+		VulkanCommand transferCommand { device, VulkanCommand::COMMAND_TYPE_TRANSFER };
+
+		transferCommand.AddCommandStage(std::move(transferStageInfo));
+		transferCommand.RecordCommand(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+		// Set the transfer fence create info
 		VkFenceCreateInfo fenceInfo {
 			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = 0
 		};
 
-		// Create the copy fence
-		VkFence copyFence;
-		result = device->GetLoader()->vkCreateFence(device->GetDevice(), &fenceInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &copyFence);
+		// Create the transfer fence
+		VkFence transferFence;
+		VkResult result = device->GetLoader()->vkCreateFence(device->GetDevice(), &fenceInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &transferFence);
 		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create Vulkan fence for image copy! Error code: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to create Vulkan fence for material data transfer! Error code: " + string_VkResult(result));
 		
-		// Set the command buffer alloc info
-		VkCommandBufferAllocateInfo commandBufferAllocInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			.pNext = nullptr,
-			.commandPool = manager->GetRenderer()->GetTransferCommandPool()->GetCommandPool(),
-			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-			.commandBufferCount = 1
-		};
-
-		// Allocate the command buffer
-		VkCommandBuffer commandBuffer;
-		result = device->GetLoader()->vkAllocateCommandBuffers(device->GetDevice(), &commandBufferAllocInfo, &commandBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to allocate Vulkan command buffer for image copy! Error code: " + string_VkResult(result));
-		
-		// Set the command buffer begin info
-		VkCommandBufferBeginInfo commandBufferBeginInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
-			.pInheritanceInfo = nullptr
-		};
-
-		// Begin recording the command buffer
-		result = device->GetLoader()->vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to begin recording Vulkan command buffer for image copy! Error code: " + string_VkResult(result));
-		
-		// Transfer the staging buffer's contents to the data buffer
-		VkBufferCopy bufferCopy {
-			.srcOffset = 0,
-			.dstOffset = 0,
-			.size = sizeof(MaterialData)
-		};
-
-		device->GetLoader()->vkCmdCopyBuffer(commandBuffer, stagingBuffer, dataBuffer, 1, &bufferCopy);
-
-		// End the command buffer recording
-		device->GetLoader()->vkEndCommandBuffer(commandBuffer);
-
 		// Set the submit info
 		VkCommandBufferSubmitInfo commandBufferSubmitInfo {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
 			.pNext = nullptr,
-			.commandBuffer = commandBuffer,
+			.commandBuffer = transferCommand.GetCommandBuffer(),
 			.deviceMask = 0
 		};
 
@@ -286,23 +295,18 @@ namespace wfe {
 
 		// Submit the command buffer
 		device->GetDeviceQueues().transferQueueMutex.lock();
-		result = device->GetLoader()->vkQueueSubmit2KHR(device->GetDeviceQueues().transferQueue, 1, &submitInfo, copyFence);
+		result = device->GetLoader()->vkQueueSubmit2KHR(device->GetDeviceQueues().transferQueue, 1, &submitInfo, transferFence);
 		device->GetDeviceQueues().transferQueueMutex.unlock();
 		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to submit Vulkan command buffer for image copy! Error code: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to submit Vulkan command buffer for material data transfer! Error code: " + string_VkResult(result));
 		
-		// Wait for the copy to finish
-		result = device->GetLoader()->vkWaitForFences(device->GetDevice(), 1, &copyFence, VK_TRUE, UINT64_MAX);
+		// Wait for the transfer to finish
+		result = device->GetLoader()->vkWaitForFences(device->GetDevice(), 1, &transferFence, VK_TRUE, UINT64_MAX);
 		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for image copy! Error code: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to wait for Vulkan fence for material data transfer! Error code: " + string_VkResult(result));
 		
-		// Destroy the command objects
-		device->GetLoader()->vkDestroyFence(device->GetDevice(), copyFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), manager->GetRenderer()->GetTransferCommandPool()->GetCommandPool(), 1, &commandBuffer);
-
-		// Destroy the staging buffer and free its memory
-		device->GetLoader()->vkDestroyBuffer(device->GetDevice(), stagingBuffer, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetAllocator()->FreeMemory(stagingBufferMemory);
+		// Destroy the transfer fence
+		device->GetLoader()->vkDestroyFence(device->GetDevice(), transferFence, &VulkanRenderer::ALLOCATION_CALLBACKS);
 
 		// Set the descriptor set alloc info
 		VkDescriptorSetLayout descriptorSetLayout = manager->GetMaterialSetLayout();
@@ -319,114 +323,68 @@ namespace wfe {
 		result = device->GetLoader()->vkAllocateDescriptorSets(device->GetDevice(), &descriptorSetAllocInfo, &descriptorSet);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to allocate Vulkan descriptor set for material data! Error code: " + string_VkResult(result));
+
+		// Create the image views
+		this->textures.ambientTextureView = CreateImageView(this->textures.ambientTexture->GetImage()->GetImage(), VK_FORMAT_R8G8B8A8_SRGB);
+		this->textures.diffuseTextureView = CreateImageView(this->textures.diffuseTexture->GetImage()->GetImage(), VK_FORMAT_R8G8B8A8_SRGB);
+		this->textures.specularTextureView = CreateImageView(this->textures.specularTexture->GetImage()->GetImage(), VK_FORMAT_R8G8B8A8_SRGB);
+		this->textures.specularExponentMapView = CreateImageView(this->textures.specularExponentMap->GetImage()->GetImage(), VK_FORMAT_R8G8B8A8_UNORM);
+		this->textures.normalMapView = CreateImageView(this->textures.normalMap->GetImage()->GetImage(), VK_FORMAT_R8G8B8A8_UNORM);
 		
 		// Set the buffer info and image infos
+		VkImageView imageViews[] {
+			this->textures.ambientTextureView,
+			this->textures.diffuseTextureView,
+			this->textures.specularTextureView,
+			this->textures.specularExponentMapView,
+			this->textures.normalMapView
+		};
+
 		VkDescriptorBufferInfo bufferInfo {
-			.buffer = dataBuffer,
+			.buffer = dataBuffer->GetBuffer(),
 			.offset = 0,
 			.range = VK_WHOLE_SIZE
 		};
-		VkDescriptorImageInfo ambientTextureInfo {
-			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.ambientTexture->GetSRGBImageView(),
-			.imageLayout = textures.ambientTexture->GetImageLayout()
-		};
-		VkDescriptorImageInfo diffuseTextureInfo {
-			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.diffuseTexture->GetSRGBImageView(),
-			.imageLayout = textures.diffuseTexture->GetImageLayout()
-		};
-		VkDescriptorImageInfo specularTextureInfo {
-			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.specularTexture->GetSRGBImageView(),
-			.imageLayout = textures.specularTexture->GetImageLayout()
-		};
-		VkDescriptorImageInfo specularExponentMapInfo {
-			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.specularExponentMap->GetLinearImageView(),
-			.imageLayout = textures.specularExponentMap->GetImageLayout()
-		};
-		VkDescriptorImageInfo normalMapInfo {
-			.sampler = VK_NULL_HANDLE,
-			.imageView = textures.normalMap->GetLinearImageView(),
-			.imageLayout = textures.normalMap->GetImageLayout()
-		};
+		VkDescriptorImageInfo imageInfos[5];
+
+		for(size_t i = 0; i != 5; ++i) {
+			imageInfos[i] = {
+				.sampler = VK_NULL_HANDLE,
+				.imageView = imageViews[i],
+				.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+			};
+		}
 
 		// Set the descriptor writes
-		VkWriteDescriptorSet descriptorWrites[] {
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 0,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-				.pImageInfo = nullptr,
-				.pBufferInfo = &bufferInfo,
-				.pTexelBufferView = nullptr
-			},
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 1,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &ambientTextureInfo,
-				.pBufferInfo = nullptr,
-				.pTexelBufferView = nullptr
-			},
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 2,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &diffuseTextureInfo,
-				.pBufferInfo = nullptr,
-				.pTexelBufferView = nullptr
-			},
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 3,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &specularTextureInfo,
-				.pBufferInfo = nullptr,
-				.pTexelBufferView = nullptr
-			},
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 4,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &specularExponentMapInfo,
-				.pBufferInfo = nullptr,
-				.pTexelBufferView = nullptr
-			},
-			{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.pNext = nullptr,
-				.dstSet = descriptorSet,
-				.dstBinding = 5,
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &normalMapInfo,
-				.pBufferInfo = nullptr,
-				.pTexelBufferView = nullptr
-			}
+		VkWriteDescriptorSet descriptorWrites[6];
+	
+		descriptorWrites[0] = {
+			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			.pNext = nullptr,
+			.dstSet = descriptorSet,
+			.dstBinding = 0,
+			.dstArrayElement = 0,
+			.descriptorCount = 1,
+			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.pImageInfo = nullptr,
+			.pBufferInfo = &bufferInfo,
+			.pTexelBufferView = nullptr
 		};
+
+		for(size_t i = 0; i != 5; ++i) {
+			descriptorWrites[i + 1] = {
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.pNext = nullptr,
+				.dstSet = descriptorSet,
+				.dstBinding = (uint32_t)i + 1,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.pImageInfo = imageInfos + i,
+				.pBufferInfo = nullptr,
+				.pTexelBufferView = nullptr
+			};
+		}
 
 		// Update the material's descriptor set
 		device->GetLoader()->vkUpdateDescriptorSets(device->GetDevice(), 6, descriptorWrites, 0, nullptr);
@@ -438,8 +396,14 @@ namespace wfe {
 
 		device->GetLoader()->vkFreeDescriptorSets(device->GetDevice(), manager->GetDescriptorPool(), 1, &descriptorSet);
 
-		// Destroy the data buffer and free its memory
-		device->GetLoader()->vkDestroyBuffer(device->GetDevice(), dataBuffer, &VulkanRenderer::ALLOCATION_CALLBACKS);
-		device->GetAllocator()->FreeMemory(dataBufferMemory);
+		// Destroy the data buffer
+		delete dataBuffer;
+
+		// Destroy the image views
+		device->GetLoader()->vkDestroyImageView(device->GetDevice(), textures.ambientTextureView, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		device->GetLoader()->vkDestroyImageView(device->GetDevice(), textures.diffuseTextureView, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		device->GetLoader()->vkDestroyImageView(device->GetDevice(), textures.specularTextureView, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		device->GetLoader()->vkDestroyImageView(device->GetDevice(), textures.specularExponentMapView, &VulkanRenderer::ALLOCATION_CALLBACKS);
+		device->GetLoader()->vkDestroyImageView(device->GetDevice(), textures.normalMapView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

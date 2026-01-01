@@ -41,30 +41,20 @@ namespace wfe {
 		size_t GetVertexCount() const {
 			return vertexCount;
 		}
-		/// @brief Gets the mesh's vertex buffer.
-		/// @return The mesh's vertex buffer.
-		VkBuffer GetVertexBuffer() const {
-			return vertexBuffer;
-		}
-		/// @brief Gets the mesh vertex buffer's memory.
-		/// @return The mesh vertex buffer's memory.
-		VulkanAllocator::Memory GetVertexBufferMemory() const {
-			return vertexBufferMemory;
-		}
 		/// @brief Gets the mesh's index buffer.
 		/// @return The mesh's index buffer.
 		size_t GetIndexCount() const {
 			return indexCount;
 		}
+		/// @brief Gets the mesh's vertex buffer.
+		/// @return The mesh's vertex buffer.
+		VulkanBuffer* GetVertexBuffer() const {
+			return vertexBuffer;
+		}
 		/// @brief Gets the mesh's index buffer.
 		/// @return The mesh's index buffer.
-		VkBuffer GetIndexBuffer() const {
+		VulkanBuffer* GetIndexBuffer() const {
 			return indexBuffer;
-		}
-		/// @brief Gets the mesh index buffer's memory.
-		/// @return The mesh index buffer's memory.
-		VulkanAllocator::Memory GetIndexBufferMemory() const {
-			return indexBufferMemory;
 		}
 		/// @brief Gets the mesh's vertices and indices.
 		/// @param vertices A pointer to the array in which all vertex data will be written.
@@ -77,10 +67,8 @@ namespace wfe {
 		VulkanRenderer* renderer;
 
 		size_t vertexCount;
-		VkBuffer vertexBuffer;
-		VulkanAllocator::Memory vertexBufferMemory;
 		size_t indexCount;
-		VkBuffer indexBuffer;
-		VulkanAllocator::Memory indexBufferMemory;
+		VulkanBuffer* vertexBuffer;
+		VulkanBuffer* indexBuffer;
 	};
 }

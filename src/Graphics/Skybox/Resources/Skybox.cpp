@@ -86,8 +86,37 @@ namespace wfe {
 
 	// Skybox functions
 	Skybox::Skybox(SkyboxManager* manager, ImageCubemap* cubemap) : manager(manager), cubemap(cubemap) {
-		// Set the descriptor set alloc info
+		// Set the image view create info
 		VulkanDevice* device = manager->GetRenderer()->GetDevice();
+
+		VkImageViewCreateInfo imageViewInfo {
+			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = 0,
+			.image = cubemap->GetImage()->GetImage(),
+			.viewType = VK_IMAGE_VIEW_TYPE_CUBE,
+			.format = VK_FORMAT_R8G8B8A8_SRGB,
+			.components = {
+				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.a = VK_COMPONENT_SWIZZLE_IDENTITY
+			},
+			.subresourceRange = {
+				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 6
+			}
+		};
+
+		// Create the image view
+		VkResult result = device->GetLoader()->vkCreateImageView(device->GetDevice(), &imageViewInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &cubemapView);
+		if(result != VK_SUCCESS)
+			throw std::runtime_error((std::string)"Failed to create Vulkan skybox cubemap image view! Error code: " + string_VkResult(result));
+
+		// Set the descriptor set alloc info
 		VkDescriptorSetLayout descriptorSetLayout = manager->GetSkyboxSetLayout();
 
 		VkDescriptorSetAllocateInfo descriptorSetAllocInfo {
@@ -99,15 +128,15 @@ namespace wfe {
 		};
 
 		// Allocate the descriptor set
-		VkResult result = device->GetLoader()->vkAllocateDescriptorSets(device->GetDevice(), &descriptorSetAllocInfo, &descriptorSet);
+		result = device->GetLoader()->vkAllocateDescriptorSets(device->GetDevice(), &descriptorSetAllocInfo, &descriptorSet);
 		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to allocate Vulkan decsriptor set for skybox data! Error code: " + string_VkResult(result));
+			throw std::runtime_error((std::string)"Failed to allocate Vulkan descriptor set for skybox data! Error code: " + string_VkResult(result));
 
 		// Set the descriptor set write info
 		VkDescriptorImageInfo cubemapInfo {
 			.sampler = VK_NULL_HANDLE,
-			.imageView = cubemap->GetSRGBImageView(),
-			.imageLayout = cubemap->GetImageLayout()
+			.imageView = cubemapView,
+			.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
 
 		VkWriteDescriptorSet descriptorSetWrite {
@@ -128,7 +157,8 @@ namespace wfe {
 	}
 
 	Skybox::~Skybox() {
-		// Free the descriptor set
+		// Free the descriptor set and destroy the image view
 		manager->GetRenderer()->GetLoader()->vkFreeDescriptorSets(manager->GetRenderer()->GetDevice()->GetDevice(), manager->GetDescriptorPool(), 1, &descriptorSet);
+		manager->GetRenderer()->GetLoader()->vkDestroyImageView(manager->GetRenderer()->GetDevice()->GetDevice(), cubemapView, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

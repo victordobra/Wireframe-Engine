@@ -20,158 +20,18 @@ namespace wfe {
 #include "Graphics/Skybox/Shaders/FragShader.frag.u32"
 	};
 
-	// Public functions
-	VkCommandBuffer SkyboxPipeline::RecordCommands() {
-		// Set the inheritence info
-		VkFormat colorFormat = program->GetRenderer()->GetSwapChain()->GetSurfaceFormat().format;
-
-		VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderingInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
-			.pNext = nullptr,
-			.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR,
-			.viewMask = 0,
-			.colorAttachmentCount = 1,
-			.pColorAttachmentFormats = &colorFormat,
-			.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT,
-			.stencilAttachmentFormat = VK_FORMAT_UNDEFINED,
-			.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT
-		};
-		VkCommandBufferInheritanceInfo inheritanceInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-			.pNext = &inheritanceRenderingInfo,
-			.renderPass = VK_NULL_HANDLE,
-			.subpass = 0,
-			.framebuffer = VK_NULL_HANDLE,
-			.occlusionQueryEnable = VK_FALSE,
-			.queryFlags = 0,
-			.pipelineStatistics = 0
-		};
-
-		// Set the command buffer begin info
-		VkCommandBufferBeginInfo beginInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-			.pInheritanceInfo = &inheritanceInfo
-		};
-
-		// Begin recording the command buffer
-		size_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
-		VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
-		VulkanLoader* loader = program->GetRenderer()->GetLoader();
-
-		VkResult result = loader->vkBeginCommandBuffer(commandBuffer, &beginInfo);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to begin recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
-		
-		// Bind the pipeline
-		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-
-		// Set the viewport and scissor
-		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
-
-		VkViewport viewport {
-			.x = 0.0f,
-			.y = 0.0f,
-			.width = (float)extent.width,
-			.height = (float)extent.height,
-			.minDepth = 0.0f,
-			.maxDepth = 1.0f
-		};
-		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor {
-			.offset = { 0, 0 },
-			.extent = extent
-		};
-		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-		// Get the camera's info
-		MainPipeline::CameraInfo cameraInfo = program->GetEngineGraphics()->GetMainPipeline()->GetCameraInfo();
-
-		// Set the skybox points
-		PushConstants pushConstants;
-	
-		switch(cameraInfo.cameraType) {
-		case MainPipeline::CAMERA_TYPE_PERSPECTIVE: {
-			// Calculate the vertical and horizontal dimensions
-			float verticalSize = Tan(cameraInfo.perspectiveInfo.fov * 0.5f);
-			float horizontalSize = verticalSize * (viewport.width / viewport.height);
-
-			// Set the top-right corner's coordinates
-			pushConstants.skyboxPoints[3] = { horizontalSize, verticalSize, -1.0f, 1.0f };
-
-			break;
-		}
-		case MainPipeline::CAMERA_TYPE_ORTOGRAPHIC:
-			// Set the top-right corner's coordinates
-			pushConstants.skyboxPoints[3] = { 0.0f, 0.0f, -1.0f, 1.0f };
-
-			break;
-		}
-
-		// Get all other skybox points by mirroring the top-right corner
-		pushConstants.skyboxPoints[0] = { -pushConstants.skyboxPoints[3].x, -pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
-		pushConstants.skyboxPoints[1] = {  pushConstants.skyboxPoints[3].x, -pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
-		pushConstants.skyboxPoints[2] = { -pushConstants.skyboxPoints[3].x,  pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
-
-		// Apply the camera's rotation vector to all three points
-		Mat4x4f cameraRotTransform = Mat4x4Rotate(cameraInfo.rot);
-		for(size_t i = 0; i != 4; ++i)
-			pushConstants.skyboxPoints[i] = cameraRotTransform * pushConstants.skyboxPoints[i];
-
-		// Push the skybox points and far plane to the shader
-		loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);
-
-		// Bind the skybox
-		VkDescriptorSet descriptorSet = skybox->GetDescriptorSet();
-		loader->vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-
-		// Draw the skybox
-		loader->vkCmdDraw(commandBuffer, 6, 1, 0, 0);
-
-		// End recording the command buffer
-		result = loader->vkEndCommandBuffer(commandBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to end recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
-		
-		return commandBuffer;
+	// Static record callbacks
+	static void RecordSkyboxPipelineRenderCallback(void* userData, VkCommandBuffer commandBuffer) {
+		// Get the skybox pipeline and record the command
+		SkyboxPipeline* pipeline = (SkyboxPipeline*)userData;
+		pipeline->RecordCommands(commandBuffer);
 	}
 
 	// Public functions
-	SkyboxPipeline::SkyboxPipeline(EngineGraphics* engineGraphics) : GraphicsPipeline(engineGraphics->GetProgram()->GetGraphicsSystem()), program(engineGraphics->GetProgram()), skybox(nullptr) {
-		// Set the command pool create info
-		VulkanDevice* device = program->GetRenderer()->GetDevice();
-		uint32_t graphicsFamily = device->GetDeviceQueues().graphicsIndex;
-
-		VkCommandPoolCreateInfo commandPoolInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			.queueFamilyIndex = graphicsFamily
-		};
-
-		// Create the command pool
-		VkResult result = device->GetLoader()->vkCreateCommandPool(device->GetDevice(), &commandPoolInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &commandPool);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create Vulkan skybox graphics pipeline command pool! Error code: " + string_VkResult(result));
-		
-		// Set the command buffer alloc info
-		VkCommandBufferAllocateInfo commandBufferInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			.pNext = nullptr,
-			.commandPool = commandPool,
-			.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-			.commandBufferCount = (uint32_t)program->GetGraphicsSystem()->GetMaxFramesInFlight()
-		};
-
-		// Allocate the command buffers
-		commandBuffers.resize(program->GetGraphicsSystem()->GetMaxFramesInFlight());
-		result = device->GetLoader()->vkAllocateCommandBuffers(device->GetDevice(), &commandBufferInfo, commandBuffers.data());
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to allocate Vulkan skybox graphics pipeline secondary command buffers! Error code: " + string_VkResult(result));
-
+	SkyboxPipeline::SkyboxPipeline(EngineGraphics* engineGraphics) : program(engineGraphics->GetProgram()), skybox(nullptr) {
 		// Set the vertex shader module create info
+		VulkanDevice* device = program->GetRenderer()->GetDevice();
+
 		VkShaderModuleCreateInfo vertexShaderInfo {
 			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
 			.pNext = nullptr,
@@ -181,7 +41,7 @@ namespace wfe {
 		};
 
 		// Create the vertex shader module
-		result = device->GetLoader()->vkCreateShaderModule(device->GetDevice(), &vertexShaderInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &vertexShader);
+		VkResult result = device->GetLoader()->vkCreateShaderModule(device->GetDevice(), &vertexShaderInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &vertexShader);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan vertex shader module for skybox graphics pipeline! Error code: " + string_VkResult(result));
 
@@ -312,7 +172,7 @@ namespace wfe {
 			.flags = 0,
 			.depthTestEnable = VK_TRUE,
 			.depthWriteEnable = VK_TRUE,
-			.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL,
+			.depthCompareOp = VK_COMPARE_OP_ALWAYS,
 			.depthBoundsTestEnable = VK_FALSE,
 			.stencilTestEnable = VK_FALSE,
 			.front = VK_STENCIL_OP_KEEP,
@@ -397,6 +257,165 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to create Vulkan skybox graphics pipeline! Error code: " + string_VkResult(result));
 	}
 
+	VulkanCommand::CommandStageInfo SkyboxPipeline::GetStageInfo() {
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		return VulkanCommand::CommandStageInfo {
+			.name = "SkyboxPipelineRender",
+			.dependencies = { },
+			.resources = {
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_SWAP_CHAIN_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+					.accessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR,
+					.swapChainImageAccessInfo = {
+						.swapChainImage = &program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex],
+						.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT_KHR,
+					.imageAccessInfo = {
+						.image = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImage,
+						.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR,
+					.imageAccessInfo = {
+						.image = skybox->GetCubemap()->GetImage(),
+						.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+					}
+				}
+			},
+			.recordCallback = RecordSkyboxPipelineRenderCallback,
+			.userData = this
+		};
+	}
+	void SkyboxPipeline::RecordCommands(VkCommandBuffer commandBuffer) {
+		// Set the rendering info
+		VulkanLoader* loader = program->GetRenderer()->GetLoader();
+
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].imageView,
+			.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 0.0f, 0.0f, 0.0f, 0.0f }
+		};
+		VkRenderingAttachmentInfoKHR depthAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImageView,
+			.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 1.0f, 0 }
+		};
+		VkRenderingInfoKHR renderingInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+			.pNext = nullptr,
+			.flags = 0,
+			.renderArea = {
+				.offset = { 0, 0 },
+				.extent = program->GetRenderer()->GetSwapChain()->GetExtent()
+			},
+			.layerCount = 1,
+			.viewMask = 0,
+			.colorAttachmentCount = 1,
+			.pColorAttachments = &colorAttachmentInfo,
+			.pDepthAttachment = &depthAttachmentInfo,
+			.pStencilAttachment = nullptr
+		};
+
+		// Begin rendering
+		loader->vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
+		
+		// Bind the pipeline
+		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
+		// Set the viewport and scissor
+		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
+
+		VkViewport viewport {
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = (float)extent.width,
+			.height = (float)extent.height,
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		};
+		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+		VkRect2D scissor {
+			.offset = { 0, 0 },
+			.extent = extent
+		};
+		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+		// Get the camera's info
+		MainPipeline::CameraInfo cameraInfo = program->GetEngineGraphics()->GetMainPipeline()->GetCameraInfo();
+
+		// Set the skybox points
+		PushConstants pushConstants;
+	
+		switch(cameraInfo.cameraType) {
+		case MainPipeline::CAMERA_TYPE_PERSPECTIVE: {
+			// Calculate the vertical and horizontal dimensions
+			float verticalSize = Tan(cameraInfo.perspectiveInfo.fov * 0.5f);
+			float horizontalSize = verticalSize * (viewport.width / viewport.height);
+
+			// Set the top-right corner's coordinates
+			pushConstants.skyboxPoints[3] = { horizontalSize, verticalSize, -1.0f, 1.0f };
+
+			break;
+		}
+		case MainPipeline::CAMERA_TYPE_ORTOGRAPHIC:
+			// Set the top-right corner's coordinates
+			pushConstants.skyboxPoints[3] = { 0.0f, 0.0f, -1.0f, 1.0f };
+
+			break;
+		}
+
+		// Get all other skybox points by mirroring the top-right corner
+		pushConstants.skyboxPoints[0] = { -pushConstants.skyboxPoints[3].x, -pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
+		pushConstants.skyboxPoints[1] = {  pushConstants.skyboxPoints[3].x, -pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
+		pushConstants.skyboxPoints[2] = { -pushConstants.skyboxPoints[3].x,  pushConstants.skyboxPoints[3].y, -1.0f, 1.0f };
+
+		// Apply the camera's rotation vector to all three points
+		Mat4x4f cameraRotTransform = Mat4x4Rotate(cameraInfo.rot);
+		for(size_t i = 0; i != 4; ++i)
+			pushConstants.skyboxPoints[i] = cameraRotTransform * pushConstants.skyboxPoints[i];
+
+		// Push the skybox points and far plane to the shader
+		loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);
+
+		// Bind the skybox
+		VkDescriptorSet descriptorSet = skybox->GetDescriptorSet();
+		loader->vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+
+		// Draw the skybox
+		loader->vkCmdDraw(commandBuffer, 6, 1, 0, 0);
+
+		// End rendering
+		loader->vkCmdEndRenderingKHR(commandBuffer);
+	}
+
 	SkyboxPipeline::~SkyboxPipeline() {
 		// Destroy the pipeline and its layout
 		VulkanDevice* device = program->GetRenderer()->GetDevice();
@@ -407,9 +426,5 @@ namespace wfe {
 		// Destroy the shader modules
 		device->GetLoader()->vkDestroyShaderModule(device->GetDevice(), vertexShader, &VulkanRenderer::ALLOCATION_CALLBACKS);
 		device->GetLoader()->vkDestroyShaderModule(device->GetDevice(), fragmentShader, &VulkanRenderer::ALLOCATION_CALLBACKS);
-
-		// Free all command buffers and destroy their command pool
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), commandPool, (uint32_t)commandBuffers.size(), commandBuffers.data());
-		device->GetLoader()->vkDestroyCommandPool(device->GetDevice(), commandPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
 	}
 }

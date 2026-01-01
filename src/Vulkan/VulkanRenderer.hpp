@@ -9,6 +9,9 @@
 #include "Instance/VulkanSurface.hpp"
 #include "Instance/VulkanSwapChain.hpp"
 #include "Loader/VulkanLoader.hpp"
+#include "Resources/VulkanBuffer.hpp"
+#include "Resources/VulkanCommand.hpp"
+#include "Resources/VulkanImage.hpp"
 
 namespace wfe {
 	class Program;
@@ -59,21 +62,6 @@ namespace wfe {
 		VulkanSwapChain* GetSwapChain() const {
 			return swapChain;
 		}
-		/// @brief Gets the Vulkan command pool used for global graphics operations.
-		/// @return The Vulkan command pool used for global graphics operations.
-		VulkanCommandPool* GetGraphicsCommandPool() const {
-			return graphicsCommandPool;
-		}
-		/// @brief Gets the Vulkan command pool used for global transfer operations.
-		/// @return The Vulkan command pool used for global transfer operations.
-		VulkanCommandPool* GetTransferCommandPool() const {
-			return transferCommandPool;
-		}
-		/// @brief Gets the Vulkan command pool used for global compute operations.
-		/// @return The Vulkan command pool used for global compute operations.
-		VulkanCommandPool* GetComputeCommandPool() const {
-			return computeCommandPool;
-		}
 
 		/// @brief Destroys the Vulkan renderer.
 		~VulkanRenderer();
@@ -85,8 +73,5 @@ namespace wfe {
 		VulkanSurface* surface;
 		VulkanDevice* device;
 		VulkanSwapChain* swapChain;
-		VulkanCommandPool* graphicsCommandPool;
-		VulkanCommandPool* transferCommandPool;
-		VulkanCommandPool* computeCommandPool;
 	};
 }

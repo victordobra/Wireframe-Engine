@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <stdexcept>
 #include <string>
+#include <unordered_set>
 #include <vulkan/vk_enum_string_helper.h>
 
 namespace wfe {
@@ -64,76 +65,27 @@ namespace wfe {
 #include "Graphics/Main/Shaders/FragShader.frag.u32"
 	};
 
-	// Internal helper functions
-	void MainPipeline::CreateCommandBuffers() {
-		// Set the command pool create info
-		VulkanDevice* device = program->GetRenderer()->GetDevice();
-		uint32_t graphicsFamily = device->GetDeviceQueues().graphicsIndex;
-
-		VkCommandPoolCreateInfo commandPoolInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-			.queueFamilyIndex = graphicsFamily
-		};
-
-		// Create the command pool
-		VkResult result = device->GetLoader()->vkCreateCommandPool(device->GetDevice(), &commandPoolInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &commandPool);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline command pool! Error code: " + string_VkResult(result));
-		
-		// Set the command buffer alloc info
-		VkCommandBufferAllocateInfo commandBufferInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			.pNext = nullptr,
-			.commandPool = commandPool,
-			.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-			.commandBufferCount = (uint32_t)program->GetGraphicsSystem()->GetMaxFramesInFlight()
-		};
-
-		// Allocate the command buffers
-		commandBuffers.resize(program->GetGraphicsSystem()->GetMaxFramesInFlight());
-		result = device->GetLoader()->vkAllocateCommandBuffers(device->GetDevice(), &commandBufferInfo, commandBuffers.data());
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to allocate Vulkan main graphics pipeline secondary command buffers! Error code: " + string_VkResult(result));
+	// Static record callbacks
+	static void RecordMainPipelineRenderCallback(void* userData, VkCommandBuffer commandBuffer) {
+		// Get the main pipeline and record the command
+		MainPipeline* pipeline = (MainPipeline*)userData;
+		pipeline->RecordCommands(commandBuffer);
 	}
+
+	// Internal helper functions
 	void MainPipeline::CreateSceneInfoBuffers() {
-		// Set the scene info buffer create info
-		VulkanDevice* device = program->GetRenderer()->GetDevice();
-		uint32_t graphicsFamily = device->GetDeviceQueues().graphicsIndex;
-		size_t maxFramesInFlight = program->GetGraphicsSystem()->GetMaxFramesInFlight();
-
-		VkBufferCreateInfo sceneInfoBufferInfo {
-			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.pNext = nullptr,
-			.flags = 0,
-			.size = sizeof(SceneInfo),
-			.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
-			.queueFamilyIndexCount = 1,
-			.pQueueFamilyIndices = &graphicsFamily
-		};
-
-		sceneInfoBuffers.resize(maxFramesInFlight);
-		sceneInfoBufferMemories.resize(maxFramesInFlight);
+		// Create the scene info buffers
+		sceneInfoBuffers.resize(program->GetGraphicsSystem()->GetMaxFramesInFlight());
 
 		for(size_t i = 0; i != sceneInfoBuffers.size(); ++i) {
-			// Create the scene info buffer
-			VkResult result = device->GetLoader()->vkCreateBuffer(device->GetDevice(), &sceneInfoBufferInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &sceneInfoBuffers[i]);
-			if(result != VK_SUCCESS)
-				throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline scene info buffer! Error code: " + string_VkResult(result));
-			
-			// Allocate the scene info buffer's memory
-			try {
-				sceneInfoBufferMemories[i] = device->GetAllocator()->AllocBufferMemory(sceneInfoBuffers[i], VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-			} catch(const std::bad_alloc&) {
-				throw std::runtime_error("Failed to allocate Vulkan main graphics pipeline scene info buffer memory!");
-			}
-
-			// Bind the buffer to its memory
-			result = device->GetLoader()->vkBindBufferMemory(device->GetDevice(), sceneInfoBuffers[i], sceneInfoBufferMemories[i].memory, sceneInfoBufferMemories[i].offset);
-			if(result != VK_SUCCESS)
-				throw std::runtime_error((std::string)"Failed to bind Vulkan main graphics pipeline scene info buffer to its memory! Error code: " + string_VkResult(result));
+			sceneInfoBuffers[i] = new VulkanBuffer(
+				program->GetRenderer()->GetDevice(),
+				sizeof(SceneInfo),
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_SHARING_MODE_EXCLUSIVE,
+				0,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+			);
 		}
 	}
 	void MainPipeline::CreateDescriptors() {
@@ -205,7 +157,7 @@ namespace wfe {
 		std::vector<VkDescriptorBufferInfo> sceneInfoBufferInfos(maxFramesInFlight);
 		for(size_t i = 0; i != sceneInfoBufferInfos.size(); ++i) {
 			sceneInfoBufferInfos[i] = {
-				.buffer = sceneInfoBuffers[i],
+				.buffer = sceneInfoBuffers[i]->GetBuffer(),
 				.offset = 0,
 				.range = VK_WHOLE_SIZE
 			};
@@ -491,49 +443,178 @@ namespace wfe {
 			throw std::runtime_error((std::string)"Failed to create Vulkan main graphics pipeline! Error code: " + string_VkResult(result));
 	}
 
-	// Record commands function
-	VkCommandBuffer MainPipeline::RecordCommands() {
-		// Set the inheritence info
-		VkFormat colorFormat = program->GetRenderer()->GetSwapChain()->GetSurfaceFormat().format;
+	// Public functions
+	MainPipeline::MainPipeline(EngineGraphics* engineGraphics, const CameraInfo& cameraInfo) : program(engineGraphics->GetProgram()), cameraInfo(cameraInfo) {
+		// Create the pipeline's components
+		CreateSceneInfoBuffers();
+		CreateDescriptors();
+		CreatePipeline(engineGraphics);
+	}
 
-		VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderingInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
-			.pNext = nullptr,
-			.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR,
-			.viewMask = 0,
-			.colorAttachmentCount = 1,
-			.pColorAttachmentFormats = &colorFormat,
-			.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT,
-			.stencilAttachmentFormat = VK_FORMAT_UNDEFINED,
-			.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT
-		};
-		VkCommandBufferInheritanceInfo inheritanceInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-			.pNext = &inheritanceRenderingInfo,
-			.renderPass = VK_NULL_HANDLE,
-			.subpass = 0,
-			.framebuffer = VK_NULL_HANDLE,
-			.occlusionQueryEnable = VK_FALSE,
-			.queryFlags = 0,
-			.pipelineStatistics = 0
+	VulkanCommand::CommandStageInfo MainPipeline::GetStageInfo() {
+		// Find all unique accessed meshes and materials
+		std::unordered_set<RenderMesh*> meshes;
+		std::unordered_set<Material*> materials;
+
+		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
+		EntityManager::Signature meshRendererTypeSignature = 0;
+		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
+
+		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
+			// Get the renderer component
+			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
+
+			// Add the current renderer's mesh and material to the sets
+			meshes.insert(meshRenderer.mesh);
+			materials.insert(meshRenderer.material);
+		}
+
+		// Find all unique sampled textures in materials
+		std::unordered_set<ImageTexture*> textures;
+
+		for(Material* material : materials) {
+			textures.insert(material->GetTextures().ambientTexture);
+			textures.insert(material->GetTextures().diffuseTexture);
+			textures.insert(material->GetTextures().specularTexture);
+			textures.insert(material->GetTextures().specularExponentMap);
+			textures.insert(material->GetTextures().normalMap);
+		}
+
+		// Set the command stage's intial info
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		VulkanCommand::CommandStageInfo commandStageInfo {
+			.name = "MainPipelineRender",
+			.dependencies = { "SkyboxPipelineRender" },
+			.resources = {
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_SWAP_CHAIN_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+					.accessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR,
+					.swapChainImageAccessInfo = {
+						.swapChainImage = &program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex],
+						.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT_KHR,
+					.imageAccessInfo = {
+						.image = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImage,
+						.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+					.stageMask = VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
+					.bufferAccessInfo = {
+						.buffer = sceneInfoBuffers[frameIndex]
+					}
+				}
+			},
+			.recordCallback = RecordMainPipelineRenderCallback,
+			.userData = this
 		};
 
-		// Set the command buffer begin info
-		VkCommandBufferBeginInfo beginInfo {
-			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			.pNext = nullptr,
-			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT | VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
-			.pInheritanceInfo = &inheritanceInfo
-		};
+		// Add all mesh vertex and index buffers
+		for(RenderMesh* mesh : meshes) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR,
+				.accessMask = VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = mesh->GetVertexBuffer()
+				}
+			});
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR,
+				.accessMask = VK_ACCESS_2_INDEX_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = mesh->GetVertexBuffer()
+				}
+			});
+		}
 
-		// Begin recording the command buffer
-		size_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
-		VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
+		// Add all material data buffers
+		for(Material* material : materials) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+				.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = material->GetDataBuffer()
+				}
+			});
+		}
+
+		// Add all sampled textures
+		for(ImageTexture* texture : textures) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+				.accessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR,
+				.imageAccessInfo = {
+					.image = texture->GetImage(),
+					.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+				}
+			});
+		}
+
+		return commandStageInfo;
+	}
+	void MainPipeline::RecordCommands(VkCommandBuffer commandBuffer) {
+		// Set the rendering info
 		VulkanLoader* loader = program->GetRenderer()->GetLoader();
 
-		VkResult result = loader->vkBeginCommandBuffer(commandBuffer, &beginInfo);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to begin recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].imageView,
+			.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 0.0f, 0.0f, 0.0f, 0.0f }
+		};
+		VkRenderingAttachmentInfoKHR depthAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImageView,
+			.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 1.0f, 0 }
+		};
+		VkRenderingInfoKHR renderingInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+			.pNext = nullptr,
+			.flags = 0,
+			.renderArea = {
+				.offset = { 0, 0 },
+				.extent = program->GetRenderer()->GetSwapChain()->GetExtent()
+			},
+			.layerCount = 1,
+			.viewMask = 0,
+			.colorAttachmentCount = 1,
+			.pColorAttachments = &colorAttachmentInfo,
+			.pDepthAttachment = &depthAttachmentInfo,
+			.pStencilAttachment = nullptr
+		};
+
+		// Begin rendering
+		loader->vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
 		
 		// Bind the pipeline
 		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
@@ -558,7 +639,7 @@ namespace wfe {
 		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 		// Get the current scene info struct
-		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoBufferMemories[frameIndex]);
+		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoBuffers[frameIndex]->GetBufferMemory());
 
 		// Set the camera's info in the scene info
 		Mat4x4f cameraProjection;
@@ -666,31 +747,18 @@ namespace wfe {
 			loader->vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstants), &pushConstants);
 
 			// Bind the vertex and index buffers
-			VkBuffer vertexBuffer = meshRenderer.mesh->GetVertexBuffer();
+			VkBuffer vertexBuffer = meshRenderer.mesh->GetVertexBuffer()->GetBuffer();
 			VkDeviceSize offset = 0;
 
 			loader->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, &offset);
-			loader->vkCmdBindIndexBuffer(commandBuffer, meshRenderer.mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+			loader->vkCmdBindIndexBuffer(commandBuffer, meshRenderer.mesh->GetIndexBuffer()->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 			// Draw the mesh
 			loader->vkCmdDrawIndexed(commandBuffer, (uint32_t)meshRenderer.mesh->GetIndexCount(), 1, 0, 0, 0);
 		}
 
-		// End recording the command buffer
-		result = loader->vkEndCommandBuffer(commandBuffer);
-		if(result != VK_SUCCESS)
-			throw std::runtime_error((std::string)"Failed to end recording Vulkan main graphics pipeline command buffer! Error code: " + string_VkResult(result));
-		
-		return commandBuffer;
-	}
-
-	// Public functions
-	MainPipeline::MainPipeline(EngineGraphics* engineGraphics, const CameraInfo& cameraInfo) : GraphicsPipeline(engineGraphics->GetProgram()->GetGraphicsSystem()), program(engineGraphics->GetProgram()), cameraInfo(cameraInfo) {
-		// Create the pipeline's components
-		CreateCommandBuffers();
-		CreateSceneInfoBuffers();
-		CreateDescriptors();
-		CreatePipeline(engineGraphics);
+		// End rendering
+		loader->vkCmdEndRenderingKHR(commandBuffer);
 	}
 
 	MainPipeline::~MainPipeline() {
@@ -710,12 +778,6 @@ namespace wfe {
 
 		// Destroy the scene info buffers
 		for(size_t i = 0; i != sceneInfoBuffers.size(); ++i)
-			device->GetLoader()->vkDestroyBuffer(device->GetDevice(), sceneInfoBuffers[i], &VulkanRenderer::ALLOCATION_CALLBACKS);
-		for(size_t i = 0; i != sceneInfoBufferMemories.size(); ++i)
-			device->GetAllocator()->FreeMemory(sceneInfoBufferMemories[i]);
-
-		// Free all command buffers and destroy their command pool
-		device->GetLoader()->vkFreeCommandBuffers(device->GetDevice(), commandPool, (uint32_t)commandBuffers.size(), commandBuffers.data());
-		device->GetLoader()->vkDestroyCommandPool(device->GetDevice(), commandPool, &VulkanRenderer::ALLOCATION_CALLBACKS);
+			delete sceneInfoBuffers[i];
 	}
 }

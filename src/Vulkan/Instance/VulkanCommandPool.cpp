@@ -1,4 +1,5 @@
 #include "VulkanCommandPool.hpp"
+#include "VulkanDevice.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 #include <stdexcept>
 #include <vulkan/vk_enum_string_helper.h>

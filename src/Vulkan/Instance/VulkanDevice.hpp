@@ -2,6 +2,7 @@
 
 #include "Core/Types/Defines.hpp"
 #include "VulkanAllocator.hpp"
+#include "VulkanCommandPool.hpp"
 #include "VulkanInstance.hpp"
 #include "VulkanSurface.hpp"
 #include <vulkan/vk_platform.h>
@@ -14,6 +15,20 @@ namespace wfe {
 	/// @brief A class implementing a Vulkan logical device.
 	class VulkanDevice {
 	public:
+		/// @brief An enum containing all Vulkan queue types.
+		enum QueueType {
+			/// @brief Graphics queue type. Supports graphics, transfer and compute operations.
+			QUEUE_TYPE_GRAPHICS = 1,
+			/// @brief Present queue type. Supports present operations.
+			QUEUE_TYPE_PRESENT = 2,
+			/// @brief Transfer queue type. Supports transfer operations.
+			QUEUE_TYPE_TRANSFER = 4,
+			/// @brief Compute queue type. Supports compute operations.
+			QUEUE_TYPE_COMPUTE = 8
+		};
+		/// @brief A mask type, used for specifying which queue families have access to a specific resource.
+		typedef uint32_t QueueTypeMask;
+
 		/// @brief A struct containing the device's queues and their queue family indices.
 		struct DeviceQueues {
 			/// @brief The graphics queue family index.
@@ -40,6 +55,17 @@ namespace wfe {
 			mutable std::mutex transferQueueMutex;
 			/// @brief The cmutex for ompute queue access synchronization.
 			mutable std::mutex computeQueueMutex;
+		};
+		/// @brief A struct containing command pools corresponding to the device's queues.
+		struct DeviceCommandPools {
+			/// @brief The command pool supporting graphics commands.
+			VulkanCommandPool* graphicsCommandPool;
+			/// @brief The command pool supporting present commands.
+			VulkanCommandPool* presentCommandPool;
+			/// @brief The command pool supporting transfer commands.
+			VulkanCommandPool* transferCommandPool;
+			/// @brief The command pool supporting compute commands.
+			VulkanCommandPool* computeCommandPool;
 		};
 
 		/// @brief A struct chain containing all required features for the Vulkan device.
@@ -96,6 +122,11 @@ namespace wfe {
 		const DeviceQueues& GetDeviceQueues() const {
 			return queues;
 		}
+		/// @brief Gets the Vulkan command pools corresponding to the device's queue family indices.
+		/// @return A struct containing the Vulkan command pools corresponding to the device's queue family indices.
+		const DeviceCommandPools& GetDeviceCommandPools() const {
+			return commandPools;
+		}
 		/// @brief Gets the Vulkan device's properties.
 		/// @return A struct containing the Vulkan device's properties.
 		const VkPhysicalDeviceProperties& GetDeviceProperties() const {
@@ -117,6 +148,12 @@ namespace wfe {
 			return enabledExtensions;
 		}
 
+		/// @brief Gets the Vulkan device's queue family indices required for all requested queues.
+		/// @param mask A bitmask of all queue types that should be included in the queue family indices.
+		/// @param indices A pointer to the array in which all indices will be written.
+		/// @param indexCount A reference to the variable in which the number of unique indices will be written.
+		void GetQueueFamilyIndices(QueueTypeMask mask, uint32_t* indices, uint32_t& indexCount);
+
 		/// @brief Logs informaton about the Vulkana device to the given logger.
 		/// @param logger The logger to log the information to.
 		void LogInfo(Logger* logger) const;
@@ -135,6 +172,7 @@ namespace wfe {
 		bool GetDeviceExtensions(VkPhysicalDevice physicalDevice, std::vector<const char*>& supportedExtensions, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions);
 		void SetBestDevice(VulkanSurface* surface, const VkPhysicalDeviceFeatures2& requiredFeatures, const VkPhysicalDeviceFeatures2& optionalFeatures, const std::vector<const char*>& requiredExtensions, const std::vector<const char*>& optionalExtensions);
 		void CreateLogicalDevice();
+		void CreateCommandPools();
 
 		VulkanInstance* instance;
 		VulkanAllocator* allocator;
@@ -142,6 +180,7 @@ namespace wfe {
 		VkPhysicalDevice physicalDevice;
 		VkDevice device;
 		DeviceQueues queues;
+		DeviceCommandPools commandPools;
 
 		VkPhysicalDeviceProperties deviceProperties;
 		VkPhysicalDeviceMemoryProperties deviceMemoryProperties;

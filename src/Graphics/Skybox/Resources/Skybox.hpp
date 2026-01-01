@@ -76,6 +76,11 @@ namespace wfe {
 		ImageCubemap* GetCubemap() const {
 			return cubemap;
 		}
+		/// @brief Gets the image view corresponding to the skybox cubemap.
+		/// @return The image view corresponding to the skybox cubemap.
+		VkImageView GetCubemapView() const {
+			return cubemapView;
+		}
 		/// @brief Gets the Vulkan descriptor set containing the skybox's data.
 		/// @return The Vulkan descriptor set containing the skybox's data.
 		VkDescriptorSet GetDescriptorSet() const {
@@ -87,6 +92,7 @@ namespace wfe {
 	private:
 		SkyboxManager* manager;
 		ImageCubemap* cubemap;
+		VkImageView cubemapView;
 		VkDescriptorSet descriptorSet;
 	};
 }

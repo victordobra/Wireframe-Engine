@@ -62,4 +62,7 @@
 #include "Vulkan/Instance/VulkanSurface.hpp"
 #include "Vulkan/Instance/VulkanSwapChain.hpp"
 #include "Vulkan/Loader/VulkanLoader.hpp"
+#include "Vulkan/Resources/VulkanBuffer.hpp"
+#include "Vulkan/Resources/VulkanCommand.hpp"
+#include "Vulkan/Resources/VulkanImage.hpp"
 #include "Vulkan/VulkanRenderer.hpp"

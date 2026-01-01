@@ -56,7 +56,7 @@ namespace wfe {
 			entityManager->UpdateGlobalTransforms();
 
 			// Render to the window's surface
-			graphicsSystem->Render();
+			engineGraphics->RecordRenderingCommand();
 
 			// Update the frame clock
 			frameClock.TickClock();

@@ -2,8 +2,8 @@
 #include "Main/Program.hpp"
 
 namespace wfe {
-    // Public functions
-    EngineGraphics::EngineGraphics(Program* program) : program(program) {
+	// Public functions
+	EngineGraphics::EngineGraphics(Program* program) : program(program) {
 		// Set the default camera info
 		MainPipeline::CameraInfo cameraInfo {
 			.pos = VEC3F_ZERO,
@@ -16,20 +16,42 @@ namespace wfe {
 			}
 		};
 
-        // Create the material manager and the main graphics pipeline
-        materialManager = new MaterialManager(program, program->GetProgramSettings().maxMaterialCount);
-        mainPipeline = new MainPipeline(this, cameraInfo);
+		// Create the material manager and the main graphics pipeline
+		materialManager = new MaterialManager(program, program->GetProgramSettings().maxMaterialCount);
+		mainPipeline = new MainPipeline(this, cameraInfo);
 
-        // Create the skybox manager and the skybox graphics pipeline
-        skyboxManager = new SkyboxManager(program, program->GetProgramSettings().maxSkyboxCount);
-        skyboxPipeline = new SkyboxPipeline(this);
-    }
+		// Create the skybox manager and the skybox graphics pipeline
+		skyboxManager = new SkyboxManager(program, program->GetProgramSettings().maxSkyboxCount);
+		skyboxPipeline = new SkyboxPipeline(this);
+	}
 
-    EngineGraphics::~EngineGraphics() {
-        // Destroy all graphics components
-        delete mainPipeline;
-        delete materialManager;
-        delete skyboxPipeline;
-        delete skyboxManager;
-    }
+	void EngineGraphics::RecordRenderingCommand() {
+		// Init the rendering command
+		GraphicsSystem* graphicsSystem = program->GetGraphicsSystem();
+		if(!graphicsSystem->InitCommand())
+			return;
+		
+		VulkanCommand* command = graphicsSystem->GetRenderingCommands()[graphicsSystem->GetFrameIndex()];
+
+		// Add the pipeline stages
+		command->AddCommandStage(mainPipeline->GetStageInfo());
+		command->AddCommandStage(skyboxPipeline->GetStageInfo());
+
+		// Add the transition stage
+		VulkanCommand::CommandStageInfo transitionStageInfo = graphicsSystem->GetPresentLayoutTransitionStageInfo();
+		transitionStageInfo.dependencies = { "MainPipelineRender", "SkyboxPipelineRender" };
+		command->AddCommandStage(transitionStageInfo);
+	
+		// Record and submit the command
+		command->RecordCommand(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+		graphicsSystem->SubmitCommand();
+	}
+
+	EngineGraphics::~EngineGraphics() {
+		// Destroy all graphics components
+		delete mainPipeline;
+		delete materialManager;
+		delete skyboxPipeline;
+		delete skyboxManager;
+	}
 }

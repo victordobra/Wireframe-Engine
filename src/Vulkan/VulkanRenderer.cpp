@@ -55,11 +55,6 @@ namespace wfe {
 		// Create the swap chain
 		swapChain = new VulkanSwapChain(device, surface, program->GetProgramSettings().enableVsync);
 
-		// Create all command pools
-		graphicsCommandPool = new VulkanCommandPool(device, device->GetDeviceQueues().graphicsIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-		transferCommandPool = new VulkanCommandPool(device, device->GetDeviceQueues().transferIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-		computeCommandPool = new VulkanCommandPool(device, device->GetDeviceQueues().computeIndex, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-
 		// Log all component infos
 		instance->LogInfo(program->GetLogger());
 		device->LogInfo(program->GetLogger());
@@ -68,9 +63,6 @@ namespace wfe {
 
 	VulkanRenderer::~VulkanRenderer() {
 		// Destroy all renderer components
-		delete graphicsCommandPool;
-		delete transferCommandPool;
-		delete computeCommandPool;
 		delete swapChain;
 		delete device;
 		delete surface;

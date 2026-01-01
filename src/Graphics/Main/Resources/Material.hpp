@@ -87,14 +87,24 @@ namespace wfe {
 		struct MaterialTextures {
 			/// @brief The texture used for the ambient color.
 			ImageTexture* ambientTexture;
+			/// @brief The Vulkan image view for the ambient texture.
+			VkImageView ambientTextureView;
 			/// @brief The texture used for the diffuse color.
 			ImageTexture* diffuseTexture;
+			/// @brief The Vulkan image view for the diffuse texture.
+			VkImageView diffuseTextureView;
 			/// @brief The texture used for the specular color.
 			ImageTexture* specularTexture;
+			/// @brief The Vulkan image view for the specular texture.
+			VkImageView specularTextureView;
 			/// @brief The texture map used for the specular exponent.
 			ImageTexture* specularExponentMap;
+			/// @brief The Vulkan image view for the specular exponent map.
+			VkImageView specularExponentMapView;
 			/// @brief The texture map used to change the surface normals.
 			ImageTexture* normalMap;
+			/// @brief The Vulkan image view for the normal map.
+			VkImageView normalMapView;
 		};
 
 		/// @brief Creates a new material.
@@ -125,13 +135,8 @@ namespace wfe {
 		}
 		/// @brief Gets the Vulkan buffer storing the material's data
 		/// @return The Vulkan buffer storing the material's data
-		VkBuffer GetDataBuffer() const {
+		VulkanBuffer* GetDataBuffer() const {
 			return dataBuffer;
-		}
-		/// @brief Gets the Vulkan data buffer's memory block.
-		/// @return A struct containing the data buffer's memory handle, offset and size.
-		VulkanAllocator::Memory GetDataBufferMemory() const {
-			return dataBufferMemory;
 		}
 		/// @brief Gets the Vulkan descriptor set referencing the material's data and textures.
 		/// @return The Vulkan descriptor set referencing the material's data and textures.
@@ -142,11 +147,13 @@ namespace wfe {
 		/// @brief Destroys the material.
 		~Material();
 	private:
+		VkImageView CreateImageView(VkImage image, VkFormat format);
+	
 		MaterialManager* manager;
 		MaterialData data;
 		MaterialTextures textures;
-		VkBuffer dataBuffer;
-		VulkanAllocator::Memory dataBufferMemory;
+		
+		VulkanBuffer* dataBuffer;
 		VkDescriptorSet descriptorSet;
 	};
 }

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
-#include "VulkanDevice.hpp"
 #include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>
 #include <thread>
 #include <unordered_map>
 
 namespace wfe {
+	class VulkanDevice;
+
 	/// @brief A class implementing a Vulkan command pool with automatic synchronization.
 	class VulkanCommandPool {
 	public:

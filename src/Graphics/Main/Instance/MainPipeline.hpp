@@ -10,7 +10,7 @@ namespace wfe {
 	class Program;
 
 	/// @brief A class implementing the main graphics pipeline, used for base 3D graphics.
-	class MainPipeline : public GraphicsPipeline {
+	class MainPipeline {
 	public:
 		/// @brief An enum containing all camera projection types.
 		enum CameraType {
@@ -64,10 +64,6 @@ namespace wfe {
 		MainPipeline& operator=(const MainPipeline&) = delete;
 		MainPipeline& operator=(MainPipeline&&) = delete;
 
-		/// @brief Records the main pipeline's render commands.
-		/// @return A Vulkan secondary command buffer in which are recorded the rendering commands.
-		VkCommandBuffer RecordCommands() override;
-
 		/// @brief Gets the program that owns the pipeline.
 		/// @return The program that owns the pipeline.
 		Program* GetProgram() const {
@@ -115,10 +111,16 @@ namespace wfe {
 			ambientLightColor = newAmbientLightColor;
 		}
 
+		/// @brief Gets the command stage info of the main graphics pipeline.
+		/// @return The command stage info of the main graphics pipeline.
+		VulkanCommand::CommandStageInfo GetStageInfo();
+		/// @brief Records the main pipeline's render commands.
+		/// @param commandBuffer The Vulkan secondary command buffer in which are recorded the rendering commands.
+		void RecordCommands(VkCommandBuffer commandBuffer);
+
 		/// @brief Destroys the main graphics pipeline.
 		~MainPipeline();
 	private:
-		void CreateCommandBuffers();
 		void CreateSceneInfoBuffers();
 		void CreateDescriptors();
 		void CreatePipeline(EngineGraphics* engineGraphics);
@@ -127,11 +129,7 @@ namespace wfe {
 		CameraInfo cameraInfo;
 		Vec3f ambientLightColor;
 
-		VkCommandPool commandPool;
-		std::vector<VkCommandBuffer> commandBuffers;
-
-		std::vector<VkBuffer> sceneInfoBuffers;
-		std::vector<VulkanAllocator::Memory> sceneInfoBufferMemories;
+		std::vector<VulkanBuffer*> sceneInfoBuffers;
 
 		VkDescriptorPool sceneInfoDescriptorPool;
 		VkDescriptorSetLayout sceneInfoDescriptorSetLayout;
