@@ -33,8 +33,9 @@ namespace wfe {
 		
 		VulkanCommand* command = graphicsSystem->GetRenderingCommands()[graphicsSystem->GetFrameIndex()];
 
-		// Add the pipeline stages
-		command->AddCommandStage(mainPipeline->GetStageInfo());
+		// Add the command stages
+		command->AddCommandStage(mainPipeline->GetSceneInfoTransferStageInfo());
+		command->AddCommandStage(mainPipeline->GetRenderStageInfo());
 		command->AddCommandStage(skyboxPipeline->GetStageInfo());
 
 		// Add the transition stage

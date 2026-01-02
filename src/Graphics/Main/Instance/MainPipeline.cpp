@@ -69,7 +69,12 @@ namespace wfe {
 	static void RecordMainPipelineRenderCallback(void* userData, VkCommandBuffer commandBuffer) {
 		// Get the main pipeline and record the command
 		MainPipeline* pipeline = (MainPipeline*)userData;
-		pipeline->RecordCommands(commandBuffer);
+		pipeline->RecordRenderCommands(commandBuffer);
+	}
+	static void RecordMainPipelineSceneInfoTransferCallback(void* userData, VkCommandBuffer commandBuffer) {
+		// Get the main pipeline and record the command
+		MainPipeline* pipeline = (MainPipeline*)userData;
+		pipeline->RecordSceneInfoTransferCommands(commandBuffer);
 	}
 
 	// Internal helper functions
@@ -81,7 +86,21 @@ namespace wfe {
 			sceneInfoBuffers[i] = new VulkanBuffer(
 				program->GetRenderer()->GetDevice(),
 				sizeof(SceneInfo),
-				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_SHARING_MODE_EXCLUSIVE,
+				0,
+				VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			);
+		}
+
+		// Create the scene info staging buffers
+		sceneInfoStagingBuffers.resize(program->GetGraphicsSystem()->GetMaxFramesInFlight());
+
+		for(size_t i = 0; i != sceneInfoStagingBuffers.size(); ++i) {
+			sceneInfoStagingBuffers[i] = new VulkanBuffer(
+				program->GetRenderer()->GetDevice(),
+				sizeof(SceneInfo),
+				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_SHARING_MODE_EXCLUSIVE,
 				0,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
@@ -451,197 +470,44 @@ namespace wfe {
 		CreatePipeline(engineGraphics);
 	}
 
-	VulkanCommand::CommandStageInfo MainPipeline::GetStageInfo() {
-		// Find all unique accessed meshes and materials
-		std::unordered_set<RenderMesh*> meshes;
-		std::unordered_set<Material*> materials;
-
-		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
-		EntityManager::Signature meshRendererTypeSignature = 0;
-		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
-
-		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
-			// Get the renderer component
-			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
-
-			// Add the current renderer's mesh and material to the sets
-			meshes.insert(meshRenderer.mesh);
-			materials.insert(meshRenderer.material);
-		}
-
-		// Find all unique sampled textures in materials
-		std::unordered_set<ImageTexture*> textures;
-
-		for(Material* material : materials) {
-			textures.insert(material->GetTextures().ambientTexture);
-			textures.insert(material->GetTextures().diffuseTexture);
-			textures.insert(material->GetTextures().specularTexture);
-			textures.insert(material->GetTextures().specularExponentMap);
-			textures.insert(material->GetTextures().normalMap);
-		}
-
-		// Set the command stage's intial info
+	VulkanCommand::CommandStageInfo MainPipeline::GetSceneInfoTransferStageInfo() {
 		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
-		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
 
-		VulkanCommand::CommandStageInfo commandStageInfo {
-			.name = "MainPipelineRender",
-			.dependencies = { "SkyboxPipelineRender" },
+		return VulkanCommand::CommandStageInfo {
+			.name = "MainPipelineSceneInfoTransfer",
+			.dependencies = { },
 			.resources = {
 				VulkanCommand::ResourceAccessInfo {
-					.type = VulkanCommand::RESOURCE_TYPE_SWAP_CHAIN_IMAGE,
-					.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
-					.accessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR,
-					.swapChainImageAccessInfo = {
-						.swapChainImage = &program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex],
-						.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-					}
-				},
-				VulkanCommand::ResourceAccessInfo {
-					.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
-					.stageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
-					.accessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT_KHR,
-					.imageAccessInfo = {
-						.image = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImage,
-						.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+					.stageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_TRANSFER_READ_BIT_KHR,
+					.bufferAccessInfo {
+						.buffer = sceneInfoStagingBuffers[frameIndex]
 					}
 				},
 				VulkanCommand::ResourceAccessInfo {
 					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
-					.stageMask = VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
-					.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
-					.bufferAccessInfo = {
+					.stageMask = VK_PIPELINE_STAGE_2_TRANSFER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR,
+					.bufferAccessInfo {
 						.buffer = sceneInfoBuffers[frameIndex]
 					}
 				}
 			},
-			.recordCallback = RecordMainPipelineRenderCallback,
+			.recordCallback = RecordMainPipelineSceneInfoTransferCallback,
 			.userData = this
 		};
-
-		// Add all mesh vertex and index buffers
-		for(RenderMesh* mesh : meshes) {
-			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
-				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
-				.stageMask = VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR,
-				.accessMask = VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR,
-				.bufferAccessInfo = {
-					.buffer = mesh->GetVertexBuffer()
-				}
-			});
-			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
-				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
-				.stageMask = VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR,
-				.accessMask = VK_ACCESS_2_INDEX_READ_BIT_KHR,
-				.bufferAccessInfo = {
-					.buffer = mesh->GetVertexBuffer()
-				}
-			});
-		}
-
-		// Add all material data buffers
-		for(Material* material : materials) {
-			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
-				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
-				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
-				.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
-				.bufferAccessInfo = {
-					.buffer = material->GetDataBuffer()
-				}
-			});
-		}
-
-		// Add all sampled textures
-		for(ImageTexture* texture : textures) {
-			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
-				.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
-				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
-				.accessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR,
-				.imageAccessInfo = {
-					.image = texture->GetImage(),
-					.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-				}
-			});
-		}
-
-		return commandStageInfo;
 	}
-	void MainPipeline::RecordCommands(VkCommandBuffer commandBuffer) {
-		// Set the rendering info
-		VulkanLoader* loader = program->GetRenderer()->GetLoader();
-
-		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
-		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
-
-		VkRenderingAttachmentInfoKHR colorAttachmentInfo {
-			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-			.pNext = nullptr,
-			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].imageView,
-			.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
-			.resolveImageView = VK_NULL_HANDLE,
-			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-			.clearValue = { 0.0f, 0.0f, 0.0f, 0.0f }
-		};
-		VkRenderingAttachmentInfoKHR depthAttachmentInfo {
-			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-			.pNext = nullptr,
-			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImageView,
-			.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
-			.resolveImageView = VK_NULL_HANDLE,
-			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-			.clearValue = { 1.0f, 0 }
-		};
-		VkRenderingInfoKHR renderingInfo {
-			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
-			.pNext = nullptr,
-			.flags = 0,
-			.renderArea = {
-				.offset = { 0, 0 },
-				.extent = program->GetRenderer()->GetSwapChain()->GetExtent()
-			},
-			.layerCount = 1,
-			.viewMask = 0,
-			.colorAttachmentCount = 1,
-			.pColorAttachments = &colorAttachmentInfo,
-			.pDepthAttachment = &depthAttachmentInfo,
-			.pStencilAttachment = nullptr
-		};
-
-		// Begin rendering
-		loader->vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
-		
-		// Bind the pipeline
-		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-
-		// Set the viewport and scissor
-		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
-
-		VkViewport viewport {
-			.x = 0.0f,
-			.y = 0.0f,
-			.width = (float)extent.width,
-			.height = (float)extent.height,
-			.minDepth = 0.0f,
-			.maxDepth = 1.0f
-		};
-		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor {
-			.offset = { 0, 0 },
-			.extent = extent
-		};
-		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
+	void MainPipeline::RecordSceneInfoTransferCommands(VkCommandBuffer commandBuffer) {
 		// Get the current scene info struct
-		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoBuffers[frameIndex]->GetBufferMemory());
+		VulkanLoader* loader = program->GetRenderer()->GetLoader();
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+
+		SceneInfo* sceneInfo = (SceneInfo*)program->GetRenderer()->GetDevice()->GetAllocator()->GetMappedMemory(sceneInfoStagingBuffers[frameIndex]->GetBufferMemory());
 
 		// Set the camera's info in the scene info
+		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
+
 		Mat4x4f cameraProjection;
 		float aspectRatio = (float)extent.width / extent.height;
 
@@ -725,6 +591,203 @@ namespace wfe {
 			}
 		}
 
+		// Record the transfer from the staging buffer
+		VkBufferCopy bufferCopy {
+			.srcOffset = 0,
+			.dstOffset = 0,
+			.size = sizeof(SceneInfo)
+		};
+
+		loader->vkCmdCopyBuffer(commandBuffer, sceneInfoStagingBuffers[frameIndex]->GetBuffer(), sceneInfoBuffers[frameIndex]->GetBuffer(), 1, &bufferCopy);
+	}
+
+	VulkanCommand::CommandStageInfo MainPipeline::GetRenderStageInfo() {
+		// Find all unique accessed meshes and materials
+		std::unordered_set<RenderMesh*> meshes;
+		std::unordered_set<Material*> materials;
+
+		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
+		EntityManager::Signature meshRendererTypeSignature = 0;
+		meshRendererTypeSignature.set(meshRendererTypeIndex, 1);
+
+		for(Entity entity = program->GetEntityManager()->GetNextEntity(EntityManager::INVALID_ENTITY, meshRendererTypeSignature); entity != EntityManager::INVALID_ENTITY; entity = program->GetEntityManager()->GetNextEntity(entity, meshRendererTypeSignature)) {
+			// Get the renderer component
+			MeshRenderer meshRenderer = *(MeshRenderer*)(program->GetEntityManager()->GetComponentList(meshRendererTypeIndex)->GetComponent(entity));
+
+			// Add the current renderer's mesh and material to the sets
+			meshes.insert(meshRenderer.mesh);
+			materials.insert(meshRenderer.material);
+		}
+
+		// Find all unique sampled textures in materials
+		std::unordered_set<ImageTexture*> textures;
+
+		for(Material* material : materials) {
+			textures.insert(material->GetTextures().ambientTexture);
+			textures.insert(material->GetTextures().diffuseTexture);
+			textures.insert(material->GetTextures().specularTexture);
+			textures.insert(material->GetTextures().specularExponentMap);
+			textures.insert(material->GetTextures().normalMap);
+		}
+
+		// Set the command stage's intial info
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		VulkanCommand::CommandStageInfo commandStageInfo {
+			.name = "MainPipelineRender",
+			.dependencies = { "MainPipelineSceneInfoTransfer", "SkyboxPipelineRender" },
+			.resources = {
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_SWAP_CHAIN_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+					.accessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR,
+					.swapChainImageAccessInfo = {
+						.swapChainImage = &program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex],
+						.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+					.stageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT_KHR,
+					.imageAccessInfo = {
+						.image = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImage,
+						.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+					}
+				},
+				VulkanCommand::ResourceAccessInfo {
+					.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+					.stageMask = VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT_KHR | VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+					.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
+					.bufferAccessInfo = {
+						.buffer = sceneInfoBuffers[frameIndex]
+					}
+				}
+			},
+			.recordCallback = RecordMainPipelineRenderCallback,
+			.userData = this
+		};
+
+		// Add all mesh vertex and index buffers
+		for(RenderMesh* mesh : meshes) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR,
+				.accessMask = VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = mesh->GetVertexBuffer()
+				}
+			});
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR,
+				.accessMask = VK_ACCESS_2_INDEX_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = mesh->GetVertexBuffer()
+				}
+			});
+		}
+
+		// Add all material data buffers
+		for(Material* material : materials) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_BUFFER,
+				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+				.accessMask = VK_ACCESS_2_UNIFORM_READ_BIT_KHR,
+				.bufferAccessInfo = {
+					.buffer = material->GetDataBuffer()
+				}
+			});
+		}
+
+		// Add all sampled textures
+		for(ImageTexture* texture : textures) {
+			commandStageInfo.resources.push_back(VulkanCommand::ResourceAccessInfo {
+				.type = VulkanCommand::RESOURCE_TYPE_IMAGE,
+				.stageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+				.accessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR,
+				.imageAccessInfo = {
+					.image = texture->GetImage(),
+					.layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+				}
+			});
+		}
+
+		return commandStageInfo;
+	}
+	void MainPipeline::RecordRenderCommands(VkCommandBuffer commandBuffer) {
+		// Set the rendering info
+		VulkanLoader* loader = program->GetRenderer()->GetLoader();
+
+		uint32_t frameIndex = program->GetGraphicsSystem()->GetFrameIndex();
+		uint32_t imageIndex = program->GetGraphicsSystem()->GetImageIndex();
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].imageView,
+			.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 0.0f, 0.0f, 0.0f, 0.0f }
+		};
+		VkRenderingAttachmentInfoKHR depthAttachmentInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+			.pNext = nullptr,
+			.imageView = program->GetRenderer()->GetSwapChain()->GetSwapChainImages()[imageIndex].depthImageView,
+			.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			.resolveMode = VK_RESOLVE_MODE_NONE_KHR,
+			.resolveImageView = VK_NULL_HANDLE,
+			.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+			.clearValue = { 1.0f, 0 }
+		};
+		VkRenderingInfoKHR renderingInfo {
+			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+			.pNext = nullptr,
+			.flags = 0,
+			.renderArea = {
+				.offset = { 0, 0 },
+				.extent = program->GetRenderer()->GetSwapChain()->GetExtent()
+			},
+			.layerCount = 1,
+			.viewMask = 0,
+			.colorAttachmentCount = 1,
+			.pColorAttachments = &colorAttachmentInfo,
+			.pDepthAttachment = &depthAttachmentInfo,
+			.pStencilAttachment = nullptr
+		};
+
+		// Begin rendering
+		loader->vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
+		
+		// Bind the pipeline
+		loader->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
+		// Set the viewport and scissor
+		VkExtent2D extent = program->GetRenderer()->GetSwapChain()->GetExtent();
+
+		VkViewport viewport {
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = (float)extent.width,
+			.height = (float)extent.height,
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		};
+		loader->vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+		VkRect2D scissor {
+			.offset = { 0, 0 },
+			.extent = extent
+		};
+		loader->vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
 		// Loop through all renderers
 		size_t meshRendererTypeIndex = program->GetEntityManager()->GetTypeIndex<MeshRenderer>();
 		EntityManager::Signature meshRendererTypeSignature = 0;
@@ -779,5 +842,7 @@ namespace wfe {
 		// Destroy the scene info buffers
 		for(size_t i = 0; i != sceneInfoBuffers.size(); ++i)
 			delete sceneInfoBuffers[i];
+		for(size_t i = 0; i != sceneInfoStagingBuffers.size(); ++i)
+			delete sceneInfoStagingBuffers[i];
 	}
 }

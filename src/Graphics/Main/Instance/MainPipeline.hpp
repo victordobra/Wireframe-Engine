@@ -111,12 +111,19 @@ namespace wfe {
 			ambientLightColor = newAmbientLightColor;
 		}
 
+		/// @brief Gets the command stage info of the scene info transfer.
+		/// @return The command stage info of the scene info transfer.
+		VulkanCommand::CommandStageInfo GetSceneInfoTransferStageInfo();
+		/// @brief Records the scene info transfer commands.
+		/// @param commandBuffer The Vulkan command buffer in which are recorded the transfer commands.
+		void RecordSceneInfoTransferCommands(VkCommandBuffer commandBuffer);
+
 		/// @brief Gets the command stage info of the main graphics pipeline.
 		/// @return The command stage info of the main graphics pipeline.
-		VulkanCommand::CommandStageInfo GetStageInfo();
+		VulkanCommand::CommandStageInfo GetRenderStageInfo();
 		/// @brief Records the main pipeline's render commands.
-		/// @param commandBuffer The Vulkan secondary command buffer in which are recorded the rendering commands.
-		void RecordCommands(VkCommandBuffer commandBuffer);
+		/// @param commandBuffer The Vulkan command buffer in which are recorded the rendering commands.
+		void RecordRenderCommands(VkCommandBuffer commandBuffer);
 
 		/// @brief Destroys the main graphics pipeline.
 		~MainPipeline();
@@ -130,6 +137,7 @@ namespace wfe {
 		Vec3f ambientLightColor;
 
 		std::vector<VulkanBuffer*> sceneInfoBuffers;
+		std::vector<VulkanBuffer*> sceneInfoStagingBuffers;
 
 		VkDescriptorPool sceneInfoDescriptorPool;
 		VkDescriptorSetLayout sceneInfoDescriptorSetLayout;
