@@ -59,6 +59,7 @@
 #include "Vulkan/Instance/VulkanCommandPool.hpp"
 #include "Vulkan/Instance/VulkanDevice.hpp"
 #include "Vulkan/Instance/VulkanInstance.hpp"
+#include "Vulkan/Instance/VulkanPipelineCache.hpp"
 #include "Vulkan/Instance/VulkanSurface.hpp"
 #include "Vulkan/Instance/VulkanSwapChain.hpp"
 #include "Vulkan/Loader/VulkanLoader.hpp"

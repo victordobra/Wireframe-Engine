@@ -252,7 +252,7 @@ namespace wfe {
 		};
 
 		// Create the graphics pipeline
-		result = device->GetLoader()->vkCreateGraphicsPipelines(device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &pipeline);
+		result = device->GetLoader()->vkCreateGraphicsPipelines(device->GetDevice(), program->GetRenderer()->GetPipelineCache()->GetPipelineCache(), 1, &pipelineInfo, &VulkanRenderer::ALLOCATION_CALLBACKS, &pipeline);
 		if(result != VK_SUCCESS)
 			throw std::runtime_error((std::string)"Failed to create Vulkan skybox graphics pipeline! Error code: " + string_VkResult(result));
 	}

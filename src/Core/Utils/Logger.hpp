@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Types/Defines.hpp"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -57,7 +58,7 @@ namespace wfe {
 		/// @param filePath The math of the file the logger should output to.
 		/// @param messageLevels A bitmask containing the message severity levels the logger shouldn't ignore. Defaulted to include all levels.
 		/// @param logConsole True if the logger should output to the console, otherwise false. True by default.
-		Logger(const char* filePath, MessageLevelMask messageLevels = MESSAGE_LEVEL_ALL, bool logConsole = true) : messageLevels(messageLevels), logConsole(logConsole) {
+		Logger(const std::filesystem::path& filePath, MessageLevelMask messageLevels = MESSAGE_LEVEL_ALL, bool logConsole = true) : messageLevels(messageLevels), logConsole(logConsole) {
 			// Open the output file stream
 			outStream.open(filePath);
 		}

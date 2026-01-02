@@ -6,6 +6,7 @@
 #include "Instance/VulkanCommandPool.hpp"
 #include "Instance/VulkanDevice.hpp"
 #include "Instance/VulkanInstance.hpp"
+#include "Instance/VulkanPipelineCache.hpp"
 #include "Instance/VulkanSurface.hpp"
 #include "Instance/VulkanSwapChain.hpp"
 #include "Loader/VulkanLoader.hpp"
@@ -62,6 +63,11 @@ namespace wfe {
 		VulkanSwapChain* GetSwapChain() const {
 			return swapChain;
 		}
+		/// @brief Gets the Vulkan pipeline cache of the renderer.
+		/// @return The Vulkan pipeline cache of the renderer.
+		VulkanPipelineCache* GetPipelineCache() const {
+			return pipelineCache;
+		}
 
 		/// @brief Destroys the Vulkan renderer.
 		~VulkanRenderer();
@@ -73,5 +79,6 @@ namespace wfe {
 		VulkanSurface* surface;
 		VulkanDevice* device;
 		VulkanSwapChain* swapChain;
+		VulkanPipelineCache* pipelineCache;
 	};
 }

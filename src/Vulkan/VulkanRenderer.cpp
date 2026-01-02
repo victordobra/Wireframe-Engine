@@ -55,6 +55,9 @@ namespace wfe {
 		// Create the swap chain
 		swapChain = new VulkanSwapChain(device, surface, program->GetProgramSettings().enableVsync);
 
+		// Create the pipeline cache
+		pipelineCache = new VulkanPipelineCache(device, program->GetProgramSettings().pipeCachePath);
+
 		// Log all component infos
 		instance->LogInfo(program->GetLogger());
 		device->LogInfo(program->GetLogger());
@@ -63,6 +66,7 @@ namespace wfe {
 
 	VulkanRenderer::~VulkanRenderer() {
 		// Destroy all renderer components
+		delete pipelineCache;
 		delete swapChain;
 		delete device;
 		delete surface;

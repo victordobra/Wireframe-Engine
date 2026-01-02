@@ -93,6 +93,7 @@ int main(int argc, char** args) {
 		.enableDebug = true,
 		.enableConsoleLog = true,
 		.logFilePath = "log.txt",
+		.pipeCachePath = "pipecache.bin",
 		.logMessageLevels = wfe::Logger::MESSAGE_LEVEL_ALL,
 		.enableVsync = true,
 		.startMaximized = true,

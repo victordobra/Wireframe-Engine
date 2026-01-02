@@ -10,6 +10,7 @@
 #include "Platform/Window.hpp"
 #include "Vulkan/VulkanRenderer.hpp"
 #include <chrono>
+#include <filesystem>
 
 namespace wfe {
 	/// @brief A class containing an abstraction for the program and its components.
@@ -33,7 +34,9 @@ namespace wfe {
 			/// @brief True if the program should log to the console, otherwise false.
 			bool enableConsoleLog = true;
 			/// @brief The path to the log file to be used by the program.
-			const char* logFilePath = "log.txt";
+			std::filesystem::path logFilePath = "log.txt";
+			/// @brief The path to the pipeline cache file used by the program.
+			std::filesystem::path pipeCachePath = "pipecache.bin";
 			/// @brief A bitmask containing the message levels that should be logged by the program's logger.
 			Logger::MessageLevelMask logMessageLevels = Logger::MESSAGE_LEVEL_ALL;
 
