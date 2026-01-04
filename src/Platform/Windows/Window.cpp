@@ -102,50 +102,50 @@ namespace wfe {
 			// Call the input manager's internal key down function
 			inputManager->InternalKeyDown((uint64_t)wParam);
 
-			return 0;
+			break;
 		}
 		case WM_KEYUP: 
 		case WM_SYSKEYUP: {
 			// Call the input manager's internal key up function
 			inputManager->InternalKeyUp((uint64_t)wParam);
 
-			return 0;
+			break;
 		}
 		case WM_LBUTTONDOWN: {
 			// Call the input manager's internal key down function
 			inputManager->InternalKeyDown((uint64_t)VK_LBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_LBUTTONUP: {
 			// Call the input manager's internal key up function
 			inputManager->InternalKeyUp((uint64_t)VK_LBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_RBUTTONDOWN: {
 			// Call the input manager's internal key down function
 			inputManager->InternalKeyDown((uint64_t)VK_RBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_RBUTTONUP: {
 			// Call the input manager's internal key up function
 			inputManager->InternalKeyUp((uint64_t)VK_RBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_MBUTTONDOWN: {
 			// Call the input manager's internal key down function
 			inputManager->InternalKeyDown((uint64_t)VK_MBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_MBUTTONUP: {
 			// Call the input manager's internal key up function
 			inputManager->InternalKeyUp((uint64_t)VK_MBUTTON);
 
-			return 0;
+			break;
 		}
 		case WM_XBUTTONDOWN: {
 			// Call the input manager's internal key down function for the current X button
@@ -155,7 +155,7 @@ namespace wfe {
 				inputManager->InternalKeyDown((uint64_t)VK_XBUTTON2);
 			}
 
-			return TRUE;
+			break;
 		}
 		case WM_XBUTTONUP: {
 			// Call the input manager's internal key up function for the current X button
@@ -165,7 +165,7 @@ namespace wfe {
 				inputManager->InternalKeyUp((uint64_t)VK_XBUTTON2);
 			}
 
-			return TRUE;
+			break;
 		}
 		case WM_MOUSEMOVE: {
 			// Set the mouse movement of the current event
@@ -178,7 +178,7 @@ namespace wfe {
 			// Call the input manager's internal mouse move function
 			inputManager->InternalMouseMove(mouseMovement);
 
-			return 0;
+			break;
 		}
 		case WM_MOUSEWHEEL: {
 			// Set the mouse movement of the current event
@@ -191,7 +191,7 @@ namespace wfe {
 			// Call the input manager's internal mouse move function
 			inputManager->InternalMouseMove(mouseMovement);
 
-			return 0;
+			break;
 		}
 		case WM_CLOSE:
 			// Trigger the close event
@@ -251,33 +251,32 @@ namespace wfe {
 		platformData.winClassID = winClassID;
 
 		// Set the window's style based on the fullscreen flag
-		DWORD style;
+		DWORD style, exStyle;
 		if(fullscreen) {
 			// Unmaximize the window
 			maximized = false;
 			style = WS_POPUP;
+			exStyle = 0;
 		} else {
 			style = WS_OVERLAPPEDWINDOW;
+			exStyle = WS_EX_OVERLAPPEDWINDOW;
 		}
 
 		// Override the window's position and size if the window is fullscreen
 		if(fullscreen) {
 			// Get the screen's size
-			RECT screenRect;
-			if(!SystemParametersInfoA(SPI_GETWORKAREA, 0, &screenRect, 0)) {
-				// Throw an error
-				ThrowError("Failed to get Win32 screen size!");
-			}
+			uint32_t screenWidth = (uint32_t)GetSystemMetrics(SM_CXSCREEN);
+			uint32_t screenHeight = (uint32_t)GetSystemMetrics(SM_CYSCREEN);
 
-			// Set the window's position and size to the screen's size
-			x = screenRect.left;
-			y = screenRect.top;
-			width = screenRect.right - screenRect.left;
-			height = screenRect.bottom - screenRect.top;
+			// Set the window's position and size
+			x = 0;
+			y = 0;
+			width = screenWidth;
+			height = screenHeight;
 		}
 
 		// Create the window
-		platformData.hWnd = CreateWindowExA(WS_EX_APPWINDOW, (LPCSTR)(size_t)winClassID, title.c_str(), style, x, y, width, height, nullptr, nullptr, hInstance, this);
+		platformData.hWnd = CreateWindowExA(exStyle, (LPCSTR)(size_t)winClassID, title.c_str(), style, x, y, width, height, nullptr, nullptr, hInstance, this);
 		if(!platformData.hWnd)
 			ThrowError("Failed to create Win32 window!");
 
