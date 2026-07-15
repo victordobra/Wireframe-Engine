@@ -1,5 +1,5 @@
 # CMake info
-set(CMAKE_MIN_VERSION 3.5.0)
+set(CMAKE_MIN_VERSION 3.10.0)
 
 # Engine info
 set(ENGINE_NAME Wireframe-Engine)
