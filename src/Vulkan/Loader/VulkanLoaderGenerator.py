@@ -4,10 +4,10 @@ import xml.etree.ElementTree as ET
 
 VK_XML_PATH = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/main/xml/vk.xml"
 
-class Param:
-	def __init__(self, name, type, fullName):
-		self.name = name
+class Parameter:
+	def __init__(self, type, name, fullName):
 		self.type = type
+		self.name = name
 		self.fullName = fullName
 
 class Command:
@@ -16,198 +16,216 @@ class Command:
 		self.returnType = returnType
 		self.params = params
 		self.requirements = ""
-		self.coreCommand = False
 		self.deviceCommand = False
+	def GetDeclarationText(self, namePref):
+		# Write the command's return type and name
+		declaration = "VKAPI_ATTR {0} VKAPI_CALL {1}{2}(".format(self.returnType, namePref, self.name)
 
-class Type:
-	def __init__(self, name, parents):
-		self.name = name
-		self.parents = parents
+		# Write the command's parameters
+		for param in self.params:
+			declaration += param.fullName + ", "
+		declaration = declaration[:-2] + ")"
 
-commands = {}
-types = {}
-tags = []
+		return declaration
+	def GetCallText(self, namePref):
+		# Write the command's name and a return statement, if required
+		call = ("return " if self.returnType != "void" else "") + namePref + self.name + "("
 
-def FormatCommandRequirements(require):
-	return re.sub(r"[a-zA-Z0-9_]+", lambda req: "defined({0})".format(req.group(0)), require).replace(",", " || ").replace("+", " && ")
+		# Write the command's paramaters
+		for param in self.params:
+			call += param.name + ", "
+		call = call[:-2] + ");"
 
-def IsTypeDescendant(name, base):
-	# Check if the base was already reached
-	if name == base:
-		return True
-	
-	# Check if the current type does not exist
-	if not types.get(name):
-		return False
+		return call
 
-	# Check if the current types does not have a parent
-	if not types[name].parents:
-		return False
-	
-	# Loop through the type's parents and check if one of them is the descendant
-	for parent in types[name].parents.split(","):
-		if IsTypeDescendant(parent, base):
+def CheckAPIExclusive(api):
+	# Check is the command/type/tag is part of the core API and not extensions like vulkansc
+	return api is None or api == "vulkan" or api == "vulkan,vulkanbase"
+def CheckAPIInclusive(api):
+	return "vulkan" in api.split(",")
+def NameReplaceTag(name, oldTag, newTag):
+	return name[:len(name) - len(oldTag)] + newTag
+
+def FormatRequirements(require):
+	if require is not None:
+		return re.sub(r"[a-zA-Z0-9_]+", lambda req: "defined({0})".format(req.group(0)), require).replace(",", " || ").replace("+", " && ")
+	else:
+		return ""
+def MergeRequirements(require1, require2, operator):
+	if require2 != "":
+		return "({0}) {1} ({2})".format(require1, operator, require2)
+	else:
+		return require1
+
+def WriteRequirementIfs(file, prevCommand, command):
+	if prevCommand is None:
+		# Write the first command's requirements
+		file.write("#if {0}\n".format(command.requirements))
+	elif prevCommand.requirements != command.requirements:
+		# Write the current command's requirements
+		file.write("#endif\n#if {0}\n".format(command.requirements))
+
+class CommandSet:
+	def __init__(self):
+		self.commands = {}
+		self.typeParents = {}
+		self.tags = []
+
+	def GetNameTag(self, name):
+		# Loop through all tags and check if they are a prefix
+		for tag in self.tags:
+			if name.endswith(tag):
+				return tag
+			
+		# No tag is present; return an empty string
+		return ""
+	def CommandReplaceTag(self, command, newName, oldTag, newTag):
+		newCommand = Command(newName, command.returnType, command.params.copy())
+
+		if oldTag == newTag:
+			return newCommand
+
+		# Replace the tag in the command return type
+		if newCommand.returnType.endswith(oldTag):
+			newType = NameReplaceTag(newCommand.returnType, oldTag, newTag)
+			newCommand.returnType = newType if newType in self.typeParents else newCommand.returnType
+		
+		# Replace the tag in all parameter types
+		for param in newCommand.params:
+			if not param.type.endswith(oldTag):
+				continue
+
+			newType = NameReplaceTag(param.type, oldTag, newTag)
+			if newType in self.typeParents:
+				param.fullName = param.fullName.replace(param.type, newType, 1)
+				param.type = newType
+
+		return newCommand
+	def IsTypeDescendant(self, type, root):
+		if type == root:
 			return True
-	return False
 
+		for parent in self.typeParents[type]:
+			if self.IsTypeDescendant(parent, root):
+				return True
+		return False
+	
+	def ParseTypes(self, root):
+		# Loop through all types
+		for type in root.findall("types/type"):
+			# Skip the type if it is invalid
+			if not CheckAPIExclusive(type.get("api")) or (type.get("name") is None and type.find("name") is None):
+				continue
+
+			# Get the type's name and parents
+			name = type.get("name") if type.get("name") is not None else type.find("name").text
+			parents = type.get("parents").split(",") if type.get("parents") is not None else []
+
+			# Add the type to the dictionary
+			self.typeParents[name] = parents
+	def ParseTags(self, root):
+		# Add all tags to the array
+		for tag in root.findall("tags/tag"):
+			self.tags.append(tag.get("name"))
+	def ParseCommands(self, root):
+		# Loop through all commands
+		for command in root.findall("commands/command"):
+			if not CheckAPIExclusive(command.get("api")):
+				continue
+
+			# Check if the current command is an alias
+			if command.get("alias") is not None:
+				# Get the command's name and its alias
+				commandName = command.get("name")
+				commandAlias = command.get("alias")
+
+				# Get the current and alias tags
+				nameTag = self.GetNameTag(commandName)
+				aliasTag = self.GetNameTag(commandAlias)
+
+				# Get the original command object and replace all tags
+				oldCommand = self.commands[commandAlias]
+				self.commands[commandName] = self.CommandReplaceTag(oldCommand, commandName, aliasTag, nameTag)
+			else:
+				# Get the command's name and return type
+				commandName = command.find("proto").find("name").text
+				commandReturnType = command.find("proto").find("type").text
+
+				# Get the current command's parameters
+				commandParams = []
+				for commandParam in command.findall("param"):
+					# Skip the parameter if it has an invalid structure or API
+					if commandParam.find("type") is None or commandParam.find("name") is None or not CheckAPIExclusive(commandParam.get("api")):
+						continue
+
+					# Get the parameter's data
+					paramType = commandParam.find("type").text
+					paramName = commandParam.find("name").text
+
+					# Format the parameter's full name
+					paramFullName = ET.tostring(commandParam, encoding="unicode", method="text")
+					paramFullName = re.sub(r"\s+", " ", paramFullName)
+					paramFullName = paramFullName[:paramFullName.find("\n")]
+
+					# Add the parameter to the array
+					commandParams.append(Parameter(paramType, paramName, paramFullName))
+
+				# Add the command to the dictionary
+				self.commands[commandName] = Command(commandName, commandReturnType, commandParams)
+	def ParseFeatures(self, root):
+		# Loop through all feature roots
+		for featureRoot in root.findall("feature"):
+			# Get the feature name
+			featureName = featureRoot.get("name")
+			featureName = re.sub(r"VK_(BASE|COMPUTE|GRAPHICS)_VERSION_", "VK_VERSION_", featureName)
+
+			if CheckAPIInclusive(featureRoot.get("api")):
+				# Set all commands to require the feature
+				for command in featureRoot.findall("require/command"):
+					commandName = command.get("name")
+					self.commands[commandName].requirements = "defined({0})".format(featureName)
+			else:
+				# Remove all associated commands
+				for command in featureRoot.findall("require/command"):
+					self.commands.pop(command.get("name"))
+	def ParseExtensions(self, root):
+		# Loop through all Vulkan extensions
+		for extension in root.findall("extensions/extension"):
+			# Get the extension's dependencies
+			extDependencies = MergeRequirements("defined({0})".format(extension.get("name")), FormatRequirements(extension.get("depends")), "&&")
+
+			# Loop through the extension's different requirements
+			for requirements in extension.findall("require"):
+				# Get the current requirement's dependencies
+				dependencies = MergeRequirements(extDependencies, FormatRequirements(requirements.get("depends")), "&&")
+
+				# Set the new dependencies for every command
+				for command in requirements.findall("command"):
+					commandName = command.get("name")
+					self.commands[commandName].requirements = MergeRequirements(dependencies, self.commands[commandName].requirements, "||")
+	def IdentifyDeviceCommands(self):
+		for command in self.commands.values():
+			command.deviceCommand = self.IsTypeDescendant(command.params[0].type, "VkDevice")
 
 def ParseXML():
+	# Create an empty command set
+	commandSet = CommandSet()
+
 	# Open the XML tree
 	tree = ET.parse(urllib.request.urlopen(VK_XML_PATH))
 	root = tree.getroot()
 
-	# Loop through all Vulkan types
-	for type in root.findall("types/type"):
-		if type.get("api") is None or type.get("api") == "vulkan":
-			if type.get("name") is not None:
-				types[type.get("name")] = Type(type.get("name"), type.get("parents"))
-			elif type.find("name") is not None:
-				types[type.find("name").text] = Type(type.find("name").text, type.get("parents"))
-	
-	# Add all Vulkan tags to an array
-	for tag in root.findall("tags/tag"):
-		tags.append(tag.get("name"))
-	
-	# Loop through all commands
-	for command in root.findall("commands/command"):
-		# Skip the current command variant if it is not from the Vulkan API
-		if command.get("api") is not None and command.get("api") != "vulkan":
-			continue
+	# Parse the XML file
+	commandSet.ParseTypes(root)
+	commandSet.ParseTags(root)
+	commandSet.ParseCommands(root)
+	commandSet.ParseFeatures(root)
+	commandSet.ParseExtensions(root)
+	commandSet.IdentifyDeviceCommands()
 
-		# Check if the current command is an alias
-		if command.get("alias") is not None:
-			# Get the command's name and its alias' name
-			commandName = command.get("name")
-			commandAlias = command.get("alias")
+	return commandSet
 
-			# Get the original command
-			originalCommand = commands[commandAlias]
-
-			# Get the original command's tag
-			originalTag = ""
-			for tag in tags:
-				if commandAlias.endswith(tag):
-					originalTag = tag
-					break
-			
-			# Get the current command's tag
-			commandTag = ""
-			for tag in tags:
-				if commandName.endswith(tag):
-					commandTag = tag
-					break
-			
-			if originalTag == "" and commandTag != "":
-				# Set the current command's parameters as default
-				command = Command(commandName, originalCommand.returnType, originalCommand.params.copy())
-
-				# Try to add the tag to the command's return type
-				if types.get(command.returnType + commandTag) is not None:
-					command.returnType += commandTag
-				
-				# Try to add the tag to every parameter of the command
-				for i in range(0, len(command.params)):
-					if types.get(command.params[i].type + commandTag) is not None:
-						# Add the tag to the type and the full name
-						newType = command.params[i].type + commandTag
-						command.params[i].fullName = command.params[i].fullName.replace(command.params[i].type, newType, 1)
-						command.params[i].type = newType
-
-				# Add the command to the dictionary
-				commands[commandName] = command
-			elif commandTag != originalTag:
-				# Set the current command's parameters as default
-				command = Command(commandName, originalCommand.returnType, originalCommand.params.copy())
-
-				# Replace the tag in the command's return type
-				command.returnType = command.returnType.replace(originalTag, commandTag, 1)
-
-				# Replace the tag in every parameter of the command
-				for i in range(0, len(command.params)):
-					command.params[i].type = command.params[i].type.replace(originalTag, commandTag, 1)
-					command.params[i].fullName = command.params[i].fullName.replace(originalTag, commandTag, 1)
-
-				# Add the command to the dictionary
-				commands[commandName] = command
-			else:
-				# Save the current command with its parameters
-				commands[commandName] = Command(commandName, originalCommand.returnType, originalCommand.params.copy())
-
-			continue
-
-		# Get the command's name and return value
-		commandName = command.find("proto").find("name").text
-		commandReturnType = command.find("proto").find("type").text
-
-		# Get the current command's parameters
-		commandParams = []
-		for commandParam in command.findall("param"):
-			# Skip the param if it has to valid structure or if it is not from the Vulkan API
-			if commandParam.find("type") is None or commandParam.find("name") is None or (commandParam.get("api") is not None and commandParam.get("api") != "vulkan"):
-				continue
-
-			# Add the current parameter to the array
-			paramName = commandParam.find("name").text
-			paramType = commandParam.find("type").text
-
-			paramFullName = ET.tostring(commandParam, encoding = "unicode", method = "text")
-			paramFullName = re.sub(r"\s+", " ", paramFullName)
-			paramFullName = paramFullName[:paramFullName.find("\n")]
-
-			commandParams.append(Param(paramName, paramType, paramFullName))
-		
-		# Add the current command to the dictionary
-		commands[commandName] = Command(commandName, commandReturnType, commandParams)
-	
-	# Loop through all Vulkan feature roots
-	for featureRoot in root.findall("feature"):
-		# Remove all commands if the current feature is from the Vulkan API
-		api = featureRoot.get("api")
-		if "vulkan" not in api.split(","):
-			for command in featureRoot.findall("require/command"):
-				# Erase the current command from the array
-				commands.pop(command.get("name"))
-			continue
-		
-		# Set the version requirements for every command
-		for command in featureRoot.findall("require/command"):
-			# Format the requirement as a C++ defined macro
-			commands[command.get("name")].requirements = "defined({0})".format(featureRoot.get("name"))
-	
-	# Loop through all Vulkan extensions
-	for extension in root.findall("extensions/extension"):
-		# Get the current extension's dependencies
-		extDependencies = extension.get("depends")
-		if extDependencies is not None:
-			extDependencies = "defined({0}) && ({1})".format(extension.get("name"), FormatCommandRequirements(extDependencies))
-		else:
-			extDependencies = "defined({0})".format(extension.get("name"))
-		
-		# Loop through the extension's different requirements
-		for requirements in extension.findall("require"):
-			# Get the current requirement's dependencies
-			dependencies = requirements.get("depends")
-			if dependencies is not None:
-				dependencies = "({0}) && ({1})".format(extDependencies, FormatCommandRequirements(dependencies))
-			else:
-				dependencies = extDependencies
-			
-			# Set the new dependencies for every command
-			for command in requirements.findall("command"):
-				# Get the current command's name
-				commandName = command.get("name")
-
-				if commands[commandName].requirements != "":
-					commands[commandName].requirements = "({0}) || ({1})".format(commands[commandName].requirements, dependencies)
-				else:
-					commands[commandName].requirements = dependencies
-	
-	# Categorize all device, instance and core commands
-	for commandName in commands:
-		commands[commandName].coreCommand = commands[commandName].requirements == "defined(VK_VERSION_1_0)"
-		commands[commandName].deviceCommand = IsTypeDescendant(commands[commandName].params[0].type, "VkDevice")
-
-def GenerateHeader():
+def GenerateHeader(commandSet):
 	# Open the header file
 	headerFile = open("VulkanLoader.hpp", "w")
 
@@ -255,45 +273,23 @@ namespace wfe {
 
 	# Write all command function declarations
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			headerFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			headerFile.write("#endif\n#if {0}\n".format(command.requirements))
-		
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(headerFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's declaration
-		headerFile.write("\t\tVKAPI_ATTR {0} VKAPI_CALL {1}(".format(command.returnType, command.name))
-
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			headerFile.write(command.params[i].fullName)
-			if i != len(command.params) - 1:
-				headerFile.write(", ")
-
-		# End the function declaration
-		headerFile.write(") const;\n")
+		headerFile.write("\t\t" + command.GetDeclarationText("") + " const;\n")
 	headerFile.write("#endif\n")
-	
+
 	# Write the variable declaration start
 	headerFile.write("\tprivate:\n\t\t// Vulkan function pointers\n")
 
 	# Write all command function pointer variables
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			headerFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			headerFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(headerFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's variable
@@ -306,7 +302,7 @@ namespace wfe {
 	# Close the header file
 	headerFile.close()
 
-def GenerateSource():
+def GenerateSource(commandSet):
 	# Open the source file
 	sourceFile = open("VulkanLoader.cpp", "w")
 
@@ -353,15 +349,9 @@ namespace wfe {
 
 	# Write the static function pointers
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(sourceFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's variable
@@ -379,15 +369,9 @@ namespace wfe {
 """)
 
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(sourceFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's load
@@ -406,15 +390,9 @@ namespace wfe {
 """)
 
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(sourceFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's load
@@ -426,23 +404,15 @@ namespace wfe {
 """)
 
 	prevCommand = None
-	for command in commands.values():
+	for command in commandSet.commands.values():
 		# Skip the current command if it is a device command
-		if command.deviceCommand:
-			continue
+		if not command.deviceCommand:
+			# Write the requirement ifs
+			WriteRequirementIfs(sourceFile, prevCommand, command)
+			prevCommand = command
 
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
-		prevCommand = command
-
-		# Write the current command's load
-		sourceFile.write("\t\tpfn_{0} = (PFN_{0})vkGetInstanceProcAddr(instance, \"{0}\");\n".format(command.name))
+			# Write the current command's load
+			sourceFile.write("\t\tpfn_{0} = (PFN_{0})vkGetInstanceProcAddr(instance, \"{0}\");\n".format(command.name))
 	sourceFile.write("#endif\n\t}")
 
 	sourceFile.write("""
@@ -450,23 +420,15 @@ namespace wfe {
 """)
 
 	prevCommand = None
-	for command in commands.values():
+	for command in commandSet.commands.values():
 		# Skip the current command if it is not a device command
-		if not command.deviceCommand:
-			continue
+		if command.deviceCommand:
+			# Write the requirement ifs
+			WriteRequirementIfs(sourceFile, prevCommand, command)
+			prevCommand = command
 
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-
-		# Set the new previous command
-		prevCommand = command
-
-		# Write the current command's load
-		sourceFile.write("\t\tpfn_{0} = (PFN_{0})vkGetDeviceProcAddr(device, \"{0}\");\n".format(command.name))
+			# Write the current command's load
+			sourceFile.write("\t\tpfn_{0} = (PFN_{0})vkGetDeviceProcAddr(device, \"{0}\");\n".format(command.name))
 	sourceFile.write("#endif\n\t}\n")
 
 	# Write the loader's destructor
@@ -481,61 +443,20 @@ namespace wfe {
 
 	# Write all loader command definitions
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-		
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(sourceFile, prevCommand, command)
 		prevCommand = command
 
 		# Write the current command's declaration
-		sourceFile.write("\tVKAPI_ATTR {0} VKAPI_CALL VulkanLoader::{1}(".format(command.returnType, command.name))
+		sourceFile.write("\t" + command.GetDeclarationText("VulkanLoader::") + " const {\n")
 
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			sourceFile.write(command.params[i].fullName)
-			if i != len(command.params) - 1:
-				sourceFile.write(", ")
-
-		# End the function declaration
-		sourceFile.write(") const {\n\t\t")
-
-		# Write the static function pointer call
-		sourceFile.write("if(!pfn_{0})".format(command.name) + " {\n\t\t\t")
-		if command.returnType != "void":
-			sourceFile.write("return ")
-		sourceFile.write("staticPfn_{0}(".format(command.name))
-
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			sourceFile.write(command.params[i].name)
-			if i != len(command.params) - 1:
-				sourceFile.write(", ")
-		sourceFile.write(");\n\t\t")
-
-		# End the static function pointer call if
-		if command.returnType == "void":
-			sourceFile.write("\treturn;\n\t\t")
-		sourceFile.write("}\n\t\t")
-
-		# Write the function pointer call
-		if command.returnType != "void":
-			sourceFile.write("return ")
-		sourceFile.write("pfn_{0}(".format(command.name))
-
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			sourceFile.write(command.params[i].name)
-			if i != len(command.params) - 1:
-				sourceFile.write(", ")
-		sourceFile.write(");\n\t}\n")
+		# Write the function pointer calls
+		sourceFile.write("\t\tif(pfn_{0})".format(command.name) + " {\n")
+		sourceFile.write("\t\t\t" + command.GetCallText("pfn_") + "\n")
+		sourceFile.write("\t\t} else {\n")
+		sourceFile.write("\t\t\t" + command.GetCallText("staticPfn_") + "\n")
+		sourceFile.write("\t\t}\n\t}\n")
 	sourceFile.write("#endif\n")
 
 	# End the source file's namespace
@@ -543,48 +464,21 @@ namespace wfe {
 
 	# Write the static function definitions
 	prevCommand = None
-	for command in commands.values():
-		if prevCommand is None:
-			# Write the first command's requirements
-			sourceFile.write("#if {0}\n".format(command.requirements))
-		elif command.requirements != prevCommand.requirements:
-			# Write the current command's requirements
-			sourceFile.write("#endif\n#if {0}\n".format(command.requirements))
-		
-		# Set the new previous command
+	for command in commandSet.commands.values():
+		# Write the requirement ifs
+		WriteRequirementIfs(sourceFile, prevCommand, command)
 		prevCommand = command
 
-		# Write the current command's declaration
-		sourceFile.write("VKAPI_ATTR {0} VKAPI_CALL {1}(".format(command.returnType, command.name))
-
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			sourceFile.write(command.params[i].fullName)
-			if i != len(command.params) - 1:
-				sourceFile.write(", ")
-
-		# End the function declaration
-		sourceFile.write(") {\n\t")
-
-		# Write the function pointer call
-		if command.returnType != "void":
-			sourceFile.write("return ")
-		sourceFile.write("wfe::staticPfn_{0}(".format(command.name))
-
-		# Write every parameter
-		for i in range(0, len(command.params)):
-			# Write the parameter
-			sourceFile.write(command.params[i].name)
-			if i != len(command.params) - 1:
-				sourceFile.write(", ")
-		sourceFile.write(");\n}\n")
+		# Write the static function's definition
+		sourceFile.write(command.GetDeclarationText("") + " {\n")
+		sourceFile.write("\t" + command.GetCallText("wfe::staticPfn_") + "\n")
+		sourceFile.write("}\n")
 	sourceFile.write("#endif\n")
 
 	# Close the source file
 	sourceFile.close()
 
 if __name__ == "__main__":
-	ParseXML()
-	GenerateHeader()
-	GenerateSource()
+	commandSet = ParseXML()
+	GenerateHeader(commandSet)
+	GenerateSource(commandSet)

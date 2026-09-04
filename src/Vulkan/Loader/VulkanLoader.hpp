@@ -97,7 +97,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR void VKAPI_CALL vkResetQueryPool(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const;
 #endif
-#if defined(VK_EXT_host_query_reset) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_host_query_reset)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkResetQueryPoolEXT(VkDevice device, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -117,7 +117,7 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelineCacheData(VkDevice device, VkPipelineCache pipelineCache, size_t* pDataSize, void* pData) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkMergePipelineCaches(VkDevice device, VkPipelineCache dstCache, uint32_t srcCacheCount, const VkPipelineCache* pSrcCaches) const;
 #endif
-#if defined(VK_KHR_pipeline_binary) && (defined(VK_KHR_maintenance5) || defined(VK_VERSION_1_4))
+#if (defined(VK_KHR_pipeline_binary)) && (defined(VK_VERSION_1_4) || defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineBinariesKHR(VkDevice device, const VkPipelineBinaryCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineBinaryHandlesInfoKHR* pBinaries) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineBinaryKHR(VkDevice device, VkPipelineBinaryKHR pipelineBinary, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelineKeyKHR(VkDevice device, const VkPipelineCreateInfoKHR* pPipelineCreateInfo, VkPipelineBinaryKeyKHR* pPipelineKey) const;
@@ -128,7 +128,7 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkGraphicsPipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
 #endif
-#if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_HUAWEI_subpass_shading)) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(VkDevice device, VkRenderPass renderpass, VkExtent2D* pMaxWorkgroupSize) const;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -154,7 +154,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkGetRenderingAreaGranularity(VkDevice device, const VkRenderingAreaInfoKHR* pRenderingAreaInfo, VkExtent2D* pGranularity) const;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkGetRenderingAreaGranularityKHR(VkDevice device, const VkRenderingAreaInfoKHR* pRenderingAreaInfo, VkExtent2D* pGranularity) const;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -168,7 +168,10 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkResetCommandBuffer(VkCommandBuffer commandBuffer, VkCommandBufferResetFlags flags) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindPipeline(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const;
 #endif
-#if defined(VK_EXT_attachment_feedback_loop_dynamic_state) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_attachment_feedback_loop_layout))
+#if (defined(VK_EXT_primitive_restart_index)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR void VKAPI_CALL vkCmdSetPrimitiveRestartIndexEXT(VkCommandBuffer commandBuffer, uint32_t primitiveRestartIndex) const;
+#endif
+#if (defined(VK_EXT_attachment_feedback_loop_dynamic_state)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_attachment_feedback_loop_layout))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetAttachmentFeedbackLoopEnableEXT(VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask) const;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -187,7 +190,7 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdDraw(VkCommandBuffer commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndexed(VkCommandBuffer commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance) const;
 #endif
-#if defined(VK_EXT_multi_draw) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_multi_draw)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMultiEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawInfoEXT* pVertexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMultiIndexedEXT(VkCommandBuffer commandBuffer, uint32_t drawCount, const VkMultiDrawIndexedInfoEXT* pIndexInfo, uint32_t instanceCount, uint32_t firstInstance, uint32_t stride, const int32_t* pVertexOffset) const;
 #endif
@@ -197,14 +200,14 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatch(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchIndirect(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) const;
 #endif
-#if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_HUAWEI_subpass_shading)) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSubpassShadingHUAWEI(VkCommandBuffer commandBuffer) const;
 #endif
-#if defined(VK_HUAWEI_cluster_culling_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_HUAWEI_cluster_culling_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawClusterHUAWEI(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawClusterIndirectHUAWEI(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset) const;
 #endif
-#if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
+#if (defined(VK_NV_device_generated_commands_compute)) && (defined(VK_NV_device_generated_commands))
 		VKAPI_ATTR void VKAPI_CALL vkCmdUpdatePipelineIndirectBufferNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline) const;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -214,9 +217,17 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage(VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, uint32_t regionCount, const VkBufferImageCopy* pRegions) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToBuffer(VkCommandBuffer commandBuffer, VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferImageCopy* pRegions) const;
 #endif
-#if defined(VK_NV_copy_memory_indirect) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_copy_memory_indirect)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride) const;
+#endif
+#if (defined(VK_KHR_copy_memory_indirect)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryIndirectInfoKHR* pCopyMemoryIndirectInfo) const;
+#endif
+#if (defined(VK_NV_copy_memory_indirect)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryToImageIndirectNV(VkCommandBuffer commandBuffer, VkDeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride, VkImage dstImage, VkImageLayout dstImageLayout, const VkImageSubresourceLayers* pImageSubresources) const;
+#endif
+#if (defined(VK_KHR_copy_memory_indirect)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryToImageIndirectKHR(VkCommandBuffer commandBuffer, const VkCopyMemoryToImageIndirectInfoKHR* pCopyMemoryToImageIndirectInfo) const;
 #endif
 #if defined(VK_VERSION_1_0)
 		VKAPI_ATTR void VKAPI_CALL vkCmdUpdateBuffer(VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData) const;
@@ -232,9 +243,12 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query) const;
 #endif
-#if defined(VK_EXT_conditional_rendering) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_conditional_rendering)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginConditionalRenderingEXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfoEXT* pConditionalRenderingBegin) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndConditionalRenderingEXT(VkCommandBuffer commandBuffer) const;
+#endif
+#if ((defined(VK_EXT_custom_resolve)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+		VKAPI_ATTR void VKAPI_CALL vkCmdBeginCustomResolveEXT(VkCommandBuffer commandBuffer, const VkBeginCustomResolveInfoEXT* pBeginCustomResolveInfo) const;
 #endif
 #if defined(VK_VERSION_1_0)
 		VKAPI_ATTR void VKAPI_CALL vkCmdResetQueryPool(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount) const;
@@ -246,10 +260,13 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRenderPass(VkCommandBuffer commandBuffer) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdExecuteCommands(VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers) const;
 #endif
-#if defined(VK_KHR_android_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_android_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateAndroidSurfaceKHR(VkInstance instance, const VkAndroidSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_KHR_display) && (defined(VK_KHR_surface))
+#if (defined(VK_OHOS_surface)) && (defined(VK_KHR_surface))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSurfaceOHOS(VkInstance instance, const VkSurfaceCreateInfoOHOS* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
+#endif
+#if (defined(VK_KHR_display)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPropertiesKHR* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayPlanePropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPlanePropertiesKHR* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayPlaneSupportedDisplaysKHR(VkPhysicalDevice physicalDevice, uint32_t planeIndex, uint32_t* pDisplayCount, VkDisplayKHR* pDisplays) const;
@@ -258,7 +275,7 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayPlaneCapabilitiesKHR(VkPhysicalDevice physicalDevice, VkDisplayModeKHR mode, uint32_t planeIndex, VkDisplayPlaneCapabilitiesKHR* pCapabilities) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateDisplayPlaneSurfaceKHR(VkInstance instance, const VkDisplaySurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_KHR_display_swapchain) && (defined(VK_KHR_swapchain) && defined(VK_KHR_display))
+#if (defined(VK_KHR_display_swapchain)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSharedSwapchainsKHR(VkDevice device, uint32_t swapchainCount, const VkSwapchainCreateInfoKHR* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchains) const;
 #endif
 #if defined(VK_KHR_surface)
@@ -268,43 +285,47 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pSurfaceFormatCount, VkSurfaceFormatKHR* pSurfaceFormats) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes) const;
 #endif
-#if defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainImagesKHR(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImageKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t* pImageIndex) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkQueuePresentKHR(VkQueue queue, const VkPresentInfoKHR* pPresentInfo) const;
 #endif
-#if defined(VK_NN_vi_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_NN_vi_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateViSurfaceNN(VkInstance instance, const VkViSurfaceCreateInfoNN* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_KHR_wayland_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_wayland_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateWaylandSurfaceKHR(VkInstance instance, const VkWaylandSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceWaylandPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct wl_display* display) const;
 #endif
-#if defined(VK_KHR_win32_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_SEC_ubm_surface)) && (defined(VK_KHR_surface))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateUbmSurfaceSEC(VkInstance instance, const VkUbmSurfaceCreateInfoSEC* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
+		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceUbmPresentationSupportSEC(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct ubm_device* device) const;
+#endif
+#if (defined(VK_KHR_win32_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateWin32SurfaceKHR(VkInstance instance, const VkWin32SurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceWin32PresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex) const;
 #endif
-#if defined(VK_KHR_xlib_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_xlib_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateXlibSurfaceKHR(VkInstance instance, const VkXlibSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceXlibPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, Display* dpy, VisualID visualID) const;
 #endif
-#if defined(VK_KHR_xcb_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_xcb_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateXcbSurfaceKHR(VkInstance instance, const VkXcbSurfaceCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceXcbPresentationSupportKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id) const;
 #endif
-#if defined(VK_EXT_directfb_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_directfb_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateDirectFBSurfaceEXT(VkInstance instance, const VkDirectFBSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceDirectFBPresentationSupportEXT(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, IDirectFB* dfb) const;
 #endif
-#if defined(VK_FUCHSIA_imagepipe_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_FUCHSIA_imagepipe_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateImagePipeSurfaceFUCHSIA(VkInstance instance, const VkImagePipeSurfaceCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_GGP_stream_descriptor_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_GGP_stream_descriptor_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateStreamDescriptorSurfaceGGP(VkInstance instance, const VkStreamDescriptorSurfaceCreateInfoGGP* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_QNX_screen_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_QNX_screen_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateScreenSurfaceQNX(VkInstance instance, const VkScreenSurfaceCreateInfoQNX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 		VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceScreenPresentationSupportQNX(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, struct _screen_window* window) const;
 #endif
@@ -313,7 +334,7 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR void VKAPI_CALL vkDebugReportMessageEXT(VkInstance instance, VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage) const;
 #endif
-#if defined(VK_EXT_debug_marker) && (defined(VK_EXT_debug_report))
+#if (defined(VK_EXT_debug_marker)) && (defined(VK_EXT_debug_report))
 		VKAPI_ATTR VkResult VKAPI_CALL vkDebugMarkerSetObjectNameEXT(VkDevice device, const VkDebugMarkerObjectNameInfoEXT* pNameInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkDebugMarkerSetObjectTagEXT(VkDevice device, const VkDebugMarkerObjectTagInfoEXT* pTagInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDebugMarkerBeginEXT(VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT* pMarkerInfo) const;
@@ -323,10 +344,10 @@ namespace wfe {
 #if defined(VK_NV_external_memory_capabilities)
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceExternalImageFormatPropertiesNV(VkPhysicalDevice physicalDevice, VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, VkExternalMemoryHandleTypeFlagsNV externalHandleType, VkExternalImageFormatPropertiesNV* pExternalImageFormatProperties) const;
 #endif
-#if defined(VK_NV_external_memory_win32) && (defined(VK_NV_external_memory))
+#if (defined(VK_NV_external_memory_win32)) && (defined(VK_NV_external_memory))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryWin32HandleNV(VkDevice device, VkDeviceMemory memory, VkExternalMemoryHandleTypeFlagsNV handleType, HANDLE* pHandle) const;
 #endif
-#if defined(VK_NV_device_generated_commands) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_device_generated_commands)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdExecuteGeneratedCommandsNV(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoNV* pGeneratedCommandsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdPreprocessGeneratedCommandsNV(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoNV* pGeneratedCommandsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindPipelineShaderGroupNV(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline, uint32_t groupIndex) const;
@@ -334,7 +355,7 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateIndirectCommandsLayoutNV(VkDevice device, const VkIndirectCommandsLayoutCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkIndirectCommandsLayoutNV* pIndirectCommandsLayout) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyIndirectCommandsLayoutNV(VkDevice device, VkIndirectCommandsLayoutNV indirectCommandsLayout, const VkAllocationCallbacks* pAllocator) const;
 #endif
-#if defined(VK_EXT_device_generated_commands) && (((defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) && defined(VK_KHR_maintenance5)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_device_generated_commands)) && (((defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) && (defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5))) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdExecuteGeneratedCommandsEXT(VkCommandBuffer commandBuffer, VkBool32 isPreprocessed, const VkGeneratedCommandsInfoEXT* pGeneratedCommandsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdPreprocessGeneratedCommandsEXT(VkCommandBuffer commandBuffer, const VkGeneratedCommandsInfoEXT* pGeneratedCommandsInfo, VkCommandBuffer stateCommandBuffer) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetGeneratedCommandsMemoryRequirementsEXT(VkDevice device, const VkGeneratedCommandsMemoryRequirementsInfoEXT* pInfo, VkMemoryRequirements2* pMemoryRequirements) const;
@@ -390,7 +411,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites) const;
 #endif
-#if defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_push_descriptor)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer, VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, uint32_t set, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites) const;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -402,25 +423,25 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, VkExternalBufferPropertiesKHR* pExternalBufferProperties) const;
 #endif
-#if defined(VK_KHR_external_memory_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalBufferPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalBufferInfoKHR* pExternalBufferInfo, VkExternalBufferPropertiesKHR* pExternalBufferProperties) const;
 #endif
-#if defined(VK_KHR_external_memory_win32) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_win32)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryWin32HandleKHR(VkDevice device, const VkMemoryGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryWin32HandlePropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, HANDLE handle, VkMemoryWin32HandlePropertiesKHR* pMemoryWin32HandleProperties) const;
 #endif
-#if defined(VK_KHR_external_memory_fd) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_fd)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdKHR(VkDevice device, const VkMemoryGetFdInfoKHR* pGetFdInfo, int* pFd) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryFdPropertiesKHR(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, int fd, VkMemoryFdPropertiesKHR* pMemoryFdProperties) const;
 #endif
-#if defined(VK_FUCHSIA_external_memory) && ((defined(VK_KHR_external_memory_capabilities) && defined(VK_KHR_external_memory)) || defined(VK_VERSION_1_1))
+#if (defined(VK_FUCHSIA_external_memory)) && ((defined(VK_KHR_external_memory_capabilities) && defined(VK_KHR_external_memory)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryZirconHandleFUCHSIA(VkDevice device, const VkMemoryGetZirconHandleInfoFUCHSIA* pGetZirconHandleInfo, zx_handle_t* pZirconHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryZirconHandlePropertiesFUCHSIA(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, zx_handle_t zirconHandle, VkMemoryZirconHandlePropertiesFUCHSIA* pMemoryZirconHandleProperties) const;
 #endif
-#if defined(VK_NV_external_memory_rdma) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_memory_rdma)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryRemoteAddressNV(VkDevice device, const VkMemoryGetRemoteAddressInfoNV* pMemoryGetRemoteAddressInfo, VkRemoteAddressNV* pAddress) const;
 #endif
-#if defined(VK_NV_external_memory_sci_buf) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_memory_sci_buf)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemorySciBufNV(VkDevice device, const VkMemoryGetSciBufInfoNV* pGetSciBufInfo, NvSciBufObj* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV(VkPhysicalDevice physicalDevice, VkExternalMemoryHandleTypeFlagBits handleType, NvSciBufObj handle, VkMemorySciBufPropertiesNV* pMemorySciBufProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSciBufAttributesNV(VkPhysicalDevice physicalDevice, NvSciBufAttrList pAttributes) const;
@@ -428,70 +449,70 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalSemaphoreProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, VkExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties) const;
 #endif
-#if defined(VK_KHR_external_semaphore_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_semaphore_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalSemaphorePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalSemaphoreInfoKHR* pExternalSemaphoreInfo, VkExternalSemaphorePropertiesKHR* pExternalSemaphoreProperties) const;
 #endif
-#if defined(VK_KHR_external_semaphore_win32) && (defined(VK_KHR_external_semaphore))
+#if (defined(VK_KHR_external_semaphore_win32)) && (defined(VK_KHR_external_semaphore))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreWin32HandleKHR(VkDevice device, const VkSemaphoreGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreWin32HandleKHR(VkDevice device, const VkImportSemaphoreWin32HandleInfoKHR* pImportSemaphoreWin32HandleInfo) const;
 #endif
-#if defined(VK_KHR_external_semaphore_fd) && (defined(VK_KHR_external_semaphore) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_semaphore_fd)) && (defined(VK_KHR_external_semaphore) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreFdKHR(VkDevice device, const VkSemaphoreGetFdInfoKHR* pGetFdInfo, int* pFd) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreFdKHR(VkDevice device, const VkImportSemaphoreFdInfoKHR* pImportSemaphoreFdInfo) const;
 #endif
-#if defined(VK_FUCHSIA_external_semaphore) && (defined(VK_KHR_external_semaphore_capabilities) && defined(VK_KHR_external_semaphore))
+#if (defined(VK_FUCHSIA_external_semaphore)) && (defined(VK_KHR_external_semaphore_capabilities) && defined(VK_KHR_external_semaphore))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkSemaphoreGetZirconHandleInfoFUCHSIA* pGetZirconHandleInfo, zx_handle_t* pZirconHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreZirconHandleFUCHSIA(VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA* pImportSemaphoreZirconHandleInfo) const;
 #endif
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalFenceProperties(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, VkExternalFencePropertiesKHR* pExternalFenceProperties) const;
 #endif
-#if defined(VK_KHR_external_fence_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_fence_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalFencePropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalFenceInfoKHR* pExternalFenceInfo, VkExternalFencePropertiesKHR* pExternalFenceProperties) const;
 #endif
-#if defined(VK_KHR_external_fence_win32) && (defined(VK_KHR_external_fence))
+#if (defined(VK_KHR_external_fence_win32)) && (defined(VK_KHR_external_fence))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetFenceWin32HandleKHR(VkDevice device, const VkFenceGetWin32HandleInfoKHR* pGetWin32HandleInfo, HANDLE* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportFenceWin32HandleKHR(VkDevice device, const VkImportFenceWin32HandleInfoKHR* pImportFenceWin32HandleInfo) const;
 #endif
-#if defined(VK_KHR_external_fence_fd) && (defined(VK_KHR_external_fence) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_fence_fd)) && (defined(VK_KHR_external_fence) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetFenceFdKHR(VkDevice device, const VkFenceGetFdInfoKHR* pGetFdInfo, int* pFd) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportFenceFdKHR(VkDevice device, const VkImportFenceFdInfoKHR* pImportFenceFdInfo) const;
 #endif
-#if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
+#if ((defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))) || ((defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetFenceSciSyncFenceNV(VkDevice device, const VkFenceGetSciSyncInfoNV* pGetSciSyncHandleInfo, void* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetFenceSciSyncObjNV(VkDevice device, const VkFenceGetSciSyncInfoNV* pGetSciSyncHandleInfo, void* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportFenceSciSyncFenceNV(VkDevice device, const VkImportFenceSciSyncInfoNV* pImportFenceSciSyncInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportFenceSciSyncObjNV(VkDevice device, const VkImportFenceSciSyncInfoNV* pImportFenceSciSyncInfo) const;
 #endif
-#if defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreSciSyncObjNV(VkDevice device, const VkSemaphoreGetSciSyncInfoNV* pGetSciSyncInfo, void* pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkImportSemaphoreSciSyncObjNV(VkDevice device, const VkImportSemaphoreSciSyncInfoNV* pImportSemaphoreSciSyncInfo) const;
 #endif
-#if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
+#if ((defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))) || ((defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSciSyncAttributesNV(VkPhysicalDevice physicalDevice, const VkSciSyncAttributesInfoNV* pSciSyncAttributesInfo, NvSciSyncAttrList pAttributes) const;
 #endif
-#if defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSemaphoreSciSyncPoolNV(VkDevice device, const VkSemaphoreSciSyncPoolCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSemaphoreSciSyncPoolNV* pSemaphorePool) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroySemaphoreSciSyncPoolNV(VkDevice device, VkSemaphoreSciSyncPoolNV semaphorePool, const VkAllocationCallbacks* pAllocator) const;
 #endif
-#if defined(VK_EXT_direct_mode_display) && (defined(VK_KHR_display))
+#if (defined(VK_EXT_direct_mode_display)) && (defined(VK_KHR_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkReleaseDisplayEXT(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const;
 #endif
-#if defined(VK_EXT_acquire_xlib_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_EXT_acquire_xlib_display)) && (defined(VK_EXT_direct_mode_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireXlibDisplayEXT(VkPhysicalDevice physicalDevice, Display* dpy, VkDisplayKHR display) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetRandROutputDisplayEXT(VkPhysicalDevice physicalDevice, Display* dpy, RROutput rrOutput, VkDisplayKHR* pDisplay) const;
 #endif
-#if defined(VK_NV_acquire_winrt_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_NV_acquire_winrt_display)) && (defined(VK_EXT_direct_mode_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireWinrtDisplayNV(VkPhysicalDevice physicalDevice, VkDisplayKHR display) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetWinrtDisplayNV(VkPhysicalDevice physicalDevice, uint32_t deviceRelativeId, VkDisplayKHR* pDisplay) const;
 #endif
-#if defined(VK_EXT_display_control) && (defined(VK_EXT_display_surface_counter) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_display_control)) && (defined(VK_EXT_display_surface_counter) && defined(VK_KHR_swapchain))
 		VKAPI_ATTR VkResult VKAPI_CALL vkDisplayPowerControlEXT(VkDevice device, VkDisplayKHR display, const VkDisplayPowerInfoEXT* pDisplayPowerInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkRegisterDeviceEventEXT(VkDevice device, const VkDeviceEventInfoEXT* pDeviceEventInfo, const VkAllocationCallbacks* pAllocator, VkFence* pFence) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkRegisterDisplayEventEXT(VkDevice device, VkDisplayKHR display, const VkDisplayEventInfoEXT* pDisplayEventInfo, const VkAllocationCallbacks* pAllocator, VkFence* pFence) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainCounterEXT(VkDevice device, VkSwapchainKHR swapchain, VkSurfaceCounterFlagBitsEXT counter, uint64_t* pCounterValue) const;
 #endif
-#if defined(VK_EXT_display_surface_counter) && (defined(VK_KHR_display))
+#if (defined(VK_EXT_display_surface_counter)) && (defined(VK_KHR_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilities2EXT(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkSurfaceCapabilities2EXT* pSurfaceCapabilities) const;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -503,7 +524,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceGroupPeerMemoryFeatures(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlagsKHR* pPeerMemoryFeatures) const;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceGroupPeerMemoryFeaturesKHR(VkDevice device, uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex, VkPeerMemoryFeatureFlagsKHR* pPeerMemoryFeatures) const;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -521,23 +542,23 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDeviceMask(VkCommandBuffer commandBuffer, uint32_t deviceMask) const;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDeviceMaskKHR(VkCommandBuffer commandBuffer, uint32_t deviceMask) const;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceGroupPresentCapabilitiesKHR(VkDevice device, VkDeviceGroupPresentCapabilitiesKHR* pDeviceGroupPresentCapabilities) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceGroupSurfacePresentModesKHR(VkDevice device, VkSurfaceKHR surface, VkDeviceGroupPresentModeFlagsKHR* pModes) const;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_swapchain)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_swapchain))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireNextImage2KHR(VkDevice device, const VkAcquireNextImageInfoKHR* pAcquireInfo, uint32_t* pImageIndex) const;
 #endif
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchBase(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchBaseKHR(VkCommandBuffer commandBuffer, uint32_t baseGroupX, uint32_t baseGroupY, uint32_t baseGroupZ, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDevicePresentRectanglesKHR(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, uint32_t* pRectCount, VkRect2D* pRects) const;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -561,45 +582,45 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void* pData) const;
 #endif
-#if ((defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_1) || defined(VK_KHR_descriptor_update_template))) || ((defined(VK_KHR_descriptor_update_template)) && (defined(VK_KHR_push_descriptor)))
+#if ((defined(VK_KHR_descriptor_update_template)) && (defined(VK_KHR_push_descriptor))) || (((defined(VK_KHR_push_descriptor)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_1) || defined(VK_KHR_descriptor_update_template)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, VkDescriptorUpdateTemplateKHR descriptorUpdateTemplate, VkPipelineLayout layout, uint32_t set, const void* pData) const;
 #endif
-#if defined(VK_EXT_hdr_metadata) && (defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_hdr_metadata)) && (defined(VK_KHR_swapchain))
 		VKAPI_ATTR void VKAPI_CALL vkSetHdrMetadataEXT(VkDevice device, uint32_t swapchainCount, const VkSwapchainKHR* pSwapchains, const VkHdrMetadataEXT* pMetadata) const;
 #endif
-#if defined(VK_KHR_shared_presentable_image) && (defined(VK_KHR_swapchain) && defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_KHR_shared_presentable_image)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainStatusKHR(VkDevice device, VkSwapchainKHR swapchain) const;
 #endif
-#if defined(VK_GOOGLE_display_timing) && (defined(VK_KHR_swapchain))
+#if (defined(VK_GOOGLE_display_timing)) && (defined(VK_KHR_swapchain))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetRefreshCycleDurationGOOGLE(VkDevice device, VkSwapchainKHR swapchain, VkRefreshCycleDurationGOOGLE* pDisplayTimingProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPastPresentationTimingGOOGLE(VkDevice device, VkSwapchainKHR swapchain, uint32_t* pPresentationTimingCount, VkPastPresentationTimingGOOGLE* pPresentationTimings) const;
 #endif
-#if defined(VK_MVK_ios_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_MVK_ios_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateIOSSurfaceMVK(VkInstance instance, const VkIOSSurfaceCreateInfoMVK* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_MVK_macos_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_MVK_macos_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateMacOSSurfaceMVK(VkInstance instance, const VkMacOSSurfaceCreateInfoMVK* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_EXT_metal_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_metal_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateMetalSurfaceEXT(VkInstance instance, const VkMetalSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
 #if defined(VK_NV_clip_space_w_scaling)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportWScalingNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportWScalingNV* pViewportWScalings) const;
 #endif
-#if defined(VK_EXT_discard_rectangles) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_discard_rectangles)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDiscardRectangleEXT(VkCommandBuffer commandBuffer, uint32_t firstDiscardRectangle, uint32_t discardRectangleCount, const VkRect2D* pDiscardRectangles) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDiscardRectangleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 discardRectangleEnable) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDiscardRectangleModeEXT(VkCommandBuffer commandBuffer, VkDiscardRectangleModeEXT discardRectangleMode) const;
 #endif
-#if defined(VK_EXT_sample_locations) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_sample_locations)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetSampleLocationsEXT(VkCommandBuffer commandBuffer, const VkSampleLocationsInfoEXT* pSampleLocationsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceMultisamplePropertiesEXT(VkPhysicalDevice physicalDevice, VkSampleCountFlagBits samples, VkMultisamplePropertiesEXT* pMultisampleProperties) const;
 #endif
-#if defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_get_surface_capabilities2)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilities2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, VkSurfaceCapabilities2KHR* pSurfaceCapabilities) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormats2KHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pSurfaceFormatCount, VkSurfaceFormat2KHR* pSurfaceFormats) const;
 #endif
-#if defined(VK_KHR_get_display_properties2) && (defined(VK_KHR_display))
+#if (defined(VK_KHR_get_display_properties2)) && (defined(VK_KHR_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayProperties2KHR* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceDisplayPlaneProperties2KHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkDisplayPlaneProperties2KHR* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDisplayModeProperties2KHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t* pPropertyCount, VkDisplayModeProperties2KHR* pProperties) const;
@@ -626,31 +647,31 @@ namespace wfe {
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceBufferMemoryRequirements(VkDevice device, const VkDeviceBufferMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceBufferMemoryRequirementsKHR(VkDevice device, const VkDeviceBufferMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageSparseMemoryRequirements(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageSparseMemoryRequirementsKHR(VkDevice device, const VkDeviceImageMemoryRequirementsKHR* pInfo, uint32_t* pSparseMemoryRequirementCount, VkSparseImageMemoryRequirements2KHR* pSparseMemoryRequirements) const;
 #endif
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversion(VkDevice device, const VkSamplerYcbcrConversionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversionKHR* pYcbcrConversion) const;
 #endif
-#if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_sampler_ycbcr_conversion)) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateSamplerYcbcrConversionKHR(VkDevice device, const VkSamplerYcbcrConversionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSamplerYcbcrConversionKHR* pYcbcrConversion) const;
 #endif
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkDestroySamplerYcbcrConversion(VkDevice device, VkSamplerYcbcrConversionKHR ycbcrConversion, const VkAllocationCallbacks* pAllocator) const;
 #endif
-#if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_sampler_ycbcr_conversion)) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkDestroySamplerYcbcrConversionKHR(VkDevice device, VkSamplerYcbcrConversionKHR ycbcrConversion, const VkAllocationCallbacks* pAllocator) const;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -665,7 +686,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetLayoutSupport(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, VkDescriptorSetLayoutSupportKHR* pSupport) const;
 #endif
-#if defined(VK_KHR_maintenance3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetLayoutSupportKHR(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, VkDescriptorSetLayoutSupportKHR* pSupport) const;
 #endif
 #if defined(VK_ANDROID_native_buffer)
@@ -677,19 +698,19 @@ namespace wfe {
 #if defined(VK_AMD_shader_info)
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetShaderInfoAMD(VkDevice device, VkPipeline pipeline, VkShaderStageFlagBits shaderStage, VkShaderInfoTypeAMD infoType, size_t* pInfoSize, void* pInfo) const;
 #endif
-#if defined(VK_AMD_display_native_hdr) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_AMD_display_native_hdr)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		VKAPI_ATTR void VKAPI_CALL vkSetLocalDimmingAMD(VkDevice device, VkSwapchainKHR swapChain, VkBool32 localDimmingEnable) const;
 #endif
-#if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCalibrateableTimeDomainsKHR(VkPhysicalDevice physicalDevice, uint32_t* pTimeDomainCount, VkTimeDomainEXT* pTimeDomains) const;
 #endif
-#if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(VkPhysicalDevice physicalDevice, uint32_t* pTimeDomainCount, VkTimeDomainEXT* pTimeDomains) const;
 #endif
-#if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetCalibratedTimestampsKHR(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoEXT* pTimestampInfos, uint64_t* pTimestamps, uint64_t* pMaxDeviation) const;
 #endif
-#if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetCalibratedTimestampsEXT(VkDevice device, uint32_t timestampCount, const VkCalibratedTimestampInfoEXT* pTimestampInfos, uint64_t* pTimestamps, uint64_t* pMaxDeviation) const;
 #endif
 #if defined(VK_EXT_debug_utils)
@@ -705,7 +726,7 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT messenger, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR void VKAPI_CALL vkSubmitDebugUtilsMessageEXT(VkInstance instance, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData) const;
 #endif
-#if defined(VK_EXT_external_memory_host) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_external_memory_host)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryHostPointerPropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void* pHostPointer, VkMemoryHostPointerPropertiesEXT* pMemoryHostPointerProperties) const;
 #endif
 #if defined(VK_AMD_buffer_marker)
@@ -714,46 +735,46 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass2(VkDevice device, const VkRenderPassCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass) const;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateRenderPass2KHR(VkDevice device, const VkRenderPassCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkRenderPass* pRenderPass) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass2(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, const VkSubpassBeginInfoKHR* pSubpassBeginInfo) const;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass2KHR(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, const VkSubpassBeginInfoKHR* pSubpassBeginInfo) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass2(VkCommandBuffer commandBuffer, const VkSubpassBeginInfoKHR* pSubpassBeginInfo, const VkSubpassEndInfoKHR* pSubpassEndInfo) const;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass2KHR(VkCommandBuffer commandBuffer, const VkSubpassBeginInfoKHR* pSubpassBeginInfo, const VkSubpassEndInfoKHR* pSubpassEndInfo) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfoKHR* pSubpassEndInfo) const;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRenderPass2KHR(VkCommandBuffer commandBuffer, const VkSubpassEndInfoKHR* pSubpassEndInfo) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreCounterValue(VkDevice device, VkSemaphore semaphore, uint64_t* pValue) const;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSemaphoreCounterValueKHR(VkDevice device, VkSemaphore semaphore, uint64_t* pValue) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR VkResult VKAPI_CALL vkWaitSemaphores(VkDevice device, const VkSemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout) const;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkWaitSemaphoresKHR(VkDevice device, const VkSemaphoreWaitInfoKHR* pWaitInfo, uint64_t timeout) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR VkResult VKAPI_CALL vkSignalSemaphore(VkDevice device, const VkSemaphoreSignalInfoKHR* pSignalInfo) const;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkSignalSemaphoreKHR(VkDevice device, const VkSemaphoreSignalInfoKHR* pSignalInfo) const;
 #endif
-#if defined(VK_ANDROID_external_memory_android_hardware_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+#if (defined(VK_ANDROID_external_memory_android_hardware_buffer)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetAndroidHardwareBufferPropertiesANDROID(VkDevice device, const struct AHardwareBuffer* buffer, VkAndroidHardwareBufferPropertiesANDROID* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryAndroidHardwareBufferANDROID(VkDevice device, const VkMemoryGetAndroidHardwareBufferInfoANDROID* pInfo, struct AHardwareBuffer** pBuffer) const;
 #endif
@@ -775,11 +796,11 @@ namespace wfe {
 #if defined(VK_AMD_draw_indirect_count)
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndexedIndirectCountAMD(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const;
 #endif
-#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_device_diagnostic_checkpoints)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCheckpointNV(VkCommandBuffer commandBuffer, const void* pCheckpointMarker) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetQueueCheckpointDataNV(VkQueue queue, uint32_t* pCheckpointDataCount, VkCheckpointDataNV* pCheckpointData) const;
 #endif
-#if defined(VK_EXT_transform_feedback) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_transform_feedback)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer* pCounterBuffers, const VkDeviceSize* pCounterBufferOffsets) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer, uint32_t firstCounterBuffer, uint32_t counterBufferCount, const VkBuffer* pCounterBuffers, const VkDeviceSize* pCounterBufferOffsets) const;
@@ -787,46 +808,46 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, uint32_t index) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndirectByteCountEXT(VkCommandBuffer commandBuffer, uint32_t instanceCount, uint32_t firstInstance, VkBuffer counterBuffer, VkDeviceSize counterBufferOffset, uint32_t counterOffset, uint32_t vertexStride) const;
 #endif
-#if defined(VK_NV_scissor_exclusive) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_scissor_exclusive)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetExclusiveScissorNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkRect2D* pExclusiveScissors) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetExclusiveScissorEnableNV(VkCommandBuffer commandBuffer, uint32_t firstExclusiveScissor, uint32_t exclusiveScissorCount, const VkBool32* pExclusiveScissorEnables) const;
 #endif
-#if defined(VK_NV_shading_rate_image) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_shading_rate_image)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindShadingRateImageNV(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportShadingRatePaletteNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkShadingRatePaletteNV* pShadingRatePalettes) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoarseSampleOrderNV(VkCommandBuffer commandBuffer, VkCoarseSampleOrderTypeNV sampleOrderType, uint32_t customSampleOrderCount, const VkCoarseSampleOrderCustomNV* pCustomSampleOrders) const;
 #endif
-#if defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_mesh_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksNV(VkCommandBuffer commandBuffer, uint32_t taskCount, uint32_t firstTask) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirectNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const;
 #endif
-#if (defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+#if ((defined(VK_NV_mesh_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_2) || defined(VK_KHR_draw_indirect_count) || defined(VK_AMD_draw_indirect_count))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirectCountNV(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const;
 #endif
-#if defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))
+#if (defined(VK_EXT_mesh_shader)) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksEXT(VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirectEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride) const;
 #endif
-#if (defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+#if ((defined(VK_EXT_mesh_shader)) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))) && (defined(VK_VERSION_1_2) || defined(VK_KHR_draw_indirect_count) || defined(VK_AMD_draw_indirect_count))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirectCountEXT(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkBuffer countBuffer, VkDeviceSize countBufferOffset, uint32_t maxDrawCount, uint32_t stride) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCompileDeferredNV(VkDevice device, VkPipeline pipeline, uint32_t shader) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateAccelerationStructureNV(VkDevice device, const VkAccelerationStructureCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureNV* pAccelerationStructure) const;
 #endif
-#if defined(VK_HUAWEI_invocation_mask) && (defined(VK_KHR_ray_tracing_pipeline) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_HUAWEI_invocation_mask)) && (defined(VK_KHR_ray_tracing_pipeline) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindInvocationMaskHUAWEI(VkCommandBuffer commandBuffer, VkImageView imageView, VkImageLayout imageLayout) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR void VKAPI_CALL vkDestroyAccelerationStructureKHR(VkDevice device, VkAccelerationStructureKHR accelerationStructure, const VkAllocationCallbacks* pAllocator) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkDestroyAccelerationStructureNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, const VkAllocationCallbacks* pAllocator) const;
-		VKAPI_ATTR void VKAPI_CALL vkGetAccelerationStructureMemoryRequirementsNV(VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetAccelerationStructureMemoryRequirementsNV(VkDevice device, const VkAccelerationStructureMemoryRequirementsInfoNV* pInfo, VkMemoryRequirements2* pMemoryRequirements) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkBindAccelerationStructureMemoryNV(VkDevice device, uint32_t bindInfoCount, const VkBindAccelerationStructureMemoryInfoNV* pBindInfos) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyAccelerationStructureNV(VkCommandBuffer commandBuffer, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkCopyAccelerationStructureModeKHR mode) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureInfoKHR* pInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyAccelerationStructureInfoKHR* pInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyAccelerationStructureToMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureToMemoryInfoKHR* pInfo) const;
@@ -835,52 +856,52 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyMemoryToAccelerationStructureKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMemoryToAccelerationStructureInfoKHR* pInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdWriteAccelerationStructuresPropertiesKHR(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR* pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdWriteAccelerationStructuresPropertiesNV(VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount, const VkAccelerationStructureNV* pAccelerationStructures, VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildAccelerationStructureNV(VkCommandBuffer commandBuffer, const VkAccelerationStructureInfoNV* pInfo, VkBuffer instanceData, VkDeviceSize instanceOffset, VkBool32 update, VkAccelerationStructureNV dst, VkAccelerationStructureNV src, VkBuffer scratch, VkDeviceSize scratchOffset) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR VkResult VKAPI_CALL vkWriteAccelerationStructuresPropertiesKHR(VkDevice device, uint32_t accelerationStructureCount, const VkAccelerationStructureKHR* pAccelerationStructures, VkQueryType queryType, size_t dataSize, void* pData, size_t stride) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR void VKAPI_CALL vkCmdTraceRaysKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR* pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pCallableShaderBindingTable, uint32_t width, uint32_t height, uint32_t depth) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdTraceRaysNV(VkCommandBuffer commandBuffer, VkBuffer raygenShaderBindingTableBuffer, VkDeviceSize raygenShaderBindingOffset, VkBuffer missShaderBindingTableBuffer, VkDeviceSize missShaderBindingOffset, VkDeviceSize missShaderBindingStride, VkBuffer hitShaderBindingTableBuffer, VkDeviceSize hitShaderBindingOffset, VkDeviceSize hitShaderBindingStride, VkBuffer callableShaderBindingTableBuffer, VkDeviceSize callableShaderBindingOffset, VkDeviceSize callableShaderBindingStride, uint32_t width, uint32_t height, uint32_t depth) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetRayTracingShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetRayTracingShaderGroupHandlesNV(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(VkDevice device, VkPipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, void* pData) const;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetAccelerationStructureHandleNV(VkDevice device, VkAccelerationStructureNV accelerationStructure, size_t dataSize, void* pData) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateRayTracingPipelinesNV(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoNV* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateRayTracingPipelinesKHR(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkRayTracingPipelineCreateInfoKHR* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
 #endif
-#if defined(VK_NV_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_cooperative_matrix)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCooperativeMatrixPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixPropertiesNV* pProperties) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR void VKAPI_CALL vkCmdTraceRaysIndirectKHR(VkCommandBuffer commandBuffer, const VkStridedDeviceAddressRegionKHR* pRaygenShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pMissShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pHitShaderBindingTable, const VkStridedDeviceAddressRegionKHR* pCallableShaderBindingTable, VkDeviceAddress indirectDeviceAddress) const;
 #endif
-#if (defined(VK_KHR_ray_tracing_maintenance1) && (defined(VK_KHR_acceleration_structure))) && (defined(VK_KHR_ray_tracing_pipeline))
+#if ((defined(VK_KHR_ray_tracing_maintenance1)) && (defined(VK_KHR_acceleration_structure))) && (defined(VK_KHR_ray_tracing_pipeline))
 		VKAPI_ATTR void VKAPI_CALL vkCmdTraceRaysIndirect2KHR(VkCommandBuffer commandBuffer, VkDeviceAddress indirectDeviceAddress) const;
 #endif
-#if defined(VK_NV_cluster_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
+#if (defined(VK_NV_cluster_acceleration_structure)) && (defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR void VKAPI_CALL vkGetClusterAccelerationStructureBuildSizesNV(VkDevice device, const VkClusterAccelerationStructureInputInfoNV* pInfo, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildClusterAccelerationStructureIndirectNV(VkCommandBuffer commandBuffer, const VkClusterAccelerationStructureCommandsInfoNV* pCommandInfos) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceAccelerationStructureCompatibilityKHR(VkDevice device, const VkAccelerationStructureVersionInfoKHR* pVersionInfo, VkAccelerationStructureCompatibilityKHR* pCompatibility) const;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR VkDeviceSize VKAPI_CALL vkGetRayTracingShaderGroupStackSizeKHR(VkDevice device, VkPipeline pipeline, uint32_t group, VkShaderGroupShaderKHR groupShader) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRayTracingPipelineStackSizeKHR(VkCommandBuffer commandBuffer, uint32_t pipelineStackSize) const;
 #endif
@@ -888,45 +909,46 @@ namespace wfe {
 		VKAPI_ATTR uint32_t VKAPI_CALL vkGetImageViewHandleNVX(VkDevice device, const VkImageViewHandleInfoNVX* pInfo) const;
 		VKAPI_ATTR uint64_t VKAPI_CALL vkGetImageViewHandle64NVX(VkDevice device, const VkImageViewHandleInfoNVX* pInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetImageViewAddressNVX(VkDevice device, VkImageView imageView, VkImageViewAddressPropertiesNVX* pProperties) const;
+		VKAPI_ATTR uint64_t VKAPI_CALL vkGetDeviceCombinedImageSamplerIndexNVX(VkDevice device, uint64_t imageViewIndex, uint64_t samplerIndex) const;
 #endif
-#if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModes2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, uint32_t* pPresentModeCount, VkPresentModeKHR* pPresentModes) const;
 #endif
-#if (defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))) && (defined(VK_KHR_device_group) || defined(VK_VERSION_1_1))
+#if ((defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))) && (defined(VK_KHR_device_group) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceGroupSurfacePresentModes2EXT(VkDevice device, const VkPhysicalDeviceSurfaceInfo2KHR* pSurfaceInfo, VkDeviceGroupPresentModeFlagsKHR* pModes) const;
 #endif
-#if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkReleaseFullScreenExclusiveModeEXT(VkDevice device, VkSwapchainKHR swapchain) const;
 #endif
-#if defined(VK_KHR_performance_query) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_performance_query)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t* pCounterCount, VkPerformanceCounterKHR* pCounters, VkPerformanceCounterDescriptionKHR* pCounterDescriptions) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR(VkPhysicalDevice physicalDevice, const VkQueryPoolPerformanceCreateInfoKHR* pPerformanceQueryCreateInfo, uint32_t* pNumPasses) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireProfilingLockKHR(VkDevice device, const VkAcquireProfilingLockInfoKHR* pInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkReleaseProfilingLockKHR(VkDevice device) const;
 #endif
-#if defined(VK_EXT_image_drm_format_modifier) && ((((defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_sampler_ycbcr_conversion)) || defined(VK_VERSION_1_1)) && defined(VK_KHR_image_format_list)) || defined(VK_VERSION_1_2))
+#if (defined(VK_EXT_image_drm_format_modifier)) && ((((defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_sampler_ycbcr_conversion)) || defined(VK_VERSION_1_1)) && defined(VK_KHR_image_format_list)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetImageDrmFormatModifierPropertiesEXT(VkDevice device, VkImage image, VkImageDrmFormatModifierPropertiesEXT* pProperties) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR uint64_t VKAPI_CALL vkGetBufferOpaqueCaptureAddress(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR uint64_t VKAPI_CALL vkGetBufferOpaqueCaptureAddressKHR(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const;
 #endif
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR VkDeviceAddress VKAPI_CALL vkGetBufferDeviceAddress(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkDeviceAddress VKAPI_CALL vkGetBufferDeviceAddressKHR(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_EXT_buffer_device_address) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_buffer_device_address)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkDeviceAddress VKAPI_CALL vkGetBufferDeviceAddressEXT(VkDevice device, const VkBufferDeviceAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_EXT_headless_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_headless_surface)) && (defined(VK_KHR_surface))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateHeadlessSurfaceEXT(VkInstance instance, const VkHeadlessSurfaceCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR* pSurface) const;
 #endif
-#if defined(VK_NV_coverage_reduction_mode) && (defined(VK_NV_framebuffer_mixed_samples) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_NV_coverage_reduction_mode)) && (defined(VK_NV_framebuffer_mixed_samples) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV(VkPhysicalDevice physicalDevice, uint32_t* pCombinationCount, VkFramebufferMixedSamplesCombinationNV* pCombinations) const;
 #endif
 #if defined(VK_INTEL_performance_query)
@@ -943,10 +965,10 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		VKAPI_ATTR uint64_t VKAPI_CALL vkGetDeviceMemoryOpaqueCaptureAddress(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR uint64_t VKAPI_CALL vkGetDeviceMemoryOpaqueCaptureAddressKHR(VkDevice device, const VkDeviceMemoryOpaqueCaptureAddressInfoKHR* pInfo) const;
 #endif
-#if defined(VK_KHR_pipeline_executable_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_pipeline_executable_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelineExecutablePropertiesKHR(VkDevice device, const VkPipelineInfoKHR* pPipelineInfo, uint32_t* pExecutableCount, VkPipelineExecutablePropertiesKHR* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelineExecutableStatisticsKHR(VkDevice device, const VkPipelineExecutableInfoKHR* pExecutableInfo, uint32_t* pStatisticCount, VkPipelineExecutableStatisticKHR* pStatistics) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelineExecutableInternalRepresentationsKHR(VkDevice device, const VkPipelineExecutableInfoKHR* pExecutableInfo, uint32_t* pInternalRepresentationCount, VkPipelineExecutableInternalRepresentationKHR* pInternalRepresentations) const;
@@ -954,10 +976,10 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStipple(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const;
 #endif
-#if defined(VK_KHR_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_line_rasterization)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStippleKHR(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const;
 #endif
-#if defined(VK_EXT_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_line_rasterization)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStippleEXT(VkCommandBuffer commandBuffer, uint32_t lineStippleFactor, uint16_t lineStipplePattern) const;
 #endif
 #if defined(VK_VERSION_1_3)
@@ -966,7 +988,7 @@ namespace wfe {
 #if defined(VK_EXT_tooling_info)
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceToolPropertiesEXT(VkPhysicalDevice physicalDevice, uint32_t* pToolCount, VkPhysicalDeviceToolPropertiesEXT* pToolProperties) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateAccelerationStructureKHR(VkDevice device, const VkAccelerationStructureCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureKHR* pAccelerationStructure) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildAccelerationStructuresKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR* pInfos, const VkAccelerationStructureBuildRangeInfoKHR* const* ppBuildRangeInfos) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildAccelerationStructuresIndirectKHR(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkAccelerationStructureBuildGeometryInfoKHR* pInfos, const VkDeviceAddress* pIndirectDeviceAddresses, const uint32_t* pIndirectStrides, const uint32_t* const* ppMaxPrimitiveCounts) const;
@@ -980,117 +1002,117 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeferredOperationResultKHR(VkDevice device, VkDeferredOperationKHR operation) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkDeferredOperationJoinKHR(VkDevice device, VkDeferredOperationKHR operation) const;
 #endif
-#if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
+#if (defined(VK_NV_device_generated_commands_compute)) && (defined(VK_NV_device_generated_commands))
 		VKAPI_ATTR void VKAPI_CALL vkGetPipelineIndirectMemoryRequirementsNV(VkDevice device, const VkComputePipelineCreateInfo* pCreateInfo, VkMemoryRequirements2* pMemoryRequirements) const;
 		VKAPI_ATTR VkDeviceAddress VKAPI_CALL vkGetPipelineIndirectDeviceAddressNV(VkDevice device, const VkPipelineIndirectDeviceAddressInfoNV* pInfo) const;
 #endif
-#if defined(VK_AMD_anti_lag)
+#if (defined(VK_AMD_anti_lag)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkAntiLagUpdateAMD(VkDevice device, const VkAntiLagDataAMD* pData) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCullMode(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCullModeEXT(VkCommandBuffer commandBuffer, VkCullModeFlags cullMode) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetFrontFace(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetFrontFaceEXT(VkCommandBuffer commandBuffer, VkFrontFace frontFace) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPrimitiveTopology(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPrimitiveTopologyEXT(VkCommandBuffer commandBuffer, VkPrimitiveTopology primitiveTopology) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportWithCount(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport* pViewports) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportWithCountEXT(VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport* pViewports) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetScissorWithCount(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D* pScissors) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetScissorWithCountEXT(VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D* pScissors) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindIndexBuffer2(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindIndexBuffer2KHR(VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, VkDeviceSize size, VkIndexType indexType) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindVertexBuffers2(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes, const VkDeviceSize* pStrides) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindVertexBuffers2EXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBuffer* pBuffers, const VkDeviceSize* pOffsets, const VkDeviceSize* pSizes, const VkDeviceSize* pStrides) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthTestEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthWriteEnable(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthWriteEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthWriteEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthCompareOp(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthCompareOpEXT(VkCommandBuffer commandBuffer, VkCompareOp depthCompareOp) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBoundsTestEnable(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBoundsTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBoundsTestEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetStencilTestEnable(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetStencilTestEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stencilTestEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetStencilOp(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetStencilOpEXT(VkCommandBuffer commandBuffer, VkStencilFaceFlags faceMask, VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPatchControlPointsEXT(VkCommandBuffer commandBuffer, uint32_t patchControlPoints) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRasterizerDiscardEnable(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRasterizerDiscardEnableEXT(VkCommandBuffer commandBuffer, VkBool32 rasterizerDiscardEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBiasEnable(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBiasEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthBiasEnable) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLogicOpEXT(VkCommandBuffer commandBuffer, VkLogicOp logicOp) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPrimitiveRestartEnable(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPrimitiveRestartEnableEXT(VkCommandBuffer commandBuffer, VkBool32 primitiveRestartEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetTessellationDomainOriginEXT(VkCommandBuffer commandBuffer, VkTessellationDomainOrigin domainOrigin) const;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthClampEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClampEnable) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetPolygonModeEXT(VkCommandBuffer commandBuffer, VkPolygonMode polygonMode) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRasterizationSamplesEXT(VkCommandBuffer commandBuffer, VkSampleCountFlagBits rasterizationSamples) const;
@@ -1102,241 +1124,245 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetColorBlendEquationEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendEquationEXT* pColorBlendEquations) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetColorWriteMaskEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorComponentFlags* pColorWriteMasks) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_transform_feedback))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_transform_feedback)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRasterizationStreamEXT(VkCommandBuffer commandBuffer, uint32_t rasterizationStream) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_conservative_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conservative_rasterization)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conservative_rasterization))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_conservative_rasterization)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetConservativeRasterizationModeEXT(VkCommandBuffer commandBuffer, VkConservativeRasterizationModeEXT conservativeRasterizationMode) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetExtraPrimitiveOverestimationSizeEXT(VkCommandBuffer commandBuffer, float extraPrimitiveOverestimationSize) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_enable))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_enable)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_enable))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_enable)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthClipEnableEXT(VkCommandBuffer commandBuffer, VkBool32 depthClipEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_sample_locations))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_sample_locations)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_sample_locations))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_sample_locations)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetSampleLocationsEnableEXT(VkCommandBuffer commandBuffer, VkBool32 sampleLocationsEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_blend_operation_advanced))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_blend_operation_advanced)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_blend_operation_advanced))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_blend_operation_advanced)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetColorBlendAdvancedEXT(VkCommandBuffer commandBuffer, uint32_t firstAttachment, uint32_t attachmentCount, const VkColorBlendAdvancedEXT* pColorBlendAdvanced) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_provoking_vertex))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_provoking_vertex)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_provoking_vertex))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_provoking_vertex)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetProvokingVertexModeEXT(VkCommandBuffer commandBuffer, VkProvokingVertexModeEXT provokingVertexMode) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_line_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_line_rasterization)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_VERSION_1_4) || defined(VK_KHR_line_rasterization) || defined(VK_EXT_line_rasterization))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_4) || defined(VK_KHR_line_rasterization) || defined(VK_EXT_line_rasterization)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLineRasterizationModeEXT(VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetLineStippleEnableEXT(VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_control))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_control)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_control))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_control)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthClipNegativeOneToOneEXT(VkCommandBuffer commandBuffer, VkBool32 negativeOneToOne) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_clip_space_w_scaling))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_clip_space_w_scaling)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_clip_space_w_scaling))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_clip_space_w_scaling)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportWScalingEnableNV(VkCommandBuffer commandBuffer, VkBool32 viewportWScalingEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_viewport_swizzle))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_viewport_swizzle)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_viewport_swizzle))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_viewport_swizzle)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetViewportSwizzleNV(VkCommandBuffer commandBuffer, uint32_t firstViewport, uint32_t viewportCount, const VkViewportSwizzleNV* pViewportSwizzles) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_fragment_coverage_to_color))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_fragment_coverage_to_color)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_fragment_coverage_to_color))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_fragment_coverage_to_color)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageToColorEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageToColorEnable) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageToColorLocationNV(VkCommandBuffer commandBuffer, uint32_t coverageToColorLocation) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_framebuffer_mixed_samples))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_framebuffer_mixed_samples)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_framebuffer_mixed_samples))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_framebuffer_mixed_samples)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageModulationModeNV(VkCommandBuffer commandBuffer, VkCoverageModulationModeNV coverageModulationMode) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageModulationTableEnableNV(VkCommandBuffer commandBuffer, VkBool32 coverageModulationTableEnable) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageModulationTableNV(VkCommandBuffer commandBuffer, uint32_t coverageModulationTableCount, const float* pCoverageModulationTable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_shading_rate_image))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_shading_rate_image)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_shading_rate_image))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_shading_rate_image)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetShadingRateImageEnableNV(VkCommandBuffer commandBuffer, VkBool32 shadingRateImageEnable) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_coverage_reduction_mode))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_coverage_reduction_mode)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_coverage_reduction_mode))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_coverage_reduction_mode)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetCoverageReductionModeNV(VkCommandBuffer commandBuffer, VkCoverageReductionModeNV coverageReductionMode) const;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_representative_fragment_test))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_representative_fragment_test)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_representative_fragment_test))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_representative_fragment_test)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRepresentativeFragmentTestEnableNV(VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlotCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPrivateDataSlotEXT* pPrivateDataSlot) const;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPrivateDataSlotEXT* pPrivateDataSlot) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlotEXT privateDataSlot, const VkAllocationCallbacks* pAllocator) const;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlotEXT privateDataSlot, const VkAllocationCallbacks* pAllocator) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR VkResult VKAPI_CALL vkSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t data) const;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t data) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t* pData) const;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlotEXT privateDataSlot, uint64_t* pData) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyBuffer2(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2KHR* pCopyBufferInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferInfo2KHR* pCopyBufferInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage2(VkCommandBuffer commandBuffer, const VkCopyImageInfo2KHR* pCopyImageInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImage2KHR(VkCommandBuffer commandBuffer, const VkCopyImageInfo2KHR* pCopyImageInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBlitImage2(VkCommandBuffer commandBuffer, const VkBlitImageInfo2KHR* pBlitImageInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBlitImage2KHR(VkCommandBuffer commandBuffer, const VkBlitImageInfo2KHR* pBlitImageInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage2(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2KHR* pCopyBufferToImageInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyBufferToImage2KHR(VkCommandBuffer commandBuffer, const VkCopyBufferToImageInfo2KHR* pCopyBufferToImageInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToBuffer2(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2KHR* pCopyImageToBufferInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToBuffer2KHR(VkCommandBuffer commandBuffer, const VkCopyImageToBufferInfo2KHR* pCopyImageToBufferInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdResolveImage2(VkCommandBuffer commandBuffer, const VkResolveImageInfo2KHR* pResolveImageInfo) const;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdResolveImage2KHR(VkCommandBuffer commandBuffer, const VkResolveImageInfo2KHR* pResolveImageInfo) const;
 #endif
 #if defined(VK_KHR_object_refresh)
 		VKAPI_ATTR void VKAPI_CALL vkCmdRefreshObjectsKHR(VkCommandBuffer commandBuffer, const VkRefreshObjectListKHR* pRefreshObjects) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceRefreshableObjectTypesKHR(VkPhysicalDevice physicalDevice, uint32_t* pRefreshableObjectTypeCount, VkObjectType* pRefreshableObjectTypes) const;
 #endif
-#if defined(VK_KHR_fragment_shading_rate) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_create_renderpass2)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_fragment_shading_rate)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_create_renderpass2)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetFragmentShadingRateKHR(VkCommandBuffer commandBuffer, const VkExtent2D* pFragmentSize, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceFragmentShadingRatesKHR(VkPhysicalDevice physicalDevice, uint32_t* pFragmentShadingRateCount, VkPhysicalDeviceFragmentShadingRateKHR* pFragmentShadingRates) const;
 #endif
-#if defined(VK_NV_fragment_shading_rate_enums) && (defined(VK_KHR_fragment_shading_rate))
+#if (defined(VK_NV_fragment_shading_rate_enums)) && (defined(VK_KHR_fragment_shading_rate))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetFragmentShadingRateEnumNV(VkCommandBuffer commandBuffer, VkFragmentShadingRateNV shadingRate, const VkFragmentShadingRateCombinerOpKHR combinerOps[2]) const;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		VKAPI_ATTR void VKAPI_CALL vkGetAccelerationStructureBuildSizesKHR(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkAccelerationStructureBuildGeometryInfoKHR* pBuildInfo, const uint32_t* pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const;
 #endif
-#if (defined(VK_EXT_vertex_input_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_vertex_input_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetVertexInputEXT(VkCommandBuffer commandBuffer, uint32_t vertexBindingDescriptionCount, const VkVertexInputBindingDescription2EXT* pVertexBindingDescriptions, uint32_t vertexAttributeDescriptionCount, const VkVertexInputAttributeDescription2EXT* pVertexAttributeDescriptions) const;
 #endif
-#if defined(VK_EXT_color_write_enable) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_color_write_enable)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetColorWriteEnableEXT(VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkBool32* pColorWriteEnables) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetEvent2(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfoKHR* pDependencyInfo) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfoKHR* pDependencyInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdResetEvent2(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2KHR stageMask) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdResetEvent2KHR(VkCommandBuffer commandBuffer, VkEvent event, VkPipelineStageFlags2KHR stageMask) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdWaitEvents2(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent* pEvents, const VkDependencyInfoKHR* pDependencyInfos) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdWaitEvents2KHR(VkCommandBuffer commandBuffer, uint32_t eventCount, const VkEvent* pEvents, const VkDependencyInfoKHR* pDependencyInfos) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfoKHR* pDependencyInfo) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPipelineBarrier2KHR(VkCommandBuffer commandBuffer, const VkDependencyInfoKHR* pDependencyInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2KHR* pSubmits, VkFence fence) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkQueueSubmit2KHR(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2KHR* pSubmits, VkFence fence) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2KHR stage, VkQueryPool queryPool, uint32_t query) const;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdWriteTimestamp2KHR(VkCommandBuffer commandBuffer, VkPipelineStageFlags2KHR stage, VkQueryPool queryPool, uint32_t query) const;
 #endif
 #if (defined(VK_AMD_buffer_marker)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdWriteBufferMarker2AMD(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker) const;
 #endif
-#if (defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+#if ((defined(VK_NV_device_diagnostic_checkpoints)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 		VKAPI_ATTR void VKAPI_CALL vkGetQueueCheckpointData2NV(VkQueue queue, uint32_t* pCheckpointDataCount, VkCheckpointData2NV* pCheckpointData) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyMemoryToImage(VkDevice device, const VkCopyMemoryToImageInfoEXT* pCopyMemoryToImageInfo) const;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyMemoryToImageEXT(VkDevice device, const VkCopyMemoryToImageInfoEXT* pCopyMemoryToImageInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyImageToMemory(VkDevice device, const VkCopyImageToMemoryInfoEXT* pCopyImageToMemoryInfo) const;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyImageToMemoryEXT(VkDevice device, const VkCopyImageToMemoryInfoEXT* pCopyImageToMemoryInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyImageToImage(VkDevice device, const VkCopyImageToImageInfoEXT* pCopyImageToImageInfo) const;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCopyImageToImageEXT(VkDevice device, const VkCopyImageToImageInfoEXT* pCopyImageToImageInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR VkResult VKAPI_CALL vkTransitionImageLayout(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfoEXT* pTransitions) const;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkTransitionImageLayoutEXT(VkDevice device, uint32_t transitionCount, const VkHostImageLayoutTransitionInfoEXT* pTransitions) const;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceVideoCapabilitiesKHR(VkPhysicalDevice physicalDevice, const VkVideoProfileInfoKHR* pVideoProfile, VkVideoCapabilitiesKHR* pCapabilities) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceVideoFormatPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoFormatInfoKHR* pVideoFormatInfo, uint32_t* pVideoFormatPropertyCount, VkVideoFormatPropertiesKHR* pVideoFormatProperties) const;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR* pQualityLevelInfo, VkVideoEncodeQualityLevelPropertiesKHR* pQualityLevelProperties) const;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateVideoSessionKHR(VkDevice device, const VkVideoSessionCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkVideoSessionKHR* pVideoSession) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyVideoSessionKHR(VkDevice device, VkVideoSessionKHR videoSession, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateVideoSessionParametersKHR(VkDevice device, const VkVideoSessionParametersCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkVideoSessionParametersKHR* pVideoSessionParameters) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkUpdateVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkVideoSessionParametersUpdateInfoKHR* pUpdateInfo) const;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetEncodedVideoSessionParametersKHR(VkDevice device, const VkVideoEncodeSessionParametersGetInfoKHR* pVideoSessionParametersInfo, VkVideoEncodeSessionParametersFeedbackInfoKHR* pFeedbackInfo, size_t* pDataSize, void* pData) const;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkDestroyVideoSessionParametersKHR(VkDevice device, VkVideoSessionParametersKHR videoSessionParameters, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetVideoSessionMemoryRequirementsKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t* pMemoryRequirementsCount, VkVideoSessionMemoryRequirementsKHR* pMemoryRequirements) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkBindVideoSessionMemoryKHR(VkDevice device, VkVideoSessionKHR videoSession, uint32_t bindSessionMemoryInfoCount, const VkBindVideoSessionMemoryInfoKHR* pBindSessionMemoryInfos) const;
 #endif
-#if defined(VK_KHR_video_decode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_decode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDecodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR* pDecodeInfo) const;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoBeginCodingInfoKHR* pBeginInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdControlVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoCodingControlInfoKHR* pCodingControlInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndVideoCodingKHR(VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR* pEndCodingInfo) const;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdEncodeVideoKHR(VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR* pEncodeInfo) const;
 #endif
-#if defined(VK_NV_memory_decompression) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_memory_decompression)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdDecompressMemoryNV(VkCommandBuffer commandBuffer, uint32_t decompressRegionCount, const VkDecompressMemoryRegionNV* pDecompressMemoryRegions) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDecompressMemoryIndirectCountNV(VkCommandBuffer commandBuffer, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t stride) const;
 #endif
-#if defined(VK_NV_partitioned_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
+#if (defined(VK_NV_partitioned_acceleration_structure)) && (defined(VK_KHR_acceleration_structure))
 		VKAPI_ATTR void VKAPI_CALL vkGetPartitionedAccelerationStructuresBuildSizesNV(VkDevice device, const VkPartitionedAccelerationStructureInstancesInputNV* pInfo, VkAccelerationStructureBuildSizesInfoKHR* pSizeInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildPartitionedAccelerationStructuresNV(VkCommandBuffer commandBuffer, const VkBuildPartitionedAccelerationStructureInfoNV* pBuildInfo) const;
+#endif
+#if (defined(VK_EXT_memory_decompression)) && (defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDecompressMemoryEXT(VkCommandBuffer commandBuffer, const VkDecompressMemoryInfoEXT* pDecompressMemoryInfoEXT) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDecompressMemoryIndirectCountEXT(VkCommandBuffer commandBuffer, VkMemoryDecompressionMethodFlagsEXT decompressionMethod, VkDeviceAddress indirectCommandsAddress, VkDeviceAddress indirectCommandsCountAddress, uint32_t maxDecompressionCount, uint32_t stride) const;
 #endif
 #if defined(VK_NVX_binary_import)
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateCuModuleNVX(VkDevice device, const VkCuModuleCreateInfoNVX* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCuModuleNVX* pModule) const;
@@ -1345,7 +1371,7 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkDestroyCuFunctionNVX(VkDevice device, VkCuFunctionNVX function, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdCuLaunchKernelNVX(VkCommandBuffer commandBuffer, const VkCuLaunchInfoNVX* pLaunchInfo) const;
 #endif
-#if defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_descriptor_buffer)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetLayoutSizeEXT(VkDevice device, VkDescriptorSetLayout layout, VkDeviceSize* pLayoutSizeInBytes) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetLayoutBindingOffsetEXT(VkDevice device, VkDescriptorSetLayout layout, uint32_t binding, VkDeviceSize* pOffset) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorEXT(VkDevice device, const VkDescriptorGetInfoEXT* pDescriptorInfo, size_t dataSize, void* pDescriptor) const;
@@ -1357,27 +1383,30 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetImageViewOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkImageViewCaptureDescriptorDataInfoEXT* pInfo, void* pData) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetSamplerOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkSamplerCaptureDescriptorDataInfoEXT* pInfo, void* pData) const;
 #endif
-#if (defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure) || defined(VK_NV_ray_tracing))
+#if ((defined(VK_EXT_descriptor_buffer)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure) || defined(VK_NV_ray_tracing))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT(VkDevice device, const VkAccelerationStructureCaptureDescriptorDataInfoEXT* pInfo, void* pData) const;
 #endif
-#if defined(VK_EXT_pageable_device_local_memory) && (defined(VK_EXT_memory_priority))
+#if (defined(VK_EXT_pageable_device_local_memory)) && (defined(VK_EXT_memory_priority))
 		VKAPI_ATTR void VKAPI_CALL vkSetDeviceMemoryPriorityEXT(VkDevice device, VkDeviceMemory memory, float priority) const;
 #endif
-#if defined(VK_EXT_acquire_drm_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_EXT_acquire_drm_display)) && (defined(VK_EXT_direct_mode_display))
 		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDrmDisplayEXT(VkPhysicalDevice physicalDevice, int32_t drmFd, uint32_t connectorId, VkDisplayKHR* display) const;
 #endif
-#if defined(VK_KHR_present_wait) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id))
+#if (defined(VK_KHR_present_wait2)) && (defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_surface) && defined(VK_KHR_swapchain) && defined(VK_KHR_present_id2))
+		VKAPI_ATTR VkResult VKAPI_CALL vkWaitForPresent2KHR(VkDevice device, VkSwapchainKHR swapchain, const VkPresentWait2InfoKHR* pPresentWait2Info) const;
+#endif
+#if (defined(VK_KHR_present_wait)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id))
 		VKAPI_ATTR VkResult VKAPI_CALL vkWaitForPresentKHR(VkDevice device, VkSwapchainKHR swapchain, uint64_t presentId, uint64_t timeout) const;
 #endif
-#if defined(VK_FUCHSIA_buffer_collection) && (defined(VK_FUCHSIA_external_memory) && (defined(VK_KHR_sampler_ycbcr_conversion) || defined(VK_VERSION_1_1)))
+#if (defined(VK_FUCHSIA_buffer_collection)) && (defined(VK_FUCHSIA_external_memory) && (defined(VK_KHR_sampler_ycbcr_conversion) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferCollectionFUCHSIA(VkDevice device, const VkBufferCollectionCreateInfoFUCHSIA* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferCollectionFUCHSIA* pCollection) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionBufferConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkBufferConstraintsInfoFUCHSIA* pBufferConstraintsInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkSetBufferCollectionImageConstraintsFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkImageConstraintsInfoFUCHSIA* pImageConstraintsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyBufferCollectionFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetBufferCollectionPropertiesFUCHSIA(VkDevice device, VkBufferCollectionFUCHSIA collection, VkBufferCollectionPropertiesFUCHSIA* pProperties) const;
 #endif
-#if defined(VK_NV_cuda_kernel_launch)
+#if (defined(VK_NV_cuda_kernel_launch)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaModuleNV* pModule) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetCudaModuleCacheNV(VkDevice device, VkCudaModuleNV module, size_t* pCacheSize, void* pCacheData) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateCudaFunctionNV(VkDevice device, const VkCudaFunctionCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkCudaFunctionNV* pFunction) const;
@@ -1388,23 +1417,26 @@ namespace wfe {
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginRendering(VkCommandBuffer commandBuffer, const VkRenderingInfoKHR* pRenderingInfo) const;
 #endif
-#if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_dynamic_rendering)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderingKHR(VkCommandBuffer commandBuffer, const VkRenderingInfoKHR* pRenderingInfo) const;
 #endif
 #if defined(VK_VERSION_1_3)
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRendering(VkCommandBuffer commandBuffer) const;
 #endif
-#if defined(VK_EXT_fragment_density_map_offset) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_fragment_density_map) && (defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_dynamic_rendering)))
+#if (defined(VK_KHR_maintenance10)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR void VKAPI_CALL vkCmdEndRendering2KHR(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT* pRenderingEndInfo) const;
+#endif
+#if (defined(VK_EXT_fragment_density_map_offset)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_fragment_density_map) && (defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_dynamic_rendering)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRendering2EXT(VkCommandBuffer commandBuffer, const VkRenderingEndInfoEXT* pRenderingEndInfo) const;
 #endif
-#if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_dynamic_rendering)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndRenderingKHR(VkCommandBuffer commandBuffer) const;
 #endif
-#if defined(VK_VALVE_descriptor_set_host_mapping) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_VALVE_descriptor_set_host_mapping)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetLayoutHostMappingInfoVALVE(VkDevice device, const VkDescriptorSetBindingReferenceVALVE* pBindingReference, VkDescriptorSetLayoutHostMappingInfoVALVE* pHostMapping) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetDescriptorSetHostMappingVALVE(VkDevice device, VkDescriptorSet descriptorSet, void** ppData) const;
 #endif
-#if defined(VK_EXT_opacity_micromap) && (defined(VK_KHR_acceleration_structure) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_EXT_opacity_micromap)) && (defined(VK_KHR_acceleration_structure) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateMicromapEXT(VkDevice device, const VkMicromapCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkMicromapEXT* pMicromap) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBuildMicromapsEXT(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT* pInfos) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkBuildMicromapsEXT(VkDevice device, VkDeferredOperationKHR deferredOperation, uint32_t infoCount, const VkMicromapBuildInfoEXT* pInfos) const;
@@ -1420,52 +1452,59 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceMicromapCompatibilityEXT(VkDevice device, const VkMicromapVersionInfoEXT* pVersionInfo, VkAccelerationStructureCompatibilityKHR* pCompatibility) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetMicromapBuildSizesEXT(VkDevice device, VkAccelerationStructureBuildTypeKHR buildType, const VkMicromapBuildInfoEXT* pBuildInfo, VkMicromapBuildSizesInfoEXT* pSizeInfo) const;
 #endif
-#if defined(VK_EXT_shader_module_identifier) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_pipeline_creation_cache_control)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_shader_module_identifier)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_pipeline_creation_cache_control)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkGetShaderModuleIdentifierEXT(VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT* pIdentifier) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetShaderModuleCreateInfoIdentifierEXT(VkDevice device, const VkShaderModuleCreateInfo* pCreateInfo, VkShaderModuleIdentifierEXT* pIdentifier) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkGetImageSubresourceLayout2(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkGetImageSubresourceLayout2KHR(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const;
 #endif
-#if (defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))) || (defined(VK_EXT_image_compression_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if ((defined(VK_EXT_image_compression_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || ((defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3)))
 		VKAPI_ATTR void VKAPI_CALL vkGetImageSubresourceLayout2EXT(VkDevice device, VkImage image, const VkImageSubresource2KHR* pSubresource, VkSubresourceLayout2KHR* pLayout) const;
 #endif
-#if defined(VK_EXT_pipeline_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
-		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoEXT* pPipelineInfo, VkBaseOutStructure* pPipelineProperties) const;
+#if (defined(VK_EXT_pipeline_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPipelinePropertiesEXT(VkDevice device, const VkPipelineInfoKHR* pPipelineInfo, VkBaseOutStructure* pPipelineProperties) const;
 #endif
 #if defined(VK_EXT_metal_objects)
 		VKAPI_ATTR void VKAPI_CALL vkExportMetalObjectsEXT(VkDevice device, VkExportMetalObjectsInfoEXT* pMetalObjectsInfo) const;
 #endif
-#if defined(VK_QCOM_tile_memory_heap) && ((defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_QCOM_tile_memory_heap)) && ((defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindTileMemoryQCOM(VkCommandBuffer commandBuffer, const VkTileMemoryBindInfoQCOM* pTileMemoryBindInfo) const;
 #endif
-#if defined(VK_QCOM_tile_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_QCOM_tile_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetFramebufferTilePropertiesQCOM(VkDevice device, VkFramebuffer framebuffer, uint32_t* pPropertiesCount, VkTilePropertiesQCOM* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDynamicRenderingTilePropertiesQCOM(VkDevice device, const VkRenderingInfo* pRenderingInfo, VkTilePropertiesQCOM* pProperties) const;
 #endif
-#if defined(VK_NV_optical_flow) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_format_feature_flags2) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_NV_optical_flow)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_format_feature_flags2) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceOpticalFlowImageFormatsNV(VkPhysicalDevice physicalDevice, const VkOpticalFlowImageFormatInfoNV* pOpticalFlowImageFormatInfo, uint32_t* pFormatCount, VkOpticalFlowImageFormatPropertiesNV* pImageFormatProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateOpticalFlowSessionNV(VkDevice device, const VkOpticalFlowSessionCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkOpticalFlowSessionNV* pSession) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyOpticalFlowSessionNV(VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkBindOpticalFlowSessionImageNV(VkDevice device, VkOpticalFlowSessionNV session, VkOpticalFlowSessionBindingPointNV bindingPoint, VkImageView view, VkImageLayout layout) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdOpticalFlowExecuteNV(VkCommandBuffer commandBuffer, VkOpticalFlowSessionNV session, const VkOpticalFlowExecuteInfoNV* pExecuteInfo) const;
 #endif
-#if defined(VK_EXT_device_fault) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_device_fault)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceFaultInfoEXT(VkDevice device, VkDeviceFaultCountsEXT* pFaultCounts, VkDeviceFaultInfoEXT* pFaultInfo) const;
 #endif
-#if defined(VK_EXT_depth_bias_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_device_fault)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceFaultReportsKHR(VkDevice device, uint64_t timeout, uint32_t* pFaultCounts, VkDeviceFaultInfoKHR* pFaultInfo) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetDeviceFaultDebugInfoKHR(VkDevice device, VkDeviceFaultDebugInfoKHR* pDebugInfo) const;
+#endif
+#if (defined(VK_EXT_depth_bias_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthBias2EXT(VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT* pDepthBiasInfo) const;
 #endif
-#if defined(VK_EXT_swapchain_maintenance1) && (defined(VK_KHR_swapchain) && defined(VK_EXT_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_KHR_swapchain_maintenance1)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+		VKAPI_ATTR VkResult VKAPI_CALL vkReleaseSwapchainImagesKHR(VkDevice device, const VkReleaseSwapchainImagesInfoEXT* pReleaseInfo) const;
+#endif
+#if (defined(VK_EXT_swapchain_maintenance1)) && (defined(VK_KHR_swapchain) && defined(VK_EXT_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkReleaseSwapchainImagesEXT(VkDevice device, const VkReleaseSwapchainImagesInfoEXT* pReleaseInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageSubresourceLayout(VkDevice device, const VkDeviceImageSubresourceInfoKHR* pInfo, VkSubresourceLayout2KHR* pLayout) const;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkGetDeviceImageSubresourceLayoutKHR(VkDevice device, const VkDeviceImageSubresourceInfoKHR* pInfo, VkSubresourceLayout2KHR* pLayout) const;
 #endif
 #if defined(VK_VERSION_1_4)
@@ -1480,19 +1519,28 @@ namespace wfe {
 #if defined(VK_KHR_map_memory2)
 		VKAPI_ATTR VkResult VKAPI_CALL vkUnmapMemory2KHR(VkDevice device, const VkMemoryUnmapInfoKHR* pMemoryUnmapInfo) const;
 #endif
-#if defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateShadersEXT(VkDevice device, uint32_t createInfoCount, const VkShaderCreateInfoEXT* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkShaderEXT* pShaders) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyShaderEXT(VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetShaderBinaryDataEXT(VkDevice device, VkShaderEXT shader, size_t* pDataSize, void* pData) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindShadersEXT(VkCommandBuffer commandBuffer, uint32_t stageCount, const VkShaderStageFlagBits* pStages, const VkShaderEXT* pShaders) const;
 #endif
-#if defined(VK_QNX_external_memory_screen_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+#if (defined(VK_EXT_present_timing)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id2) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_calibrated_timestamps))
+		VKAPI_ATTR VkResult VKAPI_CALL vkSetSwapchainPresentTimingQueueSizeEXT(VkDevice device, VkSwapchainKHR swapchain, uint32_t size) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainTimingPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimingPropertiesEXT* pSwapchainTimingProperties, uint64_t* pSwapchainTimingPropertiesCounter) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainTimeDomainPropertiesEXT(VkDevice device, VkSwapchainKHR swapchain, VkSwapchainTimeDomainPropertiesEXT* pSwapchainTimeDomainProperties, uint64_t* pTimeDomainsCounter) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPastPresentationTimingEXT(VkDevice device, const VkPastPresentationTimingInfoEXT* pPastPresentationTimingInfo, VkPastPresentationTimingPropertiesEXT* pPastPresentationTimingProperties) const;
+#endif
+#if (defined(VK_QNX_external_memory_screen_buffer)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetScreenBufferPropertiesQNX(VkDevice device, const struct _screen_buffer* buffer, VkScreenBufferPropertiesQNX* pProperties) const;
 #endif
-#if defined(VK_KHR_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_cooperative_matrix)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixPropertiesKHR* pProperties) const;
 #endif
-#if defined(VK_AMDX_shader_enqueue) && (((defined(VK_KHR_synchronization2) && defined(VK_KHR_spirv_1_4) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3)) && defined(VK_KHR_maintenance5) && defined(VK_KHR_pipeline_library))
+#if (defined(VK_EXT_cooperative_matrix_maintenance1)) && (defined(VK_KHR_cooperative_matrix))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCooperativeMatrixProperties2EXT(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceCooperativeMatrixInfo2EXT* pCooperativeMatrixInfo, uint32_t* pPropertyCount, VkCooperativeMatrixProperties2EXT* pProperties) const;
+#endif
+#if (defined(VK_AMDX_shader_enqueue)) && (((defined(VK_KHR_synchronization2) && defined(VK_KHR_spirv_1_4) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3)) && defined(VK_KHR_maintenance5) && defined(VK_KHR_pipeline_library))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetExecutionGraphPipelineScratchSizeAMDX(VkDevice device, VkPipeline executionGraph, VkExecutionGraphPipelineScratchSizeAMDX* pSizeInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetExecutionGraphPipelineNodeIndexAMDX(VkDevice device, VkPipeline executionGraph, const VkPipelineShaderStageNodeCreateInfoAMDX* pNodeInfo, uint32_t* pNodeIndex) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateExecutionGraphPipelinesAMDX(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkExecutionGraphPipelineCreateInfoAMDX* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
@@ -1501,70 +1549,93 @@ namespace wfe {
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchGraphIndirectAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, const VkDispatchGraphCountInfoAMDX* pCountInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchGraphIndirectCountAMDX(VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceSize scratchSize, VkDeviceAddress countInfo) const;
 #endif
+#if (defined(VK_AMD_gpa_interface)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateGpaSessionAMD(VkDevice device, const VkGpaSessionCreateInfoAMD* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkGpaSessionAMD* pGpaSession) const;
+		VKAPI_ATTR void VKAPI_CALL vkDestroyGpaSessionAMD(VkDevice device, VkGpaSessionAMD gpaSession, const VkAllocationCallbacks* pAllocator) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkSetGpaDeviceClockModeAMD(VkDevice device, VkGpaDeviceClockModeInfoAMD* pInfo) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetGpaDeviceClockInfoAMD(VkDevice device, VkGpaDeviceGetClockInfoAMD* pInfo) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCmdBeginGpaSessionAMD(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCmdEndGpaSessionAMD(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCmdBeginGpaSampleAMD(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession, const VkGpaSampleBeginInfoAMD* pGpaSampleBeginInfo, uint32_t* pSampleID) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdEndGpaSampleAMD(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession, uint32_t sampleID) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetGpaSessionStatusAMD(VkDevice device, VkGpaSessionAMD gpaSession) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetGpaSessionResultsAMD(VkDevice device, VkGpaSessionAMD gpaSession, uint32_t sampleID, size_t* pSizeInBytes, void* pData) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkResetGpaSessionAMD(VkDevice device, VkGpaSessionAMD gpaSession) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyGpaSessionResultsAMD(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession) const;
+#endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorSets2(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfoKHR* pBindDescriptorSetsInfo) const;
 #endif
-#if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorSets2KHR(VkCommandBuffer commandBuffer, const VkBindDescriptorSetsInfoKHR* pBindDescriptorSetsInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushConstants2(VkCommandBuffer commandBuffer, const VkPushConstantsInfoKHR* pPushConstantsInfo) const;
 #endif
-#if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushConstants2KHR(VkCommandBuffer commandBuffer, const VkPushConstantsInfoKHR* pPushConstantsInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSet2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfoKHR* pPushDescriptorSetInfo) const;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSet2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetInfoKHR* pPushDescriptorSetInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfoKHR* pPushDescriptorSetWithTemplateInfo) const;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 		VKAPI_ATTR void VKAPI_CALL vkCmdPushDescriptorSetWithTemplate2KHR(VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfoKHR* pPushDescriptorSetWithTemplateInfo) const;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_EXT_descriptor_buffer))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_EXT_descriptor_buffer))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDescriptorBufferOffsets2EXT(VkCommandBuffer commandBuffer, const VkSetDescriptorBufferOffsetsInfoEXT* pSetDescriptorBufferOffsetsInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(VkCommandBuffer commandBuffer, const VkBindDescriptorBufferEmbeddedSamplersInfoEXT* pBindDescriptorBufferEmbeddedSamplersInfo) const;
 #endif
-#if defined(VK_NV_low_latency2) && (defined(VK_VERSION_1_2) || defined(VK_KHR_timeline_semaphore))
+#if (defined(VK_NV_low_latency2)) && ((defined(VK_VERSION_1_2) || defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_present_id) || defined(VK_KHR_present_id2)))
 		VKAPI_ATTR VkResult VKAPI_CALL vkSetLatencySleepModeNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV* pSleepModeInfo) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkLatencySleepNV(VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV* pSleepInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkSetLatencyMarkerNV(VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV* pLatencyMarkerInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetLatencyTimingsNV(VkDevice device, VkSwapchainKHR swapchain, VkGetLatencyMarkerInfoNV* pLatencyMarkerInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkQueueNotifyOutOfBandNV(VkQueue queue, const VkOutOfBandQueueTypeInfoNV* pQueueTypeInfo) const;
 #endif
+#if defined(VK_NV_low_latency)
+		VKAPI_ATTR void VKAPI_CALL vkSetLatencySleepModeLegacyNV(VkDevice device, VkBool32 lowLatencyMode, VkBool32 lowLatencyBoost, uint32_t minimumIntervalUs) const;
+		VKAPI_ATTR void VKAPI_CALL vkLatencySleepLegacyNV(VkDevice device, VkSemaphore signalSemaphore, uint64_t value) const;
+		VKAPI_ATTR void VKAPI_CALL vkSetLatencyMarkerLegacyNV(VkDevice device, uint64_t frameID, uint32_t marker) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetLatencyTimingsLegacyNV(VkDevice device, void* pTimings) const;
+		VKAPI_ATTR void VKAPI_CALL vkQueueNotifyOutOfBandLegacyNV(VkQueue queue, uint32_t queueType) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetSleepStatusLegacyNV(VkDevice device, VkBool32* pLowLatencyMode) const;
+		VKAPI_ATTR void VKAPI_CALL vkShutdownLatencyDeviceLegacyNV(VkDevice device) const;
+#endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRenderingAttachmentLocations(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfoKHR* pLocationInfo) const;
 #endif
-#if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_dynamic_rendering_local_read)) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRenderingAttachmentLocationsKHR(VkCommandBuffer commandBuffer, const VkRenderingAttachmentLocationInfoKHR* pLocationInfo) const;
 #endif
 #if defined(VK_VERSION_1_4)
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRenderingInputAttachmentIndices(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfoKHR* pInputAttachmentIndexInfo) const;
 #endif
-#if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_dynamic_rendering_local_read)) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetRenderingInputAttachmentIndicesKHR(VkCommandBuffer commandBuffer, const VkRenderingInputAttachmentIndexInfoKHR* pInputAttachmentIndexInfo) const;
 #endif
-#if ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clamp_control))) || (defined(VK_EXT_depth_clamp_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if ((defined(VK_EXT_depth_clamp_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clamp_control)))
 		VKAPI_ATTR void VKAPI_CALL vkCmdSetDepthClampRangeEXT(VkCommandBuffer commandBuffer, VkDepthClampModeEXT depthClampMode, const VkDepthClampRangeEXT* pDepthClampRange) const;
 #endif
-#if defined(VK_NV_cooperative_matrix2) && (defined(VK_KHR_cooperative_matrix))
+#if (defined(VK_NV_cooperative_matrix2)) && (defined(VK_KHR_cooperative_matrix))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeMatrixFlexibleDimensionsPropertiesNV* pProperties) const;
 #endif
-#if defined(VK_EXT_external_memory_metal) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_external_memory_metal)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryMetalHandleEXT(VkDevice device, const VkMemoryGetMetalHandleInfoEXT* pGetMetalHandleInfo, void** pHandle) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryMetalHandlePropertiesEXT(VkDevice device, VkExternalMemoryHandleTypeFlagBits handleType, const void* pHandle, VkMemoryMetalHandlePropertiesEXT* pMemoryMetalHandleProperties) const;
 #endif
-#if defined(VK_NV_cooperative_vector)
+#if (defined(VK_NV_cooperative_vector)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceCooperativeVectorPropertiesNV(VkPhysicalDevice physicalDevice, uint32_t* pPropertyCount, VkCooperativeVectorPropertiesNV* pProperties) const;
 		VKAPI_ATTR VkResult VKAPI_CALL vkConvertCooperativeVectorMatrixNV(VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV* pInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdConvertCooperativeVectorMatrixNV(VkCommandBuffer commandBuffer, uint32_t infoCount, const VkConvertCooperativeVectorMatrixInfoNV* pInfos) const;
 #endif
-#if defined(VK_QCOM_tile_shading) && (defined(VK_QCOM_tile_properties) || defined(VK_KHR_get_physical_device_properties2))
-		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchTileQCOM(VkCommandBuffer commandBuffer) const;
+#if (defined(VK_QCOM_tile_shading)) && (defined(VK_QCOM_tile_properties))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchTileQCOM(VkCommandBuffer commandBuffer, const VkDispatchTileInfoQCOM* pDispatchTileInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdBeginPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM* pPerTileBeginInfo) const;
 		VKAPI_ATTR void VKAPI_CALL vkCmdEndPerTileExecutionQCOM(VkCommandBuffer commandBuffer, const VkPerTileEndInfoQCOM* pPerTileEndInfo) const;
 #endif
@@ -1572,6 +1643,132 @@ namespace wfe {
 		VKAPI_ATTR VkResult VKAPI_CALL vkCreateExternalComputeQueueNV(VkDevice device, const VkExternalComputeQueueCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkExternalComputeQueueNV* pExternalQueue) const;
 		VKAPI_ATTR void VKAPI_CALL vkDestroyExternalComputeQueueNV(VkDevice device, VkExternalComputeQueueNV externalQueue, const VkAllocationCallbacks* pAllocator) const;
 		VKAPI_ATTR void VKAPI_CALL vkGetExternalComputeQueueDataNV(VkExternalComputeQueueNV externalQueue, VkExternalComputeQueueDataParamsNV* params, void* pData) const;
+#endif
+#if (defined(VK_ARM_shader_instrumentation)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM(VkPhysicalDevice physicalDevice, uint32_t* pDescriptionCount, VkShaderInstrumentationMetricDescriptionARM* pDescriptions) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateShaderInstrumentationARM(VkDevice device, const VkShaderInstrumentationCreateInfoARM* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkShaderInstrumentationARM* pInstrumentation) const;
+		VKAPI_ATTR void VKAPI_CALL vkDestroyShaderInstrumentationARM(VkDevice device, VkShaderInstrumentationARM instrumentation, const VkAllocationCallbacks* pAllocator) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdBeginShaderInstrumentationARM(VkCommandBuffer commandBuffer, VkShaderInstrumentationARM instrumentation) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdEndShaderInstrumentationARM(VkCommandBuffer commandBuffer) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetShaderInstrumentationValuesARM(VkDevice device, VkShaderInstrumentationARM instrumentation, uint32_t* pMetricBlockCount, void* pMetricValues, VkShaderInstrumentationValuesFlagsARM flags) const;
+		VKAPI_ATTR void VKAPI_CALL vkClearShaderInstrumentationMetricsARM(VkDevice device, VkShaderInstrumentationARM instrumentation) const;
+#endif
+#if (defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateTensorARM(VkDevice device, const VkTensorCreateInfoARM* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkTensorARM* pTensor) const;
+		VKAPI_ATTR void VKAPI_CALL vkDestroyTensorARM(VkDevice device, VkTensorARM tensor, const VkAllocationCallbacks* pAllocator) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateTensorViewARM(VkDevice device, const VkTensorViewCreateInfoARM* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkTensorViewARM* pView) const;
+		VKAPI_ATTR void VKAPI_CALL vkDestroyTensorViewARM(VkDevice device, VkTensorViewARM tensorView, const VkAllocationCallbacks* pAllocator) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetTensorMemoryRequirementsARM(VkDevice device, const VkTensorMemoryRequirementsInfoARM* pInfo, VkMemoryRequirements2* pMemoryRequirements) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkBindTensorMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindTensorMemoryInfoARM* pBindInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetDeviceTensorMemoryRequirementsARM(VkDevice device, const VkDeviceTensorMemoryRequirementsARM* pInfo, VkMemoryRequirements2* pMemoryRequirements) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyTensorARM(VkCommandBuffer commandBuffer, const VkCopyTensorInfoARM* pCopyTensorInfo) const;
+#endif
+#if ((defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))) && (defined(VK_EXT_descriptor_buffer))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetTensorOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorCaptureDescriptorDataInfoARM* pInfo, void* pData) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetTensorViewOpaqueCaptureDescriptorDataARM(VkDevice device, const VkTensorViewCaptureDescriptorDataInfoARM* pInfo, void* pData) const;
+#endif
+#if (defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))
+		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceExternalTensorPropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceExternalTensorInfoARM* pExternalTensorInfo, VkExternalTensorPropertiesARM* pExternalTensorProperties) const;
+#endif
+#if (defined(VK_ARM_data_graph)) && (defined(VK_VERSION_1_3) && (defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && defined(VK_KHR_deferred_host_operations))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateDataGraphPipelinesARM(VkDevice device, VkDeferredOperationKHR deferredOperation, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkDataGraphPipelineCreateInfoARM* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateDataGraphPipelineSessionARM(VkDevice device, const VkDataGraphPipelineSessionCreateInfoARM* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDataGraphPipelineSessionARM* pSession) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetDataGraphPipelineSessionBindPointRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionBindPointRequirementsInfoARM* pInfo, uint32_t* pBindPointRequirementCount, VkDataGraphPipelineSessionBindPointRequirementARM* pBindPointRequirements) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetDataGraphPipelineSessionMemoryRequirementsARM(VkDevice device, const VkDataGraphPipelineSessionMemoryRequirementsInfoARM* pInfo, VkMemoryRequirements2* pMemoryRequirements) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkBindDataGraphPipelineSessionMemoryARM(VkDevice device, uint32_t bindInfoCount, const VkBindDataGraphPipelineSessionMemoryInfoARM* pBindInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkDestroyDataGraphPipelineSessionARM(VkDevice device, VkDataGraphPipelineSessionARM session, const VkAllocationCallbacks* pAllocator) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchDataGraphARM(VkCommandBuffer commandBuffer, VkDataGraphPipelineSessionARM session, const VkDataGraphPipelineDispatchInfoARM* pInfo) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetDataGraphPipelineAvailablePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM* pPipelineInfo, uint32_t* pPropertiesCount, VkDataGraphPipelinePropertyARM* pProperties) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetDataGraphPipelinePropertiesARM(VkDevice device, const VkDataGraphPipelineInfoARM* pPipelineInfo, uint32_t propertiesCount, VkDataGraphPipelinePropertyQueryResultARM* pProperties) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t* pQueueFamilyDataGraphPropertyCount, VkQueueFamilyDataGraphPropertiesARM* pQueueFamilyDataGraphProperties) const;
+		VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(VkPhysicalDevice physicalDevice, const VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM* pQueueFamilyDataGraphProcessingEngineInfo, VkQueueFamilyDataGraphProcessingEnginePropertiesARM* pQueueFamilyDataGraphProcessingEngineProperties) const;
+#endif
+#if (defined(VK_OHOS_external_memory)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetNativeBufferPropertiesOHOS(VkDevice device, const struct OH_NativeBuffer* buffer, VkNativeBufferPropertiesOHOS* pProperties) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetMemoryNativeBufferOHOS(VkDevice device, const VkMemoryGetNativeBufferInfoOHOS* pInfo, struct OH_NativeBuffer** pBuffer) const;
+#endif
+#if defined(VK_OHOS_native_buffer)
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetSwapchainGrallocUsageOHOS(VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t* grallocUsage) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkAcquireImageOHOS(VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkQueueSignalReleaseImageOHOS(VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore* pWaitSemaphores, VkImage image, int32_t* pNativeFenceFd) const;
+#endif
+#if (defined(VK_QCOM_queue_perf_hint)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkQueueSetPerfHintQCOM(VkQueue queue, const VkPerfHintInfoQCOM* pPerfHintInfo) const;
+#endif
+#if (defined(VK_ARM_performance_counters_by_region)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR VkResult VKAPI_CALL vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, uint32_t* pCounterCount, VkPerformanceCounterARM* pCounters, VkPerformanceCounterDescriptionARM* pCounterDescriptions) const;
+#endif
+#if (defined(VK_NV_compute_occupancy_priority)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		VKAPI_ATTR void VKAPI_CALL vkCmdSetComputeOccupancyPriorityNV(VkCommandBuffer commandBuffer, const VkComputeOccupancyPriorityParametersNV* pParameters) const;
+#endif
+#if (defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))
+		VKAPI_ATTR VkResult VKAPI_CALL vkWriteSamplerDescriptorsEXT(VkDevice device, uint32_t samplerCount, const VkSamplerCreateInfo* pSamplers, const VkHostAddressRangeEXT* pDescriptors) const;
+		VKAPI_ATTR VkResult VKAPI_CALL vkWriteResourceDescriptorsEXT(VkDevice device, uint32_t resourceCount, const VkResourceDescriptorInfoEXT* pResources, const VkHostAddressRangeEXT* pDescriptors) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdBindSamplerHeapEXT(VkCommandBuffer commandBuffer, const VkBindHeapInfoEXT* pBindInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdBindResourceHeapEXT(VkCommandBuffer commandBuffer, const VkBindHeapInfoEXT* pBindInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdPushDataEXT(VkCommandBuffer commandBuffer, const VkPushDataInfoEXT* pPushDataInfo) const;
+#endif
+#if ((defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))) && (defined(VK_EXT_custom_border_color))
+		VKAPI_ATTR VkResult VKAPI_CALL vkRegisterCustomBorderColorEXT(VkDevice device, const VkSamplerCustomBorderColorCreateInfoEXT* pBorderColor, VkBool32 requestIndex, uint32_t* pIndex) const;
+		VKAPI_ATTR void VKAPI_CALL vkUnregisterCustomBorderColorEXT(VkDevice device, uint32_t index) const;
+#endif
+#if (defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetImageOpaqueCaptureDataEXT(VkDevice device, uint32_t imageCount, const VkImage* pImages, VkHostAddressRangeEXT* pDatas) const;
+		VKAPI_ATTR VkDeviceSize VKAPI_CALL vkGetPhysicalDeviceDescriptorSizeEXT(VkPhysicalDevice physicalDevice, VkDescriptorType descriptorType) const;
+#endif
+#if ((defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))) && (defined(VK_ARM_tensors))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetTensorOpaqueCaptureDataARM(VkDevice device, uint32_t tensorCount, const VkTensorARM* pTensors, VkHostAddressRangeEXT* pDatas) const;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyDeviceMemoryInfoKHR* pCopyMemoryInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyMemoryToImageKHR(VkCommandBuffer commandBuffer, const VkCopyDeviceMemoryImageInfoKHR* pCopyMemoryInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyImageToMemoryKHR(VkCommandBuffer commandBuffer, const VkCopyDeviceMemoryImageInfoKHR* pCopyMemoryInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdUpdateMemoryKHR(VkCommandBuffer commandBuffer, const VkDeviceAddressRangeKHR* pDstRange, VkAddressCommandFlagsKHR dstFlags, VkDeviceSize dataSize, const void* pData) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdFillMemoryKHR(VkCommandBuffer commandBuffer, const VkDeviceAddressRangeKHR* pDstRange, VkAddressCommandFlagsKHR dstFlags, uint32_t data) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdCopyQueryPoolResultsToMemoryKHR(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t firstQuery, uint32_t queryCount, const VkStridedDeviceAddressRangeKHR* pDstRange, VkAddressCommandFlagsKHR dstFlags, VkQueryResultFlags queryResultFlags) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conditional_rendering))
+		VKAPI_ATTR void VKAPI_CALL vkCmdBeginConditionalRendering2EXT(VkCommandBuffer commandBuffer, const VkConditionalRenderingBeginInfo2EXT* pConditionalRenderingBegin) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback))
+		VKAPI_ATTR void VKAPI_CALL vkCmdBindTransformFeedbackBuffers2EXT(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBindTransformFeedbackBuffer2InfoEXT* pBindingInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdBeginTransformFeedback2EXT(VkCommandBuffer commandBuffer, uint32_t firstCounterRange, uint32_t counterRangeCount, const VkBindTransformFeedbackBuffer2InfoEXT* pCounterInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdEndTransformFeedback2EXT(VkCommandBuffer commandBuffer, uint32_t firstCounterRange, uint32_t counterRangeCount, const VkBindTransformFeedbackBuffer2InfoEXT* pCounterInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndirectByteCount2EXT(VkCommandBuffer commandBuffer, uint32_t instanceCount, uint32_t firstInstance, const VkBindTransformFeedbackBuffer2InfoEXT* pCounterInfo, uint32_t counterOffset, uint32_t vertexStride) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_AMD_buffer_marker))
+		VKAPI_ATTR void VKAPI_CALL vkCmdWriteMarkerToMemoryAMD(VkCommandBuffer commandBuffer, const VkMemoryMarkerInfoAMD* pInfo) const;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		VKAPI_ATTR void VKAPI_CALL vkCmdBindIndexBuffer3KHR(VkCommandBuffer commandBuffer, const VkBindIndexBuffer3InfoKHR* pInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdBindVertexBuffers3KHR(VkCommandBuffer commandBuffer, uint32_t firstBinding, uint32_t bindingCount, const VkBindVertexBuffer3InfoKHR* pBindingInfos) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndirect2KHR(VkCommandBuffer commandBuffer, const VkDrawIndirect2InfoKHR* pInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndexedIndirect2KHR(VkCommandBuffer commandBuffer, const VkDrawIndirect2InfoKHR* pInfo) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndirectCount2KHR(VkCommandBuffer commandBuffer, const VkDrawIndirectCount2InfoKHR* pInfo) const;
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawIndexedIndirectCount2KHR(VkCommandBuffer commandBuffer, const VkDrawIndirectCount2InfoKHR* pInfo) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_mesh_shader))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirect2EXT(VkCommandBuffer commandBuffer, const VkDrawIndirect2InfoKHR* pInfo) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && ((defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2)) && defined(VK_EXT_mesh_shader))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDrawMeshTasksIndirectCount2EXT(VkCommandBuffer commandBuffer, const VkDrawIndirectCount2InfoKHR* pInfo) const;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		VKAPI_ATTR void VKAPI_CALL vkCmdDispatchIndirect2KHR(VkCommandBuffer commandBuffer, const VkDispatchIndirect2InfoKHR* pInfo) const;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure))
+		VKAPI_ATTR VkResult VKAPI_CALL vkCreateAccelerationStructure2KHR(VkDevice device, const VkAccelerationStructureCreateInfo2KHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkAccelerationStructureKHR* pAccelerationStructure) const;
+#endif
+#if ((defined(VK_ARM_data_graph_optical_flow)) && (defined(VK_ARM_data_graph))) || ((defined(VK_ARM_data_graph_instruction_set_tosa)) && (defined(VK_ARM_data_graph)))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, const VkQueueFamilyDataGraphPropertiesARM* pQueueFamilyDataGraphProperties, VkBaseOutStructure* pProperties) const;
+#endif
+#if (defined(VK_ARM_scheduling_controls)) && (defined(VK_ARM_shader_core_builtins))
+		VKAPI_ATTR void VKAPI_CALL vkCmdSetDispatchParametersARM(VkCommandBuffer commandBuffer, const VkDispatchParametersARM* pDispatchParameters) const;
+#endif
+#if (defined(VK_ARM_data_graph_optical_flow)) && (defined(VK_ARM_data_graph))
+		VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(VkPhysicalDevice physicalDevice, uint32_t queueFamilyIndex, const VkQueueFamilyDataGraphPropertiesARM* pQueueFamilyDataGraphProperties, const VkDataGraphOpticalFlowImageFormatInfoARM* pOpticalFlowImageFormatInfo, uint32_t* pFormatCount, VkDataGraphOpticalFlowImageFormatPropertiesARM* pImageFormatProperties) const;
 #endif
 	private:
 		// Vulkan function pointers
@@ -1635,7 +1832,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		PFN_vkResetQueryPool pfn_vkResetQueryPool;
 #endif
-#if defined(VK_EXT_host_query_reset) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_host_query_reset)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkResetQueryPoolEXT pfn_vkResetQueryPoolEXT;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -1655,7 +1852,7 @@ namespace wfe {
 		PFN_vkGetPipelineCacheData pfn_vkGetPipelineCacheData;
 		PFN_vkMergePipelineCaches pfn_vkMergePipelineCaches;
 #endif
-#if defined(VK_KHR_pipeline_binary) && (defined(VK_KHR_maintenance5) || defined(VK_VERSION_1_4))
+#if (defined(VK_KHR_pipeline_binary)) && (defined(VK_VERSION_1_4) || defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5))
 		PFN_vkCreatePipelineBinariesKHR pfn_vkCreatePipelineBinariesKHR;
 		PFN_vkDestroyPipelineBinaryKHR pfn_vkDestroyPipelineBinaryKHR;
 		PFN_vkGetPipelineKeyKHR pfn_vkGetPipelineKeyKHR;
@@ -1666,7 +1863,7 @@ namespace wfe {
 		PFN_vkCreateGraphicsPipelines pfn_vkCreateGraphicsPipelines;
 		PFN_vkCreateComputePipelines pfn_vkCreateComputePipelines;
 #endif
-#if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_HUAWEI_subpass_shading)) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI pfn_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -1692,7 +1889,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		PFN_vkGetRenderingAreaGranularity pfn_vkGetRenderingAreaGranularity;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		PFN_vkGetRenderingAreaGranularityKHR pfn_vkGetRenderingAreaGranularityKHR;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -1706,7 +1903,10 @@ namespace wfe {
 		PFN_vkResetCommandBuffer pfn_vkResetCommandBuffer;
 		PFN_vkCmdBindPipeline pfn_vkCmdBindPipeline;
 #endif
-#if defined(VK_EXT_attachment_feedback_loop_dynamic_state) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_attachment_feedback_loop_layout))
+#if (defined(VK_EXT_primitive_restart_index)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkCmdSetPrimitiveRestartIndexEXT pfn_vkCmdSetPrimitiveRestartIndexEXT;
+#endif
+#if (defined(VK_EXT_attachment_feedback_loop_dynamic_state)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_attachment_feedback_loop_layout))
 		PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT pfn_vkCmdSetAttachmentFeedbackLoopEnableEXT;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -1725,7 +1925,7 @@ namespace wfe {
 		PFN_vkCmdDraw pfn_vkCmdDraw;
 		PFN_vkCmdDrawIndexed pfn_vkCmdDrawIndexed;
 #endif
-#if defined(VK_EXT_multi_draw) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_multi_draw)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdDrawMultiEXT pfn_vkCmdDrawMultiEXT;
 		PFN_vkCmdDrawMultiIndexedEXT pfn_vkCmdDrawMultiIndexedEXT;
 #endif
@@ -1735,14 +1935,14 @@ namespace wfe {
 		PFN_vkCmdDispatch pfn_vkCmdDispatch;
 		PFN_vkCmdDispatchIndirect pfn_vkCmdDispatchIndirect;
 #endif
-#if defined(VK_HUAWEI_subpass_shading) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_HUAWEI_subpass_shading)) && (((defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkCmdSubpassShadingHUAWEI pfn_vkCmdSubpassShadingHUAWEI;
 #endif
-#if defined(VK_HUAWEI_cluster_culling_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_HUAWEI_cluster_culling_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdDrawClusterHUAWEI pfn_vkCmdDrawClusterHUAWEI;
 		PFN_vkCmdDrawClusterIndirectHUAWEI pfn_vkCmdDrawClusterIndirectHUAWEI;
 #endif
-#if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
+#if (defined(VK_NV_device_generated_commands_compute)) && (defined(VK_NV_device_generated_commands))
 		PFN_vkCmdUpdatePipelineIndirectBufferNV pfn_vkCmdUpdatePipelineIndirectBufferNV;
 #endif
 #if defined(VK_VERSION_1_0)
@@ -1752,9 +1952,17 @@ namespace wfe {
 		PFN_vkCmdCopyBufferToImage pfn_vkCmdCopyBufferToImage;
 		PFN_vkCmdCopyImageToBuffer pfn_vkCmdCopyImageToBuffer;
 #endif
-#if defined(VK_NV_copy_memory_indirect) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_copy_memory_indirect)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdCopyMemoryIndirectNV pfn_vkCmdCopyMemoryIndirectNV;
+#endif
+#if (defined(VK_KHR_copy_memory_indirect)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+		PFN_vkCmdCopyMemoryIndirectKHR pfn_vkCmdCopyMemoryIndirectKHR;
+#endif
+#if (defined(VK_NV_copy_memory_indirect)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdCopyMemoryToImageIndirectNV pfn_vkCmdCopyMemoryToImageIndirectNV;
+#endif
+#if (defined(VK_KHR_copy_memory_indirect)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+		PFN_vkCmdCopyMemoryToImageIndirectKHR pfn_vkCmdCopyMemoryToImageIndirectKHR;
 #endif
 #if defined(VK_VERSION_1_0)
 		PFN_vkCmdUpdateBuffer pfn_vkCmdUpdateBuffer;
@@ -1770,9 +1978,12 @@ namespace wfe {
 		PFN_vkCmdBeginQuery pfn_vkCmdBeginQuery;
 		PFN_vkCmdEndQuery pfn_vkCmdEndQuery;
 #endif
-#if defined(VK_EXT_conditional_rendering) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_conditional_rendering)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBeginConditionalRenderingEXT pfn_vkCmdBeginConditionalRenderingEXT;
 		PFN_vkCmdEndConditionalRenderingEXT pfn_vkCmdEndConditionalRenderingEXT;
+#endif
+#if ((defined(VK_EXT_custom_resolve)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+		PFN_vkCmdBeginCustomResolveEXT pfn_vkCmdBeginCustomResolveEXT;
 #endif
 #if defined(VK_VERSION_1_0)
 		PFN_vkCmdResetQueryPool pfn_vkCmdResetQueryPool;
@@ -1784,10 +1995,13 @@ namespace wfe {
 		PFN_vkCmdEndRenderPass pfn_vkCmdEndRenderPass;
 		PFN_vkCmdExecuteCommands pfn_vkCmdExecuteCommands;
 #endif
-#if defined(VK_KHR_android_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_android_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateAndroidSurfaceKHR pfn_vkCreateAndroidSurfaceKHR;
 #endif
-#if defined(VK_KHR_display) && (defined(VK_KHR_surface))
+#if (defined(VK_OHOS_surface)) && (defined(VK_KHR_surface))
+		PFN_vkCreateSurfaceOHOS pfn_vkCreateSurfaceOHOS;
+#endif
+#if (defined(VK_KHR_display)) && (defined(VK_KHR_surface))
 		PFN_vkGetPhysicalDeviceDisplayPropertiesKHR pfn_vkGetPhysicalDeviceDisplayPropertiesKHR;
 		PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR pfn_vkGetPhysicalDeviceDisplayPlanePropertiesKHR;
 		PFN_vkGetDisplayPlaneSupportedDisplaysKHR pfn_vkGetDisplayPlaneSupportedDisplaysKHR;
@@ -1796,7 +2010,7 @@ namespace wfe {
 		PFN_vkGetDisplayPlaneCapabilitiesKHR pfn_vkGetDisplayPlaneCapabilitiesKHR;
 		PFN_vkCreateDisplayPlaneSurfaceKHR pfn_vkCreateDisplayPlaneSurfaceKHR;
 #endif
-#if defined(VK_KHR_display_swapchain) && (defined(VK_KHR_swapchain) && defined(VK_KHR_display))
+#if (defined(VK_KHR_display_swapchain)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_display))
 		PFN_vkCreateSharedSwapchainsKHR pfn_vkCreateSharedSwapchainsKHR;
 #endif
 #if defined(VK_KHR_surface)
@@ -1806,43 +2020,47 @@ namespace wfe {
 		PFN_vkGetPhysicalDeviceSurfaceFormatsKHR pfn_vkGetPhysicalDeviceSurfaceFormatsKHR;
 		PFN_vkGetPhysicalDeviceSurfacePresentModesKHR pfn_vkGetPhysicalDeviceSurfacePresentModesKHR;
 #endif
-#if defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))
 		PFN_vkCreateSwapchainKHR pfn_vkCreateSwapchainKHR;
 		PFN_vkDestroySwapchainKHR pfn_vkDestroySwapchainKHR;
 		PFN_vkGetSwapchainImagesKHR pfn_vkGetSwapchainImagesKHR;
 		PFN_vkAcquireNextImageKHR pfn_vkAcquireNextImageKHR;
 		PFN_vkQueuePresentKHR pfn_vkQueuePresentKHR;
 #endif
-#if defined(VK_NN_vi_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_NN_vi_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateViSurfaceNN pfn_vkCreateViSurfaceNN;
 #endif
-#if defined(VK_KHR_wayland_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_wayland_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateWaylandSurfaceKHR pfn_vkCreateWaylandSurfaceKHR;
 		PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR pfn_vkGetPhysicalDeviceWaylandPresentationSupportKHR;
 #endif
-#if defined(VK_KHR_win32_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_SEC_ubm_surface)) && (defined(VK_KHR_surface))
+		PFN_vkCreateUbmSurfaceSEC pfn_vkCreateUbmSurfaceSEC;
+		PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC pfn_vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#endif
+#if (defined(VK_KHR_win32_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateWin32SurfaceKHR pfn_vkCreateWin32SurfaceKHR;
 		PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR pfn_vkGetPhysicalDeviceWin32PresentationSupportKHR;
 #endif
-#if defined(VK_KHR_xlib_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_xlib_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateXlibSurfaceKHR pfn_vkCreateXlibSurfaceKHR;
 		PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR pfn_vkGetPhysicalDeviceXlibPresentationSupportKHR;
 #endif
-#if defined(VK_KHR_xcb_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_xcb_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateXcbSurfaceKHR pfn_vkCreateXcbSurfaceKHR;
 		PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR pfn_vkGetPhysicalDeviceXcbPresentationSupportKHR;
 #endif
-#if defined(VK_EXT_directfb_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_directfb_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateDirectFBSurfaceEXT pfn_vkCreateDirectFBSurfaceEXT;
 		PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT pfn_vkGetPhysicalDeviceDirectFBPresentationSupportEXT;
 #endif
-#if defined(VK_FUCHSIA_imagepipe_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_FUCHSIA_imagepipe_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateImagePipeSurfaceFUCHSIA pfn_vkCreateImagePipeSurfaceFUCHSIA;
 #endif
-#if defined(VK_GGP_stream_descriptor_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_GGP_stream_descriptor_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateStreamDescriptorSurfaceGGP pfn_vkCreateStreamDescriptorSurfaceGGP;
 #endif
-#if defined(VK_QNX_screen_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_QNX_screen_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateScreenSurfaceQNX pfn_vkCreateScreenSurfaceQNX;
 		PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX pfn_vkGetPhysicalDeviceScreenPresentationSupportQNX;
 #endif
@@ -1851,7 +2069,7 @@ namespace wfe {
 		PFN_vkDestroyDebugReportCallbackEXT pfn_vkDestroyDebugReportCallbackEXT;
 		PFN_vkDebugReportMessageEXT pfn_vkDebugReportMessageEXT;
 #endif
-#if defined(VK_EXT_debug_marker) && (defined(VK_EXT_debug_report))
+#if (defined(VK_EXT_debug_marker)) && (defined(VK_EXT_debug_report))
 		PFN_vkDebugMarkerSetObjectNameEXT pfn_vkDebugMarkerSetObjectNameEXT;
 		PFN_vkDebugMarkerSetObjectTagEXT pfn_vkDebugMarkerSetObjectTagEXT;
 		PFN_vkCmdDebugMarkerBeginEXT pfn_vkCmdDebugMarkerBeginEXT;
@@ -1861,10 +2079,10 @@ namespace wfe {
 #if defined(VK_NV_external_memory_capabilities)
 		PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV pfn_vkGetPhysicalDeviceExternalImageFormatPropertiesNV;
 #endif
-#if defined(VK_NV_external_memory_win32) && (defined(VK_NV_external_memory))
+#if (defined(VK_NV_external_memory_win32)) && (defined(VK_NV_external_memory))
 		PFN_vkGetMemoryWin32HandleNV pfn_vkGetMemoryWin32HandleNV;
 #endif
-#if defined(VK_NV_device_generated_commands) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_device_generated_commands)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdExecuteGeneratedCommandsNV pfn_vkCmdExecuteGeneratedCommandsNV;
 		PFN_vkCmdPreprocessGeneratedCommandsNV pfn_vkCmdPreprocessGeneratedCommandsNV;
 		PFN_vkCmdBindPipelineShaderGroupNV pfn_vkCmdBindPipelineShaderGroupNV;
@@ -1872,7 +2090,7 @@ namespace wfe {
 		PFN_vkCreateIndirectCommandsLayoutNV pfn_vkCreateIndirectCommandsLayoutNV;
 		PFN_vkDestroyIndirectCommandsLayoutNV pfn_vkDestroyIndirectCommandsLayoutNV;
 #endif
-#if defined(VK_EXT_device_generated_commands) && (((defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) && defined(VK_KHR_maintenance5)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_device_generated_commands)) && (((defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) && (defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5))) || defined(VK_VERSION_1_3))
 		PFN_vkCmdExecuteGeneratedCommandsEXT pfn_vkCmdExecuteGeneratedCommandsEXT;
 		PFN_vkCmdPreprocessGeneratedCommandsEXT pfn_vkCmdPreprocessGeneratedCommandsEXT;
 		PFN_vkGetGeneratedCommandsMemoryRequirementsEXT pfn_vkGetGeneratedCommandsMemoryRequirementsEXT;
@@ -1928,7 +2146,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdPushDescriptorSet pfn_vkCmdPushDescriptorSet;
 #endif
-#if defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_push_descriptor)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdPushDescriptorSetKHR pfn_vkCmdPushDescriptorSetKHR;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -1940,25 +2158,25 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		PFN_vkGetPhysicalDeviceExternalBufferProperties pfn_vkGetPhysicalDeviceExternalBufferProperties;
 #endif
-#if defined(VK_KHR_external_memory_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR pfn_vkGetPhysicalDeviceExternalBufferPropertiesKHR;
 #endif
-#if defined(VK_KHR_external_memory_win32) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_win32)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryWin32HandleKHR pfn_vkGetMemoryWin32HandleKHR;
 		PFN_vkGetMemoryWin32HandlePropertiesKHR pfn_vkGetMemoryWin32HandlePropertiesKHR;
 #endif
-#if defined(VK_KHR_external_memory_fd) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_memory_fd)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryFdKHR pfn_vkGetMemoryFdKHR;
 		PFN_vkGetMemoryFdPropertiesKHR pfn_vkGetMemoryFdPropertiesKHR;
 #endif
-#if defined(VK_FUCHSIA_external_memory) && ((defined(VK_KHR_external_memory_capabilities) && defined(VK_KHR_external_memory)) || defined(VK_VERSION_1_1))
+#if (defined(VK_FUCHSIA_external_memory)) && ((defined(VK_KHR_external_memory_capabilities) && defined(VK_KHR_external_memory)) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryZirconHandleFUCHSIA pfn_vkGetMemoryZirconHandleFUCHSIA;
 		PFN_vkGetMemoryZirconHandlePropertiesFUCHSIA pfn_vkGetMemoryZirconHandlePropertiesFUCHSIA;
 #endif
-#if defined(VK_NV_external_memory_rdma) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_memory_rdma)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryRemoteAddressNV pfn_vkGetMemoryRemoteAddressNV;
 #endif
-#if defined(VK_NV_external_memory_sci_buf) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_memory_sci_buf)) && (defined(VK_VERSION_1_1))
 		PFN_vkGetMemorySciBufNV pfn_vkGetMemorySciBufNV;
 		PFN_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV pfn_vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV;
 		PFN_vkGetPhysicalDeviceSciBufAttributesNV pfn_vkGetPhysicalDeviceSciBufAttributesNV;
@@ -1966,70 +2184,70 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		PFN_vkGetPhysicalDeviceExternalSemaphoreProperties pfn_vkGetPhysicalDeviceExternalSemaphoreProperties;
 #endif
-#if defined(VK_KHR_external_semaphore_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_semaphore_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR pfn_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR;
 #endif
-#if defined(VK_KHR_external_semaphore_win32) && (defined(VK_KHR_external_semaphore))
+#if (defined(VK_KHR_external_semaphore_win32)) && (defined(VK_KHR_external_semaphore))
 		PFN_vkGetSemaphoreWin32HandleKHR pfn_vkGetSemaphoreWin32HandleKHR;
 		PFN_vkImportSemaphoreWin32HandleKHR pfn_vkImportSemaphoreWin32HandleKHR;
 #endif
-#if defined(VK_KHR_external_semaphore_fd) && (defined(VK_KHR_external_semaphore) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_semaphore_fd)) && (defined(VK_KHR_external_semaphore) || defined(VK_VERSION_1_1))
 		PFN_vkGetSemaphoreFdKHR pfn_vkGetSemaphoreFdKHR;
 		PFN_vkImportSemaphoreFdKHR pfn_vkImportSemaphoreFdKHR;
 #endif
-#if defined(VK_FUCHSIA_external_semaphore) && (defined(VK_KHR_external_semaphore_capabilities) && defined(VK_KHR_external_semaphore))
+#if (defined(VK_FUCHSIA_external_semaphore)) && (defined(VK_KHR_external_semaphore_capabilities) && defined(VK_KHR_external_semaphore))
 		PFN_vkGetSemaphoreZirconHandleFUCHSIA pfn_vkGetSemaphoreZirconHandleFUCHSIA;
 		PFN_vkImportSemaphoreZirconHandleFUCHSIA pfn_vkImportSemaphoreZirconHandleFUCHSIA;
 #endif
 #if defined(VK_VERSION_1_1)
 		PFN_vkGetPhysicalDeviceExternalFenceProperties pfn_vkGetPhysicalDeviceExternalFenceProperties;
 #endif
-#if defined(VK_KHR_external_fence_capabilities) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_fence_capabilities)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR pfn_vkGetPhysicalDeviceExternalFencePropertiesKHR;
 #endif
-#if defined(VK_KHR_external_fence_win32) && (defined(VK_KHR_external_fence))
+#if (defined(VK_KHR_external_fence_win32)) && (defined(VK_KHR_external_fence))
 		PFN_vkGetFenceWin32HandleKHR pfn_vkGetFenceWin32HandleKHR;
 		PFN_vkImportFenceWin32HandleKHR pfn_vkImportFenceWin32HandleKHR;
 #endif
-#if defined(VK_KHR_external_fence_fd) && (defined(VK_KHR_external_fence) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_external_fence_fd)) && (defined(VK_KHR_external_fence) || defined(VK_VERSION_1_1))
 		PFN_vkGetFenceFdKHR pfn_vkGetFenceFdKHR;
 		PFN_vkImportFenceFdKHR pfn_vkImportFenceFdKHR;
 #endif
-#if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
+#if ((defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))) || ((defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1)))
 		PFN_vkGetFenceSciSyncFenceNV pfn_vkGetFenceSciSyncFenceNV;
 		PFN_vkGetFenceSciSyncObjNV pfn_vkGetFenceSciSyncObjNV;
 		PFN_vkImportFenceSciSyncFenceNV pfn_vkImportFenceSciSyncFenceNV;
 		PFN_vkImportFenceSciSyncObjNV pfn_vkImportFenceSciSyncObjNV;
 #endif
-#if defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1))
 		PFN_vkGetSemaphoreSciSyncObjNV pfn_vkGetSemaphoreSciSyncObjNV;
 		PFN_vkImportSemaphoreSciSyncObjNV pfn_vkImportSemaphoreSciSyncObjNV;
 #endif
-#if (defined(VK_NV_external_sci_sync) && (defined(VK_VERSION_1_1))) || (defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1)))
+#if ((defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))) || ((defined(VK_NV_external_sci_sync)) && (defined(VK_VERSION_1_1)))
 		PFN_vkGetPhysicalDeviceSciSyncAttributesNV pfn_vkGetPhysicalDeviceSciSyncAttributesNV;
 #endif
-#if defined(VK_NV_external_sci_sync2) && (defined(VK_VERSION_1_1))
+#if (defined(VK_NV_external_sci_sync2)) && (defined(VK_VERSION_1_1))
 		PFN_vkCreateSemaphoreSciSyncPoolNV pfn_vkCreateSemaphoreSciSyncPoolNV;
 		PFN_vkDestroySemaphoreSciSyncPoolNV pfn_vkDestroySemaphoreSciSyncPoolNV;
 #endif
-#if defined(VK_EXT_direct_mode_display) && (defined(VK_KHR_display))
+#if (defined(VK_EXT_direct_mode_display)) && (defined(VK_KHR_display))
 		PFN_vkReleaseDisplayEXT pfn_vkReleaseDisplayEXT;
 #endif
-#if defined(VK_EXT_acquire_xlib_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_EXT_acquire_xlib_display)) && (defined(VK_EXT_direct_mode_display))
 		PFN_vkAcquireXlibDisplayEXT pfn_vkAcquireXlibDisplayEXT;
 		PFN_vkGetRandROutputDisplayEXT pfn_vkGetRandROutputDisplayEXT;
 #endif
-#if defined(VK_NV_acquire_winrt_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_NV_acquire_winrt_display)) && (defined(VK_EXT_direct_mode_display))
 		PFN_vkAcquireWinrtDisplayNV pfn_vkAcquireWinrtDisplayNV;
 		PFN_vkGetWinrtDisplayNV pfn_vkGetWinrtDisplayNV;
 #endif
-#if defined(VK_EXT_display_control) && (defined(VK_EXT_display_surface_counter) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_display_control)) && (defined(VK_EXT_display_surface_counter) && defined(VK_KHR_swapchain))
 		PFN_vkDisplayPowerControlEXT pfn_vkDisplayPowerControlEXT;
 		PFN_vkRegisterDeviceEventEXT pfn_vkRegisterDeviceEventEXT;
 		PFN_vkRegisterDisplayEventEXT pfn_vkRegisterDisplayEventEXT;
 		PFN_vkGetSwapchainCounterEXT pfn_vkGetSwapchainCounterEXT;
 #endif
-#if defined(VK_EXT_display_surface_counter) && (defined(VK_KHR_display))
+#if (defined(VK_EXT_display_surface_counter)) && (defined(VK_KHR_display))
 		PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT pfn_vkGetPhysicalDeviceSurfaceCapabilities2EXT;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -2041,7 +2259,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		PFN_vkGetDeviceGroupPeerMemoryFeatures pfn_vkGetDeviceGroupPeerMemoryFeatures;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		PFN_vkGetDeviceGroupPeerMemoryFeaturesKHR pfn_vkGetDeviceGroupPeerMemoryFeaturesKHR;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -2059,23 +2277,23 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		PFN_vkCmdSetDeviceMask pfn_vkCmdSetDeviceMask;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		PFN_vkCmdSetDeviceMaskKHR pfn_vkCmdSetDeviceMaskKHR;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		PFN_vkGetDeviceGroupPresentCapabilitiesKHR pfn_vkGetDeviceGroupPresentCapabilitiesKHR;
 		PFN_vkGetDeviceGroupSurfacePresentModesKHR pfn_vkGetDeviceGroupSurfacePresentModesKHR;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_swapchain)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_swapchain))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		PFN_vkAcquireNextImage2KHR pfn_vkAcquireNextImage2KHR;
 #endif
 #if defined(VK_VERSION_1_1)
 		PFN_vkCmdDispatchBase pfn_vkCmdDispatchBase;
 #endif
-#if defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))
+#if (defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))
 		PFN_vkCmdDispatchBaseKHR pfn_vkCmdDispatchBaseKHR;
 #endif
-#if ((defined(VK_KHR_swapchain) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1))) || ((defined(VK_KHR_device_group) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface)))
+#if (((defined(VK_KHR_device_group)) && (defined(VK_KHR_device_group_creation))) && (defined(VK_KHR_surface))) || (((defined(VK_KHR_swapchain)) && (defined(VK_KHR_surface))) && (defined(VK_VERSION_1_1)))
 		PFN_vkGetPhysicalDevicePresentRectanglesKHR pfn_vkGetPhysicalDevicePresentRectanglesKHR;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -2099,45 +2317,45 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdPushDescriptorSetWithTemplate pfn_vkCmdPushDescriptorSetWithTemplate;
 #endif
-#if ((defined(VK_KHR_push_descriptor) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_1) || defined(VK_KHR_descriptor_update_template))) || ((defined(VK_KHR_descriptor_update_template)) && (defined(VK_KHR_push_descriptor)))
+#if ((defined(VK_KHR_descriptor_update_template)) && (defined(VK_KHR_push_descriptor))) || (((defined(VK_KHR_push_descriptor)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_1) || defined(VK_KHR_descriptor_update_template)))
 		PFN_vkCmdPushDescriptorSetWithTemplateKHR pfn_vkCmdPushDescriptorSetWithTemplateKHR;
 #endif
-#if defined(VK_EXT_hdr_metadata) && (defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_hdr_metadata)) && (defined(VK_KHR_swapchain))
 		PFN_vkSetHdrMetadataEXT pfn_vkSetHdrMetadataEXT;
 #endif
-#if defined(VK_KHR_shared_presentable_image) && (defined(VK_KHR_swapchain) && defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_KHR_shared_presentable_image)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkGetSwapchainStatusKHR pfn_vkGetSwapchainStatusKHR;
 #endif
-#if defined(VK_GOOGLE_display_timing) && (defined(VK_KHR_swapchain))
+#if (defined(VK_GOOGLE_display_timing)) && (defined(VK_KHR_swapchain))
 		PFN_vkGetRefreshCycleDurationGOOGLE pfn_vkGetRefreshCycleDurationGOOGLE;
 		PFN_vkGetPastPresentationTimingGOOGLE pfn_vkGetPastPresentationTimingGOOGLE;
 #endif
-#if defined(VK_MVK_ios_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_MVK_ios_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateIOSSurfaceMVK pfn_vkCreateIOSSurfaceMVK;
 #endif
-#if defined(VK_MVK_macos_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_MVK_macos_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateMacOSSurfaceMVK pfn_vkCreateMacOSSurfaceMVK;
 #endif
-#if defined(VK_EXT_metal_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_metal_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateMetalSurfaceEXT pfn_vkCreateMetalSurfaceEXT;
 #endif
 #if defined(VK_NV_clip_space_w_scaling)
 		PFN_vkCmdSetViewportWScalingNV pfn_vkCmdSetViewportWScalingNV;
 #endif
-#if defined(VK_EXT_discard_rectangles) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_discard_rectangles)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetDiscardRectangleEXT pfn_vkCmdSetDiscardRectangleEXT;
 		PFN_vkCmdSetDiscardRectangleEnableEXT pfn_vkCmdSetDiscardRectangleEnableEXT;
 		PFN_vkCmdSetDiscardRectangleModeEXT pfn_vkCmdSetDiscardRectangleModeEXT;
 #endif
-#if defined(VK_EXT_sample_locations) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_sample_locations)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetSampleLocationsEXT pfn_vkCmdSetSampleLocationsEXT;
 		PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT pfn_vkGetPhysicalDeviceMultisamplePropertiesEXT;
 #endif
-#if defined(VK_KHR_get_surface_capabilities2) && (defined(VK_KHR_surface))
+#if (defined(VK_KHR_get_surface_capabilities2)) && (defined(VK_KHR_surface))
 		PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR pfn_vkGetPhysicalDeviceSurfaceCapabilities2KHR;
 		PFN_vkGetPhysicalDeviceSurfaceFormats2KHR pfn_vkGetPhysicalDeviceSurfaceFormats2KHR;
 #endif
-#if defined(VK_KHR_get_display_properties2) && (defined(VK_KHR_display))
+#if (defined(VK_KHR_get_display_properties2)) && (defined(VK_KHR_display))
 		PFN_vkGetPhysicalDeviceDisplayProperties2KHR pfn_vkGetPhysicalDeviceDisplayProperties2KHR;
 		PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR pfn_vkGetPhysicalDeviceDisplayPlaneProperties2KHR;
 		PFN_vkGetDisplayModeProperties2KHR pfn_vkGetDisplayModeProperties2KHR;
@@ -2164,31 +2382,31 @@ namespace wfe {
 #if defined(VK_VERSION_1_3)
 		PFN_vkGetDeviceBufferMemoryRequirements pfn_vkGetDeviceBufferMemoryRequirements;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceBufferMemoryRequirementsKHR pfn_vkGetDeviceBufferMemoryRequirementsKHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkGetDeviceImageMemoryRequirements pfn_vkGetDeviceImageMemoryRequirements;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceImageMemoryRequirementsKHR pfn_vkGetDeviceImageMemoryRequirementsKHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkGetDeviceImageSparseMemoryRequirements pfn_vkGetDeviceImageSparseMemoryRequirements;
 #endif
-#if defined(VK_KHR_maintenance4) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance4)) && (defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceImageSparseMemoryRequirementsKHR pfn_vkGetDeviceImageSparseMemoryRequirementsKHR;
 #endif
 #if defined(VK_VERSION_1_1)
 		PFN_vkCreateSamplerYcbcrConversion pfn_vkCreateSamplerYcbcrConversion;
 #endif
-#if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_sampler_ycbcr_conversion)) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		PFN_vkCreateSamplerYcbcrConversionKHR pfn_vkCreateSamplerYcbcrConversionKHR;
 #endif
 #if defined(VK_VERSION_1_1)
 		PFN_vkDestroySamplerYcbcrConversion pfn_vkDestroySamplerYcbcrConversion;
 #endif
-#if defined(VK_KHR_sampler_ycbcr_conversion) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_sampler_ycbcr_conversion)) && ((defined(VK_KHR_maintenance1) && defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		PFN_vkDestroySamplerYcbcrConversionKHR pfn_vkDestroySamplerYcbcrConversionKHR;
 #endif
 #if defined(VK_VERSION_1_1)
@@ -2203,7 +2421,7 @@ namespace wfe {
 #if defined(VK_VERSION_1_1)
 		PFN_vkGetDescriptorSetLayoutSupport pfn_vkGetDescriptorSetLayoutSupport;
 #endif
-#if defined(VK_KHR_maintenance3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetDescriptorSetLayoutSupportKHR pfn_vkGetDescriptorSetLayoutSupportKHR;
 #endif
 #if defined(VK_ANDROID_native_buffer)
@@ -2215,19 +2433,19 @@ namespace wfe {
 #if defined(VK_AMD_shader_info)
 		PFN_vkGetShaderInfoAMD pfn_vkGetShaderInfoAMD;
 #endif
-#if defined(VK_AMD_display_native_hdr) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_AMD_display_native_hdr)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		PFN_vkSetLocalDimmingAMD pfn_vkSetLocalDimmingAMD;
 #endif
-#if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR;
 #endif
-#if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT pfn_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT;
 #endif
-#if defined(VK_KHR_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetCalibratedTimestampsKHR pfn_vkGetCalibratedTimestampsKHR;
 #endif
-#if defined(VK_EXT_calibrated_timestamps) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_calibrated_timestamps)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetCalibratedTimestampsEXT pfn_vkGetCalibratedTimestampsEXT;
 #endif
 #if defined(VK_EXT_debug_utils)
@@ -2243,7 +2461,7 @@ namespace wfe {
 		PFN_vkDestroyDebugUtilsMessengerEXT pfn_vkDestroyDebugUtilsMessengerEXT;
 		PFN_vkSubmitDebugUtilsMessageEXT pfn_vkSubmitDebugUtilsMessageEXT;
 #endif
-#if defined(VK_EXT_external_memory_host) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_external_memory_host)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryHostPointerPropertiesEXT pfn_vkGetMemoryHostPointerPropertiesEXT;
 #endif
 #if defined(VK_AMD_buffer_marker)
@@ -2252,46 +2470,46 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		PFN_vkCreateRenderPass2 pfn_vkCreateRenderPass2;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		PFN_vkCreateRenderPass2KHR pfn_vkCreateRenderPass2KHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkCmdBeginRenderPass2 pfn_vkCmdBeginRenderPass2;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBeginRenderPass2KHR pfn_vkCmdBeginRenderPass2KHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkCmdNextSubpass2 pfn_vkCmdNextSubpass2;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdNextSubpass2KHR pfn_vkCmdNextSubpass2KHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkCmdEndRenderPass2 pfn_vkCmdEndRenderPass2;
 #endif
-#if defined(VK_KHR_create_renderpass2) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_create_renderpass2)) && ((defined(VK_KHR_multiview) && defined(VK_KHR_maintenance2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdEndRenderPass2KHR pfn_vkCmdEndRenderPass2KHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkGetSemaphoreCounterValue pfn_vkGetSemaphoreCounterValue;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetSemaphoreCounterValueKHR pfn_vkGetSemaphoreCounterValueKHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkWaitSemaphores pfn_vkWaitSemaphores;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkWaitSemaphoresKHR pfn_vkWaitSemaphoresKHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkSignalSemaphore pfn_vkSignalSemaphore;
 #endif
-#if defined(VK_KHR_timeline_semaphore) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkSignalSemaphoreKHR pfn_vkSignalSemaphoreKHR;
 #endif
-#if defined(VK_ANDROID_external_memory_android_hardware_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+#if (defined(VK_ANDROID_external_memory_android_hardware_buffer)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 		PFN_vkGetAndroidHardwareBufferPropertiesANDROID pfn_vkGetAndroidHardwareBufferPropertiesANDROID;
 		PFN_vkGetMemoryAndroidHardwareBufferANDROID pfn_vkGetMemoryAndroidHardwareBufferANDROID;
 #endif
@@ -2313,11 +2531,11 @@ namespace wfe {
 #if defined(VK_AMD_draw_indirect_count)
 		PFN_vkCmdDrawIndexedIndirectCountAMD pfn_vkCmdDrawIndexedIndirectCountAMD;
 #endif
-#if defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_device_diagnostic_checkpoints)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetCheckpointNV pfn_vkCmdSetCheckpointNV;
 		PFN_vkGetQueueCheckpointDataNV pfn_vkGetQueueCheckpointDataNV;
 #endif
-#if defined(VK_EXT_transform_feedback) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_transform_feedback)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBindTransformFeedbackBuffersEXT pfn_vkCmdBindTransformFeedbackBuffersEXT;
 		PFN_vkCmdBeginTransformFeedbackEXT pfn_vkCmdBeginTransformFeedbackEXT;
 		PFN_vkCmdEndTransformFeedbackEXT pfn_vkCmdEndTransformFeedbackEXT;
@@ -2325,46 +2543,46 @@ namespace wfe {
 		PFN_vkCmdEndQueryIndexedEXT pfn_vkCmdEndQueryIndexedEXT;
 		PFN_vkCmdDrawIndirectByteCountEXT pfn_vkCmdDrawIndirectByteCountEXT;
 #endif
-#if defined(VK_NV_scissor_exclusive) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_scissor_exclusive)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetExclusiveScissorNV pfn_vkCmdSetExclusiveScissorNV;
 		PFN_vkCmdSetExclusiveScissorEnableNV pfn_vkCmdSetExclusiveScissorEnableNV;
 #endif
-#if defined(VK_NV_shading_rate_image) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_shading_rate_image)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBindShadingRateImageNV pfn_vkCmdBindShadingRateImageNV;
 		PFN_vkCmdSetViewportShadingRatePaletteNV pfn_vkCmdSetViewportShadingRatePaletteNV;
 		PFN_vkCmdSetCoarseSampleOrderNV pfn_vkCmdSetCoarseSampleOrderNV;
 #endif
-#if defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_mesh_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdDrawMeshTasksNV pfn_vkCmdDrawMeshTasksNV;
 		PFN_vkCmdDrawMeshTasksIndirectNV pfn_vkCmdDrawMeshTasksIndirectNV;
 #endif
-#if (defined(VK_NV_mesh_shader) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+#if ((defined(VK_NV_mesh_shader)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_2) || defined(VK_KHR_draw_indirect_count) || defined(VK_AMD_draw_indirect_count))
 		PFN_vkCmdDrawMeshTasksIndirectCountNV pfn_vkCmdDrawMeshTasksIndirectCountNV;
 #endif
-#if defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))
+#if (defined(VK_EXT_mesh_shader)) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))
 		PFN_vkCmdDrawMeshTasksEXT pfn_vkCmdDrawMeshTasksEXT;
 		PFN_vkCmdDrawMeshTasksIndirectEXT pfn_vkCmdDrawMeshTasksIndirectEXT;
 #endif
-#if (defined(VK_EXT_mesh_shader) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+#if ((defined(VK_EXT_mesh_shader)) && (defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2))) && (defined(VK_VERSION_1_2) || defined(VK_KHR_draw_indirect_count) || defined(VK_AMD_draw_indirect_count))
 		PFN_vkCmdDrawMeshTasksIndirectCountEXT pfn_vkCmdDrawMeshTasksIndirectCountEXT;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkCompileDeferredNV pfn_vkCompileDeferredNV;
 		PFN_vkCreateAccelerationStructureNV pfn_vkCreateAccelerationStructureNV;
 #endif
-#if defined(VK_HUAWEI_invocation_mask) && (defined(VK_KHR_ray_tracing_pipeline) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_HUAWEI_invocation_mask)) && (defined(VK_KHR_ray_tracing_pipeline) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkCmdBindInvocationMaskHUAWEI pfn_vkCmdBindInvocationMaskHUAWEI;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkDestroyAccelerationStructureKHR pfn_vkDestroyAccelerationStructureKHR;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkDestroyAccelerationStructureNV pfn_vkDestroyAccelerationStructureNV;
 		PFN_vkGetAccelerationStructureMemoryRequirementsNV pfn_vkGetAccelerationStructureMemoryRequirementsNV;
 		PFN_vkBindAccelerationStructureMemoryNV pfn_vkBindAccelerationStructureMemoryNV;
 		PFN_vkCmdCopyAccelerationStructureNV pfn_vkCmdCopyAccelerationStructureNV;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkCmdCopyAccelerationStructureKHR pfn_vkCmdCopyAccelerationStructureKHR;
 		PFN_vkCopyAccelerationStructureKHR pfn_vkCopyAccelerationStructureKHR;
 		PFN_vkCmdCopyAccelerationStructureToMemoryKHR pfn_vkCmdCopyAccelerationStructureToMemoryKHR;
@@ -2373,52 +2591,52 @@ namespace wfe {
 		PFN_vkCopyMemoryToAccelerationStructureKHR pfn_vkCopyMemoryToAccelerationStructureKHR;
 		PFN_vkCmdWriteAccelerationStructuresPropertiesKHR pfn_vkCmdWriteAccelerationStructuresPropertiesKHR;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdWriteAccelerationStructuresPropertiesNV pfn_vkCmdWriteAccelerationStructuresPropertiesNV;
 		PFN_vkCmdBuildAccelerationStructureNV pfn_vkCmdBuildAccelerationStructureNV;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkWriteAccelerationStructuresPropertiesKHR pfn_vkWriteAccelerationStructuresPropertiesKHR;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkCmdTraceRaysKHR pfn_vkCmdTraceRaysKHR;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdTraceRaysNV pfn_vkCmdTraceRaysNV;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkGetRayTracingShaderGroupHandlesKHR pfn_vkGetRayTracingShaderGroupHandlesKHR;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkGetRayTracingShaderGroupHandlesNV pfn_vkGetRayTracingShaderGroupHandlesNV;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR pfn_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR;
 #endif
-#if defined(VK_NV_ray_tracing) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_ray_tracing)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_get_memory_requirements2)) || defined(VK_VERSION_1_1))
 		PFN_vkGetAccelerationStructureHandleNV pfn_vkGetAccelerationStructureHandleNV;
 		PFN_vkCreateRayTracingPipelinesNV pfn_vkCreateRayTracingPipelinesNV;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkCreateRayTracingPipelinesKHR pfn_vkCreateRayTracingPipelinesKHR;
 #endif
-#if defined(VK_NV_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_NV_cooperative_matrix)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkCmdTraceRaysIndirectKHR pfn_vkCmdTraceRaysIndirectKHR;
 #endif
-#if (defined(VK_KHR_ray_tracing_maintenance1) && (defined(VK_KHR_acceleration_structure))) && (defined(VK_KHR_ray_tracing_pipeline))
+#if ((defined(VK_KHR_ray_tracing_maintenance1)) && (defined(VK_KHR_acceleration_structure))) && (defined(VK_KHR_ray_tracing_pipeline))
 		PFN_vkCmdTraceRaysIndirect2KHR pfn_vkCmdTraceRaysIndirect2KHR;
 #endif
-#if defined(VK_NV_cluster_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
+#if (defined(VK_NV_cluster_acceleration_structure)) && (defined(VK_KHR_acceleration_structure))
 		PFN_vkGetClusterAccelerationStructureBuildSizesNV pfn_vkGetClusterAccelerationStructureBuildSizesNV;
 		PFN_vkCmdBuildClusterAccelerationStructureIndirectNV pfn_vkCmdBuildClusterAccelerationStructureIndirectNV;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkGetDeviceAccelerationStructureCompatibilityKHR pfn_vkGetDeviceAccelerationStructureCompatibilityKHR;
 #endif
-#if defined(VK_KHR_ray_tracing_pipeline) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
+#if (defined(VK_KHR_ray_tracing_pipeline)) && ((defined(VK_KHR_spirv_1_4) || defined(VK_VERSION_1_2)) && defined(VK_KHR_acceleration_structure))
 		PFN_vkGetRayTracingShaderGroupStackSizeKHR pfn_vkGetRayTracingShaderGroupStackSizeKHR;
 		PFN_vkCmdSetRayTracingPipelineStackSizeKHR pfn_vkCmdSetRayTracingPipelineStackSizeKHR;
 #endif
@@ -2426,45 +2644,46 @@ namespace wfe {
 		PFN_vkGetImageViewHandleNVX pfn_vkGetImageViewHandleNVX;
 		PFN_vkGetImageViewHandle64NVX pfn_vkGetImageViewHandle64NVX;
 		PFN_vkGetImageViewAddressNVX pfn_vkGetImageViewAddressNVX;
+		PFN_vkGetDeviceCombinedImageSamplerIndexNVX pfn_vkGetDeviceCombinedImageSamplerIndexNVX;
 #endif
-#if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT pfn_vkGetPhysicalDeviceSurfacePresentModes2EXT;
 #endif
-#if (defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))) && (defined(VK_KHR_device_group) || defined(VK_VERSION_1_1))
+#if ((defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))) && (defined(VK_KHR_device_group) || defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceGroupSurfacePresentModes2EXT pfn_vkGetDeviceGroupSurfacePresentModes2EXT;
 #endif
-#if defined(VK_EXT_full_screen_exclusive) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
+#if (defined(VK_EXT_full_screen_exclusive)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_surface) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_swapchain))
 		PFN_vkAcquireFullScreenExclusiveModeEXT pfn_vkAcquireFullScreenExclusiveModeEXT;
 		PFN_vkReleaseFullScreenExclusiveModeEXT pfn_vkReleaseFullScreenExclusiveModeEXT;
 #endif
-#if defined(VK_KHR_performance_query) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_performance_query)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR pfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR;
 		PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR pfn_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR;
 		PFN_vkAcquireProfilingLockKHR pfn_vkAcquireProfilingLockKHR;
 		PFN_vkReleaseProfilingLockKHR pfn_vkReleaseProfilingLockKHR;
 #endif
-#if defined(VK_EXT_image_drm_format_modifier) && ((((defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_sampler_ycbcr_conversion)) || defined(VK_VERSION_1_1)) && defined(VK_KHR_image_format_list)) || defined(VK_VERSION_1_2))
+#if (defined(VK_EXT_image_drm_format_modifier)) && ((((defined(VK_KHR_bind_memory2) && defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_sampler_ycbcr_conversion)) || defined(VK_VERSION_1_1)) && defined(VK_KHR_image_format_list)) || defined(VK_VERSION_1_2))
 		PFN_vkGetImageDrmFormatModifierPropertiesEXT pfn_vkGetImageDrmFormatModifierPropertiesEXT;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkGetBufferOpaqueCaptureAddress pfn_vkGetBufferOpaqueCaptureAddress;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		PFN_vkGetBufferOpaqueCaptureAddressKHR pfn_vkGetBufferOpaqueCaptureAddressKHR;
 #endif
 #if defined(VK_VERSION_1_2)
 		PFN_vkGetBufferDeviceAddress pfn_vkGetBufferDeviceAddress;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		PFN_vkGetBufferDeviceAddressKHR pfn_vkGetBufferDeviceAddressKHR;
 #endif
-#if defined(VK_EXT_buffer_device_address) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_buffer_device_address)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetBufferDeviceAddressEXT pfn_vkGetBufferDeviceAddressEXT;
 #endif
-#if defined(VK_EXT_headless_surface) && (defined(VK_KHR_surface))
+#if (defined(VK_EXT_headless_surface)) && (defined(VK_KHR_surface))
 		PFN_vkCreateHeadlessSurfaceEXT pfn_vkCreateHeadlessSurfaceEXT;
 #endif
-#if defined(VK_NV_coverage_reduction_mode) && (defined(VK_NV_framebuffer_mixed_samples) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_NV_coverage_reduction_mode)) && (defined(VK_NV_framebuffer_mixed_samples) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV pfn_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV;
 #endif
 #if defined(VK_INTEL_performance_query)
@@ -2481,10 +2700,10 @@ namespace wfe {
 #if defined(VK_VERSION_1_2)
 		PFN_vkGetDeviceMemoryOpaqueCaptureAddress pfn_vkGetDeviceMemoryOpaqueCaptureAddress;
 #endif
-#if defined(VK_KHR_buffer_device_address) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_buffer_device_address)) && ((defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_device_group)) || defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR pfn_vkGetDeviceMemoryOpaqueCaptureAddressKHR;
 #endif
-#if defined(VK_KHR_pipeline_executable_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_pipeline_executable_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPipelineExecutablePropertiesKHR pfn_vkGetPipelineExecutablePropertiesKHR;
 		PFN_vkGetPipelineExecutableStatisticsKHR pfn_vkGetPipelineExecutableStatisticsKHR;
 		PFN_vkGetPipelineExecutableInternalRepresentationsKHR pfn_vkGetPipelineExecutableInternalRepresentationsKHR;
@@ -2492,10 +2711,10 @@ namespace wfe {
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdSetLineStipple pfn_vkCmdSetLineStipple;
 #endif
-#if defined(VK_KHR_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_line_rasterization)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetLineStippleKHR pfn_vkCmdSetLineStippleKHR;
 #endif
-#if defined(VK_EXT_line_rasterization) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_line_rasterization)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetLineStippleEXT pfn_vkCmdSetLineStippleEXT;
 #endif
 #if defined(VK_VERSION_1_3)
@@ -2504,7 +2723,7 @@ namespace wfe {
 #if defined(VK_EXT_tooling_info)
 		PFN_vkGetPhysicalDeviceToolPropertiesEXT pfn_vkGetPhysicalDeviceToolPropertiesEXT;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkCreateAccelerationStructureKHR pfn_vkCreateAccelerationStructureKHR;
 		PFN_vkCmdBuildAccelerationStructuresKHR pfn_vkCmdBuildAccelerationStructuresKHR;
 		PFN_vkCmdBuildAccelerationStructuresIndirectKHR pfn_vkCmdBuildAccelerationStructuresIndirectKHR;
@@ -2518,117 +2737,117 @@ namespace wfe {
 		PFN_vkGetDeferredOperationResultKHR pfn_vkGetDeferredOperationResultKHR;
 		PFN_vkDeferredOperationJoinKHR pfn_vkDeferredOperationJoinKHR;
 #endif
-#if defined(VK_NV_device_generated_commands_compute) && (defined(VK_NV_device_generated_commands))
+#if (defined(VK_NV_device_generated_commands_compute)) && (defined(VK_NV_device_generated_commands))
 		PFN_vkGetPipelineIndirectMemoryRequirementsNV pfn_vkGetPipelineIndirectMemoryRequirementsNV;
 		PFN_vkGetPipelineIndirectDeviceAddressNV pfn_vkGetPipelineIndirectDeviceAddressNV;
 #endif
-#if defined(VK_AMD_anti_lag)
+#if (defined(VK_AMD_anti_lag)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkAntiLagUpdateAMD pfn_vkAntiLagUpdateAMD;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetCullMode pfn_vkCmdSetCullMode;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetCullModeEXT pfn_vkCmdSetCullModeEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetFrontFace pfn_vkCmdSetFrontFace;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetFrontFaceEXT pfn_vkCmdSetFrontFaceEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetPrimitiveTopology pfn_vkCmdSetPrimitiveTopology;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetPrimitiveTopologyEXT pfn_vkCmdSetPrimitiveTopologyEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetViewportWithCount pfn_vkCmdSetViewportWithCount;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetViewportWithCountEXT pfn_vkCmdSetViewportWithCountEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetScissorWithCount pfn_vkCmdSetScissorWithCount;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetScissorWithCountEXT pfn_vkCmdSetScissorWithCountEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdBindIndexBuffer2 pfn_vkCmdBindIndexBuffer2;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		PFN_vkCmdBindIndexBuffer2KHR pfn_vkCmdBindIndexBuffer2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdBindVertexBuffers2 pfn_vkCmdBindVertexBuffers2;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdBindVertexBuffers2EXT pfn_vkCmdBindVertexBuffers2EXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetDepthTestEnable pfn_vkCmdSetDepthTestEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthTestEnableEXT pfn_vkCmdSetDepthTestEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetDepthWriteEnable pfn_vkCmdSetDepthWriteEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthWriteEnableEXT pfn_vkCmdSetDepthWriteEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetDepthCompareOp pfn_vkCmdSetDepthCompareOp;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthCompareOpEXT pfn_vkCmdSetDepthCompareOpEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetDepthBoundsTestEnable pfn_vkCmdSetDepthBoundsTestEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthBoundsTestEnableEXT pfn_vkCmdSetDepthBoundsTestEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetStencilTestEnable pfn_vkCmdSetStencilTestEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetStencilTestEnableEXT pfn_vkCmdSetStencilTestEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetStencilOp pfn_vkCmdSetStencilOp;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetStencilOpEXT pfn_vkCmdSetStencilOpEXT;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetPatchControlPointsEXT pfn_vkCmdSetPatchControlPointsEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetRasterizerDiscardEnable pfn_vkCmdSetRasterizerDiscardEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetRasterizerDiscardEnableEXT pfn_vkCmdSetRasterizerDiscardEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetDepthBiasEnable pfn_vkCmdSetDepthBiasEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthBiasEnableEXT pfn_vkCmdSetDepthBiasEnableEXT;
 		PFN_vkCmdSetLogicOpEXT pfn_vkCmdSetLogicOpEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetPrimitiveRestartEnable pfn_vkCmdSetPrimitiveRestartEnable;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetPrimitiveRestartEnableEXT pfn_vkCmdSetPrimitiveRestartEnableEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_KHR_maintenance2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetTessellationDomainOriginEXT pfn_vkCmdSetTessellationDomainOriginEXT;
 #endif
-#if (defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetDepthClampEnableEXT pfn_vkCmdSetDepthClampEnableEXT;
 		PFN_vkCmdSetPolygonModeEXT pfn_vkCmdSetPolygonModeEXT;
 		PFN_vkCmdSetRasterizationSamplesEXT pfn_vkCmdSetRasterizationSamplesEXT;
@@ -2640,241 +2859,245 @@ namespace wfe {
 		PFN_vkCmdSetColorBlendEquationEXT pfn_vkCmdSetColorBlendEquationEXT;
 		PFN_vkCmdSetColorWriteMaskEXT pfn_vkCmdSetColorWriteMaskEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_transform_feedback))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_transform_feedback)))
 		PFN_vkCmdSetRasterizationStreamEXT pfn_vkCmdSetRasterizationStreamEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_conservative_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conservative_rasterization)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conservative_rasterization))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_conservative_rasterization)))
 		PFN_vkCmdSetConservativeRasterizationModeEXT pfn_vkCmdSetConservativeRasterizationModeEXT;
 		PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT pfn_vkCmdSetExtraPrimitiveOverestimationSizeEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_enable))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_enable)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_enable))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_enable)))
 		PFN_vkCmdSetDepthClipEnableEXT pfn_vkCmdSetDepthClipEnableEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_sample_locations))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_sample_locations)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_sample_locations))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_sample_locations)))
 		PFN_vkCmdSetSampleLocationsEnableEXT pfn_vkCmdSetSampleLocationsEnableEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_blend_operation_advanced))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_blend_operation_advanced)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_blend_operation_advanced))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_blend_operation_advanced)))
 		PFN_vkCmdSetColorBlendAdvancedEXT pfn_vkCmdSetColorBlendAdvancedEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_provoking_vertex))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_provoking_vertex)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_provoking_vertex))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_provoking_vertex)))
 		PFN_vkCmdSetProvokingVertexModeEXT pfn_vkCmdSetProvokingVertexModeEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_line_rasterization))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_line_rasterization)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_VERSION_1_4) || defined(VK_KHR_line_rasterization) || defined(VK_EXT_line_rasterization))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_4) || defined(VK_KHR_line_rasterization) || defined(VK_EXT_line_rasterization)))
 		PFN_vkCmdSetLineRasterizationModeEXT pfn_vkCmdSetLineRasterizationModeEXT;
 		PFN_vkCmdSetLineStippleEnableEXT pfn_vkCmdSetLineStippleEnableEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_control))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_control)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clip_control))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_EXT_depth_clip_control)))
 		PFN_vkCmdSetDepthClipNegativeOneToOneEXT pfn_vkCmdSetDepthClipNegativeOneToOneEXT;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_clip_space_w_scaling))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_clip_space_w_scaling)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_clip_space_w_scaling))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_clip_space_w_scaling)))
 		PFN_vkCmdSetViewportWScalingEnableNV pfn_vkCmdSetViewportWScalingEnableNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_viewport_swizzle))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_viewport_swizzle)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_viewport_swizzle))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_viewport_swizzle)))
 		PFN_vkCmdSetViewportSwizzleNV pfn_vkCmdSetViewportSwizzleNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_fragment_coverage_to_color))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_fragment_coverage_to_color)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_fragment_coverage_to_color))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_fragment_coverage_to_color)))
 		PFN_vkCmdSetCoverageToColorEnableNV pfn_vkCmdSetCoverageToColorEnableNV;
 		PFN_vkCmdSetCoverageToColorLocationNV pfn_vkCmdSetCoverageToColorLocationNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_framebuffer_mixed_samples))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_framebuffer_mixed_samples)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_framebuffer_mixed_samples))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_framebuffer_mixed_samples)))
 		PFN_vkCmdSetCoverageModulationModeNV pfn_vkCmdSetCoverageModulationModeNV;
 		PFN_vkCmdSetCoverageModulationTableEnableNV pfn_vkCmdSetCoverageModulationTableEnableNV;
 		PFN_vkCmdSetCoverageModulationTableNV pfn_vkCmdSetCoverageModulationTableNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_shading_rate_image))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_shading_rate_image)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_shading_rate_image))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_shading_rate_image)))
 		PFN_vkCmdSetShadingRateImageEnableNV pfn_vkCmdSetShadingRateImageEnableNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_coverage_reduction_mode))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_coverage_reduction_mode)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_coverage_reduction_mode))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_coverage_reduction_mode)))
 		PFN_vkCmdSetCoverageReductionModeNV pfn_vkCmdSetCoverageReductionModeNV;
 #endif
-#if ((defined(VK_EXT_extended_dynamic_state3) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_representative_fragment_test))) || ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_representative_fragment_test)))
+#if (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_NV_representative_fragment_test))) || (((defined(VK_EXT_extended_dynamic_state3)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_NV_representative_fragment_test)))
 		PFN_vkCmdSetRepresentativeFragmentTestEnableNV pfn_vkCmdSetRepresentativeFragmentTestEnableNV;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCreatePrivateDataSlot pfn_vkCreatePrivateDataSlot;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCreatePrivateDataSlotEXT pfn_vkCreatePrivateDataSlotEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkDestroyPrivateDataSlot pfn_vkDestroyPrivateDataSlot;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkDestroyPrivateDataSlotEXT pfn_vkDestroyPrivateDataSlotEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkSetPrivateData pfn_vkSetPrivateData;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkSetPrivateDataEXT pfn_vkSetPrivateDataEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkGetPrivateData pfn_vkGetPrivateData;
 #endif
-#if defined(VK_EXT_private_data) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_private_data)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPrivateDataEXT pfn_vkGetPrivateDataEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdCopyBuffer2 pfn_vkCmdCopyBuffer2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdCopyBuffer2KHR pfn_vkCmdCopyBuffer2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdCopyImage2 pfn_vkCmdCopyImage2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdCopyImage2KHR pfn_vkCmdCopyImage2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdBlitImage2 pfn_vkCmdBlitImage2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBlitImage2KHR pfn_vkCmdBlitImage2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdCopyBufferToImage2 pfn_vkCmdCopyBufferToImage2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdCopyBufferToImage2KHR pfn_vkCmdCopyBufferToImage2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdCopyImageToBuffer2 pfn_vkCmdCopyImageToBuffer2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdCopyImageToBuffer2KHR pfn_vkCmdCopyImageToBuffer2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdResolveImage2 pfn_vkCmdResolveImage2;
 #endif
-#if defined(VK_KHR_copy_commands2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_copy_commands2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdResolveImage2KHR pfn_vkCmdResolveImage2KHR;
 #endif
 #if defined(VK_KHR_object_refresh)
 		PFN_vkCmdRefreshObjectsKHR pfn_vkCmdRefreshObjectsKHR;
 		PFN_vkGetPhysicalDeviceRefreshableObjectTypesKHR pfn_vkGetPhysicalDeviceRefreshableObjectTypesKHR;
 #endif
-#if defined(VK_KHR_fragment_shading_rate) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_create_renderpass2)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_fragment_shading_rate)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_create_renderpass2)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdSetFragmentShadingRateKHR pfn_vkCmdSetFragmentShadingRateKHR;
 		PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR pfn_vkGetPhysicalDeviceFragmentShadingRatesKHR;
 #endif
-#if defined(VK_NV_fragment_shading_rate_enums) && (defined(VK_KHR_fragment_shading_rate))
+#if (defined(VK_NV_fragment_shading_rate_enums)) && (defined(VK_KHR_fragment_shading_rate))
 		PFN_vkCmdSetFragmentShadingRateEnumNV pfn_vkCmdSetFragmentShadingRateEnumNV;
 #endif
-#if defined(VK_KHR_acceleration_structure) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
+#if (defined(VK_KHR_acceleration_structure)) && (((defined(VK_VERSION_1_1) && defined(VK_EXT_descriptor_indexing) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_deferred_host_operations))
 		PFN_vkGetAccelerationStructureBuildSizesKHR pfn_vkGetAccelerationStructureBuildSizesKHR;
 #endif
-#if (defined(VK_EXT_vertex_input_dynamic_state) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3)))
+#if ((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) || ((defined(VK_EXT_vertex_input_dynamic_state)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkCmdSetVertexInputEXT pfn_vkCmdSetVertexInputEXT;
 #endif
-#if defined(VK_EXT_color_write_enable) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_color_write_enable)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetColorWriteEnableEXT pfn_vkCmdSetColorWriteEnableEXT;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdSetEvent2 pfn_vkCmdSetEvent2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetEvent2KHR pfn_vkCmdSetEvent2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdResetEvent2 pfn_vkCmdResetEvent2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdResetEvent2KHR pfn_vkCmdResetEvent2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdWaitEvents2 pfn_vkCmdWaitEvents2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdWaitEvents2KHR pfn_vkCmdWaitEvents2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdPipelineBarrier2 pfn_vkCmdPipelineBarrier2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdPipelineBarrier2KHR pfn_vkCmdPipelineBarrier2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkQueueSubmit2 pfn_vkQueueSubmit2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkQueueSubmit2KHR pfn_vkQueueSubmit2KHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdWriteTimestamp2 pfn_vkCmdWriteTimestamp2;
 #endif
-#if defined(VK_KHR_synchronization2) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_synchronization2)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdWriteTimestamp2KHR pfn_vkCmdWriteTimestamp2KHR;
 #endif
 #if (defined(VK_AMD_buffer_marker)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 		PFN_vkCmdWriteBufferMarker2AMD pfn_vkCmdWriteBufferMarker2AMD;
 #endif
-#if (defined(VK_NV_device_diagnostic_checkpoints) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
+#if ((defined(VK_NV_device_diagnostic_checkpoints)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) && (defined(VK_VERSION_1_3) || defined(VK_KHR_synchronization2))
 		PFN_vkGetQueueCheckpointData2NV pfn_vkGetQueueCheckpointData2NV;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCopyMemoryToImage pfn_vkCopyMemoryToImage;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		PFN_vkCopyMemoryToImageEXT pfn_vkCopyMemoryToImageEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCopyImageToMemory pfn_vkCopyImageToMemory;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		PFN_vkCopyImageToMemoryEXT pfn_vkCopyImageToMemoryEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCopyImageToImage pfn_vkCopyImageToImage;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		PFN_vkCopyImageToImageEXT pfn_vkCopyImageToImageEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkTransitionImageLayout pfn_vkTransitionImageLayout;
 #endif
-#if defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))
 		PFN_vkTransitionImageLayoutEXT pfn_vkTransitionImageLayoutEXT;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR pfn_vkGetPhysicalDeviceVideoCapabilitiesKHR;
 		PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR pfn_vkGetPhysicalDeviceVideoFormatPropertiesKHR;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR pfn_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkCreateVideoSessionKHR pfn_vkCreateVideoSessionKHR;
 		PFN_vkDestroyVideoSessionKHR pfn_vkDestroyVideoSessionKHR;
 		PFN_vkCreateVideoSessionParametersKHR pfn_vkCreateVideoSessionParametersKHR;
 		PFN_vkUpdateVideoSessionParametersKHR pfn_vkUpdateVideoSessionParametersKHR;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkGetEncodedVideoSessionParametersKHR pfn_vkGetEncodedVideoSessionParametersKHR;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkDestroyVideoSessionParametersKHR pfn_vkDestroyVideoSessionParametersKHR;
 		PFN_vkGetVideoSessionMemoryRequirementsKHR pfn_vkGetVideoSessionMemoryRequirementsKHR;
 		PFN_vkBindVideoSessionMemoryKHR pfn_vkBindVideoSessionMemoryKHR;
 #endif
-#if defined(VK_KHR_video_decode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_decode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkCmdDecodeVideoKHR pfn_vkCmdDecodeVideoKHR;
 #endif
-#if defined(VK_KHR_video_queue) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_video_queue)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkCmdBeginVideoCodingKHR pfn_vkCmdBeginVideoCodingKHR;
 		PFN_vkCmdControlVideoCodingKHR pfn_vkCmdControlVideoCodingKHR;
 		PFN_vkCmdEndVideoCodingKHR pfn_vkCmdEndVideoCodingKHR;
 #endif
-#if defined(VK_KHR_video_encode_queue) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_KHR_video_encode_queue)) && (defined(VK_KHR_video_queue) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkCmdEncodeVideoKHR pfn_vkCmdEncodeVideoKHR;
 #endif
-#if defined(VK_NV_memory_decompression) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
+#if (defined(VK_NV_memory_decompression)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdDecompressMemoryNV pfn_vkCmdDecompressMemoryNV;
 		PFN_vkCmdDecompressMemoryIndirectCountNV pfn_vkCmdDecompressMemoryIndirectCountNV;
 #endif
-#if defined(VK_NV_partitioned_acceleration_structure) && (defined(VK_KHR_acceleration_structure))
+#if (defined(VK_NV_partitioned_acceleration_structure)) && (defined(VK_KHR_acceleration_structure))
 		PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV pfn_vkGetPartitionedAccelerationStructuresBuildSizesNV;
 		PFN_vkCmdBuildPartitionedAccelerationStructuresNV pfn_vkCmdBuildPartitionedAccelerationStructuresNV;
+#endif
+#if (defined(VK_EXT_memory_decompression)) && (defined(VK_KHR_get_physical_device_properties2) && defined(VK_KHR_buffer_device_address))
+		PFN_vkCmdDecompressMemoryEXT pfn_vkCmdDecompressMemoryEXT;
+		PFN_vkCmdDecompressMemoryIndirectCountEXT pfn_vkCmdDecompressMemoryIndirectCountEXT;
 #endif
 #if defined(VK_NVX_binary_import)
 		PFN_vkCreateCuModuleNVX pfn_vkCreateCuModuleNVX;
@@ -2883,7 +3106,7 @@ namespace wfe {
 		PFN_vkDestroyCuFunctionNVX pfn_vkDestroyCuFunctionNVX;
 		PFN_vkCmdCuLaunchKernelNVX pfn_vkCmdCuLaunchKernelNVX;
 #endif
-#if defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_descriptor_buffer)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkGetDescriptorSetLayoutSizeEXT pfn_vkGetDescriptorSetLayoutSizeEXT;
 		PFN_vkGetDescriptorSetLayoutBindingOffsetEXT pfn_vkGetDescriptorSetLayoutBindingOffsetEXT;
 		PFN_vkGetDescriptorEXT pfn_vkGetDescriptorEXT;
@@ -2895,27 +3118,30 @@ namespace wfe {
 		PFN_vkGetImageViewOpaqueCaptureDescriptorDataEXT pfn_vkGetImageViewOpaqueCaptureDescriptorDataEXT;
 		PFN_vkGetSamplerOpaqueCaptureDescriptorDataEXT pfn_vkGetSamplerOpaqueCaptureDescriptorDataEXT;
 #endif
-#if (defined(VK_EXT_descriptor_buffer) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure) || defined(VK_NV_ray_tracing))
+#if ((defined(VK_EXT_descriptor_buffer)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address) && defined(VK_EXT_descriptor_indexing)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure) || defined(VK_NV_ray_tracing))
 		PFN_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT pfn_vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT;
 #endif
-#if defined(VK_EXT_pageable_device_local_memory) && (defined(VK_EXT_memory_priority))
+#if (defined(VK_EXT_pageable_device_local_memory)) && (defined(VK_EXT_memory_priority))
 		PFN_vkSetDeviceMemoryPriorityEXT pfn_vkSetDeviceMemoryPriorityEXT;
 #endif
-#if defined(VK_EXT_acquire_drm_display) && (defined(VK_EXT_direct_mode_display))
+#if (defined(VK_EXT_acquire_drm_display)) && (defined(VK_EXT_direct_mode_display))
 		PFN_vkAcquireDrmDisplayEXT pfn_vkAcquireDrmDisplayEXT;
 		PFN_vkGetDrmDisplayEXT pfn_vkGetDrmDisplayEXT;
 #endif
-#if defined(VK_KHR_present_wait) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id))
+#if (defined(VK_KHR_present_wait2)) && (defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_surface) && defined(VK_KHR_swapchain) && defined(VK_KHR_present_id2))
+		PFN_vkWaitForPresent2KHR pfn_vkWaitForPresent2KHR;
+#endif
+#if (defined(VK_KHR_present_wait)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id))
 		PFN_vkWaitForPresentKHR pfn_vkWaitForPresentKHR;
 #endif
-#if defined(VK_FUCHSIA_buffer_collection) && (defined(VK_FUCHSIA_external_memory) && (defined(VK_KHR_sampler_ycbcr_conversion) || defined(VK_VERSION_1_1)))
+#if (defined(VK_FUCHSIA_buffer_collection)) && (defined(VK_FUCHSIA_external_memory) && (defined(VK_KHR_sampler_ycbcr_conversion) || defined(VK_VERSION_1_1)))
 		PFN_vkCreateBufferCollectionFUCHSIA pfn_vkCreateBufferCollectionFUCHSIA;
 		PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA pfn_vkSetBufferCollectionBufferConstraintsFUCHSIA;
 		PFN_vkSetBufferCollectionImageConstraintsFUCHSIA pfn_vkSetBufferCollectionImageConstraintsFUCHSIA;
 		PFN_vkDestroyBufferCollectionFUCHSIA pfn_vkDestroyBufferCollectionFUCHSIA;
 		PFN_vkGetBufferCollectionPropertiesFUCHSIA pfn_vkGetBufferCollectionPropertiesFUCHSIA;
 #endif
-#if defined(VK_NV_cuda_kernel_launch)
+#if (defined(VK_NV_cuda_kernel_launch)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCreateCudaModuleNV pfn_vkCreateCudaModuleNV;
 		PFN_vkGetCudaModuleCacheNV pfn_vkGetCudaModuleCacheNV;
 		PFN_vkCreateCudaFunctionNV pfn_vkCreateCudaFunctionNV;
@@ -2926,23 +3152,26 @@ namespace wfe {
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdBeginRendering pfn_vkCmdBeginRendering;
 #endif
-#if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_dynamic_rendering)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdBeginRenderingKHR pfn_vkCmdBeginRenderingKHR;
 #endif
 #if defined(VK_VERSION_1_3)
 		PFN_vkCmdEndRendering pfn_vkCmdEndRendering;
 #endif
-#if defined(VK_EXT_fragment_density_map_offset) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_fragment_density_map) && (defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_dynamic_rendering)))
+#if (defined(VK_KHR_maintenance10)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkCmdEndRendering2KHR pfn_vkCmdEndRendering2KHR;
+#endif
+#if (defined(VK_EXT_fragment_density_map_offset)) && ((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_fragment_density_map) && (defined(VK_KHR_create_renderpass2) || defined(VK_VERSION_1_2)) && (defined(VK_VERSION_1_3) || defined(VK_KHR_dynamic_rendering)))
 		PFN_vkCmdEndRendering2EXT pfn_vkCmdEndRendering2EXT;
 #endif
-#if defined(VK_KHR_dynamic_rendering) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
+#if (defined(VK_KHR_dynamic_rendering)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_depth_stencil_resolve)) || defined(VK_VERSION_1_2))
 		PFN_vkCmdEndRenderingKHR pfn_vkCmdEndRenderingKHR;
 #endif
-#if defined(VK_VALVE_descriptor_set_host_mapping) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_VALVE_descriptor_set_host_mapping)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE pfn_vkGetDescriptorSetLayoutHostMappingInfoVALVE;
 		PFN_vkGetDescriptorSetHostMappingVALVE pfn_vkGetDescriptorSetHostMappingVALVE;
 #endif
-#if defined(VK_EXT_opacity_micromap) && (defined(VK_KHR_acceleration_structure) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
+#if (defined(VK_EXT_opacity_micromap)) && (defined(VK_KHR_acceleration_structure) && (defined(VK_KHR_synchronization2) || defined(VK_VERSION_1_3)))
 		PFN_vkCreateMicromapEXT pfn_vkCreateMicromapEXT;
 		PFN_vkCmdBuildMicromapsEXT pfn_vkCmdBuildMicromapsEXT;
 		PFN_vkBuildMicromapsEXT pfn_vkBuildMicromapsEXT;
@@ -2958,52 +3187,59 @@ namespace wfe {
 		PFN_vkGetDeviceMicromapCompatibilityEXT pfn_vkGetDeviceMicromapCompatibilityEXT;
 		PFN_vkGetMicromapBuildSizesEXT pfn_vkGetMicromapBuildSizesEXT;
 #endif
-#if defined(VK_EXT_shader_module_identifier) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_pipeline_creation_cache_control)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_shader_module_identifier)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_EXT_pipeline_creation_cache_control)) || defined(VK_VERSION_1_3))
 		PFN_vkGetShaderModuleIdentifierEXT pfn_vkGetShaderModuleIdentifierEXT;
 		PFN_vkGetShaderModuleCreateInfoIdentifierEXT pfn_vkGetShaderModuleCreateInfoIdentifierEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkGetImageSubresourceLayout2 pfn_vkGetImageSubresourceLayout2;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		PFN_vkGetImageSubresourceLayout2KHR pfn_vkGetImageSubresourceLayout2KHR;
 #endif
-#if (defined(VK_EXT_host_image_copy) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3))) || (defined(VK_EXT_image_compression_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if ((defined(VK_EXT_image_compression_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || ((defined(VK_EXT_host_image_copy)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_copy_commands2) && defined(VK_KHR_format_feature_flags2)) || defined(VK_VERSION_1_3)))
 		PFN_vkGetImageSubresourceLayout2EXT pfn_vkGetImageSubresourceLayout2EXT;
 #endif
-#if defined(VK_EXT_pipeline_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_pipeline_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPipelinePropertiesEXT pfn_vkGetPipelinePropertiesEXT;
 #endif
 #if defined(VK_EXT_metal_objects)
 		PFN_vkExportMetalObjectsEXT pfn_vkExportMetalObjectsEXT;
 #endif
-#if defined(VK_QCOM_tile_memory_heap) && ((defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
+#if (defined(VK_QCOM_tile_memory_heap)) && ((defined(VK_KHR_get_memory_requirements2) && defined(VK_KHR_get_physical_device_properties2)) || defined(VK_VERSION_1_1))
 		PFN_vkCmdBindTileMemoryQCOM pfn_vkCmdBindTileMemoryQCOM;
 #endif
-#if defined(VK_QCOM_tile_properties) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_QCOM_tile_properties)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetFramebufferTilePropertiesQCOM pfn_vkGetFramebufferTilePropertiesQCOM;
 		PFN_vkGetDynamicRenderingTilePropertiesQCOM pfn_vkGetDynamicRenderingTilePropertiesQCOM;
 #endif
-#if defined(VK_NV_optical_flow) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_format_feature_flags2) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
+#if (defined(VK_NV_optical_flow)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_format_feature_flags2) && defined(VK_KHR_synchronization2)) || defined(VK_VERSION_1_3))
 		PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV pfn_vkGetPhysicalDeviceOpticalFlowImageFormatsNV;
 		PFN_vkCreateOpticalFlowSessionNV pfn_vkCreateOpticalFlowSessionNV;
 		PFN_vkDestroyOpticalFlowSessionNV pfn_vkDestroyOpticalFlowSessionNV;
 		PFN_vkBindOpticalFlowSessionImageNV pfn_vkBindOpticalFlowSessionImageNV;
 		PFN_vkCmdOpticalFlowExecuteNV pfn_vkCmdOpticalFlowExecuteNV;
 #endif
-#if defined(VK_EXT_device_fault) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_device_fault)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetDeviceFaultInfoEXT pfn_vkGetDeviceFaultInfoEXT;
 #endif
-#if defined(VK_EXT_depth_bias_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_device_fault)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkGetDeviceFaultReportsKHR pfn_vkGetDeviceFaultReportsKHR;
+		PFN_vkGetDeviceFaultDebugInfoKHR pfn_vkGetDeviceFaultDebugInfoKHR;
+#endif
+#if (defined(VK_EXT_depth_bias_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkCmdSetDepthBias2EXT pfn_vkCmdSetDepthBias2EXT;
 #endif
-#if defined(VK_EXT_swapchain_maintenance1) && (defined(VK_KHR_swapchain) && defined(VK_EXT_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if (defined(VK_KHR_swapchain_maintenance1)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+		PFN_vkReleaseSwapchainImagesKHR pfn_vkReleaseSwapchainImagesKHR;
+#endif
+#if (defined(VK_EXT_swapchain_maintenance1)) && (defined(VK_KHR_swapchain) && defined(VK_EXT_surface_maintenance1) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
 		PFN_vkReleaseSwapchainImagesEXT pfn_vkReleaseSwapchainImagesEXT;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkGetDeviceImageSubresourceLayout pfn_vkGetDeviceImageSubresourceLayout;
 #endif
-#if defined(VK_KHR_maintenance5) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_maintenance5)) && ((defined(VK_VERSION_1_1) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		PFN_vkGetDeviceImageSubresourceLayoutKHR pfn_vkGetDeviceImageSubresourceLayoutKHR;
 #endif
 #if defined(VK_VERSION_1_4)
@@ -3018,19 +3254,28 @@ namespace wfe {
 #if defined(VK_KHR_map_memory2)
 		PFN_vkUnmapMemory2KHR pfn_vkUnmapMemory2KHR;
 #endif
-#if defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
+#if (defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))
 		PFN_vkCreateShadersEXT pfn_vkCreateShadersEXT;
 		PFN_vkDestroyShaderEXT pfn_vkDestroyShaderEXT;
 		PFN_vkGetShaderBinaryDataEXT pfn_vkGetShaderBinaryDataEXT;
 		PFN_vkCmdBindShadersEXT pfn_vkCmdBindShadersEXT;
 #endif
-#if defined(VK_QNX_external_memory_screen_buffer) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+#if (defined(VK_EXT_present_timing)) && (defined(VK_KHR_swapchain) && defined(VK_KHR_present_id2) && defined(VK_KHR_get_surface_capabilities2) && defined(VK_KHR_calibrated_timestamps))
+		PFN_vkSetSwapchainPresentTimingQueueSizeEXT pfn_vkSetSwapchainPresentTimingQueueSizeEXT;
+		PFN_vkGetSwapchainTimingPropertiesEXT pfn_vkGetSwapchainTimingPropertiesEXT;
+		PFN_vkGetSwapchainTimeDomainPropertiesEXT pfn_vkGetSwapchainTimeDomainPropertiesEXT;
+		PFN_vkGetPastPresentationTimingEXT pfn_vkGetPastPresentationTimingEXT;
+#endif
+#if (defined(VK_QNX_external_memory_screen_buffer)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
 		PFN_vkGetScreenBufferPropertiesQNX pfn_vkGetScreenBufferPropertiesQNX;
 #endif
-#if defined(VK_KHR_cooperative_matrix) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_cooperative_matrix)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR pfn_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR;
 #endif
-#if defined(VK_AMDX_shader_enqueue) && (((defined(VK_KHR_synchronization2) && defined(VK_KHR_spirv_1_4) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3)) && defined(VK_KHR_maintenance5) && defined(VK_KHR_pipeline_library))
+#if (defined(VK_EXT_cooperative_matrix_maintenance1)) && (defined(VK_KHR_cooperative_matrix))
+		PFN_vkGetPhysicalDeviceCooperativeMatrixProperties2EXT pfn_vkGetPhysicalDeviceCooperativeMatrixProperties2EXT;
+#endif
+#if (defined(VK_AMDX_shader_enqueue)) && (((defined(VK_KHR_synchronization2) && defined(VK_KHR_spirv_1_4) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3)) && defined(VK_KHR_maintenance5) && defined(VK_KHR_pipeline_library))
 		PFN_vkGetExecutionGraphPipelineScratchSizeAMDX pfn_vkGetExecutionGraphPipelineScratchSizeAMDX;
 		PFN_vkGetExecutionGraphPipelineNodeIndexAMDX pfn_vkGetExecutionGraphPipelineNodeIndexAMDX;
 		PFN_vkCreateExecutionGraphPipelinesAMDX pfn_vkCreateExecutionGraphPipelinesAMDX;
@@ -3039,69 +3284,92 @@ namespace wfe {
 		PFN_vkCmdDispatchGraphIndirectAMDX pfn_vkCmdDispatchGraphIndirectAMDX;
 		PFN_vkCmdDispatchGraphIndirectCountAMDX pfn_vkCmdDispatchGraphIndirectCountAMDX;
 #endif
+#if (defined(VK_AMD_gpa_interface)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkCreateGpaSessionAMD pfn_vkCreateGpaSessionAMD;
+		PFN_vkDestroyGpaSessionAMD pfn_vkDestroyGpaSessionAMD;
+		PFN_vkSetGpaDeviceClockModeAMD pfn_vkSetGpaDeviceClockModeAMD;
+		PFN_vkGetGpaDeviceClockInfoAMD pfn_vkGetGpaDeviceClockInfoAMD;
+		PFN_vkCmdBeginGpaSessionAMD pfn_vkCmdBeginGpaSessionAMD;
+		PFN_vkCmdEndGpaSessionAMD pfn_vkCmdEndGpaSessionAMD;
+		PFN_vkCmdBeginGpaSampleAMD pfn_vkCmdBeginGpaSampleAMD;
+		PFN_vkCmdEndGpaSampleAMD pfn_vkCmdEndGpaSampleAMD;
+		PFN_vkGetGpaSessionStatusAMD pfn_vkGetGpaSessionStatusAMD;
+		PFN_vkGetGpaSessionResultsAMD pfn_vkGetGpaSessionResultsAMD;
+		PFN_vkResetGpaSessionAMD pfn_vkResetGpaSessionAMD;
+		PFN_vkCmdCopyGpaSessionResultsAMD pfn_vkCmdCopyGpaSessionResultsAMD;
+#endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdBindDescriptorSets2 pfn_vkCmdBindDescriptorSets2;
 #endif
-#if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))
 		PFN_vkCmdBindDescriptorSets2KHR pfn_vkCmdBindDescriptorSets2KHR;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdPushConstants2 pfn_vkCmdPushConstants2;
 #endif
-#if defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))
+#if (defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))
 		PFN_vkCmdPushConstants2KHR pfn_vkCmdPushConstants2KHR;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdPushDescriptorSet2 pfn_vkCmdPushDescriptorSet2;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 		PFN_vkCmdPushDescriptorSet2KHR pfn_vkCmdPushDescriptorSet2KHR;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdPushDescriptorSetWithTemplate2 pfn_vkCmdPushDescriptorSetWithTemplate2;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_KHR_push_descriptor))
 		PFN_vkCmdPushDescriptorSetWithTemplate2KHR pfn_vkCmdPushDescriptorSetWithTemplate2KHR;
 #endif
-#if (defined(VK_KHR_maintenance6) && (defined(VK_VERSION_1_1))) && (defined(VK_EXT_descriptor_buffer))
+#if ((defined(VK_KHR_maintenance6)) && (defined(VK_VERSION_1_1))) && (defined(VK_EXT_descriptor_buffer))
 		PFN_vkCmdSetDescriptorBufferOffsets2EXT pfn_vkCmdSetDescriptorBufferOffsets2EXT;
 		PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT pfn_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT;
 #endif
-#if defined(VK_NV_low_latency2) && (defined(VK_VERSION_1_2) || defined(VK_KHR_timeline_semaphore))
+#if (defined(VK_NV_low_latency2)) && ((defined(VK_VERSION_1_2) || defined(VK_KHR_timeline_semaphore)) && (defined(VK_KHR_present_id) || defined(VK_KHR_present_id2)))
 		PFN_vkSetLatencySleepModeNV pfn_vkSetLatencySleepModeNV;
 		PFN_vkLatencySleepNV pfn_vkLatencySleepNV;
 		PFN_vkSetLatencyMarkerNV pfn_vkSetLatencyMarkerNV;
 		PFN_vkGetLatencyTimingsNV pfn_vkGetLatencyTimingsNV;
 		PFN_vkQueueNotifyOutOfBandNV pfn_vkQueueNotifyOutOfBandNV;
 #endif
+#if defined(VK_NV_low_latency)
+		PFN_vkSetLatencySleepModeLegacyNV pfn_vkSetLatencySleepModeLegacyNV;
+		PFN_vkLatencySleepLegacyNV pfn_vkLatencySleepLegacyNV;
+		PFN_vkSetLatencyMarkerLegacyNV pfn_vkSetLatencyMarkerLegacyNV;
+		PFN_vkGetLatencyTimingsLegacyNV pfn_vkGetLatencyTimingsLegacyNV;
+		PFN_vkQueueNotifyOutOfBandLegacyNV pfn_vkQueueNotifyOutOfBandLegacyNV;
+		PFN_vkGetSleepStatusLegacyNV pfn_vkGetSleepStatusLegacyNV;
+		PFN_vkShutdownLatencyDeviceLegacyNV pfn_vkShutdownLatencyDeviceLegacyNV;
+#endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdSetRenderingAttachmentLocations pfn_vkCmdSetRenderingAttachmentLocations;
 #endif
-#if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_dynamic_rendering_local_read)) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 		PFN_vkCmdSetRenderingAttachmentLocationsKHR pfn_vkCmdSetRenderingAttachmentLocationsKHR;
 #endif
 #if defined(VK_VERSION_1_4)
 		PFN_vkCmdSetRenderingInputAttachmentIndices pfn_vkCmdSetRenderingInputAttachmentIndices;
 #endif
-#if defined(VK_KHR_dynamic_rendering_local_read) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
+#if (defined(VK_KHR_dynamic_rendering_local_read)) && (defined(VK_KHR_dynamic_rendering) || defined(VK_VERSION_1_3))
 		PFN_vkCmdSetRenderingInputAttachmentIndicesKHR pfn_vkCmdSetRenderingInputAttachmentIndicesKHR;
 #endif
-#if ((defined(VK_EXT_shader_object) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clamp_control))) || (defined(VK_EXT_depth_clamp_control) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)))
+#if ((defined(VK_EXT_depth_clamp_control)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))) || (((defined(VK_EXT_shader_object)) && (((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_dynamic_rendering)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_depth_clamp_control)))
 		PFN_vkCmdSetDepthClampRangeEXT pfn_vkCmdSetDepthClampRangeEXT;
 #endif
-#if defined(VK_NV_cooperative_matrix2) && (defined(VK_KHR_cooperative_matrix))
+#if (defined(VK_NV_cooperative_matrix2)) && (defined(VK_KHR_cooperative_matrix))
 		PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV pfn_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV;
 #endif
-#if defined(VK_EXT_external_memory_metal) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
+#if (defined(VK_EXT_external_memory_metal)) && (defined(VK_KHR_external_memory) || defined(VK_VERSION_1_1))
 		PFN_vkGetMemoryMetalHandleEXT pfn_vkGetMemoryMetalHandleEXT;
 		PFN_vkGetMemoryMetalHandlePropertiesEXT pfn_vkGetMemoryMetalHandlePropertiesEXT;
 #endif
-#if defined(VK_NV_cooperative_vector)
+#if (defined(VK_NV_cooperative_vector)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
 		PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV pfn_vkGetPhysicalDeviceCooperativeVectorPropertiesNV;
 		PFN_vkConvertCooperativeVectorMatrixNV pfn_vkConvertCooperativeVectorMatrixNV;
 		PFN_vkCmdConvertCooperativeVectorMatrixNV pfn_vkCmdConvertCooperativeVectorMatrixNV;
 #endif
-#if defined(VK_QCOM_tile_shading) && (defined(VK_QCOM_tile_properties) || defined(VK_KHR_get_physical_device_properties2))
+#if (defined(VK_QCOM_tile_shading)) && (defined(VK_QCOM_tile_properties))
 		PFN_vkCmdDispatchTileQCOM pfn_vkCmdDispatchTileQCOM;
 		PFN_vkCmdBeginPerTileExecutionQCOM pfn_vkCmdBeginPerTileExecutionQCOM;
 		PFN_vkCmdEndPerTileExecutionQCOM pfn_vkCmdEndPerTileExecutionQCOM;
@@ -3110,6 +3378,132 @@ namespace wfe {
 		PFN_vkCreateExternalComputeQueueNV pfn_vkCreateExternalComputeQueueNV;
 		PFN_vkDestroyExternalComputeQueueNV pfn_vkDestroyExternalComputeQueueNV;
 		PFN_vkGetExternalComputeQueueDataNV pfn_vkGetExternalComputeQueueDataNV;
+#endif
+#if (defined(VK_ARM_shader_instrumentation)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM pfn_vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM;
+		PFN_vkCreateShaderInstrumentationARM pfn_vkCreateShaderInstrumentationARM;
+		PFN_vkDestroyShaderInstrumentationARM pfn_vkDestroyShaderInstrumentationARM;
+		PFN_vkCmdBeginShaderInstrumentationARM pfn_vkCmdBeginShaderInstrumentationARM;
+		PFN_vkCmdEndShaderInstrumentationARM pfn_vkCmdEndShaderInstrumentationARM;
+		PFN_vkGetShaderInstrumentationValuesARM pfn_vkGetShaderInstrumentationValuesARM;
+		PFN_vkClearShaderInstrumentationMetricsARM pfn_vkClearShaderInstrumentationMetricsARM;
+#endif
+#if (defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))
+		PFN_vkCreateTensorARM pfn_vkCreateTensorARM;
+		PFN_vkDestroyTensorARM pfn_vkDestroyTensorARM;
+		PFN_vkCreateTensorViewARM pfn_vkCreateTensorViewARM;
+		PFN_vkDestroyTensorViewARM pfn_vkDestroyTensorViewARM;
+		PFN_vkGetTensorMemoryRequirementsARM pfn_vkGetTensorMemoryRequirementsARM;
+		PFN_vkBindTensorMemoryARM pfn_vkBindTensorMemoryARM;
+		PFN_vkGetDeviceTensorMemoryRequirementsARM pfn_vkGetDeviceTensorMemoryRequirementsARM;
+		PFN_vkCmdCopyTensorARM pfn_vkCmdCopyTensorARM;
+#endif
+#if ((defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))) && (defined(VK_EXT_descriptor_buffer))
+		PFN_vkGetTensorOpaqueCaptureDescriptorDataARM pfn_vkGetTensorOpaqueCaptureDescriptorDataARM;
+		PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM pfn_vkGetTensorViewOpaqueCaptureDescriptorDataARM;
+#endif
+#if (defined(VK_ARM_tensors)) && (defined(VK_VERSION_1_3))
+		PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM pfn_vkGetPhysicalDeviceExternalTensorPropertiesARM;
+#endif
+#if (defined(VK_ARM_data_graph)) && (defined(VK_VERSION_1_3) && (defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && defined(VK_KHR_deferred_host_operations))
+		PFN_vkCreateDataGraphPipelinesARM pfn_vkCreateDataGraphPipelinesARM;
+		PFN_vkCreateDataGraphPipelineSessionARM pfn_vkCreateDataGraphPipelineSessionARM;
+		PFN_vkGetDataGraphPipelineSessionBindPointRequirementsARM pfn_vkGetDataGraphPipelineSessionBindPointRequirementsARM;
+		PFN_vkGetDataGraphPipelineSessionMemoryRequirementsARM pfn_vkGetDataGraphPipelineSessionMemoryRequirementsARM;
+		PFN_vkBindDataGraphPipelineSessionMemoryARM pfn_vkBindDataGraphPipelineSessionMemoryARM;
+		PFN_vkDestroyDataGraphPipelineSessionARM pfn_vkDestroyDataGraphPipelineSessionARM;
+		PFN_vkCmdDispatchDataGraphARM pfn_vkCmdDispatchDataGraphARM;
+		PFN_vkGetDataGraphPipelineAvailablePropertiesARM pfn_vkGetDataGraphPipelineAvailablePropertiesARM;
+		PFN_vkGetDataGraphPipelinePropertiesARM pfn_vkGetDataGraphPipelinePropertiesARM;
+		PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM pfn_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
+		PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM pfn_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
+#endif
+#if (defined(VK_OHOS_external_memory)) && (((defined(VK_KHR_sampler_ycbcr_conversion) && defined(VK_KHR_external_memory) && defined(VK_KHR_dedicated_allocation)) || defined(VK_VERSION_1_1)) && defined(VK_EXT_queue_family_foreign))
+		PFN_vkGetNativeBufferPropertiesOHOS pfn_vkGetNativeBufferPropertiesOHOS;
+		PFN_vkGetMemoryNativeBufferOHOS pfn_vkGetMemoryNativeBufferOHOS;
+#endif
+#if defined(VK_OHOS_native_buffer)
+		PFN_vkGetSwapchainGrallocUsageOHOS pfn_vkGetSwapchainGrallocUsageOHOS;
+		PFN_vkAcquireImageOHOS pfn_vkAcquireImageOHOS;
+		PFN_vkQueueSignalReleaseImageOHOS pfn_vkQueueSignalReleaseImageOHOS;
+#endif
+#if (defined(VK_QCOM_queue_perf_hint)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkQueueSetPerfHintQCOM pfn_vkQueueSetPerfHintQCOM;
+#endif
+#if (defined(VK_ARM_performance_counters_by_region)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM pfn_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
+#endif
+#if (defined(VK_NV_compute_occupancy_priority)) && (defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1))
+		PFN_vkCmdSetComputeOccupancyPriorityNV pfn_vkCmdSetComputeOccupancyPriorityNV;
+#endif
+#if (defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))
+		PFN_vkWriteSamplerDescriptorsEXT pfn_vkWriteSamplerDescriptorsEXT;
+		PFN_vkWriteResourceDescriptorsEXT pfn_vkWriteResourceDescriptorsEXT;
+		PFN_vkCmdBindSamplerHeapEXT pfn_vkCmdBindSamplerHeapEXT;
+		PFN_vkCmdBindResourceHeapEXT pfn_vkCmdBindResourceHeapEXT;
+		PFN_vkCmdPushDataEXT pfn_vkCmdPushDataEXT;
+#endif
+#if ((defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))) && (defined(VK_EXT_custom_border_color))
+		PFN_vkRegisterCustomBorderColorEXT pfn_vkRegisterCustomBorderColorEXT;
+		PFN_vkUnregisterCustomBorderColorEXT pfn_vkUnregisterCustomBorderColorEXT;
+#endif
+#if (defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))
+		PFN_vkGetImageOpaqueCaptureDataEXT pfn_vkGetImageOpaqueCaptureDataEXT;
+		PFN_vkGetPhysicalDeviceDescriptorSizeEXT pfn_vkGetPhysicalDeviceDescriptorSizeEXT;
+#endif
+#if ((defined(VK_EXT_descriptor_heap)) && (((defined(VK_KHR_extended_flags) || defined(VK_KHR_maintenance5)) && (defined(VK_KHR_buffer_device_address) || defined(VK_VERSION_1_2)) || defined(VK_VERSION_1_4)))) && (defined(VK_ARM_tensors))
+		PFN_vkGetTensorOpaqueCaptureDataARM pfn_vkGetTensorOpaqueCaptureDataARM;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		PFN_vkCmdCopyMemoryKHR pfn_vkCmdCopyMemoryKHR;
+		PFN_vkCmdCopyMemoryToImageKHR pfn_vkCmdCopyMemoryToImageKHR;
+		PFN_vkCmdCopyImageToMemoryKHR pfn_vkCmdCopyImageToMemoryKHR;
+		PFN_vkCmdUpdateMemoryKHR pfn_vkCmdUpdateMemoryKHR;
+		PFN_vkCmdFillMemoryKHR pfn_vkCmdFillMemoryKHR;
+		PFN_vkCmdCopyQueryPoolResultsToMemoryKHR pfn_vkCmdCopyQueryPoolResultsToMemoryKHR;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_conditional_rendering))
+		PFN_vkCmdBeginConditionalRendering2EXT pfn_vkCmdBeginConditionalRendering2EXT;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_transform_feedback))
+		PFN_vkCmdBindTransformFeedbackBuffers2EXT pfn_vkCmdBindTransformFeedbackBuffers2EXT;
+		PFN_vkCmdBeginTransformFeedback2EXT pfn_vkCmdBeginTransformFeedback2EXT;
+		PFN_vkCmdEndTransformFeedback2EXT pfn_vkCmdEndTransformFeedback2EXT;
+		PFN_vkCmdDrawIndirectByteCount2EXT pfn_vkCmdDrawIndirectByteCount2EXT;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_AMD_buffer_marker))
+		PFN_vkCmdWriteMarkerToMemoryAMD pfn_vkCmdWriteMarkerToMemoryAMD;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		PFN_vkCmdBindIndexBuffer3KHR pfn_vkCmdBindIndexBuffer3KHR;
+		PFN_vkCmdBindVertexBuffers3KHR pfn_vkCmdBindVertexBuffers3KHR;
+		PFN_vkCmdDrawIndirect2KHR pfn_vkCmdDrawIndirect2KHR;
+		PFN_vkCmdDrawIndexedIndirect2KHR pfn_vkCmdDrawIndexedIndirect2KHR;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2))
+		PFN_vkCmdDrawIndirectCount2KHR pfn_vkCmdDrawIndirectCount2KHR;
+		PFN_vkCmdDrawIndexedIndirectCount2KHR pfn_vkCmdDrawIndexedIndirectCount2KHR;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_EXT_mesh_shader))
+		PFN_vkCmdDrawMeshTasksIndirect2EXT pfn_vkCmdDrawMeshTasksIndirect2EXT;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && ((defined(VK_KHR_draw_indirect_count) || defined(VK_VERSION_1_2)) && defined(VK_EXT_mesh_shader))
+		PFN_vkCmdDrawMeshTasksIndirectCount2EXT pfn_vkCmdDrawMeshTasksIndirectCount2EXT;
+#endif
+#if (defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))
+		PFN_vkCmdDispatchIndirect2KHR pfn_vkCmdDispatchIndirect2KHR;
+#endif
+#if ((defined(VK_KHR_device_address_commands)) && (((((defined(VK_KHR_get_physical_device_properties2) || defined(VK_VERSION_1_1)) && defined(VK_KHR_buffer_device_address)) || defined(VK_VERSION_1_2)) && defined(VK_KHR_synchronization2) && defined(VK_EXT_extended_dynamic_state)) || defined(VK_VERSION_1_3))) && (defined(VK_KHR_acceleration_structure))
+		PFN_vkCreateAccelerationStructure2KHR pfn_vkCreateAccelerationStructure2KHR;
+#endif
+#if ((defined(VK_ARM_data_graph_optical_flow)) && (defined(VK_ARM_data_graph))) || ((defined(VK_ARM_data_graph_instruction_set_tosa)) && (defined(VK_ARM_data_graph)))
+		PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM pfn_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+#endif
+#if (defined(VK_ARM_scheduling_controls)) && (defined(VK_ARM_shader_core_builtins))
+		PFN_vkCmdSetDispatchParametersARM pfn_vkCmdSetDispatchParametersARM;
+#endif
+#if (defined(VK_ARM_data_graph_optical_flow)) && (defined(VK_ARM_data_graph))
+		PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM pfn_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM;
 #endif
 	};
 }
