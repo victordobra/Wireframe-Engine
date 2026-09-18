@@ -26,6 +26,7 @@
 #include "Core/Math/Templates/Vec4.hpp"
 #include "Core/Memory/Allocator.hpp"
 #include "Core/Memory/VirtualMemory.hpp"
+#include "Core/Parsers/Font/TTFParser.hpp"
 #include "Core/Parsers/Image/ImageParser.hpp"
 #include "Core/Parsers/Image/PNGParser.hpp"
 #include "Core/Parsers/Image/TGAParser.hpp"
