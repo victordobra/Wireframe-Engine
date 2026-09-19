@@ -5,6 +5,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace wfe {
@@ -64,7 +65,7 @@ namespace wfe {
 		float underlineHeight;
 
 		/// @brief The map of glyph indices tied to all ASCII characters.
-		size_t glyphMapping[256];
+		std::unordered_map<wchar_t, size_t> glyphMapping;
 		/// @brief The vector of all glyphs defined in the font.
 		std::vector<Glyph> glyphs;
 	};

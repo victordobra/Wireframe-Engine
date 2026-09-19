@@ -141,6 +141,17 @@ namespace wfe {
 	static const size_t MAX_POSTSCRIPT_NAME_SIZE = 63;
 
 	// Internal helper functions
+	static uint16_t CalcSearchRange(uint16_t count) {
+		uint16_t searchRange = 1;
+		for(; searchRange <= count; searchRange <<= 1);
+		return searchRange;
+	}
+	static uint16_t CalcEntrySelector(uint16_t count) {
+		uint16_t entrySelector = 0;
+		for(; 1 << (entrySelector + 1) <= count; ++entrySelector);
+		return entrySelector;
+	}
+
 	static void ReadGlyphPointCoords(const Table& glyfTable, uint32_t& offset, uint32_t coordInd, uint8_t shortVectorFlag, uint8_t sameOrPositiveFlag, float invUnitsPerEm, const std::vector<uint8_t>& flags, const std::vector<uint16_t>& endPtsOfContours, TTFFont::Glyph& glyph) {
 		uint16_t contourIndex = 0, pointIndex = 0;
 		int32_t currCoord = 0;
@@ -368,13 +379,9 @@ namespace wfe {
 		return UINT32_T_MAX;
 	}
 	static bool ReadCmapUnicodeTable(const Table& cmapTable, TTFFont& font, uint32_t unicodeOffset) {
-		// Reset all glyph mappings
-		for(size_t i = 0; i != 256; ++i)
-			font.glyphMapping[i] = 0;
-
+		// Read the table's header data
 		uint32_t offset = unicodeOffset;
 
-		// Read the table's header data
 		offset += sizeof(uint16_t); // cmapFormat
 		uint16_t tableLength = cmapTable.ReadUint16(offset);
 		offset += sizeof(uint16_t); // language
@@ -402,12 +409,8 @@ namespace wfe {
 		// Read all glyph IDs
 		for(uint16_t i = 0; i != segCount; ++i) {
 			CmapSegment segment = segments[i];
-			if(segment.startCode > 0xff)
-				continue;
-			if(segment.endCode > 0xff)
-				segment.endCode = 0xff;
 
-			for(uint16_t j = segment.startCode; j <= segment.endCode; ++j) {
+			for(uint32_t j = segment.startCode; j <= segment.endCode; ++j) {
 				// Get the glyph ID for the current character
 				uint16_t glyphId;
 				if(segment.idRangeOffset) {
@@ -424,7 +427,7 @@ namespace wfe {
 				}
 
 				// Convert the current character
-				font.glyphMapping[j] = glyphId;
+				font.glyphMapping.insert({ (wchar_t)j, glyphId });
 			}
 		}
 
@@ -803,6 +806,45 @@ namespace wfe {
 		maxpTable.WriteUint16(offset, 0); // maxComponentDepth
 	}
 	static void WriteCmapTable(Table& cmapTable, const TTFFont& font) {
+		// Create the glyph mapping vector
+		std::vector<std::pair<wchar_t, size_t>> glyphMappings;
+		for(const std::pair<const wchar_t, size_t>& mapping : font.glyphMapping)
+			glyphMappings.push_back({ mapping.first, mapping.second });
+		
+		// Sort the glyph mapping vector and calculate the segments
+		std::sort(glyphMappings.begin(), glyphMappings.end());
+		glyphMappings.push_back({ (wchar_t)0xffff, 0 });
+
+		std::vector<CmapSegment> segments;
+		wchar_t startCode = glyphMappings[0].first;
+		for(size_t i = 0; i != glyphMappings.size() - 1; ++i) {
+			// Check if this is a mapping segment end
+			if(i == glyphMappings.size() - 2 || glyphMappings[i].first != glyphMappings[i + 1].first - 1) {
+				// Add the segment to the vector
+				wchar_t endCode = glyphMappings[i].first;
+				segments.push_back({ (uint16_t)endCode, (uint16_t)startCode, 0, 0 });
+
+				// Set the next start code
+				startCode = glyphMappings[i + 1].first;
+			}
+		}
+
+		// Add the final segment
+		segments.push_back({ 0xffff, 0xffff, 1, 0 });
+
+		// Set the ID range offsets
+		size_t startOffset = 0;
+		for(size_t i = 0; i != segments.size() - 1; ++i) {
+			segments[i].idRangeOffset = (uint16_t)((startOffset + segments.size() - i) << 1);
+			startOffset += (size_t)(segments[i].endCode - segments[i].startCode + 1);
+		}
+
+		// Calculate all segment count values
+		uint16_t segCountX2 = (uint16_t)(segments.size() << 1);
+		uint16_t searchRange = CalcSearchRange((uint16_t)segments.size());
+		uint16_t entrySelector = CalcEntrySelector((uint16_t)segments.size());
+		uint16_t rangeShift = segCountX2 - searchRange;
+
 		// Write the version and the number of tables
 		uint32_t offset = 0;
 
@@ -816,27 +858,29 @@ namespace wfe {
 
 		// Write the Unicode table's header
 		cmapTable.WriteUint16(offset, 4); // format
-		cmapTable.WriteUint16(offset, sizeof(uint16_t) * 272); // length
+		cmapTable.WriteUint16(offset, sizeof(uint16_t) * (uint16_t)(8 + segments.size() * 4 + glyphMappings.size() - 1)); // length
 		cmapTable.WriteUint16(offset, 0); // language
-		cmapTable.WriteUint16(offset, 4); // segCountX2
-		cmapTable.WriteUint16(offset, 4); // searchRange
-		cmapTable.WriteUint16(offset, 1); // entrySelector
-		cmapTable.WriteUint16(offset, 0); // rangeShift
+		cmapTable.WriteUint16(offset, segCountX2); // segCountX2
+		cmapTable.WriteUint16(offset, searchRange); // searchRange
+		cmapTable.WriteUint16(offset, entrySelector); // entrySelector
+		cmapTable.WriteUint16(offset, rangeShift); // rangeShift
 
 		// Write the segment descriptors
-		cmapTable.WriteUint16(offset, 0x00ff); // endCode[0]
-		cmapTable.WriteUint16(offset, 0xffff); // endCode[1]
+		for(size_t i = 0; i != segments.size(); ++i)
+			cmapTable.WriteUint16(offset, segments[i].endCode);
+
 		cmapTable.WriteUint16(offset, 0); // reservedPad
-		cmapTable.WriteUint16(offset, 0x0000); // startCode[0]
-		cmapTable.WriteUint16(offset, 0xffff); // startCode[1]
-		cmapTable.WriteUint16(offset, 0); // idDelta[0]
-		cmapTable.WriteUint16(offset, 1); // idDelta[1]
-		cmapTable.WriteUint16(offset, 4); // idRangeOffset[0]
-		cmapTable.WriteUint16(offset, 0); // idRangeOffset[1]
+
+		for(size_t i = 0; i != segments.size(); ++i)
+			cmapTable.WriteUint16(offset, segments[i].startCode);
+		for(size_t i = 0; i != segments.size(); ++i)
+			cmapTable.WriteUint16(offset, segments[i].idDelta);
+		for(size_t i = 0; i != segments.size(); ++i)
+			cmapTable.WriteUint16(offset, segments[i].idRangeOffset);
 
 		// Write the glyph ID array
-		for(uint16_t i = 0x00; i <= 0xff; ++i)
-			cmapTable.WriteUint16(offset, (uint16_t)font.glyphMapping[i]);
+		for(size_t i = 0; i != glyphMappings.size() - 1; ++i)
+			cmapTable.WriteUint16(offset, (uint16_t)glyphMappings[i].second);
 	}
 	static void WriteGlyphs(Table& locaTable, Table& glyfTable, const TTFFont& font) {
 		// Write all glyphs
@@ -1063,8 +1107,8 @@ namespace wfe {
 		os2Table.WriteUint32(offset, 1); // ulCodePangeRange1
 		os2Table.WriteUint32(offset, 0); // ulCodePageRange2
 
-		size_t glyphX = font.glyphMapping['x'];
-		size_t glyphH = font.glyphMapping['H'];
+		size_t glyphX = font.glyphMapping.at(L'x');
+		size_t glyphH = font.glyphMapping.at(L'H');
 
 		os2Table.WriteUint16(offset, (int16_t)std::roundf((font.glyphs[glyphX].maxCoords.y - font.glyphs[glyphX].minCoords.x) * WRITE_UNITS_PER_EM)); // sxHeight
 		os2Table.WriteUint16(offset, (int16_t)std::roundf((font.glyphs[glyphH].maxCoords.y - font.glyphs[glyphH].minCoords.x) * WRITE_UNITS_PER_EM)); // sCapHeight
