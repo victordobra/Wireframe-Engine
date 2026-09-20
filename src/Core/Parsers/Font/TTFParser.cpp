@@ -315,7 +315,7 @@ namespace wfe {
 		// Check if all required tables were read
 		return goodTableCount == 10;
 	}
-	static bool ReadHeadTable(const Table& headTable, uint16_t& unitsPerEm, int16_t& indexToLocFormat) {
+	static bool ReadHeadTable(const Table& headTable, uint16_t& unitsPerEm, int16_t& indexToLocFormat, TTFFont& font) {
 		// Read all head table data
 		uint32_t offset = 0;
 
@@ -325,7 +325,13 @@ namespace wfe {
 		offset += sizeof(uint16_t); // flags
 		unitsPerEm = headTable.ReadUint16(offset);
 		offset += sizeof(uint64_t) * 2; // createdDate, modifiedDate
-		offset += sizeof(int16_t) * 4; // xMin, yMin, xMax, yMax
+
+		float invUnitsPerEm = 1.0f / unitsPerEm;
+		font.minCoords.x = (int16_t)headTable.ReadUint16(offset) * invUnitsPerEm;
+		font.minCoords.y = (int16_t)headTable.ReadUint16(offset) * invUnitsPerEm;
+		font.maxCoords.x = (int16_t)headTable.ReadUint16(offset) * invUnitsPerEm;
+		font.maxCoords.y = (int16_t)headTable.ReadUint16(offset) * invUnitsPerEm;
+
 		offset += sizeof(uint16_t) * 2 + sizeof(int16_t); // maxStyle, lowestRecPPEM, fontDirectionHint
 		indexToLocFormat = (int16_t)headTable.ReadUint16(offset);
 
@@ -378,7 +384,7 @@ namespace wfe {
 
 		return UINT32_T_MAX;
 	}
-	static bool ReadCmapUnicodeTable(const Table& cmapTable, TTFFont& font, uint32_t unicodeOffset) {
+	static bool ReadCmapUnicodeTable(const Table& cmapTable, uint32_t unicodeOffset, TTFFont& font) {
 		// Read the table's header data
 		uint32_t offset = unicodeOffset;
 
@@ -761,10 +767,10 @@ namespace wfe {
 		headTable.WriteUint16(offset, WRITE_UNITS_PER_EM); // unitsPerEm
 		headTable.WriteUint64(offset, 0); // createdDate
 		headTable.WriteUint64(offset, 0); // modifiedDate
-		headTable.WriteUint16(offset, xMin); // xMin
-		headTable.WriteUint16(offset, yMin); // yMin
-		headTable.WriteUint16(offset, xMax); // xMax
-		headTable.WriteUint16(offset, yMax); // yMax
+		headTable.WriteUint16(offset, (int16_t)std::roundf(font.minCoords.x * WRITE_UNITS_PER_EM)); // xMin
+		headTable.WriteUint16(offset, (int16_t)std::roundf(font.minCoords.y * WRITE_UNITS_PER_EM)); // yMin
+		headTable.WriteUint16(offset, (int16_t)std::roundf(font.maxCoords.x * WRITE_UNITS_PER_EM)); // xMax
+		headTable.WriteUint16(offset, (int16_t)std::roundf(font.maxCoords.y * WRITE_UNITS_PER_EM)); // yMax
 		headTable.WriteUint16(offset, 0); // macStyle
 		headTable.WriteUint16(offset, 0); // lowestRecPPEM
 		headTable.WriteUint16(offset, 2); // fontDirectionHint
@@ -1196,7 +1202,7 @@ namespace wfe {
 		
 		// Read the head table's data
 		uint16_t unitsPerEm; int16_t indexToLocFormat;
-		if(!ReadHeadTable(tableSet.headTable, unitsPerEm, indexToLocFormat))
+		if(!ReadHeadTable(tableSet.headTable, unitsPerEm, indexToLocFormat, font))
 			return false;
 
 		// Read the maxp table's data
@@ -1209,7 +1215,7 @@ namespace wfe {
 			return false;
 		
 		// Read the Unicode character mapping
-		if(!ReadCmapUnicodeTable(tableSet.cmapTable, font, unicodeOffset))
+		if(!ReadCmapUnicodeTable(tableSet.cmapTable, unicodeOffset, font))
 			return false;
 		
 		// Read the glyph offsets

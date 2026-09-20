@@ -40,6 +40,10 @@ namespace wfe {
 		/// @brief The font vendor's ID.
 		uint32_t vendorID;
 
+		/// @brief A vector containing the minimum coordinates of the all glyphs.
+		Vec2f minCoords;
+		/// @brief A vector containing the maximum coordinates of the all glyphs.
+		Vec2f maxCoords;
 		/// @brief The distance from the baseline to the highest ascender.
 		float ascent;
 		/// @brief The distance from the baseline to the lowest descender.
