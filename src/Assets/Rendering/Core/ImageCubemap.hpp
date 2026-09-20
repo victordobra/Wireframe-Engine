@@ -11,7 +11,7 @@ namespace wfe {
 	/// @brief A class representing a cubemap using the data of an image.
 	class ImageCubemap : public Asset {
 	public:
-		/// @brief Creates a new blank image cubemap. The cubemap must be subsequentally loaded or imported.
+		/// @brief Creates a new blank image cubemap. The cubemap must be subsequently loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
 		/// @param path The asset file's path. Left blank if the asset has no path.

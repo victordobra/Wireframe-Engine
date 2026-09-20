@@ -24,7 +24,7 @@ namespace wfe {
 			size_t flatIndexCount;
 		};
 
-		/// @brief Creates a new blank render object. The object must be subsequentally loaded or imported.
+		/// @brief Creates a new blank render object. The object must be subsequently loaded or imported.
 		/// @param program The program that owns the asset.
 		/// @param id The asset's ID, or UINT64_T_MAX if the asset has no ID.
 		/// @param path The asset file's path. Left blank if the asset has no path.
